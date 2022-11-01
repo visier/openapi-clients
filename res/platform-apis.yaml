@@ -1,0 +1,1462 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Visier Public Platform APIs
+    description: Visier APIs for querying data and model metadata
+    license:
+        name: Apache License, Version 2.0
+        url: https://www.apache.org/licenses/LICENSE-2.0
+    version: 20220800.99201.387
+paths:
+    /v1/data/model/analytic-objects:
+        get:
+            tags:
+                - DataModel
+            description: Get all Analytic Objects
+            operationId: DataModel_AnalyticObjects
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: array
+                    items:
+                        type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AnalyticObjectsDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/analytic-objects/{id}:
+        get:
+            tags:
+                - DataModel
+            description: Get a specific Analytic Object
+            operationId: DataModel_AnalyticObject
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AnalyticObjectDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/analytic-objects/{id}/dimensions:
+        get:
+            tags:
+                - DataModel
+            description: Get all Dimensions available for a given Analytic Object
+            operationId: DataModel_Dimensions
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DimensionsDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/analytic-objects/{id}/dimensions/{subId}:
+        get:
+            tags:
+                - DataModel
+            description: Get a specific Dimension available for a given Analytic Object
+            operationId: DataModel_Dimension
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: subId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DimensionDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/analytic-objects/{id}/dimensions/{subId}/members:
+        get:
+            tags:
+                - DataModel
+            description: Get qll Members for a given Dimmension and Analytic Object
+            operationId: DataModel_Members
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: subId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MembersDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/analytic-objects/{id}/properties:
+        get:
+            tags:
+                - DataModel
+            description: Get all Properties for a given Analytic Object
+            operationId: DataModel_Properties
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PropertiesDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/analytic-objects/{id}/properties/{subId}:
+        get:
+            tags:
+                - DataModel
+            description: Get a specific Property for a given Analytic Object
+            operationId: DataModel_Property
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: subId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PropertyDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/analytic-objects/{id}/selection-concepts:
+        get:
+            tags:
+                - DataModel
+            description: Get all Selection Concepts for a given Analytic Object
+            operationId: DataModel_SelectionConcepts
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SelectionConceptsDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/analytic-objects/{id}/selection-concepts/{subId}:
+        get:
+            tags:
+                - DataModel
+            description: Get a specific Selection Concept for a given Analytic Object
+            operationId: DataModel_SelectionConcept
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: subId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SelectionConceptDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/metrics:
+        get:
+            tags:
+                - DataModel
+            description: Get all Metrics
+            operationId: DataModel_Metrics
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: array
+                    items:
+                        type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MetricsDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/metrics/{id}:
+        get:
+            tags:
+                - DataModel
+            description: Get a specific Metric
+            operationId: DataModel_Metric
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MetricDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/metrics/{id}/dimensions:
+        get:
+            tags:
+                - DataModel
+            description: Get all Dimensions available for a given Metric
+            operationId: DataModel_MetricDimensions
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DimensionsDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/metrics/{id}/selection-concepts:
+        get:
+            tags:
+                - DataModel
+            description: Get all Selection Concepts available for a given Metric
+            operationId: DataModel_MetricSelectionConcepts
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SelectionConceptsDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/plan-models:
+        get:
+            tags:
+                - DataModel
+            description: Get all Planning Models
+            operationId: DataModel_PlanningModels
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: array
+                    items:
+                        type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PlanningModelsDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/plan-models/{id}:
+        get:
+            tags:
+                - DataModel
+            description: Get a specific Planning Model
+            operationId: DataModel_PlanningModel
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PlanningModelDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/plan-models/{id}/metrics:
+        get:
+            tags:
+                - DataModel
+            description: Get all Planning Metrics for a given Planning Model
+            operationId: DataModel_PlanningMetrics
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MetricsDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/plan-models/{id}/plans:
+        get:
+            tags:
+                - DataModel
+            description: Get all Planning Plans for a given Planning Model
+            operationId: DataModel_PlanningPlans
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PlanningPlansDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/model/plan-models/{id}/plans/{subId}:
+        get:
+            tags:
+                - DataModel
+            description: Get a specific Planning Plan for a given Planning Model
+            operationId: DataModel_PlanningPlan
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: subId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PlanningPlanDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/query/aggregate:
+        post:
+            tags:
+                - Query
+            description: Execute an Aggregate Query
+            operationId: Query_Aggregate
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AggregationQueryDTO'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CellSetDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/data/query/list:
+        post:
+            tags:
+                - Query
+            description: Execute a List Query
+            operationId: Query_List
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ListQueryExecutionDTO'
+                required: true
+            responses:
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+                "200":
+                    description: List query response
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                        text/csv:
+                            schema:
+                                type: string
+components:
+    schemas:
+        AggregationQueryDTO:
+            type: object
+            properties:
+                source:
+                    $ref: '#/components/schemas/AggregationQuerySourceDTO'
+                filters:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/QueryFilterDTO'
+                    description: The filters of this query. This can be omitted there are no filters to apply.
+                axes:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/QueryAxisDTO'
+                    description: The axes of this query. This can be omitted if there is no grouping to be done.
+                timeIntervals:
+                    $ref: '#/components/schemas/QueryTimeIntervalsDTO'
+                parameterValues:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/QueryParameterValueDTO'
+                    description: Parameter values (initially for metrics only)
+            description: A query that returns a cell set calculated from the selected data points
+        AggregationQuerySourceDTO:
+            type: object
+            properties:
+                formula:
+                    type: string
+                    description: A metric formula.
+                metric:
+                    type: string
+                    description: A metric name.
+                metrics:
+                    $ref: '#/components/schemas/AggregationQuerySourceMetricsDTO'
+            description: Definition of the source data being queried in a aggregation query.
+        AggregationQuerySourceMetricDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The metric id
+                columnName:
+                    type: string
+                    description: Optional header label for text/csv output
+        AggregationQuerySourceMetricsDTO:
+            type: object
+            properties:
+                columns:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AggregationQuerySourceMetricDTO'
+        AnalyticObjectDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                description:
+                    type: string
+                type:
+                    type: integer
+                    format: enum
+                dataStartDate:
+                    type: integer
+                    format: int64
+                dataEndDate:
+                    type: integer
+                    format: int64
+                propertyIds:
+                    type: array
+                    items:
+                        type: string
+                dimensionIds:
+                    type: array
+                    items:
+                        type: string
+                selectionConceptIds:
+                    type: array
+                    items:
+                        type: string
+                objectReferences:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ObjectReferenceDTO'
+                populationConfiguration:
+                    $ref: '#/components/schemas/PopulationConfigurationDTO'
+            description: An analytic object, which can be either a Subject, Event, or Overlay.
+        AnalyticObjectsDTO:
+            type: object
+            properties:
+                analyticObjects:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AnalyticObjectDTO'
+            description: A collection of analytic objects
+        CellDTO:
+            type: object
+            properties:
+                value:
+                    type: string
+                    description: The value of the cell. This can be omitted if there is no value.
+                support:
+                    type: integer
+                    description: The number data points contributing to this cell. This can be omitted as the support is not always calculated.
+                    format: int64
+                coordinates:
+                    type: array
+                    items:
+                        type: integer
+                        format: int32
+                    description: The coordinates of this cell, identifying its position along each axis.
+                distribution:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CellDistributionBinDTO'
+                    description: The optional distribution of this cell. This will be populated if distribution calculation is requested, and supported by the query.
+            description: A single value from a cell set.
+        CellDistributionBinDTO:
+            type: object
+            properties:
+                value:
+                    type: string
+                support:
+                    type: integer
+                    format: int64
+            description: A cell distribution bin. Each bin has a metric value (of the bin) and the number of observations contributing to the bin.
+        CellSetAxisDTO:
+            type: object
+            properties:
+                dimension:
+                    $ref: '#/components/schemas/DimensionReferenceDTO'
+                positions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CellSetAxisPositionDTO'
+                    description: The positions along this axis.
+            description: An axis of a cell set associated with one of its dimensions.
+        CellSetAxisPositionDTO:
+            type: object
+            properties:
+                path:
+                    type: array
+                    items:
+                        type: string
+                    description: The member name path.
+                displayName:
+                    type: string
+                    description: Optional display name of the member.
+        CellSetDTO:
+            type: object
+            properties:
+                cells:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CellDTO'
+                    description: The set of cells.
+                axes:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CellSetAxisDTO'
+                    description: The set of axes of this cell set.
+                lineage:
+                    $ref: '#/components/schemas/LineageDTO'
+            description: A set of cells representing a structured, multidimensional array of values returned from executing an aggregation query.
+        DimensionDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                description:
+                    type: string
+                levels:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/LevelDTO'
+        DimensionMemberReferenceDTO:
+            type: object
+            properties:
+                path:
+                    type: array
+                    items:
+                        type: string
+                    description: The member name path.
+            description: A reference to a dimension member.
+        DimensionReferenceDTO:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: The name of the dimension.
+                qualifyingPath:
+                    type: string
+                    description: The qualifying path to the dimension.
+            description: A reference to a dimension.
+        DimensionsDTO:
+            type: object
+            properties:
+                dimensions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DimensionDTO'
+        DoubleValue:
+            type: object
+            properties:
+                value:
+                    type: number
+                    description: The double value.
+                    format: double
+            description: Wrapper message for `double`. The JSON representation for `DoubleValue` is JSON number.
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        Int32Value:
+            type: object
+            properties:
+                value:
+                    type: integer
+                    description: The int32 value.
+                    format: int32
+            description: Wrapper message for `int32`. The JSON representation for `Int32Value` is JSON number.
+        Int64Value:
+            type: object
+            properties:
+                value:
+                    type: integer
+                    description: The int64 value.
+                    format: int64
+            description: Wrapper message for `int64`. The JSON representation for `Int64Value` is JSON string.
+        LevelDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                depth:
+                    type: integer
+                    format: int32
+        LineageDTO:
+            type: object
+            properties:
+                cellSets:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CellSetDTO'
+                    description: The cell sets that constitute this lineage.
+                op:
+                    type: string
+                    description: The operation used to combine the cell sets of this lineage.
+            description: Lineage information for a given cell set. This describes how a cell set is created from other cell sets.
+        ListQueryExecutionDTO:
+            type: object
+            properties:
+                source:
+                    $ref: '#/components/schemas/ListQueryExecutionDTO_SourceDTO'
+                columns:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ListQueryExecutionDTO_PropertyColumnDTO'
+                    description: The columns to include in the result.
+                sortOptions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ListQueryExecutionDTO_SortOptionDTO'
+                    description: Sort options for each property to sort by, applied in the input order. This can be omitted if no sorting is required.
+                filters:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/QueryFilterDTO'
+                    description: The filters of this query. This can be omitted if there are no filters to apply.
+                timeInterval:
+                    $ref: '#/components/schemas/QueryTimeIntervalDTO'
+                parameterValues:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/QueryParameterValueDTO'
+                    description: Parameters (initially for metrics only)
+                options:
+                    $ref: '#/components/schemas/ListQueryExecutionOptionsDTO'
+            description: Instruction to execute a List/Drillthrough query.
+        ListQueryExecutionDTO_PropertyColumnDTO:
+            type: object
+            properties:
+                columnName:
+                    type: string
+                    description: The name of the column. This is optional. If not specified, the name of the property is used, or a generic column name if the property is unnamed.
+                columnDefinition:
+                    $ref: '#/components/schemas/QueryPropertyDTO'
+            description: A named, result column of a list query.
+        ListQueryExecutionDTO_SortOptionDTO:
+            type: object
+            properties:
+                columnIndex:
+                    type: integer
+                    description: The index of the column of the list query, staring from 0.
+                    format: int32
+                sortDirection:
+                    type: integer
+                    description: The sort direction.
+                    format: enum
+            description: Sort option for a column of a list query.
+        ListQueryExecutionDTO_SourceDTO:
+            type: object
+            properties:
+                formula:
+                    type: string
+                    description: A metric formula.
+                metric:
+                    type: string
+                    description: A metric name.
+                analyticObject:
+                    type: string
+                    description: An analytic object name.
+            description: Definition of the source data being queried in a list query.
+        ListQueryExecutionOptionsDTO:
+            type: object
+            properties:
+                limit:
+                    $ref: '#/components/schemas/Int32Value'
+                queryMode:
+                    type: integer
+                    format: enum
+                omitHeader:
+                    type: boolean
+                    description: Option to omit the header from the result. If true, queryMode must be either FILL or FAIL Defaults to false.
+                encryptKey:
+                    type: boolean
+                    description: Visier INTERNAL option to encrypt key values. This is only intended for Visier INTERNAL workflows, where the key values need to be decrypted later for consumption.
+                calendarType:
+                    type: integer
+                    description: The default calendar type to use. This will be used for all time calculations unless explicitly overridden in the calculation itself. If not specified, TENANT is used.
+                    format: enum
+                currencyConversionMode:
+                    type: integer
+                    description: The default currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly overridden in the calculation itself. If not specified, TENANT is used.
+                    format: enum
+                currencyConversionDate:
+                    $ref: '#/components/schemas/Int64Value'
+                page:
+                    $ref: '#/components/schemas/Int32Value'
+                multipleTables:
+                    type: boolean
+                    description: Option to return multiple table files as zipped archive for derived metrics. Default is false, i.e. just return one table for the drill-through metric
+            description: Options specifying how the list queries should be executed
+        MemberDTO:
+            type: object
+            properties:
+                fullName:
+                    type: string
+                displayName:
+                    type: string
+                level:
+                    type: integer
+                    format: sint32
+                path:
+                    type: array
+                    items:
+                        type: string
+                validityRanges:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ValidityRangeDTO'
+        MemberFilterDTO:
+            type: object
+            properties:
+                dimension:
+                    $ref: '#/components/schemas/DimensionReferenceDTO'
+                values:
+                    $ref: '#/components/schemas/MemberValuesDTO'
+            description: '* Definition of a member set'
+        MemberParameterDefinitionDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                description:
+                    type: string
+                dimensionId:
+                    type: string
+                referencePath:
+                    type: array
+                    items:
+                        type: string
+                default:
+                    $ref: '#/components/schemas/MemberValuesDTO'
+            description: '* Member parameter definition is fully qualified and values are either inclusive or exclusive'
+        MemberParameterValueDTO:
+            type: object
+            properties:
+                parameterId:
+                    type: string
+                dimensionId:
+                    $ref: '#/components/schemas/StringValue'
+                referencePath:
+                    type: array
+                    items:
+                        type: string
+                values:
+                    $ref: '#/components/schemas/MemberValuesDTO'
+            description: '* Member parameter value definition is with fully qualified parameter name. A dimensionId with optional referencePath can be provided if the members aren''t from the default hierarchy'
+        MemberValuesDTO:
+            type: object
+            properties:
+                included:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DimensionMemberReferenceDTO'
+                excluded:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DimensionMemberReferenceDTO'
+            description: '* Member lists are either inclusive or exclusive'
+        MembersDTO:
+            type: object
+            properties:
+                members:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/MemberDTO'
+        MetricDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                description:
+                    type: string
+                dataStartDate:
+                    type: integer
+                    format: int64
+                dataEndDate:
+                    type: integer
+                    format: int64
+                analyticObjectId:
+                    type: string
+                parameters:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ParameterDefinitionDTO'
+        MetricsDTO:
+            type: object
+            properties:
+                metrics:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/MetricDTO'
+        NumericParameterDefinitionDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                description:
+                    type: string
+                lowerBound:
+                    $ref: '#/components/schemas/DoubleValue'
+                upperBound:
+                    $ref: '#/components/schemas/DoubleValue'
+                default:
+                    $ref: '#/components/schemas/DoubleValue'
+            description: '* Numeric parameter definition'
+        NumericParameterValueDTO:
+            type: object
+            properties:
+                parameterId:
+                    type: string
+                value:
+                    type: number
+                    format: double
+            description: '* Numeric metric parameter value definition'
+        ObjectReferenceDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                description:
+                    type: string
+                fromObject:
+                    type: string
+                toObject:
+                    type: string
+                type:
+                    type: integer
+                    format: enum
+            description: An object reference from one analytic object to another
+        ParameterDefinitionDTO:
+            type: object
+            properties:
+                memberParameter:
+                    $ref: '#/components/schemas/MemberParameterDefinitionDTO'
+                numericParameter:
+                    $ref: '#/components/schemas/NumericParameterDefinitionDTO'
+                planParameter:
+                    $ref: '#/components/schemas/PlanParameterDefinitionDTO'
+            description: '* Parameters are either discrete member selections or scalar numeric (no support for planning ones, yet)'
+        PlanParameterDefinitionDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                description:
+                    type: string
+                modelName:
+                    type: string
+            description: '* Plan parameter definition'
+        PlanParameterValueDTO:
+            type: object
+            properties:
+                parameterId:
+                    type: string
+                planId:
+                    type: string
+                scenarioId:
+                    type: string
+                snapshotId:
+                    type: string
+            description: '* Plan parameter value for resolving parametric plan metrics'
+        PlanningConceptFilterContextDTO:
+            type: object
+            properties:
+                name:
+                    type: string
+        PlanningHierarchyFilterContextDTO:
+            type: object
+            properties:
+                hierarchyName:
+                    type: string
+                includedMembers:
+                    type: array
+                    items:
+                        type: string
+                excludedMembers:
+                    type: array
+                    items:
+                        type: string
+        PlanningModelDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                description:
+                    type: string
+        PlanningModelsDTO:
+            type: object
+            properties:
+                models:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PlanningModelDTO'
+        PlanningPlanContextDTO:
+            type: object
+            properties:
+                hierarchyFilterContext:
+                    $ref: '#/components/schemas/PlanningHierarchyFilterContextDTO'
+                conceptFilterContext:
+                    $ref: '#/components/schemas/PlanningConceptFilterContextDTO'
+        PlanningPlanDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                subjectId:
+                    type: string
+                defaultContexts:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PlanningPlanContextDTO'
+                planDimensionIds:
+                    type: array
+                    items:
+                        type: string
+                scenarios:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ScenarioOrSnapshotDTO'
+                snapshots:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ScenarioOrSnapshotDTO'
+        PlanningPlansDTO:
+            type: object
+            properties:
+                plans:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PlanningPlanDTO'
+        PopulationConfigurationDTO:
+            type: object
+            properties:
+                distinguishingProperties:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PropertyReferenceDTO'
+                changeHistoryProperties:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PropertyReferenceDTO'
+                groupingDimensions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DimensionReferenceDTO'
+            description: Configuration that captures the key attributes that describe a population.
+        PropertiesDTO:
+            type: object
+            properties:
+                properties:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PropertyDTO'
+        PropertyDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                description:
+                    type: string
+                dataType:
+                    type: string
+                primitiveDataType:
+                    type: string
+        PropertyReferenceDTO:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: The name of the property.
+                qualifyingPath:
+                    type: string
+                    description: The qualifying path to the property.
+            description: A reference to a property.
+        QueryAxisDTO:
+            type: object
+            properties:
+                formula:
+                    type: string
+                    description: An axis formula.
+                selectionConcept:
+                    $ref: '#/components/schemas/SelectionConceptReferenceDTO'
+                dimensionMemberSelection:
+                    $ref: '#/components/schemas/QueryDimensionMemberSelectionDTO'
+                memberMapSelection:
+                    $ref: '#/components/schemas/QueryMemberMapSelectionDTO'
+                numericRanges:
+                    $ref: '#/components/schemas/QueryNumericRangesDTO'
+                dimensionLevelSelection:
+                    $ref: '#/components/schemas/QueryDimensionLevelSelectionDTO'
+            description: An axis of a query used to group data points.
+        QueryDimensionLevelSelectionDTO:
+            type: object
+            properties:
+                dimension:
+                    $ref: '#/components/schemas/DimensionReferenceDTO'
+                levelIds:
+                    type: array
+                    items:
+                        type: string
+                    description: A collection of the selected levels.
+            description: Query axis definition based on dimension level selections.
+        QueryDimensionMemberSelectionDTO:
+            type: object
+            properties:
+                dimension:
+                    $ref: '#/components/schemas/DimensionReferenceDTO'
+                members:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DimensionMemberReferenceDTO'
+                    description: A collection of the selected members.
+            description: Query axis definition based on dimension member selections.
+        QueryFilterDTO:
+            type: object
+            properties:
+                formula:
+                    type: string
+                    description: A filter formula.
+                selectionConcept:
+                    $ref: '#/components/schemas/SelectionConceptReferenceDTO'
+                memberSet:
+                    $ref: '#/components/schemas/MemberFilterDTO'
+            description: A filter of a query used to select specific data points.
+        QueryMemberMapPropertyDTO:
+            type: object
+            properties:
+                memberMap:
+                    $ref: '#/components/schemas/DimensionReferenceDTO'
+                targetDimensionName:
+                    type: string
+                    description: the name of a source dimension to the above map.
+            description: Query Property definition based on memberMap (aka dimensionMap) and target dimension.
+        QueryMemberMapSelectionDTO:
+            type: object
+            properties:
+                memberMap:
+                    $ref: '#/components/schemas/DimensionReferenceDTO'
+                targetDimensionName:
+                    type: string
+                    description: the name of a source dimension to the above map.
+                members:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DimensionMemberReferenceDTO'
+                    description: A collection of the selected members from the above source dimension.
+            description: Query axis definition based on dimension member selections from a dimension map.
+        QueryNumericRangesDTO:
+            type: object
+            properties:
+                property:
+                    $ref: '#/components/schemas/QueryPropertyDTO'
+                ranges:
+                    type: string
+                    description: Description of the ranges as a space separated string of range bound values.
+                includeNegative:
+                    type: boolean
+                    description: Whether to include negative ranges. This is optional. Defaults to false.
+                includeIndependentZeroRange:
+                    type: boolean
+                    description: Whether to create an independent range for 0. This is optional. Defaults to false.
+                includeAllMember:
+                    type: boolean
+                    description: Whether to include a member representing all members in this axis.
+            description: Query axis definition based on numeric ranges. Selected data points are grouped into ranges based on a property value.
+        QueryParameterValueDTO:
+            type: object
+            properties:
+                memberValue:
+                    $ref: '#/components/schemas/MemberParameterValueDTO'
+                numericValue:
+                    $ref: '#/components/schemas/NumericParameterValueDTO'
+                planValue:
+                    $ref: '#/components/schemas/PlanParameterValueDTO'
+            description: '* Metric parameters are either discrete member selections or scalar numeric'
+        QueryPropertyDTO:
+            type: object
+            properties:
+                formula:
+                    type: string
+                    description: A property formula.
+                property:
+                    $ref: '#/components/schemas/PropertyReferenceDTO'
+                selectionConcept:
+                    $ref: '#/components/schemas/SelectionConceptReferenceDTO'
+                dimension:
+                    $ref: '#/components/schemas/DimensionReferenceDTO'
+                memberMapProperty:
+                    $ref: '#/components/schemas/QueryMemberMapPropertyDTO'
+            description: Definition of a property of a data point.
+        QueryTimeIntervalDTO:
+            type: object
+            properties:
+                fromInstant:
+                    type: integer
+                    description: The instant from which to extend, in milliseconds since 1970-01-01T00:00:00Z.
+                    format: int64
+                fromDateTime:
+                    type: string
+                    description: The instant from which to extend, in ISO-8601 formatted date string.
+                intervalPeriodType:
+                    type: integer
+                    description: The time period type of the interval. This is optional. Defaults to MONTH.
+                    format: enum
+                intervalPeriodCount:
+                    $ref: '#/components/schemas/Int32Value'
+                direction:
+                    type: integer
+                    description: The direction to extend. This is optional. Defaults to BACKWARD.
+                    format: enum
+                shift:
+                    $ref: '#/components/schemas/TimeShiftDTO'
+            description: The time interval to query.
+        QueryTimeIntervalsDTO:
+            type: object
+            properties:
+                fromInstant:
+                    type: integer
+                    description: The instant from which to extend, in milliseconds since 1970-01-01T00:00:00Z.
+                    format: int64
+                fromDateTime:
+                    type: string
+                    description: The instant from which to extend, in ISO-8601 formatted date string.
+                intervalPeriodType:
+                    type: integer
+                    description: The time period type of each interval. This is optional. Defaults to MONTH.
+                    format: enum
+                intervalPeriodCount:
+                    $ref: '#/components/schemas/Int32Value'
+                intervalCount:
+                    $ref: '#/components/schemas/Int32Value'
+                direction:
+                    type: integer
+                    description: The direction to extend. This is optional. Defaults to BACKWARD.
+                    format: enum
+                shift:
+                    $ref: '#/components/schemas/TimeShiftDTO'
+            description: The time intervals to query.
+        ScenarioOrSnapshotDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+        SelectionConceptDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                description:
+                    type: string
+        SelectionConceptReferenceDTO:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: The name of the selection concept.
+                qualifyingPath:
+                    type: string
+                    description: The qualifying path to the selection concept.
+            description: A reference to a selection concept.
+        SelectionConceptsDTO:
+            type: object
+            properties:
+                selectionConcepts:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/SelectionConceptDTO'
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        StringValue:
+            type: object
+            properties:
+                value:
+                    type: string
+                    description: The string value.
+            description: Wrapper message for `string`. The JSON representation for `StringValue` is JSON string.
+        TimeShiftDTO:
+            type: object
+            properties:
+                periodType:
+                    type: integer
+                    description: The time period type of the shift.
+                    format: enum
+                periodCount:
+                    $ref: '#/components/schemas/Int32Value'
+                direction:
+                    type: integer
+                    description: The direction of the shift. This is optional. Defaults to BACKWARD.
+                    format: enum
+            description: The shift to apply to query time intervals.
+        ValidityRangeDTO:
+            type: object
+            properties:
+                start:
+                    type: integer
+                    format: int64
+                end:
+                    type: integer
+                    format: int64
+    securitySchemes:
+        CookieAuth:
+            type: apiKey
+            name: VisierASIDToken
+            in: cookie
+        ApiKeyAuth:
+            type: apiKey
+            name: apikey
+            in: header
+        LegacyTicketAuth:
+            type: apiKey
+            name: VisierSecureTicket
+            in: header
+security:
+    - CookieAuth: []
+    - ApiKeyAuth: []
+    - LegacyTicketAuth: []
+tags:
+    - name: DataModel
+      description: Visier Data Model APIs
+    - name: Query
+      description: Visier Query Execution APIs

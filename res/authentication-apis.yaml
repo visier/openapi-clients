@@ -1,0 +1,111 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Visier Authentication APIs
+    description: Visier APIs for generating authentication tokens
+    license:
+        name: Apache License, Version 2.0
+        url: https://www.apache.org/licenses/LICENSE-2.0
+    version: 20220800.99201.387
+paths:
+    /v1/admin/visierSecureTicket:
+        post:
+            tags:
+                - Authentication
+            description: Generate a legacy Visier secure ticket
+            operationId: Authentication_TicketAuthentication
+            requestBody:
+                description: Secure ticket request body
+                content:
+                    application/x-www-form-urlencoded:
+                        schema:
+                            $ref: '#/components/schemas/AuthenticationRequest'
+                required: true
+            responses:
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+                "200":
+                    description: Secure ticket response
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                        text/plain:
+                            schema:
+                                type: string
+    /v1/admin/visierSecureToken:
+        post:
+            tags:
+                - Authentication
+            description: Generate a Visier authentication token
+            operationId: Authentication_ASIDTokenAuthentication
+            requestBody:
+                description: Authentication token request body
+                content:
+                    application/x-www-form-urlencoded:
+                        schema:
+                            $ref: '#/components/schemas/AuthenticationRequest'
+                required: true
+            responses:
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+                "200":
+                    description: Authentication token response
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                        text/plain:
+                            schema:
+                                type: string
+components:
+    schemas:
+        AuthenticationRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+            description: Basic Authentication Request Body
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        TokenResponse:
+            type: object
+            properties:
+                token:
+                    type: string
+tags:
+    - name: Authentication
