@@ -3,12 +3,12 @@
 
 openapi: 3.0.3
 info:
-    title: Visier Public Platform APIs
-    description: Visier APIs for querying data and model metadata
+    title: Visier Public Tenant Management APIs
+    description: Visier APIs for managing tenants
     license:
         name: Apache License, Version 2.0
         url: https://www.apache.org/licenses/LICENSE-2.0
-    version: 22222222.99200.16582
+    version: 22222222.99200.16650
 paths:
     /v2/admin/tenants:
         get:
