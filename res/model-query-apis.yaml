@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99200.16650
+  version: 22222222.99201.837
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -25,6 +25,11 @@ paths:
             type: array
             items:
               type: string
+        - name: objectType
+          in: query
+          description: The object type to filter the returned analytic objects by.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -158,6 +163,18 @@ paths:
           description: Indicates whether data members are included in the response. Parent-child dimensions only. Default is false.
           schema:
             type: boolean
+        - name: offset
+          in: query
+          description: For paginated member requests against high-cardinality dimensions, the offset of the first member to retrieve. Default is 0. If the `offset` value is specified to a non-default value, all other non-pagination parameters are ignored.
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: For paginated member requests against high-cardinality dimensions, the maximum number of members to retrieve. Default is -1, meaning no limit. If the `limit` value is specified to a non-default value, all other non-pagination parameters are ignored.
+          schema:
+            type: integer
+            format: int32
       responses:
         "200":
           description: OK
@@ -398,6 +415,11 @@ paths:
             type: array
             items:
               type: string
+        - name: category
+          in: query
+          description: The category to filter the returned metrics by.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -762,7 +784,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListResponse'
-            application/jsonlines:
+            application/octet-stream:
               schema:
                 type: string
             text/csv:
@@ -774,6 +796,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1/data/query/sql:
+    post:
+      tags:
+        - Query
+      summary: Query aggregate or list data using SQL-like syntax
+      description: "To retrieve a list of values for specific objects or aggregate values from metrics, you can writes queries using SQL-like syntax.\n The response format matches the query type whether aggregate or list. If requested, aggregate query results may be flattened into tabular format. \n\n A SQL-like query is an aggregate if it contains at least one metric. Aggregate queries must specify a time interval divided into periods; for example:\n ```sql\n SELECT\n   employeeCount() AS \"Employee Count\",\n   level(Gender, \"Gender\") AS Gender\n FROM\n   Employee\n WHERE\n  Visier_Time IN periods(date(\"2023-01-01\"), 4, period(3, Month));\n ```\n\n A SQL-like query is a list if it does not contain any metrics. List queries define time intervals as simple intervals; for example:\n ```sql\n SELECT\n   EmployeeID AS \"Employee ID\",\n   level(Gender, \"Gender\") AS Gender\n FROM\n   Employee\n WHERE\n  Visier_Time BETWEEN date(\"2022-01-01\") AND date(\"2023-01-01\");\n ```"
+      operationId: Query_SqlLike
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SqlLikeQueryExecutionDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: List query response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CellSetDTO'
+            application/octet-stream:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
 components:
   schemas:
     AggregationQueryDTO:
@@ -967,6 +1021,16 @@ components:
       description: |-
         A cell distribution bin.
          Each bin has a metric value (of the bin) and the number of observations contributing to the bin.
+    CellDistributionOptionsDTO:
+      type: object
+      properties:
+        binCount:
+          type: integer
+          description: The number of bins to return, minimum of 2, and a maximum of 100.
+          format: int32
+      description: |-
+        Cell distribution options for queries.
+         Include with aggregation queries to enable distribution calculation per cell.
     CellSetAxisDTO:
       type: object
       properties:
@@ -1038,6 +1102,15 @@ components:
           items:
             $ref: '#/components/schemas/LevelDTO'
           description: 'The levels defined for the dimension. Note: For parent-child dimensions, a level name is generated by Visier.'
+        unknownMember:
+          type: array
+          items:
+            type: string
+          description: The optional path to the unknown member, if defined.
+        memberCount:
+          type: integer
+          description: The total number of members for the dimension, excluding the (All) member.
+          format: int32
       description: A dimension organizes unique values of an attribute into a list or a hierarchical structure for use as a filter or group-by in your solution.
     DimensionMemberReferenceDTO:
       type: object
@@ -1078,6 +1151,13 @@ components:
           description: The type of the serialized message.
       additionalProperties: true
       description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+    InternalQueryExecutionOptionsDTO:
+      type: object
+      properties:
+        sparseHandlingMode:
+          type: integer
+          format: enum
+      description: Internal options - not to be documented or used by external parties
     LevelDTO:
       type: object
       properties:
@@ -1407,6 +1487,10 @@ components:
           items:
             $ref: '#/components/schemas/ParameterDefinitionDTO'
           description: The collection of parameters defined for the metric.
+        category:
+          type: integer
+          description: 'The category of the metric. Will be one of: `REGULAR`, `DERIVED` or `PLANNING`.'
+          format: enum
       description: A metric is a calculation based on one or more attribute values of analytic objects.
     MetricsDTO:
       type: object
@@ -1819,7 +1903,22 @@ components:
           allOf:
             - $ref: '#/components/schemas/QueryDimensionLevelSelectionDTO'
           description: An axis that uses levels of existing dimensions in Visier.
+        dimensionLeafMemberSelection:
+          allOf:
+            - $ref: '#/components/schemas/QueryDimensionLeafSelectionDTO'
+          description: An axis comprised of all leaf members of an existing dimension in Visier.
       description: An axis of a query used to group data points.
+    QueryDimensionLeafSelectionDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/DimensionReferenceDTO'
+          description: A dimension and its qualifying path to query.
+      description: |-
+        A QueryDimensionLeafSelection allows you to define a member set consisting exclusively
+         of leaf-level members for the given dimension. Leaf members are those members that have
+         no descendents. A member may be a leaf member regardless of the level it is positioned at.
     QueryDimensionLevelSelectionDTO:
       type: object
       properties:
@@ -1848,6 +1947,66 @@ components:
             $ref: '#/components/schemas/DimensionMemberReferenceDTO'
           description: A collection of dimension members to select in the query. This must contain at least one member.
       description: A QueryDimensionMemberSelection defines dimension members to select in the query.
+    QueryExecutionOptionsDTO:
+      type: object
+      properties:
+        calendarType:
+          type: integer
+          description: |-
+            The calendar type to use. This will be used for all time calculations unless explicitly overridden in
+             the calculation itself. Default is TENANT_CALENDAR.
+          format: enum
+        currencyConversionMode:
+          type: integer
+          description: |-
+            The currency conversion mode to use. This will be used for all currency conversion calculations
+             unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION.
+          format: enum
+        currencyConversionDate:
+          type: string
+          description: |-
+            The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.
+             Default is the exchange rate at the end of the query time interval. Format is the number of milliseconds since
+             midnight 01 January, 1970 UTC as a string. Note: Epochs are expressed as 64-bit integers and represented as
+             stringified longs in JSON due to JSON's inherent limitation in representing large numbers.
+        lineageDepth:
+          type: integer
+          description: The max number of levels of nesting to unwind when determining the lineage for a derived metric value.
+          format: int32
+        zeroVisibility:
+          type: integer
+          description: Show or hide zeros in the result. Default is SHOW.
+          format: enum
+        nullVisibility:
+          type: integer
+          description: Show or hide null or N/A values in the result. Default is SHOW.
+          format: enum
+        cellDistributionOptions:
+          $ref: '#/components/schemas/CellDistributionOptionsDTO'
+        axisVisibility:
+          type: integer
+          description: The amount of information to return about each axis. Default is SIMPLE.
+          format: enum
+        enableSparseResults:
+          type: boolean
+          description: |-
+            Retrieve sparse cell sets. Sparse results only retrieve non-zero and non-null cells. Whether a result is truly sparse
+             or not is determined by the Visier server.
+        internal:
+          $ref: '#/components/schemas/InternalQueryExecutionOptionsDTO'
+        enableDescendingSpace:
+          type: boolean
+          description: If true, filter non-time axis member sets to only include members that are in aggregate positions or whose previous position is a leaf
+        currencyConversionCode:
+          type: string
+          description: |-
+            The target currency for all currency conversions.
+             If not specified, the tenant default currency will be used.
+        memberDisplayMode:
+          type: integer
+          description: Control how member values are rendered in the aggregate query result set.
+          format: enum
+      description: A QueryExecutionOptions provides additional instructions to perform a query.
     QueryFilterDTO:
       type: object
       properties:
@@ -2073,6 +2232,19 @@ components:
           items:
             $ref: '#/components/schemas/SelectionConceptDTO'
       description: A collection of selection concepts
+    SqlLikeQueryExecutionDTO:
+      type: object
+      properties:
+        query:
+          type: string
+          description: The SQL-like query string
+        options:
+          allOf:
+            - $ref: '#/components/schemas/QueryExecutionOptionsDTO'
+          description: Optional options that currently that cannot be expressed in SQL-like
+      description: |-
+        *
+         Request body for SQL-like query executions
     Status:
       type: object
       properties:
