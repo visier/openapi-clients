@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.853
+  version: 22222222.99201.903
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -1111,6 +1111,9 @@ components:
           type: integer
           description: The total number of members for the dimension, excluding the (All) member.
           format: int32
+        visibleInApp:
+          type: boolean
+          description: '`true` if this dimension is set to be visible in your solution.'
       description: A dimension organizes unique values of an attribute into a list or a hierarchical structure for use as a filter or group-by in your solution.
     DimensionMemberReferenceDTO:
       type: object
@@ -1491,6 +1494,9 @@ components:
           type: integer
           description: 'The category of the metric. Will be one of: `REGULAR`, `DERIVED` or `PLANNING`.'
           format: enum
+        visibleInApp:
+          type: boolean
+          description: // `true` if this metric is set to be visible in your solution.
       description: A metric is a calculation based on one or more attribute values of analytic objects.
     MetricsDTO:
       type: object
@@ -1909,8 +1915,23 @@ components:
         dimensionLeafMemberSelection:
           allOf:
             - $ref: '#/components/schemas/QueryDimensionLeafSelectionDTO'
-          description: An axis comprised of all leaf members of an existing dimension in Visier.
+          description: An axis comprised of all non-data leaf members of an existing dimension in Visier.
+        dimensionDataMemberSelection:
+          allOf:
+            - $ref: '#/components/schemas/QueryDimensionDataMemberSelectionDTO'
+          description: An axis comprised of all leaf, including data, members of an existing dimension in Visier.
       description: An axis of a query used to group data points.
+    QueryDimensionDataMemberSelectionDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/DimensionReferenceDTO'
+          description: A dimension and its qualifying path to query.
+      description: |-
+        A QueryDimensionLeafSelection allows you to define a member set consisting exclusively
+         of leaf-level, including data, members for the given dimension. Leaf members are those members that have
+         no descendents. A member may be a leaf member regardless of the level it is positioned at.
     QueryDimensionLeafSelectionDTO:
       type: object
       properties:
@@ -1922,6 +1943,7 @@ components:
         A QueryDimensionLeafSelection allows you to define a member set consisting exclusively
          of leaf-level members for the given dimension. Leaf members are those members that have
          no descendents. A member may be a leaf member regardless of the level it is positioned at.
+         This member selection option, excludes data members.
     QueryDimensionLevelSelectionDTO:
       type: object
       properties:
@@ -2187,6 +2209,19 @@ components:
           allOf:
             - $ref: '#/components/schemas/TimeShiftDTO'
           description: The amount of time to shift the time interval by, such as backward by one year.
+        trailingPeriodType:
+          type: integer
+          description: |-
+            The time period type for each trailing period. If `trailingPeriodCount` is defined and `trailingPeriodType` is undefined, the default trailing period type is `MONTH`.
+             If both `trailingPeriodType` and `trailingPeriodCount` are undefined, `intervalPeriodCount` is used as the trailing period count.
+             Note: This parameter is only applicable to metrics that can calculate trailing time. If defined on a metric that doesn't have trailing time, the platform ignores the parameter.
+          format: enum
+        trailingPeriodCount:
+          type: integer
+          description: |-
+            The number of time periods per trailing period. If `trailingPeriodType` is defined and `trailingPeriodCount` is undefined, the default trailing period count is 1.
+             Note: This parameter is only applicable to metrics that can calculate trailing time. If defined on a metric that doesn't have trailing time, the platform ignores the parameter.
+          format: int32
       description: |-
         A QueryTimeInterval defines a series of time intervals to query, including the "from" time, period type, period count,
          number of intervals, time direction, and shift to apply to each time interval.
@@ -2214,6 +2249,9 @@ components:
         description:
           type: string
           description: The localized description of the selection concept.
+        visibleInApp:
+          type: boolean
+          description: '`true` if this selection concept is set to be visible in your solution.'
       description: Selection concepts select a population of subject members of a given subject or event.
     SelectionConceptReferenceDTO:
       type: object
