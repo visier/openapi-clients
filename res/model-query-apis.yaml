@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.903
+  version: 22222222.99201.923
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -2286,22 +2286,6 @@ components:
       description: |-
         *
          Request body for SQL-like query executions
-    Status:
-      type: object
-      properties:
-        code:
-          type: integer
-          description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
-          format: int32
-        message:
-          type: string
-          description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleProtobufAny'
-          description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
-      description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
     TimeShiftDTO:
       type: object
       properties:
@@ -2336,6 +2320,19 @@ components:
          The validity range is defined in Unix epoch format and UTC timezone.
          Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
          limitation in representing large numbers.
+    Status:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: Error classification.
+        message:
+          type: string
+          description: Error message describing the root cause of the error.
+        rci:
+          type: string
+          description: Optional root cause identifier.
+      description: The response structure for errors.
   securitySchemes:
     CookieAuth:
       type: apiKey
@@ -2345,19 +2342,28 @@ components:
       type: apiKey
       name: apikey
       in: header
-    LegacyTicketAuth:
-      type: apiKey
-      name: VisierSecureTicket
-      in: header
-security:
-  - CookieAuth: []
-  - ApiKeyAuth: []
-  - LegacyTicketAuth: []
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /v1/auth/oauth2/authorize
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+        password:
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
 tags:
   - name: DataModel
     description: |-
       Data model APIs allow you to discover the objects that make up your Visier solution and provide detailed information
-       on the object’s schema. You can retrieve detailed information about objects in Visier by retrieving a list of all
+       on the object's schema. You can retrieve detailed information about objects in Visier by retrieving a list of all
        objects or retrieving information about an object by object ID.
        The types of objects you can retrieve using the data model APIs are:
        - Analytic objects
@@ -2368,3 +2374,10 @@ tags:
        - Predictions
   - name: Query
     description: 'The Query API provides methods to retrieve data from Visier using the data query API: aggregate and list.'
+security:
+  - ApiKeyAuth: []
+    BearerAuth: []
+  - ApiKeyAuth: []
+    CookieAuth: []
+  - ApiKeyAuth: []
+    OAuth2Auth: []
