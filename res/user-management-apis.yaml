@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.903
+  version: 22222222.99201.923
 paths:
   /v1/admin/permissions:
     get:
@@ -1244,13 +1244,29 @@ components:
       type: apiKey
       name: apikey
       in: header
-    LegacyTicketAuth:
-      type: apiKey
-      name: VisierSecureTicket
-      in: header
-security:
-  - CookieAuth: []
-  - ApiKeyAuth: []
-  - LegacyTicketAuth: []
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /v1/auth/oauth2/authorize
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+        password:
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
 tags:
   - name: UserManagement
+security:
+  - ApiKeyAuth: []
+    BearerAuth: []
+  - ApiKeyAuth: []
+    CookieAuth: []
+  - ApiKeyAuth: []
+    OAuth2Auth: []
