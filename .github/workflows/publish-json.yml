@@ -1,13 +1,16 @@
 name: Publish JSON package
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+    types:
+      - closed
 
 jobs:
   build-json-archive:
     name: Generate and package JSON files
+    if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -18,10 +21,10 @@ jobs:
       - name: Transform to JSON
         run: for f in res/*.yaml; do fn=${f##*/}; yq -o json < $f > json/${fn%.*}.json; done
       - name: Make a release archive
-        run: tar -czf ${{ github.ref_name }}.tar.gz json/
+        run: tar -czf ${{ github.head_ref }}.tar.gz json/
       - name: Create release and upload
         uses: ncipollo/release-action@v1
         with:
-          artifacts: ${{ github.ref_name }}.tar.gz
-          tag: ${{ github.ref_name }}
+          artifacts: ${{ github.head_ref }}.tar.gz
+          tag: ${{ github.head_ref }}
           omitBody: true
