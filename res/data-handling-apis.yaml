@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.943
+  version: 22222222.99201.951
 paths:
   /v1/op/data-connector-credentials:
     get:
@@ -356,6 +356,61 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TenantDataUploadsUpdateResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/job-status/jobs:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve the statuses of all jobs
+      operationId: DataAndJobHandling_JobStatus
+      parameters:
+        - name: startTime
+          in: query
+          description: The start time from which to retrieve job statuses.
+          schema:
+            type: string
+        - name: endTime
+          in: query
+          description: The end time from which to retrieve job statuses.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceivingJobStatusResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/job-status/jobs/:jobId:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a specific job's status
+      operationId: DataAndJobHandling_JobIdStatus
+      parameters:
+        - name: jobId
+          in: query
+          description: The unique ID of the job to retrieve the status for.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceivingJobStatusResponse'
         default:
           description: Default error response
           content:
@@ -1033,6 +1088,8 @@ components:
           $ref: '#/components/schemas/Microsoft365AuthParamsDTO'
         googleWorkspaceAuthParams:
           $ref: '#/components/schemas/GoogleWorkspaceAuthParamsDTO'
+        oracleDbAuthParams:
+          $ref: '#/components/schemas/OracleDbAuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -1468,6 +1525,19 @@ components:
       type: object
       properties:
         authCode:
+          type: string
+    OracleDbAuthParamsDTO:
+      type: object
+      properties:
+        host:
+          type: string
+        port:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        serviceName:
           type: string
     ProcessingJob:
       type: object
