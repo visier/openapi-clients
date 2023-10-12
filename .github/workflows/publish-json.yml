@@ -17,11 +17,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Target directory
-        run: mkdir json
+        run: mkdir json js
       - name: Transform to JSON
         run: for f in res/*.yaml; do fn=${f##*/}; yq -o json < $f > json/${fn%.*}.json; done
+      - name: Transform to JS spec assignment
+        run: for f in json/*.json; do fn=${f##*/}; echo "const spec = $(cat $f)" > js/${fn%.*}.js; done
       - name: Make a release archive
-        run: tar -czf ${{ github.head_ref }}.tar.gz json/
+        run: tar -czf ${{ github.head_ref }}.tar.gz json/ js/
       - name: Create release and upload
         uses: ncipollo/release-action@v1
         with:
