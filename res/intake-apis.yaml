@@ -8,9 +8,34 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.951
+  version: 22222222.99201.957
 paths:
   /v1/data/directloads/:draftId/configs:
+    get:
+      tags:
+        - DataIntake
+      summary: Get the data intake configuration
+      description: Get the data intake configuration.
+      operationId: DataIntake_GetConfig
+      parameters:
+        - name: draftId
+          in: query
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectDataLoadConfigDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
     put:
       tags:
         - DataIntake
@@ -38,7 +63,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/DirectDataLoadConfigDTO'
         default:
           description: Default error response
           content:
@@ -260,6 +285,14 @@ components:
           type: integer
           description: "The configuration for the processing job as a primary job (default) or a supplemental job. If a primary job is already defined, the direct data \n intake job must be supplemental. The valid values are `IS_PRIMARY`, `IS_SUPPLEMENTAL`, and `UNCHANGED`."
           format: enum
+        extendObjects:
+          type: array
+          items:
+            type: string
+          description: |-
+            The target analytic objects to load using extension tables.
+             You can extend objects if the job type is supplemental and the target objects already contain data from a previous data version.
+             This allows you to load data for objects that already contain data in Visier.
       description: Whether the direct data intake job is a primary job or a supplemental job.
     DirectDataJobStatusResponseDTO:
       type: object
