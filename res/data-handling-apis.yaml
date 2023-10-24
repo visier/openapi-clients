@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.957
+  version: 22222222.99201.966
 paths:
   /v1/op/data-connector-credentials:
     get:
@@ -1521,6 +1521,8 @@ components:
           type: string
         database:
           type: string
+        sslMode:
+          type: string
     NamelyAuthParamsDTO:
       type: object
       properties:
@@ -1988,6 +1990,8 @@ components:
         password:
           type: string
         integrationSystemId:
+          type: string
+        apiKey:
           type: string
     WorkdayRaasAuthParamsDTO:
       type: object
