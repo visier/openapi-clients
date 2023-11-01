@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.966
+  version: 22222222.99201.978
 paths:
   /v1/admin/tenants:
     get:
@@ -710,6 +710,9 @@ components:
         tenantDisplayName:
           type: string
           description: A new display name to assign to the analytic tenant. Required if creating new tenants.
+        tenantShortName:
+          type: string
+          description: A new short name to assign to the tenant. Required for Enterprise tenants
         industryCode:
           type: integer
           description: |-
