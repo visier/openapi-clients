@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.978
+  version: 22222222.99201.988
 paths:
   /v1/admin/permissions:
     get:
@@ -734,6 +734,17 @@ components:
           items:
             type: string
           description: The additional capabilities assigned to this profile.
+    AdminCapabilityConfigDTO:
+      type: object
+      properties:
+        allCapabilitiesAccess:
+          type: boolean
+          description: If true, this capability configuration grant access to all capabilities.
+        capabilities:
+          type: array
+          items:
+            type: string
+          description: A list of capabilities associated with the capability configuration.
     AllPermissionsAssignedForLocalTenantDTO:
       type: object
       properties:
@@ -846,16 +857,76 @@ components:
         viewLevel:
           type: string
           description: The view level of the profile for the given capability.
+    DataSecurityProfileDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The analytic object ID associated with the data security profile.
+        propertySetConfig:
+          allOf:
+            - $ref: '#/components/schemas/PropertySetConfigDTO'
+          description: The property set configuration that defines which properties and access level to allow for each filtered record.
+        allDataPointAccess:
+          type: boolean
+          description: The flag for giving all access to data points when creating a population.
+        memberFilterConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberFilterConfigDTO'
+          description: The member filter configurations that defines the population.
+        inheritedAccessConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/InheritedAccessConfigDTO'
+          description: |-
+            A list of objects representing the inherited access configurations associated with the data security profile.
+             By default all related objects of a top level analytic object will inherit access.
+             To remove access to a related analytic object, add it to the list of inherited access configurations with removeAccess: true.
+             To add custom filters to a related analytic object, add the analytic object to the list of inherited access configurations and then add the custom filters to its list of member filter configurations.
     DeleteUserResponse:
       type: object
       properties: {}
+    DimensionFilterDTO:
+      type: object
+      properties:
+        staticDimensionFilter:
+          $ref: '#/components/schemas/StaticDimensionFilterDTO'
+        dynamicDimensionFilter:
+          $ref: '#/components/schemas/DynamicDimensionFilterDTO'
+    DynamicDimensionFilterDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The dimension ID associated with the dynamic dimension filter.
+        subjectReferencePath:
+          type: array
+          items:
+            type: string
+          description: The subject reference path.
+        dynamicPropertyMappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/DynamicPropertyMappingDTO'
+          description: A list of objects representing the dynamic property mappings associated with the dynamic dimension filter.
+    DynamicPropertyMappingDTO:
+      type: object
+      properties:
+        hierarchyPropertyId:
+          type: string
+          description: The hierarchy property ID.
+        userProperty:
+          allOf:
+            - $ref: '#/components/schemas/UserPropertyDTO'
+          description: The user property.
     GetPermissionsAPIResponseDTO:
       type: object
       properties:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/PermissionAssignedForLocalTenantDTO'
+            $ref: '#/components/schemas/PermissionDTO'
           description: A list of objects representing the available permissions.
       description: List of available permissions
     GoogleProtobufAny:
@@ -866,12 +937,47 @@ components:
           description: The type of the serialized message.
       additionalProperties: true
       description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+    InheritedAccessConfigDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The analytic object ID associated with the inherited access configuration.
+        removeAccess:
+          type: boolean
+          description: The flag for removing access to the inherited analytic object.
+        memberFilterConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberFilterConfigDTO'
+          description: The member filter configurations that defines the population in the inherited analytic object.
     LastLoginDTO:
       type: object
       properties:
         timestamp:
           type: string
           description: The time that the user last logged into Visier.
+    MemberFilterConfigDTO:
+      type: object
+      properties:
+        dimensionFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionFilterDTO'
+          description: |-
+            A list of objects representing the dimension filters associated with the member filter configuration.
+             A dimension filter can be either a static or dynamic dimension filter.
+    MemberSelectionDTO:
+      type: object
+      properties:
+        namePath:
+          type: array
+          items:
+            type: string
+          description: The member name path.
+        excluded:
+          type: boolean
+          description: The flag for excluding the member.
     Permission:
       type: object
       properties:
@@ -943,6 +1049,31 @@ components:
           description: The index to start retrieving results from, also known as offset. The index begins at 0.
           format: uint32
       description: Users that are assigned a specific permission.
+    PermissionDTO:
+      type: object
+      properties:
+        permissionId:
+          type: string
+          description: The unique identifier associated with the permission.
+        displayName:
+          type: string
+          description: An identifiable permission name to display in Visier, such as "Diversity Access".
+        description:
+          type: string
+          description: A user-defined description of the permission.
+        dataSecurityProfiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataSecurityProfileDTO'
+          description: A list of objects representing the data security profile configurations associated with the permission.
+        adminCapabilityConfig:
+          allOf:
+            - $ref: '#/components/schemas/AdminCapabilityConfigDTO'
+          description: The capability configuration associated with the permission.
+        roleModulesConfig:
+          allOf:
+            - $ref: '#/components/schemas/RoleModulesConfigDTO'
+          description: The role modules configuration associated with the permission.
     PermissionResponseDTO:
       type: object
       properties:
@@ -1012,6 +1143,40 @@ components:
           allOf:
             - $ref: '#/components/schemas/AdditionalCapabilitiesDTO'
           description: A list of the additional capabilities that are assigned to this profile.
+    PropertyAccessConfigDTO:
+      type: object
+      properties:
+        propertyId:
+          type: string
+          description: The property ID associated with the property access configuration.
+        analyticObjectId:
+          type: string
+          description: The analytic object ID of the property.
+        analyticObjectReferencePaths:
+          type: array
+          items:
+            type: string
+          description: The path to the analytic object reference or empty if the configuration is not a reference.
+        accessLevel:
+          type: integer
+          description: 'The access level of the property. Valid values are: Aggregate, Sensitive'
+          format: enum
+    PropertySetConfigDTO:
+      type: object
+      properties:
+        propertyAccessConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyAccessConfigDTO'
+          description: A list of objects representing the property access configuration associated with the property set configuration.
+    RoleModulesConfigDTO:
+      type: object
+      properties:
+        contentPackageIds:
+          type: array
+          items:
+            type: string
+          description: A list of content packages IDs associated with the role modules configuration.
     SecurityAssignmentResponseDTO:
       type: object
       properties:
@@ -1029,6 +1194,22 @@ components:
         username:
           type: string
           description: The user's username. This is typically the user's email, such as john@visier.com.
+    StaticDimensionFilterDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The dimension ID associated with the static dimension filter.
+        subjectReferencePath:
+          type: array
+          items:
+            type: string
+          description: The subject reference path.
+        memberSelections:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberSelectionDTO'
+          description: A list of objects representing the member selections associated with the static dimension filter.
     Status:
       type: object
       properties:
@@ -1187,6 +1368,12 @@ components:
           items:
             $ref: '#/components/schemas/SimpleUserDTO'
           description: A list of objects representing the users in the user group.
+    UserPropertyDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The user property name.
     UserSecurityAssignmentsDTO:
       type: object
       properties:

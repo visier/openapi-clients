@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.978
+  version: 22222222.99201.988
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -900,6 +900,55 @@ components:
           description: |-
             An ad-hoc metric formula. The response returns the results of the aggregate.
              See the formula dictionary in Visier to find functions and objects you can use in a formula.
+        qualifyingPath:
+          type: string
+          description: |-
+            The base qualifying path to prefix the axes and filters' qualifying paths with.
+             You must specify the qualifying path on a metric if the convergent analytic object of the metric doesn't match the
+             starting object in the qualifying paths of the axes and filters.
+
+             For example, consider a multi-metric query that contains metrics that count the number of applicants and requisitions,
+             grouped by the country of the recruiter's direct manager. The following sample shows how to use qualifyingPath to specify
+             the object reference traversal path from each metric's convergent analytic object to the start of the path for the axes.
+             In this example, there is only one convergent analytic object.
+             ```
+             "source": {
+                 "metrics": {
+                    "columns": [
+                        {
+                            "id": "employeeCount"
+                        },
+                        {
+                            "id": "applicantCount",
+                            "qualifyingPath": "Applicant.Requisition.Recruiter"
+                        },
+                        {
+                            "id": "requisitionCount",
+                            "qualifyingPath": "Requisition.Recruiter"
+                        }
+                    ]
+                }
+             },
+             "axes": [
+                {
+                    "dimensionLevelSelection": {
+                        "dimension": {
+                            "name": "Location",
+                            "qualifyingPath": "Employee.Direct_Manager"
+                        },
+                        "levelIds": [
+                            "Location_1"
+                        ]
+                    }
+                }
+             ]
+             ```
+             **Note:**
+             * `employeeCount` doesn't need a `qualifyingPath` because it's already convergent with the start of the axis path.
+             * The metrics' qualifying paths must provide the reference name that resolves to the first object of the axis' qualifying path as their last path segment. In this case, Recruiter is a named reference pointing to Employee. The final qualifying paths for the metrics are:
+                 * `employeeCount`: Employee.Direct_Manager
+                 * `applicantCount`: Applicant.Requisition.Recruiter.Direct_Manager
+                 * `requisitionCount`: Requisition.Recruiter.Direct_Manager
       description: The column definition for a single metric within a `metrics` query.
     AggregationQuerySourceMetricsDTO:
       type: object
@@ -910,11 +959,10 @@ components:
             $ref: '#/components/schemas/AggregationQuerySourceMetricDTO'
           description: An array of metric columns.
       description: |-
-        The IDs and columns of multiple metrics. All metrics in the query must reference the same
-         analytic object. For example, you cannot query Headcount and Applicant Count because one
-         uses the Employee subject and the other uses the Applicant subject. You can query Headcount
-         and Employee Count for Women because both reference the Employee subject.
-         Note: Only available when the `Accept` header is text/csv. For more information, see `Aggregate`
+        The IDs and column names of multiple metrics.
+
+         **Note:**
+         Only available when the `Accept` header is text/csv. For more information, see `Aggregate`
     AnalyticObjectDTO:
       type: object
       properties:
@@ -1192,17 +1240,17 @@ components:
       properties:
         source:
           allOf:
-            - $ref: '#/components/schemas/ListQueryExecutionDTO_SourceDTO'
+            - $ref: '#/components/schemas/ListQuerySourceDTO'
           description: The source data that you want to query.
         columns:
           type: array
           items:
-            $ref: '#/components/schemas/ListQueryExecutionDTO_PropertyColumnDTO'
+            $ref: '#/components/schemas/PropertyColumnDTO'
           description: The columns to include in the result. This must contain at least one column.
         sortOptions:
           type: array
           items:
-            $ref: '#/components/schemas/ListQueryExecutionDTO_SortOptionDTO'
+            $ref: '#/components/schemas/SortOptionDTO'
           description: The index and direction to sort a column in the `columns` array.
         filters:
           type: array
@@ -1223,46 +1271,6 @@ components:
             - $ref: '#/components/schemas/ListQueryExecutionOptionsDTO'
           description: Additional instructions for your query, such as a calendar type or conversion information.
       description: A ListQueryExecution provides instructions to perform a list query.
-    ListQueryExecutionDTO_PropertyColumnDTO:
-      type: object
-      properties:
-        columnName:
-          type: string
-          description: |-
-            The name of the column or property to query.
-             Default is the name of the property or a generic column name if the object is unnamed.
-        columnDefinition:
-          allOf:
-            - $ref: '#/components/schemas/QueryPropertyDTO'
-          description: The definition of the property to query, such as the object type, name, and qualifying path.
-      description: A ListQueryColumn is a named column or property in a list query.
-    ListQueryExecutionDTO_SortOptionDTO:
-      type: object
-      properties:
-        columnIndex:
-          type: integer
-          description: The index of the column by which to sort the results. The index begins at 0.
-          format: int32
-        sortDirection:
-          type: integer
-          description: The direction to sort the values. Default is SORT_ASCENDING.
-          format: enum
-      description: The index and direction to sort a column in the columns array.
-    ListQueryExecutionDTO_SourceDTO:
-      type: object
-      properties:
-        formula:
-          type: string
-          description: An ad-hoc metric formula. The response returns the individual data points that make up the aggregate.
-        metric:
-          type: string
-          description: The ID of an existing metric in your Visier solution.
-        analyticObject:
-          type: string
-          description: |-
-            The ID of an existing analytic object in your Visier solution.
-             An analytic object source cannot have filters or time handling.
-      description: A ListQuerySource defines the source data to query in a list query.
     ListQueryExecutionOptionsDTO:
       type: object
       properties:
@@ -1328,6 +1336,21 @@ components:
              falls in the time frame.
           format: enum
       description: A ListQueryExecutionOptions provides additional instructions to perform a list query.
+    ListQuerySourceDTO:
+      type: object
+      properties:
+        formula:
+          type: string
+          description: An ad-hoc metric formula. The response returns the individual data points that make up the aggregate.
+        metric:
+          type: string
+          description: The ID of an existing metric in your Visier solution.
+        analyticObject:
+          type: string
+          description: |-
+            The ID of an existing analytic object in your Visier solution.
+             An analytic object source cannot have filters or time handling.
+      description: A ListQuerySource defines the source data to query in a list query.
     ListResponse:
       type: object
       properties:
@@ -1851,6 +1874,19 @@ components:
           items:
             $ref: '#/components/schemas/PropertyDTO'
       description: A collection of properties.
+    PropertyColumnDTO:
+      type: object
+      properties:
+        columnName:
+          type: string
+          description: |-
+            The name of the column. This is optional.
+             If not specified, the name of the property is used, or a generic column name if the property is unnamed.
+        columnDefinition:
+          allOf:
+            - $ref: '#/components/schemas/QueryPropertyDTO'
+          description: The definition of the property to query on.
+      description: A named, result column of a list query.
     PropertyDTO:
       type: object
       properties:
@@ -1920,7 +1956,30 @@ components:
           allOf:
             - $ref: '#/components/schemas/QueryDimensionDataMemberSelectionDTO'
           description: An axis comprised of all leaf, including data, members of an existing dimension in Visier.
+        tableAxisOptions:
+          allOf:
+            - $ref: '#/components/schemas/QueryAxisOptionsDTO'
+          description: Additional transformations to perform on this axis. Only available when the Accept header is a table format, such as text/csv or application/jsonlines.
       description: An axis of a query used to group data points.
+    QueryAxisOptionsDTO:
+      type: object
+      properties:
+        memberDisplayMode:
+          type: integer
+          description: |-
+            Options to override the display mode for the axis. This overrides the global memberDisplayMode options value in the query.
+             Only available for non-time axes. Use the QueryAxisMemberDisplayMode memberDisplayMode to apply different display modes to different axes.
+             For example, let's say your query has the global memberDisplayMode as DISPLAY but you want to fetch the object name for a specific dimension.
+             With QueryAxisMemberDisplayMode memberDisplayMode, you can override that dimension's memberDisplayMode to DEFAULT instead of DISPLAY.
+
+             Valid values are UNCHANGED, DEFAULT, COMPACT, or DISPLAY. Default is UNCHANGED.
+          format: enum
+        columnName:
+          type: string
+          description: If specified, returns the column name of the axis in the response.
+      description: |-
+        QueryAxisOptions allows you to customize an axis in the query, such as changing the display mode for its cell set values or providing a custom column name.
+         Only available when the Accept header is a table format, such as text/csv or application/jsonlines.
     QueryDimensionDataMemberSelectionDTO:
       type: object
       properties:
@@ -1972,6 +2031,10 @@ components:
             $ref: '#/components/schemas/DimensionMemberReferenceDTO'
           description: A collection of dimension members to select in the query. This must contain at least one member.
       description: A QueryDimensionMemberSelection defines dimension members to select in the query.
+    QueryEffectiveDatePropertyDTO:
+      type: object
+      properties: {}
+      description: A special property that yields the effective date for the record
     QueryExecutionOptionsDTO:
       type: object
       properties:
@@ -2136,6 +2199,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/QueryMemberMapPropertyDTO'
           description: A member map-based property that uses an existing member map in Visier.
+        effectiveDateProperty:
+          allOf:
+            - $ref: '#/components/schemas/QueryEffectiveDatePropertyDTO'
+          description: A property that yields the effective date for the record
       description: |-
         A QueryProperty defines a property of a data point returned from a query.
          This is not the same as a `property` in Visier's data mode.
@@ -2273,6 +2340,18 @@ components:
           items:
             $ref: '#/components/schemas/SelectionConceptDTO'
       description: A collection of selection concepts
+    SortOptionDTO:
+      type: object
+      properties:
+        columnIndex:
+          type: integer
+          description: The index of the column of the list query, staring from 0.
+          format: int32
+        sortDirection:
+          type: integer
+          description: The sort direction.
+          format: enum
+      description: Sort option for a column of a list query.
     SqlLikeQueryExecutionDTO:
       type: object
       properties:
