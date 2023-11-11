@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.988
+  version: 22222222.99201.997
 paths:
   /v1/admin/permissions:
     get:
@@ -387,34 +387,16 @@ paths:
       description: This API allows you to create a new user. Administrating tenant users can specify the tenant in which to add a user.
       operationId: UserManagement_AddUser
       parameters:
-        - name: username
+        - name: tenantCode
           in: query
-          description: The user's username. This is typically the user's email, such as john@visier.com.
-          schema:
-            type: string
-        - name: displayName
-          in: query
-          description: An identifiable name to display within Visier. For example, "John Smith".
-          schema:
-            type: string
-        - name: employeeId
-          in: query
-          description: If applicable, and if available, the user employee ID in the data.
-          schema:
-            type: string
-        - name: accountEnabled
-          in: query
-          description: If false, the user account is disabled.
-          schema:
-            type: string
-        - name: email
-          in: query
-          description: The user's email. This is used if the user's email is different from their username. For example, "john.doe@visier.com".
+          description: Specify the tenant to create a user in.
           schema:
             type: string
       requestBody:
         content:
-          application/json: {}
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreationAPIRequestDTO'
         required: true
       responses:
         "200":
@@ -538,6 +520,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeleteUserResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v2/admin/users:
+    post:
+      tags:
+        - UserManagement
+      summary: Add users
+      description: This API allows you to create new users. Administrating tenant users can specify the tenant in which to add these users.
+      operationId: UserManagement_AddUsers
+      parameters:
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to create a user in.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersCreationAPIRequestDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersCreationAPIResponseDTO'
         default:
           description: Default error response
           content:
@@ -1244,6 +1258,24 @@ components:
           items:
             $ref: '#/components/schemas/UserSecurityAssignmentsDTO'
           description: A list of objects representing the user group and user assignments.
+    UserCreationAPIRequestDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The user's username. This is typically the user's email, such as john@visier.com.
+        displayName:
+          type: string
+          description: An identifiable name to display within Visier. For example, "John Smith".
+        employeeId:
+          type: string
+          description: If applicable, and if available, the user employee ID in the data.
+        accountEnabled:
+          type: string
+          description: If false, the user account is disabled.
+        email:
+          type: string
+          description: The user's email. This is used if the user's email is different from their username. For example, "john.doe@visier.com".
     UserCreationAPIResponseDTO:
       type: object
       properties:
@@ -1391,6 +1423,73 @@ components:
     UserUpdateAPIRequestDTO:
       type: object
       properties:
+        displayName:
+          type: string
+          description: An identifiable name to display within Visier. For example, "John Smith".
+        employeeId:
+          type: string
+          description: If applicable, and if available, the user employee ID in the data.
+        accountEnabled:
+          type: string
+          description: If true, the user account is enabled.
+        email:
+          type: string
+          description: The user's email address.
+    UsersAPIErrorMessageDTO:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+        rci:
+          type: string
+          description: The unique identifier associated to this error
+    UsersAPIFailureDTO:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The unique identifier associated with the user.
+        userName:
+          type: string
+          description: The user's username. This is typically the user's email, such as john@jupiter.com.
+        displayName:
+          type: string
+          description: An identifiable name to display within Visier. For example, "John Smith".
+        error:
+          allOf:
+            - $ref: '#/components/schemas/UsersAPIErrorMessageDTO'
+          description: The error thrown during creation.
+    UsersCreationAPIRequestDTO:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserCreationAPIRequestDTO'
+          description: A list of objects representing users which will be created
+    UsersCreationAPIResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsersCreationSuccessDTO'
+          description: The users which have been created successfully.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsersAPIFailureDTO'
+          description: The users which are failed to be created.
+    UsersCreationSuccessDTO:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The unique identifier associated with the user.
+        username:
+          type: string
+          description: The user's username. This is typically the user's email, such as john@jupiter.com.
         displayName:
           type: string
           description: An identifiable name to display within Visier. For example, "John Smith".
