@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.988
+  version: 22222222.99201.997
 paths:
   /v1/admin/tenants:
     get:
@@ -713,6 +713,9 @@ components:
         tenantShortName:
           type: string
           description: A new short name to assign to the tenant. Required for Enterprise tenants
+        vanityUrlName:
+          type: string
+          description: A new vanity name to assign to the tenant. Required for Enterprise tenants
         industryCode:
           type: integer
           description: |-
@@ -820,6 +823,9 @@ components:
         clickThroughLink:
           type: string
           description: A custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability or email content.
+        vanityUrlName:
+          type: string
+          description: The name of the administrating tenant used in Visier URLs.
     TenantModuleDTO:
       type: object
       properties:
