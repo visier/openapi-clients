@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.997
+  version: 22222222.99201.1018
 paths:
   /v1/admin/permissions:
     get:
@@ -504,7 +504,6 @@ paths:
       parameters:
         - name: userId
           in: path
-          description: The ID of the user you want to delete.
           required: true
           schema:
             type: string
@@ -513,6 +512,13 @@ paths:
           description: Specify the tenant to delete a user in.
           schema:
             type: string
+        - name: model.userIds
+          in: query
+          description: A list of objects representing users to delete.
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           description: OK
@@ -527,6 +533,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
   /v2/admin/users:
+    put:
+      tags:
+        - UserManagement
+      summary: Update users
+      description: This API allows you to update an existing user's information, such as their display name or if the user is enabled in Visier.
+      operationId: UserManagement_UpdateUsers
+      parameters:
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to update a user in.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersUpdateAPIRequestDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersAPIResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
     post:
       tags:
         - UserManagement
@@ -551,7 +588,38 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsersCreationAPIResponseDTO'
+                $ref: '#/components/schemas/UsersAPIResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    delete:
+      tags:
+        - UserManagement
+      summary: Delete users
+      description: This API allows you to delete an existing user. Administrating tenant users can specify the tenant from which to delete a user.
+      operationId: UserManagement_DeleteUsers
+      parameters:
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to delete a user in.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersDeleteAPIRequestDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersAPIResponseDTO'
         default:
           description: Default error response
           content:
@@ -1460,28 +1528,20 @@ components:
           allOf:
             - $ref: '#/components/schemas/UsersAPIErrorMessageDTO'
           description: The error thrown during creation.
-    UsersCreationAPIRequestDTO:
-      type: object
-      properties:
-        users:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserCreationAPIRequestDTO'
-          description: A list of objects representing users which will be created
-    UsersCreationAPIResponseDTO:
+    UsersAPIResponseDTO:
       type: object
       properties:
         successes:
           type: array
           items:
-            $ref: '#/components/schemas/UsersCreationSuccessDTO'
-          description: The users which have been created successfully.
+            $ref: '#/components/schemas/UsersAPISuccessDTO'
+          description: The users for which the request succeeded.
         failures:
           type: array
           items:
             $ref: '#/components/schemas/UsersAPIFailureDTO'
-          description: The users which are failed to be created.
-    UsersCreationSuccessDTO:
+          description: The users for which the request failed.
+    UsersAPISuccessDTO:
       type: object
       properties:
         userId:
@@ -1502,6 +1562,22 @@ components:
         email:
           type: string
           description: The user's email address.
+    UsersCreationAPIRequestDTO:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserCreationAPIRequestDTO'
+          description: A list of objects representing users to create.
+    UsersDeleteAPIRequestDTO:
+      type: object
+      properties:
+        userIds:
+          type: array
+          items:
+            type: string
+          description: A list of objects representing users to delete.
     UsersToUserGroupRequestDTO:
       type: object
       properties:
@@ -1521,6 +1597,31 @@ components:
           items:
             $ref: '#/components/schemas/UsersToUserGroupRequestDTO'
           description: A list of objects representing the user groups and users to assign or remove.
+    UsersUpdateAPIRequestDTO:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsersUpdateAPIUserDTO'
+    UsersUpdateAPIUserDTO:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The unique identifier associated with the user.
+        displayName:
+          type: string
+          description: An identifiable name to display within Visier. For example, "John Smith".
+        employeeId:
+          type: string
+          description: If applicable, and if available, the user employee ID in the data.
+        accountEnabled:
+          type: string
+          description: If true, the user account is enabled.
+        email:
+          type: string
+          description: The user's email address.
   securitySchemes:
     CookieAuth:
       type: apiKey

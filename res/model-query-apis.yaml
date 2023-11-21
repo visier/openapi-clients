@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.997
+  version: 22222222.99201.1018
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -394,6 +394,147 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SelectionConceptDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/currencies:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve all currencies
+      description: Use this API to retrieve all the available currencies in your Visier solution.
+      operationId: DataModel_Currencies
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrenciesDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/currencies/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a currency
+      description: Use this API to retrieve a specific currency if you know the currency code.
+      operationId: DataModel_Currency
+      parameters:
+        - name: id
+          in: path
+          description: The ISO 4217 3-letter code for the currency.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/currencies/{id}/rates:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve all exchange rates for a currency
+      description: |-
+        Use this API to retrieve exchange rates for a specific currency from Visier.
+         You can optionally specify query parameter options for the returned rates, such as the number of decimals to round the exchange rate to.
+      operationId: DataModel_CurrencyRates
+      parameters:
+        - name: id
+          in: path
+          description: The ISO 4217 3-letter code for the currency to get rates for.
+          required: true
+          schema:
+            type: string
+        - name: startTime
+          in: query
+          description: The earliest time instant to retrieve exchange rates from. Default is to use 0 milliseconds.
+          schema:
+            type: string
+        - name: endTime
+          in: query
+          description: The latest time instant to retrieve exchange rates from. Default is to use the time of this request in milliseconds.
+          schema:
+            type: string
+        - name: decimals
+          in: query
+          description: The number of decimals to round exchange rates to. Default is to round to 2 decimal places.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyRatesDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/currencies/{id}/rates/{toId}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve exchange rates from one currency to another currency
+      description: |-
+        Use this API to retrieve exchange rates from a specific currency to another specific currency.
+         You can optionally specify query parameter options for the returned rates, such as the number of decimals to round the exchange rate to.
+      operationId: DataModel_CurrencyRatesWithToCurrency
+      parameters:
+        - name: id
+          in: path
+          description: The ISO 4217 3-letter code for the currency to convert from.
+          required: true
+          schema:
+            type: string
+        - name: toId
+          in: path
+          description: The ISO 4217 3-letter code for the currency to convert to.
+          required: true
+          schema:
+            type: string
+        - name: startTime
+          in: query
+          description: The earliest time instant to retrieve exchange rates from. Default is to use 0 milliseconds.
+          schema:
+            type: string
+        - name: endTime
+          in: query
+          description: The latest time instant to retrieve exchange rates from. Default is to use the time of this request in milliseconds.
+          schema:
+            type: string
+        - name: decimals
+          in: query
+          description: The number of decimals to round exchange rates to. Default is to round to 2 decimal places.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyRatesDTO'
         default:
           description: Default error response
           content:
@@ -796,12 +937,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1/data/query/snapshot:
+    post:
+      tags:
+        - Query
+      summary: Query a series of detailed snapshots
+      description: |-
+        To retrieve a collection of `list` query-style snapshots taken at the defined intervals, execute a `snapshot` query.
+         Each snapshot in the result is associated with a timestamp, or the "effective date" at which date snapshot data was valid.
+         This API allows you to request a detailed time series from Visier.
+
+         Structurally, a `snapshot` query is similar to a `list` query, but has the following differences:
+         * The `snapshot` query may contain a column, `effectiveDateProperty`, that specifies the time for each snapshot. To include the `effectiveDateProperty` column, add the following object to the columns array:
+            ```json
+            {
+                "columnName": "Snapshot_Date",
+                "columnDefinition": {
+                    "effectiveDateProperty": {}
+                }
+            }
+            ```
+         * The `snapshot` query uses `timeIntervals` (like an `aggregate` query) instead of `timeInterval` (like a `list` query) because the `snapshot` query
+            must specify the number of snapshots to generate. To specify the number of snapshots to generate, use the `intervalCount` property in the `timeIntervals` object, as shown next.
+            ```json
+            {
+                "timeIntervals": {
+                "fromDateTime": "2022-01-01",
+                "intervalPeriodType": "MONTH",
+                "intervalPeriodCount": 6,
+                "intervalCount": 4
+            }
+            ```
+      operationId: Query_Snapshot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnapshotQueryExecutionDTO'
+        required: true
+      responses:
+        "200":
+          description: List query response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+            application/octet-stream:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/data/query/sql:
     post:
       tags:
         - Query
       summary: Query aggregate or list data using SQL-like syntax
-      description: "To retrieve a list of values for specific objects or aggregate values from metrics, you can writes queries using SQL-like syntax.\n The response format matches the query type whether aggregate or list. If requested, aggregate query results may be flattened into tabular format. \n\n A SQL-like query is an aggregate if it contains at least one metric. Aggregate queries must specify a time interval divided into periods; for example:\n ```sql\n SELECT\n   employeeCount() AS \"Employee Count\",\n   level(Gender, \"Gender\") AS Gender\n FROM\n   Employee\n WHERE\n  Visier_Time IN periods(date(\"2023-01-01\"), 4, period(3, Month));\n ```\n\n A SQL-like query is a list if it does not contain any metrics. List queries define time intervals as simple intervals; for example:\n ```sql\n SELECT\n   EmployeeID AS \"Employee ID\",\n   level(Gender, \"Gender\") AS Gender\n FROM\n   Employee\n WHERE\n  Visier_Time BETWEEN date(\"2022-01-01\") AND date(\"2023-01-01\");\n ```"
+      description: "To retrieve a list of values for specific objects or aggregate values from metrics, you can write queries using SQL-like syntax.\n The response format matches the query type whether aggregate or list. If requested, aggregate query results may be flattened into tabular format. \n\n A SQL-like query is an aggregate if it contains at least one metric. Aggregate queries must specify a time interval divided into periods; for example:\n ```sql\n SELECT\n   employeeCount() AS \"Employee Count\",\n   level(Gender, \"Gender\") AS Gender\n FROM\n   Employee\n WHERE\n  Visier_Time IN periods(date(\"2023-01-01\"), 4, period(3, Month));\n ```\n\n A SQL-like query is a list if it does not contain any metrics. List queries define time intervals as simple intervals; for example:\n ```sql\n SELECT\n   EmployeeID AS \"Employee ID\",\n   level(Gender, \"Gender\") AS Gender\n FROM\n   Employee\n WHERE\n  Visier_Time BETWEEN date(\"2022-01-01\") AND date(\"2023-01-01\");\n ```"
       operationId: Query_SqlLike
       requestBody:
         content:
@@ -1131,6 +1329,96 @@ components:
       description: |-
         The set of cells returned from executing an aggregation query.
          A CellSet represents a structured, multidimensional array of values.
+    CohortFilterDTO:
+      type: object
+      properties:
+        keyGroup:
+          allOf:
+            - $ref: '#/components/schemas/KeyGroupFilterDTO'
+          description: A key group is a collection of filters that define the shape of the analysis population.
+        exclude:
+          type: boolean
+          description: If true, the population is defined by those excluded by the filters. Default is false.
+        timeInterval:
+          allOf:
+            - $ref: '#/components/schemas/QueryTimeIntervalDTO'
+          description: The time at which to apply the key group, such as a specific day or period of months.
+      description: |-
+        Use a cohort filter to define a population as it existed during a specific time period.
+         Cohort filters allow you to define a population in terms of a collection of filters, known as a key group.
+         The cohort's defined time interval is independent of the query's time. The cohort's time interval is the
+         time at which the key group should be applied.
+         Cohorts are typically used to follow populations and understand changes to the population over time,
+         such as promotion and resignation rates.
+    CurrenciesDTO:
+      type: object
+      properties:
+        currencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CurrencyDTO'
+      description: A collection of currencies.
+    CurrencyDTO:
+      type: object
+      properties:
+        currencyCode:
+          type: string
+          description: The ISO 4217 3-letter code for the currency.
+        displayName:
+          type: string
+          description: The display name for the currency.
+        symbol:
+          type: string
+          description: The symbol name for the currency.
+        shortSymbol:
+          type: string
+          description: |-
+            The shortened symbol name for the currency.
+             Removes all alphabetic characters. If **symbol** only has alphabetic characters, **shortSymbol** is empty.
+             If **symbol** contains only non-alphabetic characters, **shortSymbol** is the same as **symbol**.
+             For example, if **symbol** is CA$, **shortSymbol** is $. If **symbol** is $, then **shortSymbol** is $.
+      description: Information about a currency type.
+    CurrencyRateDTO:
+      type: object
+      properties:
+        fromCurrencyCode:
+          type: string
+          description: |-
+            The currency to convert **from**.
+             **Note:** If USD is the `fromCurrencyCode`, you are retrieving the exchange rates from USD to a different currency.
+        toCurrencyCode:
+          type: string
+          description: |-
+            The currency to convert **to**.
+             **Note:** If USD is the `toCurrencyCode`, you are retrieving the exchange rates from a different currency to USD.
+        rate:
+          type: number
+          description: |-
+            The numeric value of the exchange rate.
+             **Note:** If **decimals** is specified, rate rounds to that value. If **decimals** is undefined, **rate** rounds to 2 significant figures after the decimal point.
+          format: double
+        startTime:
+          type: string
+          description: |-
+            The earliest time instant to retrieve exchange rates from.
+             **Note:** Format is the number of milliseconds since Jan 1, 1970 12:00 AM UTC.
+        endTime:
+          type: string
+          description: |-
+            The latest time instant to retrieve exchange rates from.
+             **Note:** Format is the number of milliseconds since Jan 1, 1970 12:00 AM UTC.
+      description: Information about a currency exchange rate.
+    CurrencyRatesDTO:
+      type: object
+      properties:
+        currencyRates:
+          type: array
+          items:
+            $ref: '#/components/schemas/CurrencyRateDTO'
+      description: |-
+        A collection of currency exchange rates.
+         Note: Currencies may have different exchange rates in different time intervals, depending what rate data is stored in Visier.
+         For example, USD:CAD can be 1.2 between January 1 - March 1, while USD:EUR can be 0.92 between January 1 - February 1, but 0.88 between February  1 - March 1.
     DimensionDTO:
       type: object
       properties:
@@ -1209,6 +1497,29 @@ components:
           type: integer
           format: enum
       description: Internal options - not to be documented or used by external parties
+    KeyGroupFilterDTO:
+      type: object
+      properties:
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyGroupFilterItemDTO'
+      description: A collection of related filters that define a key group.
+    KeyGroupFilterItemDTO:
+      type: object
+      properties:
+        formula:
+          type: string
+          description: A filter expressed as a formula.
+        selectionConcept:
+          allOf:
+            - $ref: '#/components/schemas/SelectionConceptReferenceDTO'
+          description: A filter that uses an existing selection concept in Visier.
+        memberSet:
+          allOf:
+            - $ref: '#/components/schemas/MemberFilterDTO'
+          description: A filter that includes or excludes dimension members.
+      description: An individual filter in a key group.
     LevelDTO:
       type: object
       properties:
@@ -2109,6 +2420,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/MemberFilterDTO'
           description: A filter that includes or excludes dimension members.
+        cohort:
+          allOf:
+            - $ref: '#/components/schemas/CohortFilterDTO'
+          description: A filter that identifies a population at a specific time.
       description: A QueryFilter selects specific data points within a population.
     QueryMemberMapPropertyDTO:
       type: object
@@ -2340,6 +2655,93 @@ components:
           items:
             $ref: '#/components/schemas/SelectionConceptDTO'
       description: A collection of selection concepts
+    SnapshotQueryExecutionDTO:
+      type: object
+      properties:
+        source:
+          allOf:
+            - $ref: '#/components/schemas/ListQuerySourceDTO'
+          description: The source data that you want to query.
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyColumnDTO'
+          description: The columns to include in the result. This must contain at least one column.
+        sortOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortOptionDTO'
+          description: The index and direction to sort a column in the `columns` array.
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryFilterDTO'
+          description: The filters of this query. Omit `filters` if no filtering is required.
+        timeIntervals:
+          allOf:
+            - $ref: '#/components/schemas/QueryTimeIntervalsDTO'
+          description: The time intervals to query.
+        parameterValues:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryParameterValueDTO'
+          description: The parameter values for either member or numeric parameters.
+        options:
+          allOf:
+            - $ref: '#/components/schemas/SnapshotQueryExecutionOptionsDTO'
+          description: Additional instructions for your query, such as a calendar type or conversion information.
+    SnapshotQueryExecutionOptionsDTO:
+      type: object
+      properties:
+        limit:
+          type: integer
+          description: |-
+            The maximum number of entries to return. Default is to return all entries. If `page` is defined but
+             limit is not defined, limit will be set to a default value of 1000.
+          format: int32
+        queryMode:
+          type: integer
+          description: Determines how the query should handle column definitions that the query is unable to resolve. Default is DEFAULT.
+          format: enum
+        omitHeader:
+          type: boolean
+          description: |-
+            Option to omit the header from the result.
+             If true, queryMode must be either FILL or FAIL.
+             Default is false.
+        encryptKey:
+          type: boolean
+          description: |-
+            Visier INTERNAL option to encrypt key values.
+             This is only intended for Visier INTERNAL workflows, where the key values
+             need to be decrypted later for consumption.
+        calendarType:
+          type: integer
+          description: |-
+            The calendar type to use. This will be used for all time calculations unless explicitly overridden in
+             the calculation itself. Default is TENANT_CALENDAR.
+          format: enum
+        currencyConversionDate:
+          type: string
+          description: The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.
+        page:
+          type: integer
+          description: |-
+            A page defines a subset of the overall result set. The number of rows per page is equal to limit
+             with the exception of the last page in the result set which may contain fewer rows. `Page` is an index
+             that begins at 0. The index to start retrieving results is calculated by multiplying `page` by `limit`.
+          format: int32
+        multipleTables:
+          type: boolean
+          description: |-
+            Option to return multiple table files as zipped archive for derived metrics.
+             Default is false. If false, one table is returned for the drill-through metric.
+        currencyConversionCode:
+          type: string
+          description: |-
+            The optional target currency for all currency conversions.
+             If not specified, the tenant default currency will be used.
+      description: A SnapshotQueryExecutionOptions provides additional instructions to perform a snapshot query.
     SortOptionDTO:
       type: object
       properties:

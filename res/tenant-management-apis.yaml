@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.997
+  version: 22222222.99201.1018
 paths:
   /v1/admin/tenants:
     get:
@@ -381,6 +381,9 @@ paths:
          applications assigned to the tenant. Visier organizes content under a set of modules.
 
          Contact Visier Support to determine the list of modules allocated to you.
+
+         **Note:** API requests that contain **homeAnalysisId**, **homeAnalysisByUserGroup**, or **clickThroughLink** take
+         longer to run because they require publishing a project to production.
       operationId: TenantManagement_CreateTenant
       requestBody:
         content:
@@ -415,6 +418,9 @@ paths:
          * To programmatically assign the Home analysis that analytic tenants see at login, use this API to set the default Home analysis for a tenant and specific user groups of that tenant.
 
          You can use this API to update any field on an analytic tenant, except tenantCode.
+
+         **Note:** API requests that contain **homeAnalysisId**, **homeAnalysisByUserGroup**, or **clickThroughLink** take
+         longer to run because they require publishing a project to production.
       operationId: TenantManagement_UpdateTenant
       requestBody:
         content:
@@ -745,17 +751,16 @@ components:
         homeAnalysisId:
           type: string
           description: |-
-            The unique ID of the analysis to display for this tenant when a user logs in. This is optional.
+            The unique ID of the analysis to display for this tenant when a user logs in. This is optional. Causes the API request to take longer because it must publish a project to production.
 
-             Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/8a4c1d4f-eb61-4da0-9e5b-55bef757c30e.
-             The `homeAnalysisID` is 8a4c1d4f-eb61-4da0-9e5b-55bef757c30e.
+             Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/8a4c1d4f-eb61-4da0-9e5b-55bef757c30e
 
-             Alternatively, retrieve the ID by copying the `contentId` found by following the `Embed a visualization` documentation.
+             The `homeAnalysisID` is 8a4c1d4f-eb61-4da0-9e5b-55bef757c30e. Alternatively, retrieve the ID by copying the `contentId` found by following the `Embed a visualization` documentation.
         homeAnalysisByUserGroup:
           type: array
           items:
             $ref: '#/components/schemas/HomeAnalysisByUserGroupDTO'
-          description: A list of objects representing the analysis to display to specific user groups when users log in. This is optional.
+          description: A list of objects representing the analysis to display to specific user groups when users log in. This is optional. Causes the API request to take longer because it must publish a project to production.
         updateAction:
           type: integer
           description: |-
@@ -769,7 +774,7 @@ components:
           description: If true, the tenant is enabled. Enabled tenants have access to Visier visualizations.
         clickThroughLink:
           type: string
-          description: A custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability or email content. This is optional.
+          description: A custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability or email content. This is optional. Causes the API request to take longer because it must publish a project to production.
     TenantManagementAPIUpdateResponseDTO:
       type: object
       properties:
