@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.988
+  version: 22222222.99201.1018
 paths:
   /v1/op/data-connector-credentials:
     get:
@@ -226,13 +226,13 @@ paths:
          With the job ID, you can also call the next two APIs to retrieve the status of the receiving job and the status
          list of all related processing jobs.
 
-         Prerequisite: You must first obtain Visier's public encryption key and upload the source data files to Visier's
+         **Prerequisite:** You must first obtain Visier's public encryption key and upload the source data files to Visier's
          SFTP server. Files must have a .zip.gpg extension, meaning the files are encrypted using the PGP protocol and compressed.
 
          Visier provides SFTP server credentials and instructions. You can find the encryption key at https://www.visier.com/
          pgp/visier.public.pgp.asc. After downloading the file, open the file in a text editor or by dragging it into your browser.
 
-         Note:
+         **Note:**
           - To see the full status of all analytic tenant data loads, navigate to the Jobs room in a project.
           - For performance and efficiency, Visier requires that the uncompressed batch file size is below 1 GB, and that
             no more than 200 tenants are included in a batch.
@@ -367,6 +367,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve the statuses of all jobs
+      description: Use this API to retrieve the list of statuses for all jobs.
       operationId: DataAndJobHandling_JobStatus
       parameters:
         - name: startTime
@@ -377,6 +378,11 @@ paths:
         - name: endTime
           in: query
           description: The end time from which to retrieve job statuses.
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: The specific status to restrict the list of job to.
           schema:
             type: string
       responses:
@@ -397,6 +403,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a specific job's status
+      description: Use this API to retrieve the list of statuses for a specific job with id `jobId`.
       operationId: DataAndJobHandling_JobIdStatus
       parameters:
         - name: jobId
@@ -985,7 +992,12 @@ components:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/MapValue'
-          description: A form body key that contains a collection of key-value pairs.
+          description: |-
+            A form body key that contains a collection of key-value pairs.
+
+             **Note:** The only supported key value is `files` and the value is a comma-separated list of file names.
+             Example:
+             `"files": "/path/to/file1.zip.gpg,/path/to/another/file.zip.gpg"`
     DataLoadResponse:
       type: object
       properties:
@@ -1786,6 +1798,9 @@ components:
         dataCategoryId:
           type: string
           description: The unique identifier of the data category on which to trigger the extraction job.
+        disableArtifactGeneration:
+          type: boolean
+          description: If "true", the job does not generate data load artifacts. If unspecified, the default is "false".
     StartExtractionRequest:
       type: object
       properties:
