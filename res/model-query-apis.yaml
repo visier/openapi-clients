@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1018
+  version: 22222222.99201.1029
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -887,7 +887,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AggregationQueryDTO'
+              $ref: '#/components/schemas/AggregationQueryExecutionDTO'
         required: true
       responses:
         "200":
@@ -1061,6 +1061,20 @@ components:
       description: |-
         An AggregationQuery defines the data to query in an aggregation query and returns a `cell set` calculated from
          the selected data points.
+    AggregationQueryExecutionDTO:
+      type: object
+      properties:
+        query:
+          allOf:
+            - $ref: '#/components/schemas/AggregationQueryDTO'
+          description: |-
+            The data to perform an aggregation on, such as a metric or formula. The query must include a time interval,
+             and may optionally include filters and axes.
+        options:
+          allOf:
+            - $ref: '#/components/schemas/QueryExecutionOptionsDTO'
+          description: Additional instructions for your query, such as a calendar type or conversion information.
+      description: An AggregationQueryExecution provides instructions to perform your aggregation query.
     AggregationQuerySourceDTO:
       type: object
       properties:
@@ -1601,12 +1615,6 @@ components:
             Option to omit the header from the result.
              If true, queryMode must be either FILL or FAIL.
              Default is false.
-        encryptKey:
-          type: boolean
-          description: |-
-            Visier INTERNAL option to encrypt key values.
-             This is only intended for Visier INTERNAL workflows, where the key values
-             need to be decrypted later for consumption.
         calendarType:
           type: integer
           description: |-
@@ -2278,12 +2286,12 @@ components:
         memberDisplayMode:
           type: integer
           description: |-
-            Options to override the display mode for the axis. This overrides the global memberDisplayMode options value in the query.
-             Only available for non-time axes. Use the QueryAxisMemberDisplayMode memberDisplayMode to apply different display modes to different axes.
-             For example, let's say your query has the global memberDisplayMode as DISPLAY but you want to fetch the object name for a specific dimension.
-             With QueryAxisMemberDisplayMode memberDisplayMode, you can override that dimension's memberDisplayMode to DEFAULT instead of DISPLAY.
+            Options to override the display mode for the axis. This overrides the query-level `memberDisplayMode` options value in the query.
+             Only available for non-time axes. Use the QueryAxisMemberDisplayMode `memberDisplayMode` to apply different display modes to different axes.
+             For example, let's say your query has the `memberDisplayMode` as `DISPLAY` but you want to fetch the object name for a specific dimension.
+             With QueryAxisMemberDisplayMode `memberDisplayMode`, you can override that dimension's `memberDisplayMode` to `DEFAULT` instead of `DISPLAY`.
 
-             Valid values are UNCHANGED, DEFAULT, COMPACT, or DISPLAY. Default is UNCHANGED.
+             Valid values are `UNCHANGED`, `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `UNCHANGED`.
           format: enum
         columnName:
           type: string
@@ -2403,7 +2411,22 @@ components:
              If not specified, the tenant default currency will be used.
         memberDisplayMode:
           type: integer
-          description: Control how member values are rendered in the aggregate query result set.
+          description: |-
+            Define the `memberDisplayMode` options to control how member values are rendered in the aggregate query result set. You can override the `memberDisplayMode` on a per-axis basis, if required.
+
+             Valid values are `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `DEFAULT`.
+
+             * `DEFAULT`: The default member name representation. For non-time members, this means returning the technical member name path.
+               For time members, this includes a bracketed member index.
+               For example, Time instant member: `2019-06-01T00:00:00.000Z - [0]`
+               For example, Time interval member: `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`
+             * `COMPACT`: Compacts the time member name representation. This also transforms the representation of time intervals to the end time of the interval.
+                For example, Time instant member: `2019-06-01T00:00:00.000Z`
+                For example, Time interval member: `2022-07-01T00:00:00.000Z` where the interval member name was `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`
+             * `DISPLAY`: Emit the members' display names whenever possible. When combined with `axisVisibility = VERBOSE`, the full display name path will be emitted.
+             * `MDX`: Emit member name paths where each element is enclosed in square brackets, `[]`. Multidimensional expression (MDX) display mode automatically encloses time members in square brackets and puts them in `COMPACT` format.
+               For example, Location member `North America.United States.California` becomes `[North America].[United States].[California]` in MDX display mode.
+               For example, Time instant member `2019-06-01T00:00:00.000Z - [0]` becomes `[2019-06-01T00:00:00.000Z]` in MDX display mode.
           format: enum
       description: A QueryExecutionOptions provides additional instructions to perform a query.
     QueryFilterDTO:
@@ -2709,12 +2732,6 @@ components:
             Option to omit the header from the result.
              If true, queryMode must be either FILL or FAIL.
              Default is false.
-        encryptKey:
-          type: boolean
-          description: |-
-            Visier INTERNAL option to encrypt key values.
-             This is only intended for Visier INTERNAL workflows, where the key values
-             need to be decrypted later for consumption.
         calendarType:
           type: integer
           description: |-
