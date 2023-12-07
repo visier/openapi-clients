@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1029
+  version: 22222222.99201.1040
 paths:
   /v1/admin/tenants:
     get:
@@ -494,6 +494,16 @@ components:
           type: integer
           description: The index to start retrieving values from, also known as offset. The index begins at 0.
           format: uint32
+    BusinessLocationDTO:
+      type: object
+      properties:
+        countryCode:
+          type: string
+          description: The country in which the business is located or business is performed. The country code must follow ISO 3166 standards in alpha-2 format (two-letter code).
+        postalCode:
+          type: string
+          description: The postal code associated with the business location. Cannot be blank.
+      description: The location of operations or where business is performed.
     CustomPropertyDTO:
       type: object
       properties:
@@ -656,6 +666,10 @@ components:
           type: integer
           description: The 6-digit NAICS code for the industry to which the analytic tenant belongs.
           format: uint32
+        primaryBusinessLocation:
+          allOf:
+            - $ref: '#/components/schemas/BusinessLocationDTO'
+          description: The primary location of operations or where business is performed. If undefined, it is omitted from the response.
         canAdministerOtherTenants:
           type: boolean
           description: If true, the tenant is an administrating tenant.
@@ -728,6 +742,10 @@ components:
             The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 000000.
              For 2-digit codes, add trailing zeros at the end to reach 6 digits, such as 620000. Required if creating new tenants.
           format: uint32
+        primaryBusinessLocation:
+          allOf:
+            - $ref: '#/components/schemas/BusinessLocationDTO'
+          description: The primary location of operations or where business is performed. This field is optional.
         purchasedModules:
           type: array
           items:
@@ -788,6 +806,10 @@ components:
           type: integer
           description: The 6-digit NAICS code for the industry to which the analytic tenant belongs.
           format: uint32
+        primaryBusinessLocation:
+          allOf:
+            - $ref: '#/components/schemas/BusinessLocationDTO'
+          description: The primary location of operations or where business is performed. If undefined, it is omitted from the response.
         purchasedModules:
           type: array
           items:

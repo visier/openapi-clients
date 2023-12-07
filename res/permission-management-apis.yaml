@@ -1,0 +1,775 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+  title: Visier Permission Management APIs
+  description: Visier APIs for managing permissions within an organization
+  license:
+    name: Apache License, Version 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: 22222222.99201.1040
+paths:
+  /v1/admin/capabilities:
+    get:
+      tags:
+        - PermissionManagement
+      summary: Retrieve a list of all permission capabilities
+      description: |-
+        This API allows you to retrieve all the permission capabilities in your tenant.
+         You can use the returned capabilities in other API calls when creating or updating permissions to assign the capability to the permission.
+      operationId: PermissionManagement_GetCapabilities
+      parameters:
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to retrieve the capabilities from.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCapabilitiesAPIResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/capabilities/{capabilityId}:
+    get:
+      tags:
+        - PermissionManagement
+      summary: Retrieve a permission capability's details
+      description: This API allows you to retrieve the details of a specific capability.
+      operationId: PermissionManagement_GetCapability
+      parameters:
+        - name: capabilityId
+          in: path
+          description: The unique identifier of the capability you want to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to retrieve a capability from.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CapabilityDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/content-packages:
+    get:
+      tags:
+        - PermissionManagement
+      summary: Retrieve a list of all content packages
+      description: |-
+        This API allows you to retrieve the list of available content packages.
+         You can use the returned content packages in other API calls when creating or updating permissions to add the content package to the permission.
+      operationId: PermissionManagement_GetContentPackages
+      parameters:
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to retrieve the content packages from.
+          schema:
+            type: string
+        - name: searchString
+          in: query
+          description: |-
+            Optional search string to return only content packages whose display name or description contains that search string.
+             If searchString is empty or not provided, the response returns a list of all content packages.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetContentPackagesAPIResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/content-packages/{contentPackageId}:
+    get:
+      tags:
+        - PermissionManagement
+      summary: Retrieve a content package's details
+      description: This API allows you to retrieve the details of a specific content package.
+      operationId: PermissionManagement_GetContentPackage
+      parameters:
+        - name: contentPackageId
+          in: path
+          description: The unique identifier of the content package you want to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to retrieve a content package from.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentPackageDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/data-security-objects:
+    get:
+      tags:
+        - PermissionManagement
+      summary: Retrieve a list of data security objects
+      description: |-
+        This API allows you to retrieve the list of available data security objects.
+         Data security objects are analytic objects and their related objects that are available to define
+         permissions’ data security profiles.
+      operationId: PermissionManagement_GetDataSecurityObjects
+      parameters:
+        - name: id
+          in: query
+          description: |-
+            The unique identifiers of the data security objects (analytic objects) to retrieve.
+             Default is all data security objects.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: includeDetails
+          in: query
+          description: |-
+            If true, the response includes the analytic objects (display name, ID, and object type), related objects,
+             securable properties, and securable dimensions. If false, the response only includes analytic objects
+             (display name, ID, and object type). Default is false.
+          schema:
+            type: boolean
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to retrieve data security objects from.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDataSecurityObjectsAPIResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/permissions:
+    get:
+      tags:
+        - PermissionManagement
+      summary: Retrieve a list of all permissions
+      description: This API allows you to retrieve the full list of user permissions in your tenant.
+      operationId: PermissionManagement_GetPermissions
+      parameters:
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to retrieve the permissions from.
+          schema:
+            type: string
+        - name: includeDetails
+          in: query
+          description: |-
+            If true, returns the permission's details. If false, only returns the permissions' ID, display name,
+             and description. Default is false.
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPermissionsAPIResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    put:
+      tags:
+        - PermissionManagement
+      summary: Update permissions
+      description: This API allows you to update existing permissions.
+      operationId: PermissionManagement_UpdatePermissions
+      parameters:
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to update permissions in.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionBulkOperationResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    post:
+      tags:
+        - PermissionManagement
+      summary: Create permissions
+      description: This API allows you to create new permissions. Administrating tenant users can specify the tenant in which to add these permissions.
+      operationId: PermissionManagement_CreatePermissions
+      parameters:
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to create permissions in.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionBulkOperationResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    delete:
+      tags:
+        - PermissionManagement
+      summary: Delete permissions
+      description: This API allows you to delete existing permissions.
+      operationId: PermissionManagement_DeletePermissions
+      parameters:
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to delete permissions from.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionBulkOperationResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/permissions/{permissionId}:
+    get:
+      tags:
+        - PermissionManagement
+      summary: Retrieve a permission's details
+      description: This API allows you to retrieve the details for a specified permission.
+      operationId: PermissionManagement_GetPermission
+      parameters:
+        - name: permissionId
+          in: path
+          description: The unique identifier of the permission you want to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to retrieve a permission from.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+components:
+  schemas:
+    AdminCapabilityConfigDTO:
+      type: object
+      properties:
+        allCapabilitiesAccess:
+          type: boolean
+          description: If true, this capability configuration grant access to all capabilities.
+        capabilities:
+          type: array
+          items:
+            type: string
+          description: A list of capabilities associated with the capability configuration.
+    AnalyticObjectDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The unique ID of the analytic object.
+        displayName:
+          type: string
+          description: An identifiable name to display in Visier, such as "Employee".
+        objectType:
+          type: integer
+          description: The analytic object type.
+          format: enum
+        relatedObjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedAnalyticObjectDTO'
+          description: The analytic objects related to the data security object.
+        securableProperties:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurablePropertyDTO'
+          description: All available properties from the data security object and its related analytic objects that you can configure data access for.
+        securableDimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurableDimensionDTO'
+          description: A list of dimensions that are available to define population access filters in the permission.
+    CapabilityDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The unique name of the capability.
+        displayName:
+          type: string
+          description: An identifiable capability name to display in Visier, such as "Schedule Analysis".
+        description:
+          type: string
+          description: A description of the capability.
+    ContentPackageDTO:
+      type: object
+      properties:
+        contentPackageId:
+          type: string
+          description: The unique ID of the content package.
+        displayName:
+          type: string
+          description: An identifiable content package name to display in Visier, such as "Talent Acquisition Core Content".
+        description:
+          type: string
+          description: A description of the content package.
+    DataSecurityProfileDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The analytic object ID associated with the data security profile.
+        propertySetConfig:
+          allOf:
+            - $ref: '#/components/schemas/PropertySetConfigDTO'
+          description: The property set configuration that defines which properties and access level to allow for each filtered record.
+        allDataPointAccess:
+          type: boolean
+          description: The flag for giving all access to data points when creating a population.
+        memberFilterConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberFilterConfigDTO'
+          description: The member filter configurations that defines the population.
+        inheritedAccessConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/InheritedAccessConfigDTO'
+          description: |-
+            A list of objects representing the inherited access configurations associated with the data security profile.
+             By default all related objects of a top level analytic object will inherit access.
+             To remove access to a related analytic object, add it to the list of inherited access configurations with removeAccess: true.
+             To add custom filters to a related analytic object, add the analytic object to the list of inherited access configurations and then add the custom filters to its list of member filter configurations.
+    DimensionFilterDTO:
+      type: object
+      properties:
+        staticDimensionFilter:
+          $ref: '#/components/schemas/StaticDimensionFilterDTO'
+        dynamicDimensionFilter:
+          $ref: '#/components/schemas/DynamicDimensionFilterDTO'
+    DynamicDimensionFilterDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The dimension ID associated with the dynamic dimension filter.
+        subjectReferencePath:
+          type: array
+          items:
+            type: string
+          description: The subject reference path.
+        dynamicPropertyMappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/DynamicPropertyMappingDTO'
+          description: A list of objects representing the dynamic property mappings associated with the dynamic dimension filter.
+    DynamicPropertyMappingDTO:
+      type: object
+      properties:
+        hierarchyPropertyId:
+          type: string
+          description: The hierarchy property ID.
+        userProperty:
+          allOf:
+            - $ref: '#/components/schemas/UserPropertyDTO'
+          description: The user property.
+    GetCapabilitiesAPIResponseDTO:
+      type: object
+      properties:
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilityDTO'
+          description: A list of objects representing the available capabilities.
+    GetContentPackagesAPIResponseDTO:
+      type: object
+      properties:
+        contentPackages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContentPackageDTO'
+          description: A list of objects representing the available content packages.
+    GetDataSecurityObjectsAPIResponseDTO:
+      type: object
+      properties:
+        analyticObjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalyticObjectDTO'
+          description: A list of analytic objects and their related objects that are available to define data access to.
+    GetPermissionsAPIResponseDTO:
+      type: object
+      properties:
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionDTO'
+          description: A list of objects representing the available permissions.
+      description: List of available permissions
+    GoogleProtobufAny:
+      type: object
+      properties:
+        '@type':
+          type: string
+          description: The type of the serialized message.
+      additionalProperties: true
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+    HierarchyPropertyDTO:
+      type: object
+      properties:
+        hierarchyPropertyId:
+          type: string
+          description: The hierarchy property ID.
+        displayName:
+          type: string
+          description: An identifiable hierarchy property name to display in Visier, such as "Name Property".
+    InheritedAccessConfigDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The analytic object ID associated with the inherited access configuration.
+        removeAccess:
+          type: boolean
+          description: The flag for removing access to the inherited analytic object.
+        memberFilterConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberFilterConfigDTO'
+          description: The member filter configurations that defines the population in the inherited analytic object.
+    MemberFilterConfigDTO:
+      type: object
+      properties:
+        dimensionFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionFilterDTO'
+          description: |-
+            A list of objects representing the dimension filters associated with the member filter configuration.
+             A dimension filter can be either a static or dynamic dimension filter.
+    MemberSelectionDTO:
+      type: object
+      properties:
+        namePath:
+          type: array
+          items:
+            type: string
+          description: The member name path.
+        excluded:
+          type: boolean
+          description: The flag for excluding the member.
+    PermissionBulkOperationResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionSuccessDTO'
+          description: The successfully processed permissions.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionFailureDTO'
+          description: The permissions that did not process and any relevant error information.
+    PermissionDTO:
+      type: object
+      properties:
+        permissionId:
+          type: string
+          description: The unique identifier associated with the permission.
+        displayName:
+          type: string
+          description: An identifiable permission name to display in Visier, such as "Diversity Access".
+        description:
+          type: string
+          description: A user-defined description of the permission.
+        dataSecurityProfiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataSecurityProfileDTO'
+          description: A list of objects representing the data security profile configurations associated with the permission.
+        adminCapabilityConfig:
+          allOf:
+            - $ref: '#/components/schemas/AdminCapabilityConfigDTO'
+          description: The capability configuration associated with the permission.
+        roleModulesConfig:
+          allOf:
+            - $ref: '#/components/schemas/RoleModulesConfigDTO'
+          description: The role modules configuration associated with the permission.
+    PermissionErrorDTO:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+        rci:
+          type: string
+          description: A root cause identifier that allows Visier to determine the source of the problem.
+    PermissionFailureDTO:
+      type: object
+      properties:
+        permissionId:
+          type: string
+          description: The unique identifier associated with the permission.
+        displayName:
+          type: string
+          description: An identifiable permission name to display in Visier, such as "Diversity Access".
+        error:
+          allOf:
+            - $ref: '#/components/schemas/PermissionErrorDTO'
+          description: The error associated with the failure.
+    PermissionSuccessDTO:
+      type: object
+      properties:
+        permissionId:
+          type: string
+          description: The unique identifier associated with the permission.
+        displayName:
+          type: string
+          description: An identifiable permission name to display in Visier, such as "Diversity Access".
+    PropertyAccessConfigDTO:
+      type: object
+      properties:
+        propertyId:
+          type: string
+          description: The property ID associated with the property access configuration.
+        analyticObjectId:
+          type: string
+          description: The analytic object ID of the property.
+        analyticObjectReferencePaths:
+          type: array
+          items:
+            type: string
+          description: The path to the analytic object reference or empty if the configuration is not a reference.
+        accessLevel:
+          type: integer
+          description: 'The access level of the property. Valid values are: Aggregate, Sensitive'
+          format: enum
+    PropertySetConfigDTO:
+      type: object
+      properties:
+        propertyAccessConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyAccessConfigDTO'
+          description: A list of objects representing the property access configuration associated with the property set configuration.
+    RelatedAnalyticObjectDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The analytic object ID.
+        displayName:
+          type: string
+          description: An identifiable analytic object name to display in Visier, such as "Recognition".
+    RoleModulesConfigDTO:
+      type: object
+      properties:
+        contentPackageIds:
+          type: array
+          items:
+            type: string
+          description: A list of content packages IDs associated with the role modules configuration.
+    SecurableDimensionDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The dimension ID.
+        displayName:
+          type: string
+          description: An identifiable dimension name to display in Visier, such as "Contract Type".
+        analyticObjectIds:
+          type: array
+          items:
+            type: string
+          description: A list of analytic object IDs.
+        hierarchyProperties:
+          type: array
+          items:
+            $ref: '#/components/schemas/HierarchyPropertyDTO'
+          description: The list of hierarchies you can map to a user in a permission's dynamic filter.
+    SecurablePropertyDTO:
+      type: object
+      properties:
+        propertyId:
+          type: string
+          description: The property ID.
+        displayName:
+          type: string
+          description: An identifiable property name to display in Visier, such as "Job Pay Level".
+        analyticObjectId:
+          type: string
+          description: The property's analytic object ID.
+        isPrimaryKey:
+          type: boolean
+          description: If true, this property is the analytic object's primary key.
+        referenceSymbolName:
+          type: string
+          description: The reference symbol name.
+    StaticDimensionFilterDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The dimension ID associated with the static dimension filter.
+        subjectReferencePath:
+          type: array
+          items:
+            type: string
+          description: The subject reference path.
+        memberSelections:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberSelectionDTO'
+          description: A list of objects representing the member selections associated with the static dimension filter.
+    Status:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+          format: int32
+        message:
+          type: string
+          description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleProtobufAny'
+          description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+      description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+    UserPropertyDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The user property name.
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      name: VisierASIDToken
+      in: cookie
+    ApiKeyAuth:
+      type: apiKey
+      name: apikey
+      in: header
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /v1/auth/oauth2/authorize
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+        password:
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+tags:
+  - name: PermissionManagement
+security:
+  - ApiKeyAuth: []
+    BearerAuth: []
+  - ApiKeyAuth: []
+    CookieAuth: []
+  - ApiKeyAuth: []
+    OAuth2Auth: []
