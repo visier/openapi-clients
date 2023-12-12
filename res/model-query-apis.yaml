@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1040
+  version: 22222222.99201.1051
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -1175,6 +1175,55 @@ components:
 
          **Note:**
          Only available when the `Accept` header is text/csv. For more information, see `Aggregate`
+    AggregationTypeOptionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the parameter option.
+        displayName:
+          type: string
+          description: The localized display name of the parameter option.
+        propertyName:
+          type: string
+          description: The property name of the parameter option.
+        aggregationFunction:
+          type: string
+          description: The aggregation function of the parameter option.
+        isDefault:
+          type: boolean
+          description: '`true` if the parameter option is the default one and `false` otherwise.'
+      description: The definition of an aggregation option.
+    AggregationTypeParameterDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the parameter.
+        displayName:
+          type: string
+          description: The localized display name of the parameter.
+        description:
+          type: string
+          description: The localized description of the parameter.
+        parameterOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AggregationTypeOptionDTO'
+          description: The options defined for the parameter.
+      description: |-
+        The definition of an aggregation parameter. These parameters resolve metrics that use aggregation parameters.
+         For example, Visier Benchmarks metrics often use aggregation parameters to enable callers to aggregate metric values according to their average or different percentiles.
+    AggregationTypeParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique ID of the aggregation parameter.
+        aggregationOptionId:
+          type: string
+          description: The unique ID of the aggregation option.
+      description: The value for an aggregation parameter.
     AnalyticObjectDTO:
       type: object
       properties:
@@ -1927,6 +1976,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/PlanParameterDefinitionDTO'
           description: A parameter on a planning metric. Plan parameters resolve planning model metrics to a specific plan and scenario or snapshot.
+        aggregationTypeParameter:
+          allOf:
+            - $ref: '#/components/schemas/AggregationTypeParameterDTO'
+          description: An aggregation parameter. Such parameters enable control over how applicable metrics aggregate their results.
       description: Parameters generalize object definitions so that end users can provide values at query run time.
     PlanParameterDefinitionDTO:
       type: object
@@ -2514,6 +2567,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/PlanParameterValueDTO'
           description: A value for a plan parameter.
+        aggregationTypeValue:
+          allOf:
+            - $ref: '#/components/schemas/AggregationTypeParameterValueDTO'
+          description: A value for an aggregation parameter.
       description: An object that contains parameter values for either member or numeric parameters.
     QueryPropertyDTO:
       type: object
