@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1051
+  version: 22222222.99201.1064
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -155,7 +155,13 @@ paths:
             type: string
         - name: field
           in: query
-          description: 'Indicates the aspect of the member to apply the filter to. Possible values are: - **id**: Match the filter to the member ID. - **display**: Match the filter to the member''s display name. - **either**: Match the filter to the member ID or display name. Default is id.'
+          description: |-
+            Indicates the aspect of the member to apply the filter to. Possible values are:
+             - **id**: Match the filter to the member ID.
+             - **display**: Match the filter to the member's display name.
+             - **either**: Match the filter to the member ID or display name.
+
+             Default is id.
           schema:
             type: string
         - name: includeDataMembers
