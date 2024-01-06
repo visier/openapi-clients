@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1064
+  version: 22222222.99201.1081
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -2140,7 +2140,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DimensionReferenceDTO'
-          description: Dimensions to sue for grouping and clustering the population.
+          description: Dimensions to use for grouping and clustering the population.
       description: |-
         A set of property and dimension references configured by Visier or an administrator to tell the platform what
          properties and dimensions to use when doing population insight calculations. These are the distinguishing properties,
@@ -2272,7 +2272,7 @@ components:
           type: string
           description: |-
             The unique ID of the property.
-             Note: See `Properties` to get the ID.
+             **Note:** See `Properties` to get the ID.
         displayName:
           type: string
           description: The localized display name of the property.
@@ -2285,6 +2285,11 @@ components:
         primitiveDataType:
           type: string
           description: The primitive data type of the property, such as Number, String, or Boolean.
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParameterDefinitionDTO'
+          description: The collection of parameters defined for the property.
       description: Properties are qualities of an analytic object.
     PropertyReferenceDTO:
       type: object
