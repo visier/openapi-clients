@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        driver: ["authentication-apis", "model-query-apis"]
+        driver: ["authentication-apis", "model-query-apis", "direct-data-intake-apis"]
         version: ["3.8", "3.9", "3.10", "3.11"]
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
           mkdir -p ${{ github.workspace }}/sdks/drivers/python${{ matrix.version }}/${{ matrix.driver }}
           npx @openapitools/openapi-generator-cli generate -i ${{ github.workspace }}/res/${{ matrix.driver}}.yaml -g python -o ${{ github.workspace }}/sdks/drivers/python${{ matrix.version }}/${{ matrix.driver }}
       - name: Setup Python ${{ matrix.version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.version }}
       - name: Run tests with Python ${{ matrix.version }}

@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        driver: ["authentication-apis", "model-query-apis"]
+        driver: ["authentication-apis", "model-query-apis", "direct-data-intake-apis"]
     steps:
       - uses: actions/checkout@v4
       - name: Install the latest version of OpenAPI Generator
