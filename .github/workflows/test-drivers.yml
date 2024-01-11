@@ -3,13 +3,10 @@ name: Generate and run tests for driver SDKs
 on: [push]
 
 jobs:
-  generate_and_test:
-    uses: visier/openapi-clients/.github/workflows/test-python-driver.yml@main
-    strategy:
-      matrix: 
-        source-file: ["authentication-apis", "model-query-apis"]
-    with:
-      language: python
-      file_name: ${{ matrix.source-file }}
-      driver_name: ${{ matrix.source-file }}
-
+    generate-and-test-python:
+      name: Generate Python client wrappers and run tests
+      uses: ./.github/workflows/test-python-driver.yml
+    generate-and-test-java:
+      name: Generate Java client wrappers and run tests
+      uses: ./.github/workflows/test-java-driver.yml
+  
