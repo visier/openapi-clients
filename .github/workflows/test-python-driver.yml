@@ -1,0 +1,34 @@
+on:
+  workflow_call:
+    inputs:
+      language:
+        required: true
+        type: string
+      file_name:
+        required: true
+        type: string
+      driver_name:
+        required: true
+        type: string
+jobs:
+  test_generated_driver:
+    name: Generate client wrappers nad run tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate client wrappers in ${{ github.event.inputs.language }} for ${{ github.event.inputs.file_name }}
+        uses: addnab/docker-run-action@v3
+        with:
+          options: -v ${{ github.workspace }}:/local
+          run: |
+            openapitools/openapi-generator-cli generate -i /local/res/${{ github.event.inputs.file_name }} -g ${{ github.event.inputs.language }} -o /local/${{ github.event.inputs.driver_name }}
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Run tests
+        run: |
+          cd ${{ github.event.inputs.driver_name }}
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r test-requirements.txt
+          pytest

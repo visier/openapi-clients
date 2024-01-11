@@ -1,0 +1,15 @@
+name: Generate and run tests for driver SDKs
+
+on: [push]
+
+jobs:
+  generate_and_test:
+    uses: visier/openapi-clients/.github/workflows/test-python-driver.yml@main
+    strategy:
+      matrix: 
+        source-file: ["authentication-apis", "model-query-apis"]
+    with:
+      language: python
+      file_name: ${{ matrix.source-file }}
+      driver_name: ${{ matrix.source-file }}
+
