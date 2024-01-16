@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1081
+  version: 22222222.99201.1097
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -2628,6 +2628,9 @@ components:
             The instant from which to extend, as an ISO-8601 formatted date time string.
              Valid formats: yyyy-MM-dd, yyyy-MM-dd'T'HH:mm:ss, yyyy-MM-dd'T'HH:mm:ss.SSS.
              Events that occur on this date are excluded. Subject-based data that ends on this date is included.
+        dynamicDateFrom:
+          type: string
+          description: "Dynamically select the date from which to extend. Use the value `SOURCE` to determine the date from the source element in the query definition. \n When `dynamicDateFrom` is specified:\n\n Currently, the only valid value is `SOURCE`, which means the date should be determined from the `source` element of the query definition. When specified:\n * If `source` is `metric`, then dynamicDateFrom considers the date range of available data for the metric.\n * If `source` is `formula`, then dynamicDateFrom considers the date range of available data for the metric in the formula.\n * If `source` is `analyticObject`, then dynamicDateFrom considers the date range of available data for the analytic object.\n Then, if `direction` is `BACKWARD`, query backward from the data end date and if `direction` is `FORWARD`, query forward from the data start date.\n This allows you to keep getting the latest or earliest data without changing your query every time there’s new or updated data. \n\n Example: If a tenant has Headcount metric data available from 2023-01-01 to 2024-01-01, specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD`\n means the query will retrieve data backward from 2024-01-01.\n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2024-01-01, specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD` \n means the query will retrieve data forward from 2023-01-01.\n\n Example: Retrieve a list of EmployeeIDs for the formula extending 1 month backward from the dynamic source date\n      {\n          \"source\": {\n              \"formula\": \"on Employee validUntil instant filterBy(isActiveEmployee) aggregate count(Employee.EmployeeID)\"\n          }, \n          \"columns\": [\n               {\n                  \"columnDefinition\": {\n                      \"property\": {\n                          \"name\": \"Employee.EmployeeID\",\n                          \"qualifyingPath\": \"Employee\"\n                      }\n                  }\n               },\n               {\n                  \"columnDefinition\": {\n                      \"effectiveDateProperty\": {}\n                  }\n               }\n          ],\n          \"timeInterval\": {\n              \"dynamicDateFrom\": \"SOURCE\",\n              \"intervalPeriodType\": \"MONTH\",\n              \"intervalPeriodCount\": 1,\n              \"direction\": \"BACKWARD\"\n          }\n      }"
         intervalPeriodType:
           type: integer
           description: The time period type for each interval. Default is MONTH.
@@ -2662,6 +2665,9 @@ components:
           description: |-
             The instant from which to extend, as an ISO-8601 formatted date time string. This value is exclusive.
              Valid formats: yyyy-MM-dd, yyyy-MM-dd'T'HH:mm:ss, yyyy-MM-dd'T'HH:mm:ss.SSS.
+        dynamicDateFrom:
+          type: string
+          description: "Dynamically select the date from which to extend. Use the value `SOURCE` to determine the date from the source element in the query definition. \n When `dynamicDateFrom` is specified:\n\n * If `source` is `metric`, then `dynamicDateFrom` considers the date range of available data for the metric.\n * If `source` is `formula`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n * If `source` is `metrics`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n Then, if direction is `BACKWARD`, query backward from the data end date and if direction is `FORWARD`, query forward from the data start date. \n This allows you to keep getting the latest or earliest data without changing your query every time there’s new or updated data.\n\n Note: For multi-metric queries, if `direction` is `BACKWARD`, query backward from the earliest data end date of all metrics and if `direction` is `FORWARD`, query forward from the latest data start date of all metrics. \n This ensures that all metrics have data in the specified time range.\n\n Example: If a tenant has Headcount metric data available from 2023-01-01 to 2024-01-01, specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2024-01-01.\n\n Example: If a tenant has Headcount data available from 2023-01-01 to 2024-09-01 and Exit Count data available from 2023-01-01 to 2024-01-01, specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD` means the query will retrieve data backward from 2024-01-01. \n Exit Count has an earlier data end date than Headcount, so `dynamicDateFrom` retrieves data backward from Exit Count’s data end date to ensure both metrics have data in the specified time range.\n\n Example: Retrieve Headcount (employeeCount) extending 1 month backward from Headcount’s dynamic source date\n      {\n          \"query\": {\n              \"source\": {\n                  \"metric\": \"employeeCount\"\n              },\n              \"timeIntervals\": {\n                  \"dynamicDateFrom\": \"SOURCE\",\n                  \"intervalPeriodType\": \"MONTH\",\n                  \"intervalCount\": 1,\n                  \"direction\": \"BACKWARD\"\n              }\n          }\n      }"
         intervalPeriodType:
           type: integer
           description: The time period type for each interval. Default is MONTH.
@@ -2696,7 +2702,7 @@ components:
              Note: This parameter is only applicable to metrics that can calculate trailing time. If defined on a metric that doesn't have trailing time, the platform ignores the parameter.
           format: int32
       description: |-
-        A QueryTimeInterval defines a series of time intervals to query, including the "from" time, period type, period count,
+        A QueryTimeIntervals defines a series of time intervals to query, including the "from" time, period type, period count,
          number of intervals, time direction, and shift to apply to each time interval.
     ScenarioOrSnapshotDTO:
       type: object
