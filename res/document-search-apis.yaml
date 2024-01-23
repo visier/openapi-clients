@@ -1,0 +1,144 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+  title: Visier Document Search API
+  description: Visier API for searching for Visier documents
+  license:
+    name: Apache License, Version 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: 22222222.99201.1108
+paths:
+  /v1alpha/search/simple/document-headers:
+    get:
+      tags:
+        - DocumentSearch
+      summary: Perform a simple search for Visier document headers
+      description: |-
+        Perform a simple search for Visier document headers, such as analysis titles. Simple search doesn't support keywords, Boolean expressions, or any other advanced search features.
+         Example: `GET /v1alpha/search/simple/document-headers?q=My+Query&limit=10` returns the first 10 document headers that best match the query string `My Query`.
+      operationId: DocumentSearch_SimpleSearchDocumentHeaders
+      parameters:
+        - name: q
+          in: query
+          description: The search query string.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The maximum number of results to return. Defaults to 100.
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: The index to start retrieving results from, also known as offset. Defaults to 0.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleDocumentHeaderSearchResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+components:
+  schemas:
+    DocumentSearchLinkDTO:
+      type: object
+      properties:
+        href:
+          type: string
+          description: The URL pointing to the specific document.
+        verb:
+          type: string
+          description: The verb to use when formulating the web request. This is commonly `GET`.
+      description: Defines the attributes of a web request to reference documents in the search results.
+    GoogleProtobufAny:
+      type: object
+      properties:
+        '@type':
+          type: string
+          description: The type of the serialized message.
+      additionalProperties: true
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+    SimpleDocumentHeaderSearchResponseDTO:
+      type: object
+      properties:
+        documentHeaders:
+          type: array
+          items:
+            $ref: '#/components/schemas/SimpleDocumentHeaderSearchResultDTO'
+          description: The ordered collection of document header search results. The results are sorted according to their relevance in a descending order.
+      description: The response body structure for Simple document header search operations.
+    SimpleDocumentHeaderSearchResultDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The display name of the element in the search result.
+        description:
+          type: string
+          description: The `Web Template Framework` representation of the search result element. This commonly displayed alongside the result by search portals.
+        relevance:
+          type: number
+          description: The relevance of the search result and a number between `0` and `100`.
+          format: double
+        viewLink:
+          allOf:
+            - $ref: '#/components/schemas/DocumentSearchLinkDTO'
+          description: Use the `viewLink` to build a web request to view this document.
+      description: Structure of a single document header search using the Simple search operation.
+    Status:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: Error classification.
+        message:
+          type: string
+          description: Error message describing the root cause of the error.
+      description: The response structure for errors.
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      name: VisierASIDToken
+      in: cookie
+    ApiKeyAuth:
+      type: apiKey
+      name: apikey
+      in: header
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /v1/auth/oauth2/authorize
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+        password:
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+tags:
+  - name: DocumentSearch
+security:
+  - ApiKeyAuth: []
+    BearerAuth: []
+  - ApiKeyAuth: []
+    CookieAuth: []
+  - ApiKeyAuth: []
+    OAuth2Auth: []

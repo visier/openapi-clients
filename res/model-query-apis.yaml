@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1097
+  version: 22222222.99201.1108
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -1519,6 +1519,11 @@ components:
         visibleInApp:
           type: boolean
           description: '`true` if this dimension is set to be visible in your solution.'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagMapElementDTO'
+          description: The optional collection of tags defined for this element.
       description: A dimension organizes unique values of an attribute into a list or a hierarchical structure for use as a filter or group-by in your solution.
     DimensionMemberReferenceDTO:
       type: object
@@ -1565,6 +1570,9 @@ components:
         sparseHandlingMode:
           type: integer
           format: enum
+        alignTimeAxisToPeriodEnd:
+          type: boolean
+          description: "If true, shifts the members on the time axis back by one millisecond.\n For example, if the timestamps are originally [`2019-06-01T00:00:00.000Z`, `2019-05-01T00:00:00.000Z`],\n having this option would turn them into [`2019-05-31T23:59:59.999Z`, `2019-04-30T23:59:59.999Z`].\n\n For example, if the timestamps are originally [`2019-05-01T00:00:00.000Z/2019-06-01T00:00:00.000Z`, `2019-04-01T00:00:00.000Z/2019-05-01T00:00:00.000Z`],\n having this option would turn them into [`2019-05-01T00:00:00.000Z/2019-05-31T23:59:59.999Z`, `2019-04-01T00:00:00.000Z/2019-04-30T23:59:59.999Z`].\n\n This is so that the data rows are considered as valid at end of period instead of start of next period. \n it is useful if you would like the returned data timestamps to match with the standard timestamps in the Visier app."
       description: Internal options - not to be documented or used by external parties
     KeyGroupFilterDTO:
       type: object
@@ -2290,6 +2298,11 @@ components:
           items:
             $ref: '#/components/schemas/ParameterDefinitionDTO'
           description: The collection of parameters defined for the property.
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagMapElementDTO'
+          description: The optional collection of tags defined for this element.
       description: Properties are qualities of an analytic object.
     PropertyReferenceDTO:
       type: object
@@ -2339,6 +2352,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/QueryDimensionDataMemberSelectionDTO'
           description: An axis comprised of all leaf, including data, members of an existing dimension in Visier.
+        dimensionLevelWithUncategorizedValueSelection:
+          allOf:
+            - $ref: '#/components/schemas/QueryDimensionLevelSelectionDTO'
+          description: An axis that uses levels of existing dimensions in Visier, and provides values that are not categorized within any members at the selected levels.
         tableAxisOptions:
           allOf:
             - $ref: '#/components/schemas/QueryAxisOptionsDTO'
@@ -2731,6 +2748,11 @@ components:
         visibleInApp:
           type: boolean
           description: '`true` if this selection concept is set to be visible in your solution.'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagMapElementDTO'
+          description: The optional collection of tags defined for this element.
       description: Selection concepts select a population of subject members of a given subject or event.
     SelectionConceptReferenceDTO:
       type: object
@@ -2858,6 +2880,16 @@ components:
       description: |-
         *
          Request body for SQL-like query executions
+    TagMapElementDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the tag.
+        displayName:
+          type: string
+          description: The localized display name of the tag.
+      description: Tag identifier and display name pair.
     TimeShiftDTO:
       type: object
       properties:
