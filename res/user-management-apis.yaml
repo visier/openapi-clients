@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1138
+  version: 22222222.99201.1151
 paths:
   /v1/admin/permissions/users:
     put:
@@ -507,10 +507,13 @@ paths:
   /v2/admin/users:
     put:
       tags:
-        - UserManagement
+        - UserManagementV2
       summary: Update users
-      description: This API allows you to update an existing user's information, such as their display name or if the user is enabled in Visier.
-      operationId: UserManagement_UpdateUsers
+      description: |-
+        This API allows you to update an existing user's information, such as their display name or if the user is enabled in Visier.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+      operationId: UserManagementV2_UpdateUsers
       parameters:
         - name: tenantCode
           in: query
@@ -538,10 +541,13 @@ paths:
                 $ref: '#/components/schemas/Status'
     post:
       tags:
-        - UserManagement
+        - UserManagementV2
       summary: Add users
-      description: This API allows you to create new users. Administrating tenant users can specify the tenant in which to add these users.
-      operationId: UserManagement_AddUsers
+      description: |-
+        This API allows you to create new users. Administrating tenant users can specify the tenant in which to add these users.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+      operationId: UserManagementV2_AddUsers
       parameters:
         - name: tenantCode
           in: query
@@ -569,10 +575,13 @@ paths:
                 $ref: '#/components/schemas/Status'
     delete:
       tags:
-        - UserManagement
+        - UserManagementV2
       summary: Delete users
-      description: This API allows you to delete an existing user. Administrating tenant users can specify the tenant from which to delete a user.
-      operationId: UserManagement_DeleteUsers
+      description: |-
+        This API allows you to delete an existing user. Administrating tenant users can specify the tenant from which to delete a user.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+      operationId: UserManagementV2_DeleteUsers
       parameters:
         - name: tenantCode
           in: query
@@ -851,7 +860,11 @@ components:
             $ref: '#/components/schemas/AssignRevokePermissionByPermissionDTO'
           description: A list of objects representing the assigned or removed permissions.
         status:
-          type: integer
+          enum:
+            - Unknown
+            - Succeed
+            - Failed
+          type: string
           description: The state of the permission assignment. Valid values are Succeed or Failed.
           format: enum
         message:
@@ -1097,7 +1110,11 @@ components:
           type: string
           description: The unique identifier associated with the tenant.
         status:
-          type: integer
+          enum:
+            - Unknown
+            - Succeed
+            - Failed
+          type: string
           description: The state of the user group assignment. Valid values are Succeed or Failed.
           format: enum
         message:
@@ -1426,6 +1443,24 @@ components:
             write: Grants write access
 tags:
   - name: UserManagement
+    description: |-
+      Use these APIs to manage users within an organization.
+
+       <br>**Tip**: Visier recommends that administrating tenant users focus primarily on managing users at the administrating
+       tenant level. These users likely belong directly to your organization, such as customer support, customer value
+       managers, account executives, and customer success. These users work with clients to manage their day-to-day
+       solution needs.
+  - name: UserManagementV2
+    description: |-
+      Use these APIs to manage users within an organization.
+
+       <br>**Note:** <em>These are version 2 of the User Management APIs and are released in **limited availability**.
+       If you are interested in using them, please contact your Customer Success Manager (CSM).</em>
+
+       <br>**Tip:** Visier recommends that administrating tenant users focus primarily on managing users at the administrating
+       tenant level. These users likely belong directly to your organization, such as customer support, customer value
+       managers, account executives, and customer success. These users work with clients to manage their day-to-day
+       solution needs.
 security:
   - ApiKeyAuth: []
     BearerAuth: []

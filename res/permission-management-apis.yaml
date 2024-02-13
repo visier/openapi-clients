@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1138
+  version: 22222222.99201.1151
 paths:
   /v1/admin/capabilities:
     get:
@@ -18,6 +18,8 @@ paths:
       description: |-
         This API allows you to retrieve all the permission capabilities in your tenant.
          You can use the returned capabilities in other API calls when creating or updating permissions to assign the capability to the permission.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetCapabilities
       parameters:
         - name: tenantCode
@@ -43,7 +45,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Retrieve a permission capability's details
-      description: This API allows you to retrieve the details of a specific capability.
+      description: |-
+        This API allows you to retrieve the details of a specific capability.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetCapability
       parameters:
         - name: capabilityId
@@ -78,6 +83,8 @@ paths:
       description: |-
         This API allows you to retrieve the list of available content packages.
          You can use the returned content packages in other API calls when creating or updating permissions to add the content package to the permission.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetContentPackages
       parameters:
         - name: tenantCode
@@ -110,7 +117,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Retrieve a content package's details
-      description: This API allows you to retrieve the details of a specific content package.
+      description: |-
+        This API allows you to retrieve the details of a specific content package.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetContentPackage
       parameters:
         - name: contentPackageId
@@ -146,6 +156,8 @@ paths:
         This API allows you to retrieve the list of available data security objects.
          Data security objects are analytic objects and their related objects that are available to define
          permissions’ data security profiles.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetDataSecurityObjects
       parameters:
         - name: id
@@ -188,7 +200,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Retrieve a list of all permissions
-      description: This API allows you to retrieve the full list of user permissions in your tenant.
+      description: |-
+        This API allows you to retrieve the full list of user permissions in your tenant.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetPermissions
       parameters:
         - name: tenantCode
@@ -220,7 +235,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Update permissions
-      description: This API allows you to update existing permissions.
+      description: |-
+        This API allows you to update existing permissions.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_UpdatePermissions
       parameters:
         - name: tenantCode
@@ -251,7 +269,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Create permissions
-      description: This API allows you to create new permissions. Administrating tenant users can specify the tenant in which to add these permissions.
+      description: |-
+        This API allows you to create new permissions. Administrating tenant users can specify the tenant in which to add these permissions.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_CreatePermissions
       parameters:
         - name: tenantCode
@@ -282,7 +303,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Delete permissions
-      description: This API allows you to delete existing permissions.
+      description: |-
+        This API allows you to delete existing permissions.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_DeletePermissions
       parameters:
         - name: tenantCode
@@ -314,7 +338,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Retrieve a permission's details
-      description: This API allows you to retrieve the details for a specified permission.
+      description: |-
+        This API allows you to retrieve the details for a specified permission.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetPermission
       parameters:
         - name: permissionId
@@ -364,7 +391,18 @@ components:
           type: string
           description: An identifiable name to display in Visier, such as "Employee".
         objectType:
-          type: integer
+          enum:
+            - Event
+            - Subject
+            - BusinessOutcomeOverlay
+            - PlanOrBudgetOverlay
+            - ExternalBenchmark
+            - VisierBenchmark
+            - UsageOverlay
+            - OtherOverlay
+            - InternalComparison
+            - PlanAnalyticObject
+          type: string
           description: The analytic object type.
           format: enum
         relatedObjects:
@@ -635,7 +673,11 @@ components:
             type: string
           description: The path to the analytic object reference or empty if the configuration is not a reference.
         accessLevel:
-          type: integer
+          enum:
+            - None
+            - Aggregate
+            - Detailed
+          type: string
           description: 'The access level of the property. Valid values are: Aggregate, Sensitive'
           format: enum
     PropertySetConfigDTO:

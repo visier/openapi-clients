@@ -8,14 +8,18 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1138
+  version: 22222222.99201.1151
 paths:
   /v1alpha/admin/consolidated-analytics/tenants:
     get:
       tags:
         - ConsolidatedAnalyticsV1Alpha
       summary: Retrieve a list of all consolidated analytics tenants
-      description: This API allows you to retrieve the full list of consolidated analytics tenants in your administrating tenant.
+      description: |-
+        This API allows you to retrieve the full list of consolidated analytics tenants in your administrating tenant.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ConsolidatedAnalyticsV1Alpha_ListTenants
       parameters:
         - name: limit
@@ -54,6 +58,9 @@ paths:
 
          **Note:** CA tenant codes must have a prefix of CA. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
          is the consolidated analytic tenant code.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ConsolidatedAnalyticsV1Alpha_CreateTenant
       requestBody:
         content:
@@ -79,7 +86,11 @@ paths:
       tags:
         - ConsolidatedAnalyticsV1Alpha
       summary: Retrieve a consolidated analytics tenant's excluded sources
-      description: This API allows you to retrieve a CA tenant's excluded sources.
+      description: |-
+        This API allows you to retrieve a CA tenant's excluded sources.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ConsolidatedAnalyticsV1Alpha_ListExcludedSources
       parameters:
         - name: tenantId
@@ -111,6 +122,9 @@ paths:
 
          After you create a CA tenant, you may optionally define a list of excluded sources. The excluded sources are the sources whose data is excluded from the CA tenant.
          You can also use this API to replace the list of excluded sources for an existing CA tenant.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ConsolidatedAnalyticsV1Alpha_SetExcludedSources
       parameters:
         - name: tenantId
@@ -143,7 +157,11 @@ paths:
       tags:
         - ConsolidatedAnalyticsV1Alpha
       summary: Remove excluded sources from a consolidated analytics tenants
-      description: This API removes excluded sources from the list of excluded sources for a consolidated analytics tenant.
+      description: |-
+        This API removes excluded sources from the list of excluded sources for a consolidated analytics tenant.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ConsolidatedAnalyticsV1Alpha_RemoveExcludedSources
       parameters:
         - name: tenantId
@@ -176,7 +194,11 @@ paths:
       tags:
         - ConsolidatedAnalyticsV1Alpha
       summary: Add excluded sources to a consolidated analytics tenant
-      description: This API adds excluded sources to the list of excluded sources for a consolidated analytics tenant.
+      description: |-
+        This API adds excluded sources to the list of excluded sources for a consolidated analytics tenant.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ConsolidatedAnalyticsV1Alpha_AddExcludedSources
       parameters:
         - name: tenantId
@@ -210,7 +232,11 @@ paths:
       tags:
         - ConsolidatedAnalyticsV1Alpha
       summary: Retrieve a consolidated analytics tenant's source tenants
-      description: This API allows you to retrieve a CA tenant's source tenants.
+      description: |-
+        This API allows you to retrieve a CA tenant's source tenants.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ConsolidatedAnalyticsV1Alpha_ListSourceTenants
       parameters:
         - name: tenantId
@@ -256,6 +282,9 @@ paths:
          You can also use this API to replace the list of source tenants for an existing CA tenant.
 
          If successful, the response returns an updated list of source tenants.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ConsolidatedAnalyticsV1Alpha_SetSourceTenants
       parameters:
         - name: tenantId
@@ -298,6 +327,9 @@ paths:
         This API removes source tenants from the list of source tenants for a consolidated analytics tenant.
 
          If successful, the response returns an updated list of source tenants.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ConsolidatedAnalyticsV1Alpha_RemoveSourceTenants
       parameters:
         - name: tenantId
@@ -340,6 +372,9 @@ paths:
         This API adds source tenants to the list of source tenants for a consolidated analytics tenant.
 
          If successful, the response returns an updated list of source tenants.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ConsolidatedAnalyticsV1Alpha_AddSourceTenants
       parameters:
         - name: tenantId
