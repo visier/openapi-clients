@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1138
+  version: 22222222.99201.1151
 paths:
   /v1/data/directloads/:draftId/configs:
     get:
@@ -282,7 +282,11 @@ components:
       type: object
       properties:
         supplementalMode:
-          type: integer
+          enum:
+            - UNCHANGED
+            - IS_PRIMARY
+            - IS_SUPPLEMENTAL
+          type: string
           description: "The configuration for the processing job as a primary job (default) or a supplemental job. If a primary job is already defined, the direct data \n intake job must be supplemental. The valid values are `IS_PRIMARY`, `IS_SUPPLEMENTAL`, and `UNCHANGED`."
           format: enum
         extendObjects:

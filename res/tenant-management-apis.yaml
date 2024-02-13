@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1138
+  version: 22222222.99201.1151
 paths:
   /v1/admin/tenants:
     get:
@@ -780,7 +780,10 @@ components:
             $ref: '#/components/schemas/HomeAnalysisByUserGroupDTO'
           description: A list of objects representing the analysis to display to specific user groups when users log in. This is optional. Causes the API request to take longer because it must publish a project to production.
         updateAction:
-          type: integer
+          enum:
+            - MERGE
+            - REPLACE
+          type: string
           description: |-
             Specifies the way you want to update values. Default is MERGE.
              Valid values:

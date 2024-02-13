@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1138
+  version: 22222222.99201.1151
 paths:
   /v1/op/data-connector-credentials:
     get:
@@ -852,7 +852,11 @@ components:
             $ref: '#/components/schemas/AssignConnectorWithCredentialsResponseDTO'
           description: A list of objects representing the assigned credentials and connectors.
         status:
-          type: integer
+          enum:
+            - Unknown
+            - Succeed
+            - Failed
+          type: string
           description: The state of the credential assignment. Valid values are Succeed or Failed.
           format: enum
         message:
@@ -1023,7 +1027,52 @@ components:
         tenantDomainName:
           type: string
         provider:
-          type: integer
+          enum:
+            - Bamboo
+            - GoogleSheets
+            - Greenhouse
+            - Jira
+            - Lever
+            - Namely
+            - Qualtrics
+            - Salesforce
+            - UKG
+            - Workday
+            - Icims
+            - ServiceNow
+            - Jdbc
+            - BasicS3
+            - InternalS3
+            - CopyS3
+            - Redshift
+            - Snowflake
+            - BigQuery
+            - SqlServer
+            - Dimensions
+            - IcimsPartnerProviderRedshift
+            - Willow
+            - SuccessFactors
+            - IcimsV2
+            - ADP
+            - WorkdayV2
+            - ServiceNowV2
+            - Medallia
+            - Fusion
+            - SalesforceV2
+            - Gong
+            - Zoom
+            - GoogleCalendar
+            - UKGV2
+            - DayforceV2
+            - GoogleActivityReport
+            - Slack
+            - MySql
+            - WorkdayRaas
+            - Microsoft365
+            - GoogleWorkspace
+            - OracleDb
+            - SmartRecruiters
+          type: string
           description: |-
             The data provider associated with the credential.
              - Valid values: UKG, Dimensions, Workday, Redshift, BasicS3, CopyS3, SqlServer, Snowflake
@@ -1105,7 +1154,11 @@ components:
         hasUpdates:
           type: boolean
         authContext:
-          type: integer
+          enum:
+            - DefaultDataExtraction
+            - WorkplaceDynamicsDataExtraction
+            - Notification
+          type: string
           format: enum
     DataProviderBasicInformationDTO:
       type: object
@@ -1441,7 +1494,10 @@ components:
           type: string
           description: If applicable, the job ID of the job that spawned the given job.
         cancelStatus:
-          type: integer
+          enum:
+            - CANCEL_FAILED
+            - CANCEL_SUCCEEDED
+          type: string
           description: The status of the cancellation.
           format: enum
         jobStatus:
@@ -1836,7 +1892,24 @@ components:
       type: object
       properties:
         subject:
-          type: integer
+          enum:
+            - Employee
+            - Employee_Budgeted_Compensation
+            - Employment_Start
+            - Employment_Exit
+            - Absenteeism
+            - Supervisory
+            - Organization
+            - Compensation_Payout
+            - CustomSubject
+            - TestConnectionSubject
+            - Internal_Placement
+            - Pay_Change
+            - Hire
+            - Applicant
+            - Candidate
+            - Requisition
+          type: string
           description: The subjects that cannot be accessed.
           format: enum
         attributes:
