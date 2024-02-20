@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1151
+  version: 22222222.99201.1156
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -1580,7 +1580,16 @@ components:
           format: enum
         alignTimeAxisToPeriodEnd:
           type: boolean
-          description: "If true, shifts the members on the time axis back by one millisecond.\n For example, if the timestamps are originally [`2019-06-01T00:00:00.000Z`, `2019-05-01T00:00:00.000Z`],\n having this option would turn them into [`2019-05-31T23:59:59.999Z`, `2019-04-30T23:59:59.999Z`].\n\n For example, if the timestamps are originally [`2019-05-01T00:00:00.000Z/2019-06-01T00:00:00.000Z`, `2019-04-01T00:00:00.000Z/2019-05-01T00:00:00.000Z`],\n having this option would turn them into [`2019-05-01T00:00:00.000Z/2019-05-31T23:59:59.999Z`, `2019-04-01T00:00:00.000Z/2019-04-30T23:59:59.999Z`].\n\n This is so that the data rows are considered as valid at end of period instead of start of next period. \n it is useful if you would like the returned data timestamps to match with the standard timestamps in the Visier app."
+          description: |-
+            If true, shifts the time axis members back by one millisecond.
+             Shifting the time axis members back by one millisecond makes them valid at the end of the period instead of at the start of the next period.
+             This aligns the returned data timestamps with the timestamps in the Visier application.
+
+             Example: If the timestamps are originally [`2019-06-01T00:00:00.000Z`, `2019-05-01T00:00:00.000Z`],
+             then `alignTimeAxisPeriodEnd` turns the timestamps into [`2019-05-31T23:59:59.999Z`, `2019-04-30T23:59:59.999Z`].
+
+             Example: If the timestamps are originally [`2019-05-01T00:00:00.000Z/2019-06-01T00:00:00.000Z`, `2019-04-01T00:00:00.000Z/2019-05-01T00:00:00.000Z`],
+             then `alignTimeAxisPeriodEnd` turns the timestamps into [`2019-05-01T00:00:00.000Z/2019-05-31T23:59:59.999Z`, `2019-04-01T00:00:00.000Z/2019-04-30T23:59:59.999Z`].
       description: Internal options - not to be documented or used by external parties
     KeyGroupFilterDTO:
       type: object
@@ -2383,7 +2392,7 @@ components:
         dimensionLevelWithUncategorizedValueSelection:
           allOf:
             - $ref: '#/components/schemas/QueryDimensionLevelSelectionDTO'
-          description: An axis that uses levels of existing dimensions in Visier, and provides values that are not categorized within any members at the selected levels.
+          description: An axis that uses existing dimension levels in Visier, including uncategorized levels.
         tableAxisOptions:
           allOf:
             - $ref: '#/components/schemas/QueryAxisOptionsDTO'
