@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1156
+  version: 22222222.99201.1200
 paths:
   /v1/admin/capabilities:
     get:
@@ -250,7 +250,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PermissionDTO'
+              $ref: '#/components/schemas/PermissionsListDTO'
         required: true
       responses:
         "200":
@@ -284,7 +284,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PermissionDTO'
+              $ref: '#/components/schemas/PermissionsListDTO'
         required: true
       responses:
         "200":
@@ -658,6 +658,14 @@ components:
         displayName:
           type: string
           description: An identifiable permission name to display in Visier, such as "Diversity Access".
+    PermissionsListDTO:
+      type: object
+      properties:
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionDTO'
+          description: The list of permissions that will be created or updated
     PropertyAccessConfigDTO:
       type: object
       properties:
