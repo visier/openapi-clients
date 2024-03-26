@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1200
+  version: 22222222.99201.1227
 paths:
   /v1/op/data-connector-credentials:
     get:
@@ -1927,6 +1927,17 @@ components:
         username:
           type: string
         password:
+          type: string
+        oAuth:
+          $ref: '#/components/schemas/SuccessFactorsOAuthParamsDTO'
+    SuccessFactorsOAuthParamsDTO:
+      type: object
+      properties:
+        apiKey:
+          type: string
+        privateX509Key:
+          type: string
+        publicX509Cert:
           type: string
     TenantAndCredential:
       type: object
