@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1227
+  version: 22222222.99201.1236
 paths:
   /v1/admin/capabilities:
     get:
@@ -318,7 +318,7 @@ paths:
         content:
           application/json:
             schema:
-              type: string
+              $ref: '#/components/schemas/DeletePermissionsRequestDTO'
         required: true
       responses:
         "200":
@@ -471,6 +471,14 @@ components:
              By default all related objects of a top level analytic object will inherit access.
              To remove access to a related analytic object, add it to the list of inherited access configurations with removeAccess: true.
              To add custom filters to a related analytic object, add the analytic object to the list of inherited access configurations and then add the custom filters to its list of member filter configurations.
+    DeletePermissionsRequestDTO:
+      type: object
+      properties:
+        permissionIds:
+          type: array
+          items:
+            type: string
+          description: The identifiers of the permissions to delete.
     DimensionFilterDTO:
       type: object
       properties:
