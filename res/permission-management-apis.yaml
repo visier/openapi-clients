@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1236
+  version: 22222222.99201.1246
 paths:
   /v1/admin/capabilities:
     get:
@@ -172,9 +172,9 @@ paths:
         - name: includeDetails
           in: query
           description: |-
-            If true, the response includes the analytic objects (display name, ID, and object type), related objects,
-             securable properties, and securable dimensions. If false, the response only includes analytic objects
-             (display name, ID, and object type). Default is false.
+            If `true`, the response includes the analytic objects (display name, ID, and object type), related objects,
+             securable properties, and securable dimensions. If `false`, the response only includes analytic objects
+             (display name, ID, and object type). Default is `false`.
           schema:
             type: boolean
         - name: tenantCode
@@ -214,8 +214,16 @@ paths:
         - name: includeDetails
           in: query
           description: |-
-            If true, returns the permission's details. If false, only returns the permissions' ID, display name,
-             and description. Default is false.
+            If `true`, returns the permission's details. If `false`, only returns the permissions' ID, display name,
+             and description. Default is `false`.
+          schema:
+            type: boolean
+        - name: includeDetailsWithStatus
+          in: query
+          description: |-
+            If `true`, returns the validity statuses for the permission's properties in data access sets and the
+             permission's dimensions, dimension members, and hierarchy properties in member filters. If `false`,
+             doesn't return validity status information. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -353,6 +361,14 @@ paths:
         - name: tenantCode
           in: query
           description: Specify the tenant to retrieve a permission from.
+          schema:
+            type: string
+        - name: includeDetailsWithStatus
+          in: query
+          description: |-
+            If `true`, returns the validity statuses for the permission's properties in data access sets and the
+             permission's dimensions, dimension members, and hierarchy properties in member filters. If `false`,
+             doesn't return validity status information. Default is `false`.
           schema:
             type: string
       responses:
@@ -502,6 +518,19 @@ components:
           items:
             $ref: '#/components/schemas/DynamicPropertyMappingDTO'
           description: A list of objects representing the dynamic property mappings associated with the dynamic dimension filter.
+        dimensionStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: |-
+            The dimension's validity status. Valid values: Valid, NoData, NotFound.
+             * **Valid**: The object exists and has loaded data.
+             * **NoData**: The object exists but doesn't have loaded data.
+             * **NotFound**: The object doesn't exist.
+          format: enum
     DynamicPropertyMappingDTO:
       type: object
       properties:
@@ -512,6 +541,18 @@ components:
           allOf:
             - $ref: '#/components/schemas/UserPropertyDTO'
           description: The user property.
+        hierarchyPropertyStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: |-
+            The hierarchy property's validity status. Valid values: Valid, NotFound.
+             * **Valid**: The object exists and has loaded data.
+             * **NotFound**: The object doesn't exist.
+          format: enum
     GetCapabilitiesAPIResponseDTO:
       type: object
       properties:
@@ -597,6 +638,18 @@ components:
         excluded:
           type: boolean
           description: The flag for excluding the member.
+        dimensionMemberStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: |-
+            The dimension member's validity status. Valid values: Valid, NotFound.
+             * **Valid**: The object exists and has loaded data.
+             * **NotFound**: The object doesn't exist.
+          format: enum
     PermissionBulkOperationResponseDTO:
       type: object
       properties:
@@ -696,6 +749,19 @@ components:
           type: string
           description: 'The access level of the property. Valid values are: Aggregate, Sensitive'
           format: enum
+        propertyStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: |-
+            The property's validity status. Valid values: Valid, NoData, NotFound.
+             * **Valid**: The object exists and has loaded data.
+             * **NoData**: The object exists but doesn't have loaded data.
+             * **NotFound**: The object doesn't exist.
+          format: enum
     PropertySetConfigDTO:
       type: object
       properties:
@@ -774,6 +840,19 @@ components:
           items:
             $ref: '#/components/schemas/MemberSelectionDTO'
           description: A list of objects representing the member selections associated with the static dimension filter.
+        dimensionStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: |-
+            The dimension's validity status. Valid values: Valid, NoData, NotFound.
+             * **Valid**: The object exists and has loaded data.
+             * **NoData**: The object exists but doesn't have loaded data.
+             * **NotFound**: The object doesn't exist.
+          format: enum
     Status:
       type: object
       properties:
