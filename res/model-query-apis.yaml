@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1236
+  version: 22222222.99201.1246
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -1747,6 +1747,17 @@ components:
              one record per entity that is valid in the provided time range or each change record
              falls in the time frame.
           format: enum
+        dateTimeDisplayMode:
+          enum:
+            - EPOCH
+            - DATETIME
+          type: string
+          description: |-
+            Control how date-time values are displayed in the result set.
+             Supported values:
+             * `EPOCH`: The number of elapsed milliseconds since January 1, 1970 in UTC timezone. This is the default.
+             * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format.
+          format: enum
       description: A ListQueryExecutionOptions provides additional instructions to perform a list query.
     ListQuerySourceDTO:
       type: object
@@ -2556,6 +2567,7 @@ components:
             - COMPACT
             - DISPLAY
             - MDX
+            - COMPACT_DISPLAY
           type: string
           description: |-
             Define the `memberDisplayMode` options to control how member values are rendered in the aggregate query result set. You can override the `memberDisplayMode` on a per-axis basis, if required.
@@ -2950,6 +2962,17 @@ components:
           description: |-
             The optional target currency for all currency conversions.
              If not specified, the tenant default currency will be used.
+        dateTimeDisplayMode:
+          enum:
+            - EPOCH
+            - DATETIME
+          type: string
+          description: |-
+            Control how date-time values are displayed in the result set.
+             Supported values:
+             * `EPOCH`: The number of elapsed milliseconds since January 1, 1970 in UTC timezone. This is the default.
+             * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format.
+          format: enum
       description: A SnapshotQueryExecutionOptions provides additional instructions to perform a snapshot query.
     SortOptionDTO:
       type: object
