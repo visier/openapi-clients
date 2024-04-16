@@ -1,0 +1,367 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+  title: Visier OAuth 2.0 APIs
+  description: Visier APIs implementing the OAuth 2.0 with OIDC standard
+  license:
+    name: Apache License, Version 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: 22222222.99201.1256
+paths:
+  /v1/auth/oauth2/userinfo:
+    get:
+      tags:
+        - OAuth2
+      summary: Retrieve the user-specific metadata
+      description: Use this API to retrieve user-specific metadata, such as a user's ID, username, and profile capabilities.
+      operationId: OAuth2_UserInfo
+      parameters:
+        - name: includeTenantDetails
+          in: query
+          description: If `true`, includes tenant details in the response. Default is `false`.
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2UserInfoDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/auth/oauth2/authorize:
+    get:
+      tags:
+        - OAuth2
+      summary: Initiate an OAuth2 authorization code flow.
+      description: Initiate an OAuth2 authorization code flow.
+      operationId: OAuth2_OAuth2Authorize
+      parameters:
+        - name: redirect_uri
+          in: query
+          description: The optional URI to redirect to after authorization.
+          required: false
+          schema:
+            type: string
+        - name: response_type
+          in: query
+          description: The response type. Must be `code`.
+          required: true
+          schema:
+            type: string
+        - name: client_id
+          in: query
+          description: The ID of the pre-registered client application.
+          required: true
+          schema:
+            type: string
+        - name: scope
+          in: query
+          description: The OAuth 2.0 scope of the authorization request. Defaults to `read`.
+          required: false
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+        "3XX":
+          description: Redirect to authorization page.
+      security:
+        - ApiKeyAuth: []
+  /v1/auth/oauth2/token:
+    post:
+      tags:
+        - OAuth2
+      summary: Generate a JSON Web Token (JWT) for the specified user.
+      description: Generate a JSON Web Token (JWT) for the specified user.
+      operationId: OAuth2_OAuth2Token
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/TokenRequestBody"
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+        "200":
+          description: JWT response
+          content:
+            application/jwt:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+      security:
+        - ApiKeyAuth: []
+        - ApiKeyAuth: []
+          BasicAuth: []
+components:
+  schemas:
+    CapabilityGroupDTO:
+      type: object
+      properties:
+        group:
+          enum:
+            - unknown
+            - Any
+            - NotRequired
+            - Data
+            - Application
+            - ApplicationManagement
+            - Security
+            - UserManagement
+            - Model
+            - TenantManagement
+            - Settings
+            - DataUpload
+            - FileSharing
+            - Approve
+            - TwoStepPublish
+            - DirectPublish
+            - TenantPreview
+            - OpenAPI
+            - OpenPlatform
+            - ManageJobs
+            - SupportPowerUser
+            - LMSPowerUser
+            - SupportProjectManager
+            - SupportStandardUser
+            - Translation
+            - ModuleManagement
+            - ClassicAdminConfig
+            - ClassicReadOnlyAdminConfig
+            - ClassicManageTenant
+            - ClassicAnalysis
+            - ClassicDraft
+            - ClassicInternalDebugging
+            - ClassicAPIRestricted
+            - InfrastructureOperations
+            - SolutionDesigner
+            - AccessToAllData
+            - FeatureToggle
+            - SystemDiagnostics
+            - SystemDiagnosticsSensitive
+            - ReadImpersonator
+            - WriteImpersonator
+            - ReadImpersonated
+            - WriteImpersonated
+            - MasterImpersonator
+            - Impersonator
+            - WillowUser
+            - WillowAdmin
+            - GeminiManager
+            - GeminiSupport
+            - GeminiAdmin
+            - ConsolidatedAnalytics
+            - RequestSecureTicket
+            - RequestAuthToken
+            - OAuth2ClientRegistration
+            - AccessToAllProperties
+            - AccessToKeyProperties
+            - PlanningManagement
+            - WillowVantageCrawler
+            - DataValidation
+          type: string
+          format: enum
+        accessLevel:
+          enum:
+            - NoAccess
+            - ReadOnly
+            - Write
+          type: string
+          format: enum
+        viewLevel:
+          enum:
+            - Simple
+            - Detailed
+            - API
+            - Certified
+            - Embedded
+          type: string
+          format: enum
+        apiAccessLevel:
+          enum:
+            - NoAccess
+            - ReadOnly
+            - Write
+          type: string
+          format: enum
+        apiViewLevel:
+          enum:
+            - Simple
+            - Detailed
+            - API
+            - Certified
+            - Embedded
+          type: string
+          format: enum
+    GoogleProtobufAny:
+      type: object
+      properties:
+        '@type':
+          type: string
+          description: The type of the serialized message.
+      additionalProperties: true
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+    OAuth2UserInfoDTO:
+      type: object
+      properties:
+        subject:
+          type: string
+          description: The user's display name.
+        name:
+          type: string
+          description: The user's Common Name.
+        email:
+          type: string
+          description: The user's email address.
+        visier:user_id:
+          type: string
+          description: The user's unique ID.
+        visier:capabilities:
+          allOf:
+            - $ref: '#/components/schemas/ServicingCapabilityProtoEnumAccessLookupDTO'
+          description: The user's profile capabilities.
+        visier:subnets:
+          allOf:
+            - $ref: '#/components/schemas/OAuth2UserSubnetInfoDTO'
+          description: Subnet restrictions controlling the IP addresses from which users can access the tenant.
+        visier:export_subnets:
+          allOf:
+            - $ref: '#/components/schemas/OAuth2UserSubnetInfoDTO'
+          description: Subnet restrictions controlling the IP addresses from which data and metadata requests can be made.
+        visier:tenant_details:
+          allOf:
+            - $ref: '#/components/schemas/OAuth2UserTenantDetailsDTO'
+          description: Detailed information about the analytic tenant. Included in the response if `includeTenantDetail` is `true`.
+      description: Response from OAuth 2 `userinfo` endpoint.
+    OAuth2UserSubnetInfoDTO:
+      type: object
+      properties:
+        accessType:
+          enum:
+            - Unknown
+            - All
+            - Restricted
+            - None
+          type: string
+          description: |-
+            The type of subnet access granted to the user. Possible values are:
+             * `Unknown`: Could not determine subnet access details.
+             * `All': No subnet restrictions.
+             * `Restricted`: Access is only granted to requests originating from the specified `subnets`.
+             * `None`: Access is denied. Only applicable to the Data Export API.
+          format: enum
+        subnets:
+          type: array
+          items:
+            type: string
+          description: 'The list of trusted IP addresses from which access is granted if accessType is `Restricted`. Must be in Classless Inter-Domain Routing (CIDR) format: `xxx.xxx.xxx.xxx/xx`.'
+      description: Subnet access details.
+    OAuth2UserTenantDetailDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant's unique ID.
+        displayName:
+          type: string
+          description: The tenant's display name.
+        properties:
+          allOf:
+            - $ref: '#/components/schemas/OAuth2UserTenantPropertiesDTO'
+          description: The tenant's properties.
+      description: Tenant detail information.
+    OAuth2UserTenantDetailsDTO:
+      type: object
+      properties:
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuth2UserTenantDetailDTO'
+          description: The details of all accessible analytic tenants.
+      description: The details of all accessible analytic tenants
+    OAuth2UserTenantPropertiesDTO:
+      type: object
+      properties:
+        vanityUrlName:
+          type: string
+          description: The tenant's vanity name.
+      description: Detailed information about the tenant.
+    ServicingCapabilityProtoEnumAccessLookupDTO:
+      type: object
+      properties:
+        capabilityGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilityGroupDTO'
+    TokenRequestBody:
+      type: object
+      properties:
+        grant_type:
+          description: |-
+            The grant type. Supported values:
+            - `authorization_code`: The authorization code grant type.
+            - `password`: The password grant type.
+            - `urn:visier:params:oauth:grant-type:asid-token`: The ASID token grant type.
+          type: string
+        client_id:
+          description: The ID of the pre-registered client application.
+          type: string
+        redirect_uri:
+          description: The optional URI to redirect to after authorization.
+          type: string
+        code:
+          description: The authorization code. Applicable only for authorization code grant type.
+          type: string
+        username:
+          description: The username of the user to authenticate. Applicable only for password grant type.
+          type: string
+        password:
+          description: The password of the user to authenticate. Applicable only for password grant type.
+          type: string
+        asid_token:
+          description: The ASID token. Applicable only for ASID token grant type.
+          type: string
+      description: |-
+        Token request body definition.
+    Status:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error classification.
+        error_description:
+          type: string
+          description: Error message describing the root cause of the error.
+        error_uri:
+          type: string
+          description: The URI of the API that encountered the error.
+      description: The response structure for errors.
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      name: apikey
+      in: header
+tags:
+  - name: OAuth2
