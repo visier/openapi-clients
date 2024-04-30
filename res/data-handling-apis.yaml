@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1272
+  version: 22222222.99201.1281
 paths:
   /v1/op/data-connector-credentials:
     get:
@@ -451,7 +451,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/job-status/jobs/:jobId:
+  /v1/op/job-status/jobs/{jobId}:
     get:
       tags:
         - DataAndJobHandling
@@ -460,8 +460,9 @@ paths:
       operationId: DataAndJobHandling_JobIdStatus
       parameters:
         - name: jobId
-          in: query
+          in: path
           description: The unique ID of the job to retrieve the status for.
+          required: true
           schema:
             type: string
       responses:
@@ -506,7 +507,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/jobs/dispatching-jobs/:jobId:
+  /v1/op/jobs/dispatching-jobs/{jobId}:
     get:
       tags:
         - DataAndJobHandling
@@ -515,8 +516,9 @@ paths:
       operationId: DataAndJobHandling_DispatchingJobStatus
       parameters:
         - name: jobId
-          in: query
+          in: path
           description: The ID of the job you want to retrieve.
+          required: true
           schema:
             type: string
       responses:
@@ -532,7 +534,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/jobs/dispatching-jobs/:jobId/extraction-jobs:
+  /v1/op/jobs/dispatching-jobs/{jobId}/extraction-jobs:
     get:
       tags:
         - DataAndJobHandling
@@ -542,6 +544,12 @@ paths:
          is a "parent" to extraction jobs, which retrieve data from your source systems through data connectors.
       operationId: DataAndJobHandling_ExtractionJobAndStatus
       parameters:
+        - name: jobId
+          in: path
+          description: The ID of the dispatching job you want to retrieve.
+          required: true
+          schema:
+            type: string
         - name: dispatchingJobId
           in: query
           description: The ID of the dispatching job that generated the extraction jobs.
@@ -566,11 +574,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: jobId
-          in: query
-          description: The ID of the dispatching job you want to retrieve.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -584,7 +587,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/jobs/dispatching-jobs/:jobId/processing-jobs:
+  /v1/op/jobs/dispatching-jobs/{jobId}/processing-jobs:
     get:
       tags:
         - DataAndJobHandling
@@ -594,6 +597,12 @@ paths:
          is a "parent" to extraction jobs, which in turn generate processing jobs and receiving jobs.
       operationId: DataAndJobHandling_ProcessingJobAndStatus
       parameters:
+        - name: jobId
+          in: path
+          description: The ID of the dispatching job you want to retrieve.
+          required: true
+          schema:
+            type: string
         - name: dispatchingJobId
           in: query
           description: The ID of the dispatching job that generated the extraction jobs.
@@ -618,11 +627,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: jobId
-          in: query
-          description: The ID of the dispatching job you want to retrieve.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -636,7 +640,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/jobs/dispatching-jobs/:jobId/receiving-jobs:
+  /v1/op/jobs/dispatching-jobs/{jobId}/receiving-jobs:
     get:
       tags:
         - DataAndJobHandling
@@ -646,6 +650,12 @@ paths:
          is a "parent" to extraction jobs, which in turn generate processing jobs and receiving jobs.
       operationId: DataAndJobHandling_ReceivingJobAndStatus
       parameters:
+        - name: jobId
+          in: path
+          description: The ID of the dispatching job you want to retrieve.
+          required: true
+          schema:
+            type: string
         - name: dispatchingJobId
           in: query
           description: The ID of the dispatching job that generated the extraction jobs.
@@ -670,11 +680,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: jobId
-          in: query
-          description: The ID of the dispatching job you want to retrieve.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -688,7 +693,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/jobs/processing-jobs/:receivingJobId:
+  /v1/op/jobs/processing-jobs/{receivingJobId}:
     get:
       tags:
         - DataAndJobHandling
@@ -700,6 +705,12 @@ paths:
          of a set from an receiving job, it is associated to the receiving job through a Parent ID.
       operationId: DataAndJobHandling_ProcessingJobStatus
       parameters:
+        - name: receivingJobId
+          in: path
+          description: The receiving job ID
+          required: true
+          schema:
+            type: string
         - name: tenantCode
           in: query
           description: |-
@@ -719,11 +730,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: receivingJobId
-          in: query
-          description: The receiving job ID
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -737,7 +743,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/jobs/receiving-jobs/:receivingJobId:
+  /v1/op/jobs/receiving-jobs/{receivingJobId}:
     get:
       tags:
         - DataAndJobHandling
@@ -750,6 +756,12 @@ paths:
          Use this API to retrieve the receiving job status and summary of analytic tenant receiving jobs.
       operationId: DataAndJobHandling_ReceivingJobStatus
       parameters:
+        - name: receivingJobId
+          in: path
+          description: The jobId provided after sending data to Visier.
+          required: true
+          schema:
+            type: string
         - name: jobs
           in: query
           description: If "true", returns the status of receiving jobs spawned by the receiving job specified by jobId.
@@ -774,11 +786,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: receivingJobId
-          in: query
-          description: The jobId provided after sending data to Visier.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -792,7 +799,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/data-connector-credentials/:id:
+  /v1/op/data-connector-credentials/{id}:
     delete:
       tags:
         - DataAndJobHandling
@@ -803,7 +810,7 @@ paths:
       operationId: DataAndJobHandling_DeleteConnectorCredential
       parameters:
         - name: id
-          in: query
+          in: path
           description: The credentialId of the credential you want to delete.
           schema:
             type: string
@@ -2090,9 +2097,20 @@ components:
           type: string
         password:
           type: string
+        oAuth:
+          $ref: '#/components/schemas/WorkdayOAuthParamsDTO'
         integrationSystemId:
           type: string
         apiKey:
+          type: string
+    WorkdayOAuthParamsDTO:
+      type: object
+      properties:
+        apiClientId:
+          type: string
+        publicX509Cert:
+          type: string
+        privateX509Key:
           type: string
     WorkdayRaasAuthParamsDTO:
       type: object
