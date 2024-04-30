@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1272
+  version: 22222222.99201.1281
 paths:
   /v1alpha/admin/consolidated-analytics/tenants:
     get:
@@ -81,7 +81,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/admin/consolidated-analytics/tenants/:tenantId/excluded-sources:
+  /v1alpha/admin/consolidated-analytics/tenants/{tenantId}/excluded-sources:
     get:
       tags:
         - ConsolidatedAnalyticsV1Alpha
@@ -94,10 +94,11 @@ paths:
       operationId: ConsolidatedAnalyticsV1Alpha_ListExcludedSources
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
+          required: true
           schema:
             type: string
       responses:
@@ -128,10 +129,11 @@ paths:
       operationId: ConsolidatedAnalyticsV1Alpha_SetExcludedSources
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
+          required: true
           schema:
             type: string
       requestBody:
@@ -165,10 +167,11 @@ paths:
       operationId: ConsolidatedAnalyticsV1Alpha_RemoveExcludedSources
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
+          required: true
           schema:
             type: string
       requestBody:
@@ -202,10 +205,11 @@ paths:
       operationId: ConsolidatedAnalyticsV1Alpha_AddExcludedSources
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
+          required: true
           schema:
             type: string
       requestBody:
@@ -227,7 +231,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/admin/consolidated-analytics/tenants/:tenantId/source-tenants:
+  /v1alpha/admin/consolidated-analytics/tenants/{tenantId}/source-tenants:
     get:
       tags:
         - ConsolidatedAnalyticsV1Alpha
@@ -240,10 +244,11 @@ paths:
       operationId: ConsolidatedAnalyticsV1Alpha_ListSourceTenants
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
+          required: true
           schema:
             type: string
         - name: limit
@@ -288,10 +293,11 @@ paths:
       operationId: ConsolidatedAnalyticsV1Alpha_SetSourceTenants
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
+          required: true
           schema:
             type: string
         - name: limit
@@ -333,10 +339,11 @@ paths:
       operationId: ConsolidatedAnalyticsV1Alpha_RemoveSourceTenants
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
+          required: true
           schema:
             type: string
         - name: limit
@@ -378,10 +385,11 @@ paths:
       operationId: ConsolidatedAnalyticsV1Alpha_AddSourceTenants
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
+          required: true
           schema:
             type: string
         - name: limit

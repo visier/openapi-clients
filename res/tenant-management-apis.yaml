@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1272
+  version: 22222222.99201.1281
 paths:
   /v1/admin/tenants:
     get:
@@ -83,7 +83,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/admin/tenants/:tenantId:
+  /v1/admin/tenants/{tenantId}:
     get:
       tags:
         - TenantManagementV1
@@ -94,10 +94,11 @@ paths:
       operationId: TenantManagementV1_GetTenant
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the analytic tenant code.
+          required: true
           schema:
             type: string
       responses:
@@ -128,8 +129,9 @@ paths:
       operationId: TenantManagementV1_UpdateTenant
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: The ID of the tenant to update.
+          required: true
           schema:
             type: string
       requestBody:
@@ -157,7 +159,7 @@ paths:
       summary: Deprovision an analytic tenant
       description: |-
         Warning! Deprovisioning an analytic tenant is not reversible.
-         Before deprovisioning, you must disable an analytic tenant. For more information, see **`/v1/admin/tenants/:tenantId/disable`**.
+         Before deprovisioning, you must disable an analytic tenant. For more information, see **`/v1/admin/tenants/{tenantId}/disable`**.
 
          This API removes an analytic tenant permanently from the Visier system. If you are unsure whether an analytic tenant
          may be re-enabled on any of the Visier modules at any time, you may instead want to disable the analytic tenant.
@@ -167,10 +169,11 @@ paths:
       operationId: TenantManagementV1_DeleteTenant
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the analytic tenant code.
+          required: true
           schema:
             type: string
       responses:
@@ -186,7 +189,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/admin/tenants/:tenantId/disable:
+  /v1/admin/tenants/{tenantId}/disable:
     put:
       tags:
         - TenantManagementV1
@@ -198,10 +201,11 @@ paths:
       operationId: TenantManagementV1_DisableTenant
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the analytic tenant code.
+          required: true
           schema:
             type: string
       responses:
@@ -217,7 +221,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/admin/tenants/:tenantId/enable:
+  /v1/admin/tenants/{tenantId}/enable:
     put:
       tags:
         - TenantManagementV1
@@ -230,10 +234,11 @@ paths:
       operationId: TenantManagementV1_EnableTenant
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the analytic tenant code.
+          required: true
           schema:
             type: string
       responses:
@@ -292,7 +297,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/validation/tenants/:tenantId:
+  /v1/op/validation/tenants/{tenantId}:
     get:
       tags:
         - TenantManagementV1
@@ -308,10 +313,11 @@ paths:
       operationId: TenantManagementV1_ValidateTenant
       parameters:
         - name: tenantId
-          in: query
+          in: path
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the analytic tenant code.
+          required: true
           schema:
             type: string
       responses:
@@ -404,43 +410,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v2/admin/tenants/:tenantId:
-    put:
-      tags:
-        - TenantManagement
-      summary: Update an analytic tenant
-      description: |-
-        You may need to update analytic tenants as they grow and as your organization upgrades the content available to them.
-         You may also encounter a scenario where an analytic tenant transitions across different industries. To make updates
-         to your tenants, use this API.
-
-         * To ensure that the analytic tenant receives accurate benchmarks and predictive functionality, update their industry code in the Visier system.
-         * To programmatically assign the Home analysis that analytic tenants see at login, use this API to set the default Home analysis for a tenant and specific user groups of that tenant.
-
-         You can use this API to update any field on an analytic tenant, except tenantCode.
-
-         **Note:** API requests that contain **homeAnalysisId**, **homeAnalysisByUserGroup**, or **clickThroughLink** take
-         longer to run because they require publishing a project to production.
-      operationId: TenantManagement_UpdateTenant
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TenantManagementAPIUpdateRequestDTO'
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TenantManagementAPIUpdateResponseDTO'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
   /v2/admin/tenants/{tenantId}:
     get:
       tags:
@@ -470,6 +439,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TenantManagementAPIGetResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    put:
+      tags:
+        - TenantManagement
+      summary: Update an analytic tenant
+      description: |-
+        You may need to update analytic tenants as they grow and as your organization upgrades the content available to them.
+         You may also encounter a scenario where an analytic tenant transitions across different industries. To make updates
+         to your tenants, use this API.
+
+         * To ensure that the analytic tenant receives accurate benchmarks and predictive functionality, update their industry code in the Visier system.
+         * To programmatically assign the Home analysis that analytic tenants see at login, use this API to set the default Home analysis for a tenant and specific user groups of that tenant.
+
+         You can use this API to update any field on an analytic tenant, except tenantCode.
+
+         **Note:** API requests that contain **homeAnalysisId**, **homeAnalysisByUserGroup**, or **clickThroughLink** take
+         longer to run because they require publishing a project to production.
+      operationId: TenantManagement_UpdateTenant
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantManagementAPIUpdateRequestDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantManagementAPIUpdateResponseDTO'
         default:
           description: Default error response
           content:

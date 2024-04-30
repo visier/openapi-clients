@@ -8,9 +8,9 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1272
+  version: 22222222.99201.1281
 paths:
-  /v1/data/directloads/:draftId/configs:
+  /v1/data/directloads/{draftId}/configs:
     get:
       tags:
         - DirectDataIntake
@@ -19,8 +19,9 @@ paths:
       operationId: DirectDataIntake_GetConfig
       parameters:
         - name: draftId
-          in: query
+          in: path
           description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
           schema:
             type: string
       responses:
@@ -47,8 +48,9 @@ paths:
       operationId: DirectDataIntake_PutConfig
       parameters:
         - name: draftId
-          in: query
+          in: path
           description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
           schema:
             type: string
       requestBody:
@@ -70,7 +72,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/data/directloads/:draftId/schemas/:objectName:
+  /v1/data/directloads/{draftId}/schemas/{objectName}:
     get:
       tags:
         - DirectDataIntake
@@ -82,13 +84,15 @@ paths:
       operationId: DirectDataIntake_ObjectSchema
       parameters:
         - name: draftId
-          in: query
+          in: path
           description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
           schema:
             type: string
         - name: objectName
-          in: query
+          in: path
           description: The name of the object to return the load schema for.
+          required: true
           schema:
             type: string
       responses:
@@ -104,7 +108,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/data/directloads/:draftId/transactions:
+  /v1/data/directloads/{draftId}/transactions:
     post:
       tags:
         - DirectDataIntake
@@ -116,8 +120,9 @@ paths:
       operationId: DirectDataIntake_StartTransaction
       parameters:
         - name: draftId
-          in: query
+          in: path
           description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
           schema:
             type: string
       responses:
@@ -133,7 +138,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/data/directloads/:draftId/transactions/:transactionId:
+  /v1/data/directloads/{draftId}/transactions/{transactionId}:
     get:
       tags:
         - DirectDataIntake
@@ -142,13 +147,15 @@ paths:
       operationId: DirectDataIntake_JobStatus
       parameters:
         - name: draftId
-          in: query
+          in: path
           description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
           schema:
             type: string
         - name: transactionId
-          in: query
+          in: path
           description: The unique identifier of the transaction.
+          required: true
           schema:
             type: string
       responses:
@@ -175,13 +182,15 @@ paths:
       operationId: DirectDataIntake_CommitTransaction
       parameters:
         - name: draftId
-          in: query
+          in: path
           description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
           schema:
             type: string
         - name: transactionId
-          in: query
+          in: path
           description: The unique identifier of the transaction.
+          required: true
           schema:
             type: string
       responses:
@@ -208,13 +217,15 @@ paths:
       operationId: DirectDataIntake_RollbackTransaction
       parameters:
         - name: draftId
-          in: query
+          in: path
           description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
           schema:
             type: string
         - name: transactionId
-          in: query
+          in: path
           description: The unique identifier of the transaction.
+          required: true
           schema:
             type: string
       responses:
@@ -230,7 +241,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/data/directloads/:draftId/transactions/:transactionId/:objectName:
+  /v1/data/directloads/{draftId}/transactions/{transactionId}/{objectName}:
     put:
       tags:
         - DataIntake
@@ -240,17 +251,17 @@ paths:
       operationId: DataIntake_UploadFile
       parameters:
         - name: draftId
-          in: query
+          in: path
           description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
           schema:
             type: string
         - name: transactionId
-          in: query
+          in: path
           description: The unique identifier of the transaction to load data files into.
           schema:
             type: string
         - name: objectName
-          in: query
+          in: path
           description: |-
             The name of the object to upload the data to.
 
