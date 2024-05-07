@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1281
+  version: 22222222.99201.1292
 paths:
   /v1/admin/capabilities:
     get:
@@ -785,6 +785,10 @@ components:
           items:
             $ref: '#/components/schemas/PropertyAccessConfigDTO'
           description: The data access for a property.
+        shareableDataAccessSet:
+          allOf:
+            - $ref: '#/components/schemas/ShareableDataAccessSet'
+          description: A shareable data access set. Shareable data access sets may be linked in multiple permissions.
     RelatedAnalyticObjectDTO:
       type: object
       properties:
@@ -839,6 +843,12 @@ components:
         referenceSymbolName:
           type: string
           description: The reference symbol name.
+    ShareableDataAccessSet:
+      type: object
+      properties:
+        dataAccessSetId:
+          type: string
+          description: The unique identifier of the shareable data access set.
     StaticDimensionFilterDTO:
       type: object
       properties:
