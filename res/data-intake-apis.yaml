@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1281
+  version: 22222222.99201.1292
 paths:
   /v1/op/data-sources:
     get:
@@ -358,12 +358,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/data/upload/files/{filename}:
+  /v1/data/upload/files/{filename}:
     put:
       tags:
         - DataUpload
       summary: Upload a data file to Visier
-      description: "Use this API to upload data files to Visier. You can upload ZIP, CSV, XLS, and XLSX filetypes in plaintext or encrypted with Visier's PGP key. The maximum file upload size is 5 GB.\n\n Use of this API requires client redirect. This API redirects requests directly to Visier's upload infrastructure to support long-running uploads. \n To ensure efficient uploading, we recommend that you use an HTTP client that supports the 100 Continue status code.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Use this API to upload data files to Visier. You can upload ZIP, CSV, XLS, and XLSX filetypes in plaintext or encrypted with Visier's PGP key.\n\n Use of this API requires client redirect. This API redirects requests directly to Visier's upload infrastructure to support long-running uploads. \n To ensure efficient uploading, we recommend that you use an HTTP client that supports the 100 Continue status code.\n\n The maximum file upload size is 500 MB. We recommend using SFTP for larger file sizes."
+      parameters:
+        - name: filename
+          in: path
+          description: The filename of the data file to upload, including the file extension (such as .zip or .csv).
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          "*/*":
+            schema:
+              type: string
+              format: binary
+      responses:
+        "307":
+          description: Redirect to Visier's upload infrastructure.
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/data/upload/files/{filename}:
+    put:
+      deprecated: true
+      tags:
+        - DataUpload
+      summary: Upload a data file to Visier
+      description: |-
+        This API has been promoted from Alpha, and is generally available with the `v1` prefix
       parameters:
         - name: filename
           in: path
