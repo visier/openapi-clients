@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1292
+  version: 22222222.99201.1300
 paths:
   /v1/admin/capabilities:
     get:
@@ -141,6 +141,78 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContentPackageDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/data-access-sets:
+    get:
+      tags:
+        - PermissionManagement
+      summary: Retrieve a list of all data access sets
+      description: "This API allows you to retrieve a list of all shareable data access sets. Data access sets define the level of access that users have to properties and property values for the analytic object in a permission. Data access sets also grant access to properties of subjects that are referenced by the analytic object in the permission.\n You can assign data access sets to a permission when creating or updating permissions.\n\n **Note:** \n * If the number of valid data access sets exceeds the default limit of 100, the response status code is 206. To retrieve more than 100 data access sets, set `limit` to a higher number.\n * This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM)."
+      operationId: PermissionManagement_GetDataAccessSets
+      parameters:
+        - name: analyticObjectId
+          in: query
+          description: Specify the analytic object ID to retrieve the shareable data access sets for. Default is all analytic objects.
+          schema:
+            type: string
+        - name: with
+          in: query
+          description: |-
+            The information about the data access set to include in the request response.
+              If empty, returns basic information for the data access set, including its unique ID, display name, description, and analytic object ID.
+             If `detailed`, returns basic information and property data access information (`propertyAccessConfigs`).
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          in: query
+          description: The maximum number of data access sets to return. Default is 100. Maximum is 1000.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDataAccessSetsAPIResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/data-access-sets/{dataAccessSetId}:
+    get:
+      tags:
+        - PermissionManagement
+      summary: Retrieve a data access set's details
+      description: |-
+        This API allows you to retrieve the details of a specific shareable data access set. You must know the ID of the data access set to retrieve its details. To retrieve data access set IDs, see `GET v1/admin/data-access-sets`.
+
+         **Note:** This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).
+      operationId: PermissionManagement_GetDataAccessSet
+      parameters:
+        - name: dataAccessSetId
+          in: path
+          description: The unique identifier of the data access set you want to retrieve.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataAccessSetDTO'
         default:
           description: Default error response
           content:
@@ -460,6 +532,26 @@ components:
         description:
           type: string
           description: A description of the content package.
+    DataAccessSetDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the data access set.
+        displayName:
+          type: string
+          description: An identifiable data access set name to display in Visier, such as "Aggregate(Employee)".
+        description:
+          type: string
+          description: A description of the data access set.
+        analyticObjectId:
+          type: string
+          description: The unique ID of the analytic object that the data access set is for.
+        propertyAccessConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyAccessConfigDTO'
+          description: The data access assigned to properties in the data access set.
     DataSecurityProfileDTO:
       type: object
       properties:
@@ -577,6 +669,14 @@ components:
           items:
             $ref: '#/components/schemas/ContentPackageDTO'
           description: A list of objects representing the available content packages.
+    GetDataAccessSetsAPIResponseDTO:
+      type: object
+      properties:
+        dataAccessSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataAccessSetDTO'
+          description: A list of objects representing the shareable data access sets.
     GetDataSecurityObjectsAPIResponseDTO:
       type: object
       properties:

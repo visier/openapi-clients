@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1292
+  version: 22222222.99201.1300
 paths:
   /v1alpha/admin/consolidated-analytics/tenants:
     get:
@@ -81,6 +81,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1alpha/admin/consolidated-analytics/tenants-with-details:
+    get:
+      tags:
+        - ConsolidatedAnalyticsV1Alpha
+      summary: Retrieve a list of all consolidated analytics tenants with details
+      description: |-
+        This API allows you to retrieve the full list of consolidated analytics tenants with details in your administrating tenant.
+
+         <br>**Note:** If consolidated tenants in your system have a very large number of source tenants (thousands), it is recommended that you use the /admin/consolidated-analytics/tenants API instead and
+         iterated over source tenants via separate calls of the /admin/consolidated-analytics/tenants/{tenantId}/source-tenants API.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: ConsolidatedAnalyticsV1Alpha_ListTenantsWithDetails
+      parameters:
+        - name: limit
+          in: query
+          description: The maximum number of tenants to return. The maximum value is 1000. Default is 400.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The starting index of the first tenant to return. Default is 0.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsolidatedAnalyticsAPITenantWithDetailsListResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1alpha/admin/consolidated-analytics/tenants/{tenantId}/excluded-sources:
     get:
       tags:
@@ -107,7 +147,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConsolidatedAnalyticsAPIExcludedSourcesListDTO'
+                $ref: '#/components/schemas/ConsolidatedAnalyticsAPIExcludedSourceListDTO'
         default:
           description: Default error response
           content:
@@ -148,7 +188,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConsolidatedAnalyticsAPIExcludedSourcesListDTO'
+                $ref: '#/components/schemas/ConsolidatedAnalyticsAPIExcludedSourceListDTO'
         default:
           description: Default error response
           content:
@@ -186,7 +226,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConsolidatedAnalyticsAPIExcludedSourcesListDTO'
+                $ref: '#/components/schemas/ConsolidatedAnalyticsAPIExcludedSourceListDTO'
         default:
           description: Default error response
           content:
@@ -224,7 +264,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConsolidatedAnalyticsAPIExcludedSourcesListDTO'
+                $ref: '#/components/schemas/ConsolidatedAnalyticsAPIExcludedSourceListDTO'
         default:
           description: Default error response
           content:
@@ -419,7 +459,7 @@ paths:
                 $ref: '#/components/schemas/Status'
 components:
   schemas:
-    ConsolidatedAnalyticsAPIExcludedSourcesListDTO:
+    ConsolidatedAnalyticsAPIExcludedSourceListDTO:
       type: object
       properties:
         excludedSources:
@@ -434,7 +474,7 @@ components:
           type: array
           items:
             type: string
-          description: A list of a CA tenant's source tenants codes
+          description: A list of a CA tenant's source tenants codes.
     ConsolidatedAnalyticsAPITenantCreateRequestDTO:
       type: object
       properties:
@@ -451,6 +491,30 @@ components:
           items:
             type: string
           description: A list of CA tenants codes.
+    ConsolidatedAnalyticsAPITenantWithDetails:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The CA tenants code.
+        sourceTenantsList:
+          type: array
+          items:
+            type: string
+          description: A list of a CA tenant's source tenants codes.
+        excludedSourcesList:
+          type: array
+          items:
+            type: string
+          description: A list of a CA tenant's excluded sources.
+    ConsolidatedAnalyticsAPITenantWithDetailsListResponseDTO:
+      type: object
+      properties:
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsolidatedAnalyticsAPITenantWithDetails'
+          description: A list of CA tenants codes and their details.
     ExcludedSourcesBody:
       type: object
       properties:
