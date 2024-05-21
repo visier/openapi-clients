@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1300
+  version: 22222222.99201.1306
 paths:
   /v1alpha/admin/consolidated-analytics/tenants:
     get:
@@ -85,12 +85,11 @@ paths:
     get:
       tags:
         - ConsolidatedAnalyticsV1Alpha
-      summary: Retrieve a list of all consolidated analytics tenants with details
+      summary: Retrieve the details of all consolidated analytics tenants
       description: |-
-        This API allows you to retrieve the full list of consolidated analytics tenants with details in your administrating tenant.
+        This API allows you to retrieve the full list of consolidated analytics tenants and their details in your administrating tenant.
 
-         <br>**Note:** If consolidated tenants in your system have a very large number of source tenants (thousands), it is recommended that you use the /admin/consolidated-analytics/tenants API instead and
-         iterated over source tenants via separate calls of the /admin/consolidated-analytics/tenants/{tenantId}/source-tenants API.
+         **Note:** If your consolidated analytics tenants have thousands of source tenants, we recommend that you use the `GET /admin/consolidated-analytics/tenants` endpoint to get all CA tenants and then use the `GET /admin/consolidated-analytics/tenants/{tenantId}/source-tenants` and `GET /admin/consolidated-analytics/tenants/{tenantId}/excluded-sources` endpoints to retrieve information about specific CA tenants.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -466,7 +465,7 @@ components:
           type: array
           items:
             type: string
-          description: A list of a CA tenant's excluded sources.
+          description: A list of the CA tenant's excluded sources.
     ConsolidatedAnalyticsAPISourceTenantListDTO:
       type: object
       properties:
@@ -474,7 +473,7 @@ components:
           type: array
           items:
             type: string
-          description: A list of a CA tenant's source tenants codes.
+          description: A list of the CA tenant's source tenants.
     ConsolidatedAnalyticsAPITenantCreateRequestDTO:
       type: object
       properties:
@@ -490,23 +489,23 @@ components:
           type: array
           items:
             type: string
-          description: A list of CA tenants codes.
+          description: A list of CA tenant codes.
     ConsolidatedAnalyticsAPITenantWithDetails:
       type: object
       properties:
         tenantCode:
           type: string
-          description: The CA tenants code.
+          description: The CA tenant's code.
         sourceTenantsList:
           type: array
           items:
             type: string
-          description: A list of a CA tenant's source tenants codes.
+          description: A list of the CA tenant's source tenants.
         excludedSourcesList:
           type: array
           items:
             type: string
-          description: A list of a CA tenant's excluded sources.
+          description: A list of the CA tenant's excluded sources.
     ConsolidatedAnalyticsAPITenantWithDetailsListResponseDTO:
       type: object
       properties:
@@ -514,7 +513,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ConsolidatedAnalyticsAPITenantWithDetails'
-          description: A list of CA tenants codes and their details.
+          description: A list of CA tenants and their details.
     ExcludedSourcesBody:
       type: object
       properties:
