@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1306
+  version: 22222222.99201.1317
 paths:
   /v1/op/data-connector-credentials:
     get:
@@ -2100,6 +2100,8 @@ components:
           type: string
         oAuth:
           $ref: '#/components/schemas/WorkdayOAuthParamsDTO'
+        refToken:
+          $ref: '#/components/schemas/WorkdayRefreshTokenParamsDTO'
         integrationSystemId:
           type: string
         apiKey:
@@ -2125,6 +2127,15 @@ components:
         password:
           type: string
         testReportUrl:
+          type: string
+    WorkdayRefreshTokenParamsDTO:
+      type: object
+      properties:
+        apiClientId:
+          type: string
+        clientSecret:
+          type: string
+        refreshToken:
           type: string
     ZoomAuthParamsDTO:
       type: object
