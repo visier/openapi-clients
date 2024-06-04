@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1317
+  version: 22222222.99201.1331
 paths:
   /v1/admin/permissions/users:
     put:
@@ -607,6 +607,117 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v2alpha/admin/user-groups:
+    get:
+      tags:
+        - UserGroupManagmentV2
+      summary: Retrieve a list of user groups
+      description: |-
+        This API allows you to get a collection of user groups. Use the `with` query string argument to control the amount of detail returned in the response.
+         The following values are supported:
+         * **permissions**: Include mapped permissions.
+         * **users**: Include user population information
+         * **details**: Include all available information.
+
+         This API can return a maximum of 1000 user groups. The default number of user groups returned is 100.
+
+         <br>Administrating tenant users can specify the tenant from which to get user groups.
+         This is done by providing the tenant code in the request header `TargetTenantID`
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: UserGroupManagmentV2_GetUserGroups
+      parameters:
+        - name: with
+          in: query
+          description: |-
+            Controls the level of detail returned in the response. Leave this parameter out to return only basic information.
+             * **permissions**: Include mapped permissions.
+             * **users**: Include user population information
+             * **details**: Include all available information.
+          schema:
+            enum:
+              - permissions
+              - users
+              - details
+            type: string
+            format: enum
+        - name: limit
+          in: query
+          description: The number of results to return. The maximum number of tenants to retrieve is 1000. The default is 100.
+          schema:
+            type: integer
+            format: uint32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupsChangeDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    post:
+      tags:
+        - UserGroupManagmentV2
+      summary: Create new user groups
+      description: |-
+        This API allows you to create new user groups. Administrating tenant users can specify the tenant to which to add new user groups.
+         This is done by providing the tenant code in the request header `TargetTenantID`
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: UserGroupManagmentV2_CreateUserGroups
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserGroupsChangeDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupChangeResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v2alpha/admin/user-groups/{userGroupId}:
+    get:
+      tags:
+        - UserGroupManagmentV2
+      summary: Retrieve a specific user group
+      description: "This API allows you to get a specific user group. The user group is always returned at the `details` level.\n \n <br>Administrating tenant users can specify the tenant from which to get the user group.\n This is done by providing the tenant code in the request header `TargetTenantID`\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: UserGroupManagmentV2_GetUserGroup
+      parameters:
+        - name: userGroupId
+          in: path
+          description: The ID of user group.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupChangeDefinitionDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/admin/users/reports/application-logs:
     get:
       tags:
@@ -916,6 +1027,14 @@ components:
     DeleteUserResponse:
       type: object
       properties: {}
+    ElementIDsDTO:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+          description: Collection of unique identifiers
     GoogleProtobufAny:
       type: object
       properties:
@@ -1210,6 +1329,159 @@ components:
         displayName:
           type: string
           description: An identifiable user group name to display in Visier, such as "Leadership User Group".
+    UserGroupChangeDefinitionDTO:
+      type: object
+      properties:
+        userGroupId:
+          type: string
+          description: Unique identifier for the user group. Omit when creating a new user group.
+        displayName:
+          type: string
+          description: An identifiable user group name to display in Visier, such as "Leadership User Group".
+        description:
+          type: string
+          description: Detailed description of the population and purpose of the user group.
+        permissionIds:
+          allOf:
+            - $ref: '#/components/schemas/ElementIDsDTO'
+          description: Collection of the unique permission IDs granted to members of this user group.
+        users:
+          allOf:
+            - $ref: '#/components/schemas/UserGroupChangeUsersDTO'
+          description: Definition of the user group population.
+        tenantCode:
+          type: string
+          description: |-
+            The code of the tenant to which the user group belongs or should be created in.
+             Omit if creating or updating user groups in the current tenant.
+    UserGroupChangeDimensionFilterDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The object name of the dimension.
+        subjectReferencePath:
+          allOf:
+            - $ref: '#/components/schemas/ElementIDsDTO'
+          description: |-
+            Optional qualifying path when the dimension is defined on an object qualified by references on the `Employee` object.
+             For example, to create a filter on dimension `Employment_Start_Type` on the `Employment_Start` object,
+             the `subjectReferencePath` would be `{ "ids": [ "Employee", "Employment_Start" ] }`.
+        memberSelections:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserGroupChangeMemberSelectionDTO'
+          description: Collection of member selections.
+    UserGroupChangeFailureDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The display name of the user group that couldn't be created.
+        message:
+          type: string
+          description: The error message containing the cause of the failure.
+        rci:
+          type: string
+          description: Root Cause Identifier to be provided to Visier support if further troubleshooting is required.git sb
+        tenantCode:
+          type: string
+          description: The code of the tenant for which the user group could not be created or updated.
+    UserGroupChangeFilterDTO:
+      type: object
+      properties:
+        filterId:
+          type: string
+          description: Unique filter identifier. Omit when creating a new filter.
+        analyticObjectId:
+          type: string
+          description: |-
+            The analytic object to which the filter applies. Currently, the only supported
+             value is `Employee`. Default value is `Employee`.
+        dimensionFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserGroupChangeDimensionFilterDTO'
+          description: Collection of dimension member filters.
+    UserGroupChangeMemberSelectionDTO:
+      type: object
+      properties:
+        isExcluded:
+          type: boolean
+          description: Set to `true` if the specified member must **not be defined** for members of the user group.
+        namePath:
+          type: array
+          items:
+            type: string
+          description: |-
+            Array of member name path elements.
+             For example: `[ "North America", "US", "CA" ]`
+    UserGroupChangeResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserGroupChangeSuccessDTO'
+          description: Collection of the user groups that were successfully created.
+        failure:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserGroupChangeFailureDTO'
+          description: Collection of the user groups that were not created successfully.
+    UserGroupChangeSuccessDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The display name of the successfully created user group.
+        userGroupId:
+          type: string
+          description: The unique identifier of the user group.
+        tenantCode:
+          type: string
+          description: The code of the tenant the user group was created or updated in.
+    UserGroupChangeUsersDTO:
+      type: object
+      properties:
+        includeAllUsers:
+          type: boolean
+          description: |-
+            Control whether to apply to all user. When `true`:
+             * May not be combined with `manuallyIncludedIds`.
+             * May be combined with `manuallyExcludedIds`.
+             * May not be combined with `filters`.
+        manuallyIncludedIds:
+          allOf:
+            - $ref: '#/components/schemas/ElementIDsDTO'
+          description: |-
+            Collection of unconditionally included user IDs.
+             * Must not be specified when `includeAllUsers` is `true`.
+             * May be combined with a filter.
+        manuallyExcludedIds:
+          allOf:
+            - $ref: '#/components/schemas/ElementIDsDTO'
+          description: |-
+            Collection of unconditionally excluded users.
+             * Must not overlap with manually included users.
+             * Is applied against either all users or a specified filter.
+        dynamicFilterDefinition:
+          allOf:
+            - $ref: '#/components/schemas/UserGroupFiltersDTO'
+          description: |-
+            Collection of filters that define a population in terms of properties
+             on the `Employee` or accessible via references from the `Employee` object.
+             * Must not be defined when `includeAllUsers` is `true`.
+             * May be combined with `manuallyIncludedIds`.
+             * May be combined with `manuallyExcludedIds`.
+    UserGroupFiltersDTO:
+      type: object
+      properties:
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserGroupChangeFilterDTO'
+          description: Collection of filters
     UserGroupGetAPIResponseDTO:
       type: object
       properties:
@@ -1224,6 +1496,14 @@ components:
           items:
             $ref: '#/components/schemas/PermissionResponseDTO'
           description: A list of objects representing the user's permissions.
+    UserGroupsChangeDTO:
+      type: object
+      properties:
+        userGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserGroupChangeDefinitionDTO'
+          description: The collection of definitions of the user groups to create
     UserGroupsGetAPIResponseDTO:
       type: object
       properties:
@@ -1443,6 +1723,10 @@ components:
             read: Grants read access
             write: Grants write access
 tags:
+  - name: UserGroupManagmentV2
+    description: |-
+      <br>**Note:** <em>These APIs are in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: UserManagement
     description: |-
       Use these APIs to manage users within an organization.

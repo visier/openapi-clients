@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1317
+  version: 22222222.99201.1331
 paths:
   /v1/admin/tenants:
     get:
@@ -388,8 +388,8 @@ paths:
 
          Contact Visier Support to determine the list of modules allocated to you.
 
-         **Note:** API requests that contain **homeAnalysisId**, **homeAnalysisByUserGroup**, or **clickThroughLink** take
-         longer to run because they require publishing a project to production.
+         **Note:** API requests that contain **homeAnalysisId**, **homeAnalysisByUserGroup**, **clickThroughLink**, or
+         **defaultCurrency** take longer to run because they require publishing a project to production.
       operationId: TenantManagement_CreateTenant
       requestBody:
         content:
@@ -459,8 +459,8 @@ paths:
 
          You can use this API to update any field on an analytic tenant, except tenantCode.
 
-         **Note:** API requests that contain **homeAnalysisId**, **homeAnalysisByUserGroup**, or **clickThroughLink** take
-         longer to run because they require publishing a project to production.
+         **Note:** API requests that contain **homeAnalysisId**, **homeAnalysisByUserGroup**, **clickThroughLink**, or
+         **defaultCurrency** take longer to run because they require publishing a project to production.
       operationId: TenantManagement_UpdateTenant
       parameters:
         - name: tenantId
@@ -716,6 +716,9 @@ components:
         clickThroughLinkEnabled:
           type: string
           description: Whether the click-through link is enabled or disabled.
+        defaultCurrency:
+          type: string
+          description: The default currency to show in the application for the tenant.
     TenantManagementAPIListResponseDTO:
       type: object
       properties:
@@ -807,6 +810,9 @@ components:
         clickThroughLink:
           type: string
           description: A custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability or email content. This is optional. Causes the API request to take longer because it must publish a project to production.
+        defaultCurrency:
+          type: string
+          description: The default currency to show in the application for the tenant.
     TenantManagementAPIUpdateResponseDTO:
       type: object
       properties:
@@ -867,6 +873,9 @@ components:
         vanityUrlName:
           type: string
           description: The name of the administrating tenant used in Visier URLs.
+        defaultCurrency:
+          type: string
+          description: The default currency to show in the application for the tenant.
     TenantModuleDTO:
       type: object
       properties:
