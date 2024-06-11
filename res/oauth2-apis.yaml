@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1331
+  version: 22222222.99201.1343
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -64,7 +64,7 @@ paths:
             type: string
         - name: scope
           in: query
-          description: The OAuth 2.0 scope of the authorization request. Defaults to `read`.
+          description: The OAuth 2.0 scope of the authorization request. Default is `read`. If the scope includes `visier:login:bypass_users`, then the redirect login URL ends in "/auth/admin" instead of "/auth". This allows single sign-on (SSO) Bypass Users to login through Visier instead of being redirected to the SSO login page.
           required: false
           schema:
             type: string

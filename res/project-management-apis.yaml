@@ -1,0 +1,357 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Visier Project Management APIs
+    description: Visier APIs for managing and publishing projects
+    license:
+        name: Apache License, Version 2.0
+        url: https://www.apache.org/licenses/LICENSE-2.0
+    version: 22222222.99201.1343
+paths:
+    /v1alpha/admin/production-versions:
+        get:
+            tags:
+                - ProductionVersions
+            summary: Retrieve a list of all production versions
+            description: |-
+                *
+                 This API allows you to retrieve a list of all projects that were published to production, ordered from latest published to earliest published.
+
+                 <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+                 If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+            operationId: ProductionVersions_GetProductionVersions
+            parameters:
+                - name: limit
+                  in: query
+                  description: The maximum number of production versions to return. Default is 400.
+                  schema:
+                    type: integer
+                    format: int32
+                - name: start
+                  in: query
+                  description: The starting index of the first production version to return. Default is 0.
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetProductionVersionsAPIResponseDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha/admin/projects:
+        get:
+            tags:
+                - ProjectManagement
+            summary: Retrieve a list of draft projects accessible to the user
+            description: |-
+                *
+                 This API allows you to get a list of draft projects accessible to the requesting user in the tenant.
+
+                 A project is accessible if it is owned by the user or shared to the user.
+
+                 <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+                 If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+            operationId: ProjectManagement_GetProjects
+            parameters:
+                - name: with
+                  in: query
+                  description: |-
+                    The types of draft projects to include in the request response.
+                     * If empty, returns all the `Open` draft projects.
+                     * If `Open`, returns all Open draft projects.
+                     * If `Approval`, returns all draft projects in the approval stage. Changes cannot made in Approval projects.
+                     * If `Rejected`, returns all draft projects that have been rejected. Changes cannot be committed in Rejected projects.
+                     * If `Archived`, returns all draft projects that have been archived. Changes cannot be committed in Archived projects.
+                  schema:
+                    type: array
+                    items:
+                        type: string
+                - name: limit
+                  in: query
+                  description: The number of projects to return per type. The maximum number of projects to retrieve per type is 1000. The default is 100.
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetProjectsAPIResponseDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - ProjectManagement
+            summary: Create a new draft project
+            description: |-
+                *
+                 This API allows you to create a new draft project in the tenant.
+
+                 <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+                 If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+            operationId: ProjectManagement_CreateProject
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ProjectDTO'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ProjectDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha/admin/projects/{projectId}:
+        get:
+            tags:
+                - ProjectManagement
+            summary: Retrieve a draft project's information
+            description: |-
+                *
+                 This API allows you to retrieve the details of an accessible draft project. You must know the ID of the project to retrieve its details. To retrieve draft project IDs, see `GET v1alpha/admin/projects`.
+
+                 A project is accessible if it is owned by the user or shared to the user.
+
+                 <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+                 If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+            operationId: ProjectManagement_GetProject
+            parameters:
+                - name: projectId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: with
+                  in: query
+                  description: |-
+                    The types of draft projects to include in the request response.
+                     * If empty, returns all the `Open` draft projects.
+                     * If `Open`, returns all Open draft projects.
+                     * If `Approval`, returns all draft projects in the approval stage. Changes cannot made in Approval projects.
+                     * If `Rejected`, returns all draft projects that have been rejected. Changes cannot be committed in Rejected projects.
+                     * If `Archived`, returns all draft projects that have been archived. Changes cannot be committed in Archived projects.
+                  schema:
+                    type: array
+                    items:
+                        type: string
+                - name: limit
+                  in: query
+                  description: The number of projects to return per type. The maximum number of projects to retrieve per type is 1000. The default is 100.
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ProjectDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1alpha/admin/projects/{projectId}/commits:
+        get:
+            tags:
+                - ProjectManagement
+            summary: Retrieve a list of all committed changes in a project
+            description: |-
+                *
+                 This API allows you to retrieve the full list of all committed changes in a project.
+
+                 <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+                 If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+            operationId: ProjectManagement_GetProjectCommits
+            parameters:
+                - name: projectId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  description: The maximum number of committed changes to return. Default is 400.
+                  schema:
+                    type: integer
+                    format: int32
+                - name: start
+                  in: query
+                  description: The starting index of the first committed change to return. Default is 0.
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetProjectCommitsAPIResponseDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+components:
+    schemas:
+        CommitDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The unique ID of the committed change.
+                name:
+                    type: string
+                    description: An identifiable name of the committed change to display in Visier.
+                description:
+                    type: string
+                    description: A description of the committed change.
+        GetProductionVersionsAPIResponseDTO:
+            type: object
+            properties:
+                publishedVersions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProjectDTO'
+                    description: A list of projects that were published to production.
+        GetProjectCommitsAPIResponseDTO:
+            type: object
+            properties:
+                commits:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CommitDTO'
+                    description: A list of committed changes in the project.
+        GetProjectsAPIResponseDTO:
+            type: object
+            properties:
+                openProjects:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProjectDTO'
+                    description: A list of objects representing the accessible open projects for the user.
+                approvalProjects:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProjectDTO'
+                    description: A list of objects representing the accessible approval projects for the user.
+                rejectedProjects:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProjectDTO'
+                    description: A list of objects representing the accessible rejected projects for the user.
+                archivedProjects:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ProjectDTO'
+                    description: A list of objects representing the accessible archived projects for the user.
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ProjectDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The unique ID of the project. Omit when creating a new project.
+                name:
+                    type: string
+                    description: An identifiable project name to display in Visier.
+                description:
+                    type: string
+                    description: A description of the project.
+                releaseVersion:
+                    type: string
+                    description: The release version of the project.
+                ticketNumber:
+                    type: string
+                    description: The change management ticket number of the project.
+                versionNumber:
+                    type: integer
+                    description: The version number of the project.
+                    format: int32
+                capabilities:
+                    type: array
+                    items:
+                        enum:
+                            - canRead
+                            - canWrite
+                            - canShare
+                            - owner
+                        type: string
+                        format: enum
+                    description: |-
+                        The current user's capabilities for the project. Users with `canWrite`, `canShare`, or `owner` capabilities can add and commit changes to the project.
+                         **canRead**: The project has been shared to the user with `View` access.
+                         **canWrite**: The project has been shared to the user with `Edit` access.
+                         **canShare**: The project has been shared to the user with `Share` access.
+                         **owner**: The user is the owner of the project.
+                         Omit when creating a new project.
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+tags:
+    - name: ProductionVersions
+      description: |-
+        *
+         Use these APIs to retrieve information about data versions that were published to production.
+
+         In Visier, production is the version of Visier available to your end users.
+
+         <br>**Note:** <em>These APIs are in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+    - name: ProjectManagement
+      description: |-
+        *
+         Use these APIs to create and publish projects, and retrieve project details.
+
+         In Visier, a project is a workspace that allows you to define and edit the solution apart from the current production version of the solution. Projects allow you to collaborate with other administrators to ensure that all changes are reviewed and validated before they are published to production.
+
+         <br>**Note:** <em>These APIs are in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
