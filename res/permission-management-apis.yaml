@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1331
+  version: 22222222.99201.1343
 paths:
   /v1/admin/capabilities:
     get:
@@ -194,10 +194,16 @@ paths:
         - PermissionManagement
       summary: Create shareable data access sets
       description: |-
-        This API allows you to create shareable data access sets. Shareable data access sets may be referenced directly by permissions to enable reuse of common data access configurations.
+        This API allows you to create shareable data access sets. Shareable data access sets let you reuse common data access configurations in multiple permissions.
 
          <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_CreateDataAccessSets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDataAccessSetRequestDTO'
+        required: true
       responses:
         "200":
           description: OK
@@ -567,6 +573,14 @@ components:
         description:
           type: string
           description: A description of the content package.
+    CreateDataAccessSetRequestDTO:
+      type: object
+      properties:
+        shareablePropertyAccessConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataAccessSetDTO'
+          description: The data access sets to be created.
     DataAccessSetDTO:
       type: object
       properties:
