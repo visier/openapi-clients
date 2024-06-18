@@ -8,7 +8,7 @@ info:
     license:
         name: Apache License, Version 2.0
         url: https://www.apache.org/licenses/LICENSE-2.0
-    version: 22222222.99201.1343
+    version: 22222222.99201.1349
 paths:
     /v1alpha/admin/production-versions:
         get:
@@ -164,6 +164,37 @@ paths:
                   schema:
                     type: integer
                     format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ProjectDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - ProjectManagement
+            summary: Delete a draft project
+            description: |-
+                *
+                 This API allows you to delete a draft project in the tenant. The project will first be archived if applicable.
+
+                 <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+                 If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+            operationId: ProjectManagement_DeleteProject
+            parameters:
+                - name: projectId
+                  in: path
+                  description: The unique ID of the draft project to be deleted.
+                  required: true
+                  schema:
+                    type: string
             responses:
                 "200":
                     description: OK

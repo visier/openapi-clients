@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1343
+  version: 22222222.99201.1349
 paths:
   /v1/admin/permissions/users:
     put:
@@ -613,16 +613,15 @@ paths:
         - UserGroupManagmentV2
       summary: Retrieve a list of user groups
       description: |-
-        This API allows you to get a collection of user groups. Use the `with` query string argument to control the amount of detail returned in the response.
-         The following values are supported:
-         * **permissions**: Include mapped permissions.
-         * **users**: Include user population information
+        This API allows you to retrieve a collection of user groups. Use `with` to control the amount of detail returned in the response.
+         `with` supports these values:
+         * **permissions**: Include the user group's permissions.
+         * **users**: Include the users in the user group.
          * **details**: Include all available information.
 
-         This API can return a maximum of 1000 user groups. The default number of user groups returned is 100.
+         This API can return a maximum of 1000 user groups. The default number of user groups to return is 100.
 
-         <br>Administrating tenant users can specify the tenant from which to get user groups.
-         This is done by providing the tenant code in the request header `TargetTenantID`.
+         <br>To specify the tenant in which to retrieve user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -631,9 +630,9 @@ paths:
         - name: with
           in: query
           description: |-
-            Controls the level of detail returned in the response. Leave this parameter out to return only basic information.
-             * **permissions**: Include mapped permissions.
-             * **users**: Include user population information
+            Controls the amount of detail to return in the response. Omit to return basic information.
+             * **permissions**: Include the user group's permissions.
+             * **users**: Include the users in the user group.
              * **details**: Include all available information.
           schema:
             enum:
@@ -644,7 +643,7 @@ paths:
             format: enum
         - name: limit
           in: query
-          description: The number of results to return. The maximum number of tenants to retrieve is 1000. The default is 100.
+          description: The number of results to return. The maximum number of user groups to retrieve is 1000. The default is 100.
           schema:
             type: integer
             format: uint32
@@ -661,10 +660,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+    put:
+      tags:
+        - UserGroupManagmentV2
+      summary: Update multiple user groups
+      description: "This API allows you to update existing user groups. To specify the tenant in which to update a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each user group in the request body.\n\n When updating user groups, the user group definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the user group. We recommend that you retrieve a user group's details before you update the user group with new values. \n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: UserGroupManagmentV2_PutUserGroups
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserGroupsChangeDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupChangeResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
     post:
       tags:
         - UserGroupManagmentV2
-      summary: Bulk-create new user groups
+      summary: Create multiple user groups
       description: |-
         This API allows you to create new user groups. To specify the tenant in which to add new user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.
 
@@ -693,10 +717,9 @@ paths:
     delete:
       tags:
         - UserGroupManagmentV2
-      summary: Bulk-delete user groups
+      summary: Delete multiple user groups
       description: |-
-        This API allows you to bulk-delete user groups. Administrating tenant users can specify the tenant from which to delete user groups.
-         This is done either by providing the tenant code in the request header `TargetTenantID` or by specifying the `tenantCode` for each user group id in the request body.
+        This API allows you to delete user groups in bulk. To specify the tenant in which to delete user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -720,12 +743,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+    patch:
+      tags:
+        - UserGroupManagmentV2
+      summary: Patch multiple user groups
+      description: |-
+        This API allows you to make partial changes to user groups. To specify the tenant in which to patch a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each user group in the request body.
+
+         Unlike `PUT`, which completely replaces the user group definition, use `PATCH` to change specific fields in the user group without affecting omitted fields.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: UserGroupManagmentV2_PatchUserGroups
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserGroupsChangeDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupChangeResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v2alpha/admin/user-groups/{userGroupId}:
     get:
       tags:
         - UserGroupManagmentV2
-      summary: Retrieve a single user group
-      description: "This API allows you to get a specific user group. The user group is always returned at the `details` level.\n \n <br>Administrating tenant users can specify the tenant from which to get the user group.\n This is done by providing the tenant code in the request header `TargetTenantID`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      summary: Retrieve the details of a user group
+      description: "This API allows you to retrieve all available information about a specific user group.\n \n <br>To specify the tenant in which to retrieve a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: UserGroupManagmentV2_GetUserGroup
       parameters:
         - name: userGroupId
@@ -734,6 +788,20 @@ paths:
           required: true
           schema:
             type: string
+        - name: with
+          in: query
+          description: |-
+            Controls the amount of detail to return in the response. Omit to return detailed information.
+             * **permissions**: Include the user group's permissions.
+             * **users**: Include the users in the user group.
+             * **details**: Include all available information.
+          schema:
+            enum:
+              - permissions
+              - users
+              - details
+            type: string
+            format: enum
       responses:
         "200":
           description: OK
@@ -750,10 +818,9 @@ paths:
     delete:
       tags:
         - UserGroupManagmentV2
-      summary: Delete a single user group
+      summary: Delete a user group
       description: |-
-        This API allows you to delete a single user group. Administrating tenant users can specify the tenant from which to delete the user group.
-         This is done by providing the tenant code in the request header `TargetTenantID`.
+        This API allows you to delete a specific user group. To specify the tenant in which to delete a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each user group in the request body.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -1544,7 +1611,7 @@ components:
         tenantCode:
           type: string
           description: |-
-            The code of the tenant to which the user group belongs or should be deleted from.
+            The code of the tenant from which to delete the user group.
              Omit if deleting user groups in the current tenant.
         userGroupId:
           type: string
@@ -1563,7 +1630,7 @@ components:
           description: The error message containing the cause of the failure.
         rci:
           type: string
-          description: Root Cause Identifier to be provided to Visier support if further troubleshooting is required.
+          description: The root cause identifier to provide to Visier Technical Support if you require further troubleshooting.
     UserGroupDeleteResponseDTO:
       type: object
       properties:
@@ -1571,12 +1638,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserGroupDeleteSuccessDTO'
-          description: Collection of the user groups that were successfully deleted.
+          description: The user groups that were successfully deleted.
         failures:
           type: array
           items:
             $ref: '#/components/schemas/UserGroupDeleteFailureDTO'
-          description: Collection of the user groups that were not deleted successfully.
+          description: The user groups that were not deleted successfully.
     UserGroupDeleteSuccessDTO:
       type: object
       properties:
@@ -1634,7 +1701,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserGroupDeleteDTO'
-          description: User groups to delete.
+          description: The user groups to delete.
     UserGroupsGetAPIResponseDTO:
       type: object
       properties:
