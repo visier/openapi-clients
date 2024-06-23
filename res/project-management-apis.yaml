@@ -8,7 +8,7 @@ info:
     license:
         name: Apache License, Version 2.0
         url: https://www.apache.org/licenses/LICENSE-2.0
-    version: 22222222.99201.1349
+    version: 22222222.99201.1360
 paths:
     /v1alpha/admin/production-versions:
         get:
@@ -42,6 +42,36 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/GetProductionVersionsAPIResponseDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - ProductionVersions
+            summary: Perform an operation on production versions
+            description: |-
+                *
+                 This API allows you to perform operations on production versions, such as exporting a production project's committed changes. If exporting, please specify `Accept: application/zip, application/json` in the header.
+
+                 <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+                 If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+            operationId: ProductionVersions_PostProductionVersions
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ProductionVersionsAPIOperationRequestDTO'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ProductionVersionsAPIOperationResponseDTO'
                 default:
                     description: Default error response
                     content:
@@ -177,6 +207,43 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - ProjectManagement
+            summary: Perform an operation on a draft project
+            description: |-
+                *
+                 This API allows you to perform operations on a draft project. The following operations are supported:
+                 * `commitAndPublish`: Commits project changes and publishes the project to production.
+
+                 <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+                 If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+            operationId: ProjectManagement_RunProjectOperation
+            parameters:
+                - name: projectId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ProjectOperationRequestDTO'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ProjectOperationResponseDTO'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
         delete:
             tags:
                 - ProjectManagement
@@ -223,6 +290,7 @@ paths:
             parameters:
                 - name: projectId
                   in: path
+                  description: The unique identifier of the draft project you want to retrieve the committed changes for.
                   required: true
                   schema:
                     type: string
@@ -253,6 +321,13 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
+        CommitAndPublishOperationResponseDTO:
+            type: object
+            properties:
+                publishedVersion:
+                    allOf:
+                        - $ref: '#/components/schemas/ProjectDTO'
+                    description: The project version that was published to production.
         CommitDTO:
             type: object
             properties:
@@ -265,6 +340,23 @@ components:
                 description:
                     type: string
                     description: A description of the committed change.
+        ExportProductionVersionsAPIOperationParametersDTO:
+            type: object
+            properties:
+                startVersion:
+                    type: string
+                    description: The unique identifier of the version to start exporting versions from. The range is inclusive.
+                endVersion:
+                    type: string
+                    description: The unique identifier of the version to stop exporting versions at. The range is inclusive.
+                excludedVersions:
+                    type: array
+                    items:
+                        type: string
+                    description: A list of versions between `startVersion` and `endVersion` to exclude.
+        ExportProductionVersionsAPIOperationResponseDTO:
+            type: object
+            properties: {}
         GetProductionVersionsAPIResponseDTO:
             type: object
             properties:
@@ -312,6 +404,29 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ProductionVersionsAPIOperationRequestDTO:
+            type: object
+            properties:
+                operation:
+                    enum:
+                        - unknownProductionVersionsAPIOperation
+                        - export
+                    type: string
+                    description: |-
+                        The operation to perform. Valid values:
+                         * `export`: Export the project changes of the requested production versions and their related files, such as any Guidebook images. If successful, a ZIP file is returned containing any relevant image files and a JSON file with the production project changes.
+                    format: enum
+                exportParameters:
+                    allOf:
+                        - $ref: '#/components/schemas/ExportProductionVersionsAPIOperationParametersDTO'
+                    description: The parameters for the `export` option, such as the production version to start exporting versions from. Required for `export` operations.
+        ProductionVersionsAPIOperationResponseDTO:
+            type: object
+            properties:
+                export:
+                    allOf:
+                        - $ref: '#/components/schemas/ExportProductionVersionsAPIOperationResponseDTO'
+                    description: The result of the `export` operation.
         ProjectDTO:
             type: object
             properties:
@@ -351,6 +466,25 @@ components:
                          **canShare**: The project has been shared to the user with `Share` access.
                          **owner**: The user is the owner of the project.
                          Omit when creating a new project.
+        ProjectOperationRequestDTO:
+            type: object
+            properties:
+                operation:
+                    enum:
+                        - unknown
+                        - commitAndPublish
+                    type: string
+                    description: |-
+                        The operation to perform on a draft project. Valid values:
+                         * `commitAndPublish`: Commits the requesting user's changes and publishes the draft project to production.
+                    format: enum
+        ProjectOperationResponseDTO:
+            type: object
+            properties:
+                commitAndPublish:
+                    allOf:
+                        - $ref: '#/components/schemas/CommitAndPublishOperationResponseDTO'
+                    description: The result of the `commitAndPublish` operation.
         Status:
             type: object
             properties:
