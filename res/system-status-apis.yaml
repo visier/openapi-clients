@@ -3,85 +3,70 @@
 
 openapi: 3.0.3
 info:
-  title: Visier Authentication APIs
-  description: Visier APIs for generating authentication tokens
+  title: Visier System Status APIs
+  description: Visier APIs for checking the health and status of Visier's platform and services.
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
   version: 22222222.99201.1360
 paths:
-  /v1/admin/visierSecureTicket:
-    post:
-      deprecated: true
+  /v1alpha/admin/system-status:
+    get:
       tags:
-        - Authentication
-      summary: Generate a legacy Visier secure ticket
-      description: Generate a legacy Visier secure ticket
-      operationId: Authentication_TicketAuthentication
-      requestBody:
-        description: Secure ticket request body
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticationRequest'
-        required: true
+        - SystemStatus
+      summary: Check the overall current status of Visier's systems
+      description: |-
+        Use this API to check the current overall status of Visier's systems.
+
+         The overall status is one of:
+         * ``UP`` : All systems are operational.
+         * `DOWN`: At least one system is not fully operational.
+
+         **Note:** This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).
+      operationId: SystemStatus_SystemStatus
       responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemStatusDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+    post:
+      tags:
+        - SystemStatus
+      summary: Check the overall current status of Visier's systems
+      description: |-
+        Use this API to check the current overall status of Visier's systems.
+
+         The overall status is one of:
+         * ``UP`` : All systems are operational.
+         * `DOWN`: At least one system is not fully operational.
+
+         **Note:** This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).
+      operationId: SystemStatus_SystemStatus
+      responses:
         "200":
-          description: Secure ticket response
+          description: OK
           content:
             application/json:
               schema:
-                type: string
-            text/plain:
-              schema:
-                type: string
-  /v1/admin/visierSecureToken:
-    post:
-      deprecated: true
-      tags:
-        - Authentication
-      summary: Generate a Visier authentication token
-      description: Generate a Visier authentication token
-      operationId: Authentication_ASIDTokenAuthentication
-      requestBody:
-        description: Authentication token request body
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticationRequest'
-        required: true
-      responses:
+                $ref: '#/components/schemas/SystemStatusDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
-          description: Authentication token response
-          content:
-            application/json:
-              schema:
-                type: string
-            text/plain:
-              schema:
-                type: string
 components:
   schemas:
-    AuthenticationRequest:
-      type: object
-      properties:
-        username:
-          type: string
-        password:
-          type: string
-      description: Basic Authentication Request Body
     GoogleProtobufAny:
       type: object
       properties:
@@ -106,10 +91,23 @@ components:
             $ref: '#/components/schemas/GoogleProtobufAny'
           description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
       description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
-    TokenResponse:
+    SystemStatusDTO:
       type: object
       properties:
-        token:
+        overall:
           type: string
+          description: The overall status of Visier's platform and services.
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      name: VisierASIDToken
+      in: cookie
+    ApiKeyAuth:
+      type: apiKey
+      name: apikey
+      in: header
 tags:
-  - name: Authentication
+  - name: SystemStatus
+security:
+  - ApiKeyAuth: []
+  - CookieAuth: []
