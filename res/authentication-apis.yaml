@@ -4,53 +4,21 @@
 openapi: 3.0.3
 info:
   title: Visier Authentication APIs
-  description: Visier APIs for generating authentication tokens
+  description: Visier API for requesting an authentication token through basic authentication.
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1360
+  version: 22222222.99201.1371
 paths:
-  /v1/admin/visierSecureTicket:
-    post:
-      deprecated: true
-      tags:
-        - Authentication
-      summary: Generate a legacy Visier secure ticket
-      description: Generate a legacy Visier secure ticket
-      operationId: Authentication_TicketAuthentication
-      requestBody:
-        description: Secure ticket request body
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthenticationRequest'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: Secure ticket response
-          content:
-            application/json:
-              schema:
-                type: string
-            text/plain:
-              schema:
-                type: string
   /v1/admin/visierSecureToken:
     post:
-      deprecated: true
       tags:
         - Authentication
-      summary: Generate a Visier authentication token
-      description: Generate a Visier authentication token
+      summary: Request a Visier authentication token.
+      description: Generate a secure ASID token.
       operationId: Authentication_ASIDTokenAuthentication
       requestBody:
-        description: Authentication token request body
+        description: Your username and password credentials to request an authentication token.
         content:
           application/x-www-form-urlencoded:
             schema:
@@ -79,9 +47,11 @@ components:
       properties:
         username:
           type: string
+          description: The unique identifier of the API user requesting a security token.
         password:
           type: string
-      description: Basic Authentication Request Body
+          description: The password that corresponds to the user making the request.
+      description: Your username and password credentials to request an authentication token.
     GoogleProtobufAny:
       type: object
       properties:
@@ -111,5 +81,10 @@ components:
       properties:
         token:
           type: string
+          description: The security token. Use this token in your API calls to authenticate the call. Expires after 60 minutes.
 tags:
   - name: Authentication
+    description: |-
+      To use Visier's public APIs, you must first authenticate yourself as a Visier user who is allowed to use Visier APIs.
+      With basic authentication, use your username and password to request a secure token.
+      The response returns an ASID token that you can use in your API calls.
