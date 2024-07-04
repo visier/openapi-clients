@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1081
+  version: 22222222.99201.1292
 paths:
   /v1/admin/capabilities:
     get:
@@ -18,6 +18,8 @@ paths:
       description: |-
         This API allows you to retrieve all the permission capabilities in your tenant.
          You can use the returned capabilities in other API calls when creating or updating permissions to assign the capability to the permission.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetCapabilities
       parameters:
         - name: tenantCode
@@ -43,7 +45,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Retrieve a permission capability's details
-      description: This API allows you to retrieve the details of a specific capability.
+      description: |-
+        This API allows you to retrieve the details of a specific capability.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetCapability
       parameters:
         - name: capabilityId
@@ -78,6 +83,8 @@ paths:
       description: |-
         This API allows you to retrieve the list of available content packages.
          You can use the returned content packages in other API calls when creating or updating permissions to add the content package to the permission.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetContentPackages
       parameters:
         - name: tenantCode
@@ -110,7 +117,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Retrieve a content package's details
-      description: This API allows you to retrieve the details of a specific content package.
+      description: |-
+        This API allows you to retrieve the details of a specific content package.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetContentPackage
       parameters:
         - name: contentPackageId
@@ -146,6 +156,8 @@ paths:
         This API allows you to retrieve the list of available data security objects.
          Data security objects are analytic objects and their related objects that are available to define
          permissions’ data security profiles.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetDataSecurityObjects
       parameters:
         - name: id
@@ -160,9 +172,9 @@ paths:
         - name: includeDetails
           in: query
           description: |-
-            If true, the response includes the analytic objects (display name, ID, and object type), related objects,
-             securable properties, and securable dimensions. If false, the response only includes analytic objects
-             (display name, ID, and object type). Default is false.
+            If `true`, the response includes the analytic objects (display name, ID, and object type), related objects,
+             securable properties, and securable dimensions. If `false`, the response only includes analytic objects
+             (display name, ID, and object type). Default is `false`.
           schema:
             type: boolean
         - name: tenantCode
@@ -188,7 +200,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Retrieve a list of all permissions
-      description: This API allows you to retrieve the full list of user permissions in your tenant.
+      description: |-
+        This API allows you to retrieve the full list of user permissions in your tenant.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetPermissions
       parameters:
         - name: tenantCode
@@ -199,8 +214,16 @@ paths:
         - name: includeDetails
           in: query
           description: |-
-            If true, returns the permission's details. If false, only returns the permissions' ID, display name,
-             and description. Default is false.
+            If `true`, returns the permission's details. If `false`, only returns the permissions' ID, display name,
+             and description. Default is `false`.
+          schema:
+            type: boolean
+        - name: includeDetailsWithStatus
+          in: query
+          description: |-
+            If `true`, returns the validity statuses for the permission's properties in data access sets and the
+             permission's dimensions, dimension members, and hierarchy properties in member filters. If `false`,
+             doesn't return validity status information. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -220,7 +243,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Update permissions
-      description: This API allows you to update existing permissions.
+      description: |-
+        This API allows you to update existing permissions.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_UpdatePermissions
       parameters:
         - name: tenantCode
@@ -232,7 +258,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PermissionDTO'
+              $ref: '#/components/schemas/PermissionsListDTO'
         required: true
       responses:
         "200":
@@ -251,7 +277,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Create permissions
-      description: This API allows you to create new permissions. Administrating tenant users can specify the tenant in which to add these permissions.
+      description: |-
+        This API allows you to create new permissions. Administrating tenant users can specify the tenant in which to add these permissions.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_CreatePermissions
       parameters:
         - name: tenantCode
@@ -263,7 +292,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PermissionDTO'
+              $ref: '#/components/schemas/PermissionsListDTO'
         required: true
       responses:
         "200":
@@ -282,7 +311,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Delete permissions
-      description: This API allows you to delete existing permissions.
+      description: |-
+        This API allows you to delete existing permissions.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_DeletePermissions
       parameters:
         - name: tenantCode
@@ -294,7 +326,7 @@ paths:
         content:
           application/json:
             schema:
-              type: string
+              $ref: '#/components/schemas/DeletePermissionsRequestDTO'
         required: true
       responses:
         "200":
@@ -314,7 +346,10 @@ paths:
       tags:
         - PermissionManagement
       summary: Retrieve a permission's details
-      description: This API allows you to retrieve the details for a specified permission.
+      description: |-
+        This API allows you to retrieve the details for a specified permission.
+
+         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetPermission
       parameters:
         - name: permissionId
@@ -326,6 +361,14 @@ paths:
         - name: tenantCode
           in: query
           description: Specify the tenant to retrieve a permission from.
+          schema:
+            type: string
+        - name: includeDetailsWithStatus
+          in: query
+          description: |-
+            If `true`, returns the validity statuses for the permission's properties in data access sets and the
+             permission's dimensions, dimension members, and hierarchy properties in member filters. If `false`,
+             doesn't return validity status information. Default is `false`.
           schema:
             type: string
       responses:
@@ -348,12 +391,12 @@ components:
       properties:
         allCapabilitiesAccess:
           type: boolean
-          description: If true, this capability configuration grant access to all capabilities.
+          description: If `true`, the permission has all possible capabilities.
         capabilities:
           type: array
           items:
             type: string
-          description: A list of capabilities associated with the capability configuration.
+          description: A list of the capabilities assigned in the permission. Not required if `allCapabilitiesAccess` is true.
     AnalyticObjectDTO:
       type: object
       properties:
@@ -364,7 +407,18 @@ components:
           type: string
           description: An identifiable name to display in Visier, such as "Employee".
         objectType:
-          type: integer
+          enum:
+            - Event
+            - Subject
+            - BusinessOutcomeOverlay
+            - PlanOrBudgetOverlay
+            - ExternalBenchmark
+            - VisierBenchmark
+            - UsageOverlay
+            - OtherOverlay
+            - InternalComparison
+            - PlanAnalyticObject
+          type: string
           description: The analytic object type.
           format: enum
         relatedObjects:
@@ -411,28 +465,44 @@ components:
       properties:
         analyticObjectId:
           type: string
-          description: The analytic object ID associated with the data security profile.
+          description: The unique ID of the analytic object assigned data security in this permission.
         propertySetConfig:
           allOf:
             - $ref: '#/components/schemas/PropertySetConfigDTO'
-          description: The property set configuration that defines which properties and access level to allow for each filtered record.
+          description: A list of objects representing the data access for an analytic object’s properties.
         allDataPointAccess:
           type: boolean
-          description: The flag for giving all access to data points when creating a population.
+          description: If `true`, the permission grants access to the entire population. If `false`, define `memberFilterConfigs` to set custom population access.
         memberFilterConfigs:
           type: array
           items:
             $ref: '#/components/schemas/MemberFilterConfigDTO'
-          description: The member filter configurations that defines the population.
+          description: Custom filters that define population access for an item in the permission.
         inheritedAccessConfigs:
           type: array
           items:
             $ref: '#/components/schemas/InheritedAccessConfigDTO'
           description: |-
-            A list of objects representing the inherited access configurations associated with the data security profile.
-             By default all related objects of a top level analytic object will inherit access.
-             To remove access to a related analytic object, add it to the list of inherited access configurations with removeAccess: true.
-             To add custom filters to a related analytic object, add the analytic object to the list of inherited access configurations and then add the custom filters to its list of member filter configurations.
+            The events and related objects inherited from the analytic object.
+             By default, all events and related objects associated with the analytic object will be inherited from the analytic object in a permission.
+             For example, if you assign access to Employee, then access to the Employee Exit event is inherited in the permission.
+             To remove access to an event or related object, add the object to `inheritedAccessConfigs` with `removeAccess`: true.
+             To add custom filters to an event or related object, add the object to `inheritedAccessConfigs` and define `memberFilterConfigs`.
+        inheritedReferenceMemberFilterConfig:
+          allOf:
+            - $ref: '#/components/schemas/InheritedReferenceMemberFilterConfigDTO'
+          description: |-
+            Configures the analytic object to inherit population access filters from. The target analytic object must be assigned population access in the permission and have a binding (strong) reference from the source analytic object.
+             * For example, assume `Applicant` -> `Requisition` is configured to be a binding (strong) reference.
+             For `Applicant` (source analytic object) to inherit population access filters from `Requisition` (target analytic object), in the Applicant `dataSecurityProfile`, set `inheritedReferenceMemberFilterConfig` to `Requisition`. In this example, Applicant will inherit filters from Requisition because Requsition is assigned data security in this permission and there is a binding (strong) reference from Applicant to Requisition.
+    DeletePermissionsRequestDTO:
+      type: object
+      properties:
+        permissionIds:
+          type: array
+          items:
+            type: string
+          description: The identifiers of the permissions to delete.
     DimensionFilterDTO:
       type: object
       properties:
@@ -445,7 +515,7 @@ components:
       properties:
         dimensionId:
           type: string
-          description: The dimension ID associated with the dynamic dimension filter.
+          description: The dimension ID associated with the filter.
         subjectReferencePath:
           type: array
           items:
@@ -455,17 +525,42 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DynamicPropertyMappingDTO'
-          description: A list of objects representing the dynamic property mappings associated with the dynamic dimension filter.
+          description: The properties assigned population access in the dynamic filter.
+        dimensionStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: |-
+            The dimension's validity status. Valid values: Valid, NoData, NotFound.
+             * **Valid**: The object exists and has loaded data.
+             * **NoData**: The object exists but doesn't have loaded data.
+             * **NotFound**: The object doesn't exist.
+          format: enum
     DynamicPropertyMappingDTO:
       type: object
       properties:
         hierarchyPropertyId:
           type: string
-          description: The hierarchy property ID.
+          description: The unique ID of the property.
         userProperty:
           allOf:
             - $ref: '#/components/schemas/UserPropertyDTO'
-          description: The user property.
+          description: The user property that you want to link the name property or organization head to.
+        hierarchyPropertyStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: |-
+            The property's validity status. Valid values: `Valid`, `NotFound`.
+             * **Valid**: The object exists and has loaded data.
+             * **NotFound**: The object doesn't exist.
+          format: enum
     GetCapabilitiesAPIResponseDTO:
       type: object
       properties:
@@ -512,10 +607,10 @@ components:
       properties:
         hierarchyPropertyId:
           type: string
-          description: The hierarchy property ID.
+          description: The unique ID of the property.
         displayName:
           type: string
-          description: An identifiable hierarchy property name to display in Visier, such as "Name Property".
+          description: An identifiable property name to display in Visier, such as "Name Property".
     InheritedAccessConfigDTO:
       type: object
       properties:
@@ -529,7 +624,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MemberFilterConfigDTO'
-          description: The member filter configurations that defines the population in the inherited analytic object.
+          description: Custom filters that define population access for an inherited analytic object in the permission.
+    InheritedReferenceMemberFilterConfigDTO:
+      type: object
+      properties:
+        targetAnalyticObjectId:
+          type: string
+          description: |-
+            *
+            The unique ID of the analytic object that the source
+            analytic object should inherit filters from. The target analytic object must have a binding (strong) reference from the source analytic object.
     MemberFilterConfigDTO:
       type: object
       properties:
@@ -537,9 +641,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DimensionFilterDTO'
-          description: |-
-            A list of objects representing the dimension filters associated with the member filter configuration.
-             A dimension filter can be either a static or dynamic dimension filter.
+          description: "A list of objects representing the custom filters that define population access for the item. \n A custom filter can be a \"member filter\" (`staticDimensionFilter`) or a \"dynamic filter\" (`dynamicDimensionFilter`)."
     MemberSelectionDTO:
       type: object
       properties:
@@ -550,7 +652,19 @@ components:
           description: The member name path.
         excluded:
           type: boolean
-          description: The flag for excluding the member.
+          description: If `true`, population access is granted for all members except this member.
+        dimensionMemberStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: |-
+            The dimension member's validity status. Valid values: Valid, NotFound.
+             * **Valid**: The object exists and has loaded data.
+             * **NotFound**: The object doesn't exist.
+          format: enum
     PermissionBulkOperationResponseDTO:
       type: object
       properties:
@@ -580,15 +694,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DataSecurityProfileDTO'
-          description: A list of objects representing the data security profile configurations associated with the permission.
+          description: A list of objects representing the data security for each item in a permission.
         adminCapabilityConfig:
           allOf:
             - $ref: '#/components/schemas/AdminCapabilityConfigDTO'
-          description: The capability configuration associated with the permission.
+          description: The capabilities assigned in the permission.
         roleModulesConfig:
           allOf:
             - $ref: '#/components/schemas/RoleModulesConfigDTO'
-          description: The role modules configuration associated with the permission.
+          description: A list of content packages assigned to the permission.
     PermissionErrorDTO:
       type: object
       properties:
@@ -620,6 +734,14 @@ components:
         displayName:
           type: string
           description: An identifiable permission name to display in Visier, such as "Diversity Access".
+    PermissionsListDTO:
+      type: object
+      properties:
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionDTO'
+          description: The list of permissions that will be created or updated
     PropertyAccessConfigDTO:
       type: object
       properties:
@@ -633,10 +755,27 @@ components:
           type: array
           items:
             type: string
-          description: The path to the analytic object reference or empty if the configuration is not a reference.
+          description: The path to the analytic object reference. Empty if the configuration is not a reference.
         accessLevel:
-          type: integer
-          description: 'The access level of the property. Valid values are: Aggregate, Sensitive'
+          enum:
+            - None
+            - Aggregate
+            - Detailed
+          type: string
+          description: 'The access level of the property. Valid values are: `Aggregate`, `Sensitive`.'
+          format: enum
+        propertyStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: |-
+            The property's validity status. Valid values: Valid, NoData, NotFound.
+             * **Valid**: The object exists and has loaded data.
+             * **NoData**: The object exists but doesn't have loaded data.
+             * **NotFound**: The object doesn't exist.
           format: enum
     PropertySetConfigDTO:
       type: object
@@ -645,7 +784,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PropertyAccessConfigDTO'
-          description: A list of objects representing the property access configuration associated with the property set configuration.
+          description: The data access for a property.
+        shareableDataAccessSet:
+          allOf:
+            - $ref: '#/components/schemas/ShareableDataAccessSet'
+          description: A shareable data access set. Shareable data access sets may be linked in multiple permissions.
     RelatedAnalyticObjectDTO:
       type: object
       properties:
@@ -662,7 +805,7 @@ components:
           type: array
           items:
             type: string
-          description: A list of content packages IDs associated with the role modules configuration.
+          description: The unique IDs of the content packages assigned to the permission.
     SecurableDimensionDTO:
       type: object
       properties:
@@ -700,12 +843,18 @@ components:
         referenceSymbolName:
           type: string
           description: The reference symbol name.
+    ShareableDataAccessSet:
+      type: object
+      properties:
+        dataAccessSetId:
+          type: string
+          description: The unique identifier of the shareable data access set.
     StaticDimensionFilterDTO:
       type: object
       properties:
         dimensionId:
           type: string
-          description: The dimension ID associated with the static dimension filter.
+          description: The dimension ID associated with the filter.
         subjectReferencePath:
           type: array
           items:
@@ -715,7 +864,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MemberSelectionDTO'
-          description: A list of objects representing the member selections associated with the static dimension filter.
+          description: A list of objects representing the dimension members assigned population access in the member filter.
+        dimensionStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: |-
+            The dimension's validity status. Valid values: Valid, NoData, NotFound.
+             * **Valid**: The object exists and has loaded data.
+             * **NoData**: The object exists but doesn't have loaded data.
+             * **NotFound**: The object doesn't exist.
+          format: enum
     Status:
       type: object
       properties:
@@ -737,7 +899,7 @@ components:
       properties:
         name:
           type: string
-          description: The user property name.
+          description: The name property to map to in the dynamic filter. Valid values are one of `username`, `email`, `employeeId`.
   securitySchemes:
     CookieAuth:
       type: apiKey

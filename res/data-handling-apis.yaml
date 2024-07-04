@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1081
+  version: 22222222.99201.1292
 paths:
   /v1/op/data-connector-credentials:
     get:
@@ -143,6 +143,59 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AssignConnectorCredentialsResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/data-versions:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve the latest enabled data versions for all analytic tenants
+      description: |-
+        If you discover any inconsistencies after running metric value validation, you may want to find the data versions
+         causing inconsistencies so you can later disable them.
+
+         Use this API to retrieve up to five (5) of the latest enabled data versions for all your analytic tenants or a
+         single specified analytic tenant.
+      operationId: DataAndJobHandling_LatestEnabledDV
+      parameters:
+        - name: tenantCode
+          in: query
+          description: |-
+            The tenant code of a specific analytic tenant that you want to retrieve data versions for.
+             Use this if you are only interested in the results for one analytic tenant.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: |-
+            The limit of analytic tenants to retrieve data versions for.
+             This parameter is not used if the tenantCode parameter is specified.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: numberOfVersions
+          in: query
+          description: The number of latest enabled data versions to retrieve. The maximum value is 5.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultipleTenantDataVersionsListDTO'
         default:
           description: Default error response
           content:
@@ -398,7 +451,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/job-status/jobs/:jobId:
+  /v1/op/job-status/jobs/{jobId}:
     get:
       tags:
         - DataAndJobHandling
@@ -407,8 +460,9 @@ paths:
       operationId: DataAndJobHandling_JobIdStatus
       parameters:
         - name: jobId
-          in: query
+          in: path
           description: The unique ID of the job to retrieve the status for.
+          required: true
           schema:
             type: string
       responses:
@@ -453,7 +507,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/jobs/dispatching-jobs/:jobId:
+  /v1/op/jobs/dispatching-jobs/{jobId}:
     get:
       tags:
         - DataAndJobHandling
@@ -462,8 +516,9 @@ paths:
       operationId: DataAndJobHandling_DispatchingJobStatus
       parameters:
         - name: jobId
-          in: query
+          in: path
           description: The ID of the job you want to retrieve.
+          required: true
           schema:
             type: string
       responses:
@@ -479,7 +534,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/jobs/dispatching-jobs/:jobId/extraction-jobs:
+  /v1/op/jobs/dispatching-jobs/{jobId}/extraction-jobs:
     get:
       tags:
         - DataAndJobHandling
@@ -489,6 +544,12 @@ paths:
          is a "parent" to extraction jobs, which retrieve data from your source systems through data connectors.
       operationId: DataAndJobHandling_ExtractionJobAndStatus
       parameters:
+        - name: jobId
+          in: path
+          description: The ID of the dispatching job you want to retrieve.
+          required: true
+          schema:
+            type: string
         - name: dispatchingJobId
           in: query
           description: The ID of the dispatching job that generated the extraction jobs.
@@ -513,11 +574,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: jobId
-          in: query
-          description: The ID of the dispatching job you want to retrieve.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -531,7 +587,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/jobs/dispatching-jobs/:jobId/processing-jobs:
+  /v1/op/jobs/dispatching-jobs/{jobId}/processing-jobs:
     get:
       tags:
         - DataAndJobHandling
@@ -541,6 +597,12 @@ paths:
          is a "parent" to extraction jobs, which in turn generate processing jobs and receiving jobs.
       operationId: DataAndJobHandling_ProcessingJobAndStatus
       parameters:
+        - name: jobId
+          in: path
+          description: The ID of the dispatching job you want to retrieve.
+          required: true
+          schema:
+            type: string
         - name: dispatchingJobId
           in: query
           description: The ID of the dispatching job that generated the extraction jobs.
@@ -565,11 +627,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: jobId
-          in: query
-          description: The ID of the dispatching job you want to retrieve.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -583,7 +640,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/jobs/dispatching-jobs/:jobId/receiving-jobs:
+  /v1/op/jobs/dispatching-jobs/{jobId}/receiving-jobs:
     get:
       tags:
         - DataAndJobHandling
@@ -593,6 +650,12 @@ paths:
          is a "parent" to extraction jobs, which in turn generate processing jobs and receiving jobs.
       operationId: DataAndJobHandling_ReceivingJobAndStatus
       parameters:
+        - name: jobId
+          in: path
+          description: The ID of the dispatching job you want to retrieve.
+          required: true
+          schema:
+            type: string
         - name: dispatchingJobId
           in: query
           description: The ID of the dispatching job that generated the extraction jobs.
@@ -617,11 +680,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: jobId
-          in: query
-          description: The ID of the dispatching job you want to retrieve.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -635,7 +693,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/jobs/receiving-jobs/:receivingJobId:
+  /v1/op/jobs/processing-jobs/{receivingJobId}:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve processing job statuses by receiving job ID
+      description: |-
+        Use this API to retrieve a list of statuses for all processing jobs associated with the given receiving job ID.
+         Processing jobs deal with an individual analytic tenant's data load. A processing job is either triggered through
+         the UI or is one of many processing jobs spawned from a receiving job. When a processing job is triggered as part
+         of a set from an receiving job, it is associated to the receiving job through a Parent ID.
+      operationId: DataAndJobHandling_ProcessingJobStatus
+      parameters:
+        - name: receivingJobId
+          in: path
+          description: The receiving job ID
+          required: true
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: |-
+            The tenant code of the tenant you want to retrieve the processing jobs for.
+             Use this if you are only interested in the results for one analytic tenant.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The limit of processing jobs to retrieve per page.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingJobStatusResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/jobs/receiving-jobs/{receivingJobId}:
     get:
       tags:
         - DataAndJobHandling
@@ -648,6 +756,12 @@ paths:
          Use this API to retrieve the receiving job status and summary of analytic tenant receiving jobs.
       operationId: DataAndJobHandling_ReceivingJobStatus
       parameters:
+        - name: receivingJobId
+          in: path
+          description: The jobId provided after sending data to Visier.
+          required: true
+          schema:
+            type: string
         - name: jobs
           in: query
           description: If "true", returns the status of receiving jobs spawned by the receiving job specified by jobId.
@@ -672,11 +786,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: receivingJobId
-          in: query
-          description: The jobId provided after sending data to Visier.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -690,109 +799,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  v1/op/data-versions:
-    get:
-      tags:
-        - DataAndJobHandling
-      summary: Retrieve the latest enabled data versions for all analytic tenants
-      description: |-
-        If you discover any inconsistencies after running metric value validation, you may want to find the data versions
-         causing inconsistencies so you can later disable them.
-
-         Use this API to retrieve up to five (5) of the latest enabled data versions for all your analytic tenants or a
-         single specified analytic tenant.
-      operationId: DataAndJobHandling_LatestEnabledDV
-      parameters:
-        - name: tenantCode
-          in: query
-          description: |-
-            The tenant code of a specific analytic tenant that you want to retrieve data versions for.
-             Use this if you are only interested in the results for one analytic tenant.
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: |-
-            The limit of analytic tenants to retrieve data versions for.
-             This parameter is not used if the tenantCode parameter is specified.
-          schema:
-            type: integer
-            format: int32
-        - name: start
-          in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
-          schema:
-            type: integer
-            format: int32
-        - name: numberOfVersions
-          in: query
-          description: The number of latest enabled data versions to retrieve. The maximum value is 5.
-          schema:
-            type: integer
-            format: int32
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MultipleTenantDataVersionsListDTO'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-  v1/op/jobs/processing-jobs/:receivingJobId:
-    get:
-      tags:
-        - DataAndJobHandling
-      summary: Retrieve processing job statuses by receiving job ID
-      description: |-
-        Use this API to retrieve a list of statuses for all processing jobs associated with the given receiving job ID.
-         Processing jobs deal with an individual analytic tenant's data load. A processing job is either triggered through
-         the UI or is one of many processing jobs spawned from a receiving job. When a processing job is triggered as part
-         of a set from an receiving job, it is associated to the receiving job through a Parent ID.
-      operationId: DataAndJobHandling_ProcessingJobStatus
-      parameters:
-        - name: tenantCode
-          in: query
-          description: |-
-            The tenant code of the tenant you want to retrieve the processing jobs for.
-             Use this if you are only interested in the results for one analytic tenant.
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: The limit of processing jobs to retrieve per page.
-          schema:
-            type: integer
-            format: int32
-        - name: start
-          in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
-          schema:
-            type: integer
-            format: int32
-        - name: receivingJobId
-          in: query
-          description: The receiving job ID
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProcessingJobStatusResponse'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-  /v1/op/data-connector-credentials/:id:
+  /v1/op/data-connector-credentials/{id}:
     delete:
       tags:
         - DataAndJobHandling
@@ -803,7 +810,7 @@ paths:
       operationId: DataAndJobHandling_DeleteConnectorCredential
       parameters:
         - name: id
-          in: query
+          in: path
           description: The credentialId of the credential you want to delete.
           schema:
             type: string
@@ -852,7 +859,11 @@ components:
             $ref: '#/components/schemas/AssignConnectorWithCredentialsResponseDTO'
           description: A list of objects representing the assigned credentials and connectors.
         status:
-          type: integer
+          enum:
+            - Unknown
+            - Succeed
+            - Failed
+          type: string
           description: The state of the credential assignment. Valid values are Succeed or Failed.
           format: enum
         message:
@@ -1023,7 +1034,52 @@ components:
         tenantDomainName:
           type: string
         provider:
-          type: integer
+          enum:
+            - Bamboo
+            - GoogleSheets
+            - Greenhouse
+            - Jira
+            - Lever
+            - Namely
+            - Qualtrics
+            - Salesforce
+            - UKG
+            - Workday
+            - Icims
+            - ServiceNow
+            - Jdbc
+            - BasicS3
+            - InternalS3
+            - CopyS3
+            - Redshift
+            - Snowflake
+            - BigQuery
+            - SqlServer
+            - Dimensions
+            - IcimsPartnerProviderRedshift
+            - Willow
+            - SuccessFactors
+            - IcimsV2
+            - ADP
+            - WorkdayV2
+            - ServiceNowV2
+            - Medallia
+            - Fusion
+            - SalesforceV2
+            - Gong
+            - Zoom
+            - GoogleCalendar
+            - UKGV2
+            - DayforceV2
+            - GoogleActivityReport
+            - Slack
+            - MySql
+            - WorkdayRaas
+            - Microsoft365
+            - GoogleWorkspace
+            - OracleDb
+            - SmartRecruiters
+          type: string
           description: |-
             The data provider associated with the credential.
              - Valid values: UKG, Dimensions, Workday, Redshift, BasicS3, CopyS3, SqlServer, Snowflake
@@ -1105,7 +1161,11 @@ components:
         hasUpdates:
           type: boolean
         authContext:
-          type: integer
+          enum:
+            - DefaultDataExtraction
+            - WorkplaceDynamicsDataExtraction
+            - Notification
+          type: string
           format: enum
     DataProviderBasicInformationDTO:
       type: object
@@ -1441,7 +1501,10 @@ components:
           type: string
           description: If applicable, the job ID of the job that spawned the given job.
         cancelStatus:
-          type: integer
+          enum:
+            - CANCEL_FAILED
+            - CANCEL_SUCCEEDED
+          type: string
           description: The status of the cancellation.
           format: enum
         jobStatus:
@@ -1691,6 +1754,8 @@ components:
           type: string
         tablePrefix:
           type: string
+        schema:
+          type: string
     Result:
       type: object
       properties:
@@ -1834,7 +1899,24 @@ components:
       type: object
       properties:
         subject:
-          type: integer
+          enum:
+            - Employee
+            - Employee_Budgeted_Compensation
+            - Employment_Start
+            - Employment_Exit
+            - Absenteeism
+            - Supervisory
+            - Organization
+            - Compensation_Payout
+            - CustomSubject
+            - TestConnectionSubject
+            - Internal_Placement
+            - Pay_Change
+            - Hire
+            - Applicant
+            - Candidate
+            - Requisition
+          type: string
           description: The subjects that cannot be accessed.
           format: enum
         attributes:
@@ -1852,6 +1934,17 @@ components:
         username:
           type: string
         password:
+          type: string
+        oAuth:
+          $ref: '#/components/schemas/SuccessFactorsOAuthParamsDTO'
+    SuccessFactorsOAuthParamsDTO:
+      type: object
+      properties:
+        apiKey:
+          type: string
+        privateX509Key:
+          type: string
+        publicX509Cert:
           type: string
     TenantAndCredential:
       type: object
@@ -2004,9 +2097,20 @@ components:
           type: string
         password:
           type: string
+        oAuth:
+          $ref: '#/components/schemas/WorkdayOAuthParamsDTO'
         integrationSystemId:
           type: string
         apiKey:
+          type: string
+    WorkdayOAuthParamsDTO:
+      type: object
+      properties:
+        apiClientId:
+          type: string
+        publicX509Cert:
+          type: string
+        privateX509Key:
           type: string
     WorkdayRaasAuthParamsDTO:
       type: object
