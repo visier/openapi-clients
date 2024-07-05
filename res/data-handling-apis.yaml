@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1292
+  version: 22222222.99201.1371
 paths:
   /v1/op/data-connector-credentials:
     get:
@@ -812,6 +812,7 @@ paths:
         - name: id
           in: path
           description: The credentialId of the credential you want to delete.
+          required: true
           schema:
             type: string
         - name: tenantCode
@@ -1876,7 +1877,7 @@ components:
     StartExtractionResponse:
       type: object
       properties:
-        jobId:
+        JobId:
           type: string
           description: The ID of the dispatching job that generated the extraction jobs.
     Status:
@@ -2099,6 +2100,8 @@ components:
           type: string
         oAuth:
           $ref: '#/components/schemas/WorkdayOAuthParamsDTO'
+        refToken:
+          $ref: '#/components/schemas/WorkdayRefreshTokenParamsDTO'
         integrationSystemId:
           type: string
         apiKey:
@@ -2124,6 +2127,15 @@ components:
         password:
           type: string
         testReportUrl:
+          type: string
+    WorkdayRefreshTokenParamsDTO:
+      type: object
+      properties:
+        apiClientId:
+          type: string
+        clientSecret:
+          type: string
+        refreshToken:
           type: string
     ZoomAuthParamsDTO:
       type: object
