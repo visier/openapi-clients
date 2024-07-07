@@ -7,14 +7,15 @@ jobs:
     container:
       image: openapitools/openapi-generator-cli:latest
     strategy:
-      max-parallel: 1
+      max-parallel: 1 #TODO this one to generate sdks one by one on local machine
       matrix:
 #        driver: ["authentication-apis", "model-query-apis", "direct-data-intake-apis"]
 #        version: ["3.8", "3.9", "3.10", "3.11"]
         driver:
           - spec : "authentication-apis"
             package: "visier.authentication"
-
+          - spec: "model-query-apis"
+            package: "visier.model_query"
 
 
         version: ["3.12"]
