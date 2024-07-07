@@ -78,38 +78,42 @@ def run_without_token_updating():
 
     # Inner api client. Every generated specification will have separated ApiClient
     # Another opportunity is to update ApiClient template or create CustomApiClient with refresh token logic
-    with ApiClient(config) as api_client:
-        data_model_api = DataModelApi(api_client)
+    api_client = ApiClient(config)
 
-        # All method names have prefix like 'data_model_' or 'query_'
-        # could be changed in specification operationId
-        properties = data_model_api.data_model_properties(object_id)
-        logger.info(f"Received properties for object {object_id}. Properties: {len(properties.properties)}")
+    # Creating custom API client
+    data_model_api = DataModelApi(api_client)
 
-        query_api = QueryApi(api_client)
-        list_query_dto = ListQueryExecutionDTO(
-            source=ListQuerySourceDTO(analytic_object=object_id),
-            time_interval=QueryTimeIntervalDTO(
-                from_date_time=datetime.date.today().strftime('%Y-%m-%d'),
-                interval_period_type='YEAR',
-                interval_period_count=4
-            ),
-            options=ListQueryExecutionOptionsDTO(limit=10),
-            columns=[
-                PropertyColumnDTO(
-                    column_name=prop.display_name,
-                    column_definition=QueryPropertyDTO(
-                        var_property=PropertyReferenceDTO(
-                            name=prop.id,
-                            qualifying_path=object_id
-                        )
+    # All method names have prefix like 'data_model_' or 'query_'
+    # could be changed in specification operationId
+    properties = data_model_api.data_model_properties(object_id)
+    logger.info(f"Received properties for object {object_id}. Properties: {properties.to_str()}")
+
+    # Creating custom API client
+    query_api = QueryApi(api_client)
+
+    list_query_dto = ListQueryExecutionDTO(
+        source=ListQuerySourceDTO(analytic_object=object_id),
+        time_interval=QueryTimeIntervalDTO(
+            from_date_time=datetime.date.today().strftime('%Y-%m-%d'),
+            interval_period_type='YEAR',
+            interval_period_count=4
+        ),
+        options=ListQueryExecutionOptionsDTO(limit=10),
+        columns=[
+            PropertyColumnDTO(
+                column_name=prop.display_name,
+                column_definition=QueryPropertyDTO(
+                    var_property=PropertyReferenceDTO(
+                        name=prop.id,
+                        qualifying_path=object_id
                     )
                 )
-                for prop in properties.properties  # Creating query properties from received
-            ]
-        )
-        list_response = query_api.query_list(list_query_dto)
-        logger.info(f"Received query result: {list_response}")
+            )
+            for prop in properties.properties  # Creating query properties from received
+        ]
+    )
+    list_response = query_api.query_list(list_query_dto)
+    logger.info(f"Received query result: {list_response}")
 
 
 if __name__ == "__main__":
