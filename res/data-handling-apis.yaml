@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1371
+  version: 22222222.99201.1389
 paths:
   /v1/op/data-connector-credentials:
     get:
@@ -1001,15 +1001,23 @@ components:
       type: object
       properties:
         model:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/MapValue'
+          allOf:
+            - $ref: '#/components/schemas/DataLoadRequestModel'
+          description: A form body key that contains a collection of key-value pairs.
+    DataLoadRequestModel:
+      type: object
+      properties:
+        files:
+          type: array
+          items:
+            type: string
           description: |-
-            A form body key that contains a collection of key-value pairs.
-
-             **Note:** The only supported key value is `files` and the value is a comma-separated list of file names.
+            A comma-separated list of file names.
              Example:
              `"files": "/path/to/file1.zip.gpg,/path/to/another/file.zip.gpg"`
+        skipDataLoad:
+          type: boolean
+          description: If "true", receives the files and skips data loading. Does not generate a data version.
     DataLoadResponse:
       type: object
       properties:
@@ -1527,14 +1535,6 @@ components:
       properties:
         apiKey:
           type: string
-    MapValue:
-      type: object
-      properties:
-        value:
-          type: array
-          items:
-            type: string
-          description: A comma-separated list of encrypted, compressed batch filenames to be processed.
     MedalliaAuthParamsDTO:
       type: object
       properties:
@@ -1863,10 +1863,34 @@ components:
           description: If "true", a processing job is spawned after a dispatched extraction job runs successfully.
         dataCategoryId:
           type: string
-          description: The unique identifier of the data category on which to trigger the extraction job.
+          description: The unique identifier of the data category on which to trigger the extraction job. Default is the tenant's primary data category.
         disableArtifactGeneration:
           type: boolean
           description: If "true", the job does not generate data load artifacts. If unspecified, the default is "false".
+        connectorIds:
+          type: array
+          items:
+            type: string
+          description: The unique identifiers of the connectors to run extraction jobs.
+        lastExtractionTimeOffsetWeeks:
+          type: integer
+          description: The number of weeks in the past to retrieve data. This overrides the last extraction date to retrieve more data.
+          format: int32
+        monthsToExtract:
+          type: integer
+          description: The number of months to retrieve snapshot data.
+          format: int32
+        extractToTimeOverride:
+          type: string
+          description: An epoch timestamp in milliseconds for the end time up to which to retrieve data.
+        batchSizeOverride:
+          type: integer
+          description: The maximum number of subjects the job can retrieve in each batch.
+          format: int32
+        sqlBatchSize:
+          type: integer
+          description: The maximum amount of SQL table records the job can retrieve in each batch.
+          format: int32
     StartExtractionRequest:
       type: object
       properties:
