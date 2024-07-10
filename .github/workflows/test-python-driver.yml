@@ -6,45 +6,39 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: openapitools/openapi-generator-cli:latest
+    env:
+      PYTHON_DIR: ${{ github.workspace }}/sdks/python
+      SPEC_DIR: ${{ github.workspace }}/res
     strategy:
       max-parallel: 1 #TODO this one to generate sdks one by one on local machine
       matrix:
-#        driver: ["authentication-apis", "model-query-apis", "direct-data-intake-apis"]
-#        version: ["3.8", "3.9", "3.10", "3.11"]
-        driver:
-          - spec : "authentication-apis"
-            package: "visier.authentication"
-          - spec: "model-query-apis"
-            package: "visier.model_query"
-
-
-        version: ["3.12"]
+        driver: [ "authentication-apis",
+                  "consolidated-analytics-apis",
+                  "data-handling-apis",
+                  "data-intake-apis",
+                  "data-version-export-apis",
+                  "direct-data-intake-apis",
+                  "document-search-apis",
+                  "model-query-apis",
+                  "oauth2-apis",
+                  "object-configuration-apis",
+                  "permission-management-apis",
+                  "profile-management-apis",
+                  "project-management-apis",
+                  "system-status-apis",
+                  "tenant-management-apis",
+                  "user-management-apis" ]
+        #        version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        version: [ "3.8" ]
     steps:
       - uses: actions/checkout@v4
-#      - name: Install the latest version of OpenAPI Generator
-#        run:
-#          npm install @openapitools/openapi-generator-cli -g
-#      - name: Set up Corretto JDK 11
-#        uses: actions/setup-java@v3
-#        with:
-#            java-version: '11'
-#            distribution: 'corretto'
-#            architecture: x64
-      - name: Generate client wrapper for ${{ matrix.driver }} in Python ${{ matrix.version }}
+      - name: Generate client wrapper for ${{ matrix.driver }} in Python
         run: |
-          sdk_dir="${{ github.workspace }}/sdks/drivers/python${{ matrix.version }}/${{ matrix.driver.spec }}"
-          mkdir -p $sdk_dir
-          docker-entrypoint.sh generate -i "${{ github.workspace }}/res/${{ matrix.driver.spec}}.yaml" -g python -o $sdk_dir --package-name ${{ matrix.driver.package }}
-#      - name: Setup Python ${{ matrix.version }}
-#        uses: actions/setup-python@v4
-#        with:
-#          python-version: ${{ matrix.version }}
-#      - name: Run tests with Python ${{ matrix.version }}
-#        run: |
-#          cd ${{ github.workspace }}/sdks/drivers/python${{ matrix.version }}/${{ matrix.driver }}
-#          python3 -m venv venv
-#          source venv/bin/activate
-#          pip install -r requirements.txt
-#          pip install -r test-requirements.txt
-#          pytest
-
+          output_dir="$PYTHON_DIR/src/${{ matrix.driver }}"
+          spec_file="$SPEC_DIR/${{ matrix.driver }}.yaml"
+          mkdir -p $output_dir
+          docker-entrypoint.sh generate \
+            -i $spec_file \
+            -g python \
+            -o $output_dir \
+            --package-name "visier.${{ matrix.driver }}"
