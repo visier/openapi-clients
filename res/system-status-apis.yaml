@@ -24,7 +24,7 @@ paths:
 
          **Note:** This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).
-      operationId: SystemStatus_SystemStatus
+      operationId: Get_SystemStatus_SystemStatus
       responses:
         "200":
           description: OK
@@ -51,7 +51,7 @@ paths:
 
          **Note:** This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).
-      operationId: SystemStatus_SystemStatus
+      operationId: Post_SystemStatus_SystemStatus
       responses:
         "200":
           description: OK

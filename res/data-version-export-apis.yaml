@@ -167,11 +167,13 @@ paths:
         - name: exportUuid
           in: path
           description: The unique identifier of the data version export.
+          required: true
           schema:
             type: string
         - name: fileId
           in: path
           description: The unique integer identifier of the file within the data version export.
+          required: true
           schema:
             type: integer
       responses:
