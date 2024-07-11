@@ -627,6 +627,7 @@ class ApiClient:
                 request_auth
             )
         else:
+            config_auth_settings = self.configuration.auth_settings()
             for auth in auth_settings:
                 auth_setting = self.configuration.auth_settings().get(auth)
                 if auth_setting:

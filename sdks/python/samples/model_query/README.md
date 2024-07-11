@@ -16,6 +16,7 @@ update templates for 'ApiClient' and 'Configuration' to handle auth and refresh 
 3. Method naming:
    1. Naming depends on `operationId` which has a prefix in their names like (`DataModel_AnalyticObjects`, `DataModel_Dimensions`, `DataModel_...`).
 Check if it is possible to update methods naming in the templates.
+The easiest way will be to update operationId in specifications.
 
 4. Tests (copilot/gpt will make it faster, but still need to be done manually)
    1. Unit tests for DTOs - not quite sure that they are necessary.

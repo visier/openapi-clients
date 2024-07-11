@@ -8,37 +8,40 @@ jobs:
       image: openapitools/openapi-generator-cli:latest
     env:
       PYTHON_DIR: ${{ github.workspace }}/sdks/python
-      SPEC_DIR: ${{ github.workspace }}/res
+      SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
     strategy:
-      max-parallel: 1 #TODO this one to generate sdks one by one on local machine
+      max-parallel: 8 #TODO this one to generate sdks one by one on local machine
       matrix:
-        driver: [ "authentication-apis",
-                  "consolidated-analytics-apis",
-                  "data-handling-apis",
-                  "data-intake-apis",
-                  "data-version-export-apis",
-                  "direct-data-intake-apis",
-                  "document-search-apis",
-                  "model-query-apis",
-                  "oauth2-apis",
-                  "object-configuration-apis",
-                  "permission-management-apis",
-                  "profile-management-apis",
-                  "project-management-apis",
-                  "system-status-apis",
-                  "tenant-management-apis",
-                  "user-management-apis" ]
+        #        driver: [ "authentication-apis",
+        #                  "consolidated-analytics-apis",
+        #                  "data-handling-apis",
+        #                  "data-intake-apis",
+        #                  "data-version-export-apis",
+        #                  "direct-data-intake-apis",
+        #                  "document-search-apis",
+        #                  "model-query-apis",
+        #                  "oauth2-apis",
+        #                  "object-configuration-apis",
+        #                  "permission-management-apis",
+        #                  "profile-management-apis",
+        #                  "project-management-apis",
+        #                  "system-status-apis",
+        #                  "tenant-management-apis",
+        #                  "user-management-apis" ]
+        driver: [ "authentication-apis", "model-query-apis" ]
         #        version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         version: [ "3.8" ]
     steps:
       - uses: actions/checkout@v4
       - name: Generate client wrapper for ${{ matrix.driver }} in Python
         run: |
-          output_dir="$PYTHON_DIR/src/${{ matrix.driver }}"
           spec_file="$SPEC_DIR/${{ matrix.driver }}.yaml"
+          package_name="visier.$(echo "${{ matrix.driver }}" | sed 's/-/_/g')"
+          output_dir="$PYTHON_DIR/src/$package_name"
+          
           mkdir -p $output_dir
           docker-entrypoint.sh generate \
-            -i $spec_file \
+            -i "$spec_file" \
             -g python \
-            -o $output_dir \
-            --package-name "visier.${{ matrix.driver }}"
+            -o "$output_dir" \
+            --package-name "$package_name"

@@ -2,16 +2,14 @@ import datetime
 import logging
 import os
 
-import visier.model_query
+import visier.model_query_apis
 from dotenv import load_dotenv
-from visier.authentication import AuthenticationApi
-from visier.model_query import (
-    Configuration, ApiClient, ListQueryExecutionDTO,
-    ListQuerySourceDTO, PropertyColumnDTO, QueryTimeIntervalDTO,
-    QueryPropertyDTO, PropertyReferenceDTO, ListQueryExecutionOptionsDTO
-)
-from visier.model_query.api.data_model_api import DataModelApi
-from visier.model_query.api.query_api import QueryApi
+from visier.authentication_apis import AuthenticationApi
+from visier.model_query_apis import Configuration
+from visier.model_query_apis.api import DataModelApi, QueryApi
+from visier.model_query_apis.api_client import ApiClient
+from visier.model_query_apis.models import ListQueryExecutionDTO, ListQuerySourceDTO, QueryTimeIntervalDTO, \
+    ListQueryExecutionOptionsDTO, PropertyColumnDTO, QueryPropertyDTO, PropertyReferenceDTO
 
 
 def setup_logger() -> logging.Logger:
@@ -34,14 +32,14 @@ logger = setup_logger()
 
 
 def create_auth_api(host: str) -> AuthenticationApi:
-    config = visier.authentication.Configuration(host=host)
-    api_client = visier.authentication.api_client.ApiClient(config)
+    config = visier.authentication_apis.Configuration(host=host)
+    api_client = visier.authentication_apis.api_client.ApiClient(config)
     return AuthenticationApi(api_client)
 
 
-def create_model_query_configuration(host: str, user: str, password: str) -> Configuration:
+def create_model_query_configuration(host: str, user_name: str, password: str) -> Configuration:
     auth_api = create_auth_api(host)
-    token = auth_api.authentication_asid_token_authentication(user, password)
+    token = auth_api.asid_token_authentication(username=user_name, password=password)
     api_key = {
         'ApiKeyAuth': os.getenv('VISIER_APIKEY'),
         'CookieAuth': f'VisierASIDToken={token}',
@@ -54,8 +52,8 @@ def refresh_api_key(config: Configuration):
     # Should be implemented logic for refreshing token if necessary
     logger.info("Refreshing token")
     auth_api = create_auth_api(config.host)
-    token = auth_api.authentication_asid_token_authentication(os.getenv('VISIER_USERNAME'),
-                                                              os.getenv('VISIER_PASSWORD'))
+    token = auth_api.asid_token_authentication(username=os.getenv('VISIER_USERNAME'),
+                                               password=os.getenv('VISIER_PASSWORD'))
     config.api_key['CookieAuth'] = f'VisierASIDToken={token}'
 
 
@@ -85,7 +83,7 @@ def run_without_token_updating():
 
     # All method names have prefix like 'data_model_' or 'query_'
     # could be changed in specification operationId
-    properties = data_model_api.data_model_properties(object_id)
+    properties = data_model_api.properties(object_id)
     logger.info(f"Received properties for object {object_id}. Properties: {properties.to_str()}")
 
     # Creating custom API client
@@ -112,7 +110,7 @@ def run_without_token_updating():
             for prop in properties.properties  # Creating query properties from received
         ]
     )
-    list_response = query_api.query_list(list_query_dto)
+    list_response = query_api.list(list_query_dto)
     logger.info(f"Received query result: {list_response}")
 
 
