@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1371
+  version: 22222222.99201.1389
 paths:
   /v1/admin/capabilities:
     get:
@@ -303,6 +303,8 @@ paths:
       description: |-
         This API allows you to retrieve the full list of user permissions in your tenant.
 
+         To specify the project in which to retrieve permissions, provide a project UUID in the `ProjectID` request header.
+
          <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetPermissions
       parameters:
@@ -346,6 +348,8 @@ paths:
       description: |-
         This API allows you to update existing permissions.
 
+         To specify the project in which to update permissions, provide a project UUID in the `ProjectID` request header.
+
          <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_UpdatePermissions
       parameters:
@@ -379,6 +383,8 @@ paths:
       summary: Create permissions
       description: |-
         This API allows you to create new permissions. Administrating tenant users can specify the tenant in which to add these permissions.
+
+         To specify the project in which to create permissions, provide a project UUID in the `ProjectID` request header.
 
          <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_CreatePermissions
@@ -414,6 +420,8 @@ paths:
       description: |-
         This API allows you to delete existing permissions.
 
+         To specify the project in which to delete permissions, provide a project UUID in the `ProjectID` request header.
+
          <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_DeletePermissions
       parameters:
@@ -448,6 +456,8 @@ paths:
       summary: Retrieve a permission's details
       description: |-
         This API allows you to retrieve the details for a specified permission.
+
+         To specify the project in which to retrieve the permission, provide a project UUID in the `ProjectID` request header.
 
          <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: PermissionManagement_GetPermission
