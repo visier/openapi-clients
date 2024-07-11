@@ -17,7 +17,7 @@ from pydantic import SecretStr
 {{#tornado}}
 import tornado.gen
 {{/tornado}}
-
+h
 from {{packageName}}.configuration import Configuration
 from {{packageName}}.api_response import ApiResponse, T as ApiResponseT
 import {{modelPackage}}
@@ -629,7 +629,7 @@ class ApiClient:
         else:
             config_auth_settings = self.configuration.auth_settings()
             for auth in auth_settings:
-                auth_setting = self.configuration.auth_settings().get(auth)
+                auth_setting = config_auth_settings.get(auth)
                 if auth_setting:
                     self._apply_auth_params(
                         headers,

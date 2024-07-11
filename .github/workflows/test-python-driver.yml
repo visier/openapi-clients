@@ -43,5 +43,6 @@ jobs:
           docker-entrypoint.sh generate \
             -i "$spec_file" \
             -g python \
+            -t $PYTHON_DIR/templates \
+            --package-name "$package_name" \
             -o "$output_dir" \
-            --package-name "$package_name"
