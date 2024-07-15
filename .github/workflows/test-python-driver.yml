@@ -28,7 +28,7 @@ jobs:
         #                  "system-status-apis",
         #                  "tenant-management-apis",
         #                  "user-management-apis" ]
-        driver: [ "authentication-apis", "model-query-apis" ]
+        driver: [ "oauth2-apis" ]
         #        version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         version: [ "3.8" ]
     steps:

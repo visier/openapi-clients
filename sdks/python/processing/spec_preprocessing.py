@@ -5,7 +5,10 @@ import os
 import yaml
 
 prefix_to_postfix = ['V1', 'V1Alpha', 'V2', 'V2Alpha', 'V3', 'V3Alpha', 'V4', 'V4Alpha', 'V5', 'V5Alpha']
-special_cases = {'Authentication_ASIDTokenAuthentication': 'asid_token_authentication'}
+special_operations = {
+    'Authentication_ASIDTokenAuthentication': 'asid_token_authentication',
+    'OAuth2_OAuth2Authorize': 'oauth2_authorize'
+}
 
 # Constants for YAML keys
 PATHS = 'paths'
@@ -37,8 +40,8 @@ def update_operation_ids(spec):
 
                     operation_id = operation[OPERATION_ID]
                     new_operation_id = None
-                    if operation_id in special_cases:
-                        new_operation_id = special_cases[operation_id]
+                    if operation_id in special_operations:
+                        new_operation_id = special_operations[operation_id]
                     elif operation_id.startswith(first_tag):
                         new_operation_id = operation_id[len(first_tag) + 1:]
                         # To avoid operationIds collisions there will be added versions of the methods

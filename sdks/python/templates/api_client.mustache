@@ -285,7 +285,6 @@ class ApiClient:
 
         except ApiException as e:
             raise e
-        # here will be added code to handle authorization error
         return response_data
 
     def response_deserialize(
