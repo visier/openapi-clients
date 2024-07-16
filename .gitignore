@@ -1,6 +1,3 @@
 *.log
 
-#temporarly ignore all files in the src folder
-/sdks/python/src/
-
 /specs_preprocessed
