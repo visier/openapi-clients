@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1389
+  version: 22222222.99201.1401
 paths:
   /v1alpha/data/data-version-exports/data-versions:
     get:
@@ -167,11 +167,13 @@ paths:
         - name: exportUuid
           in: path
           description: The unique identifier of the data version export.
+          required: true
           schema:
             type: string
         - name: fileId
           in: path
           description: The unique integer identifier of the file within the data version export.
+          required: true
           schema:
             type: integer
       responses:
