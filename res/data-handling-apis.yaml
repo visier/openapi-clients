@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1389
+  version: 22222222.99201.1401
 paths:
   /v1/op/data-connector-credentials:
     get:
@@ -229,6 +229,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DisableDVResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/data/categories:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a list of all data categories
+      description: Use this API to retrieve a list of all available data categories.
+      operationId: DataAndJobHandling_RetrieveDataCategories
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataCategoriesResponseDTO'
         default:
           description: Default error response
           content:
@@ -997,6 +1017,20 @@ components:
           description: |-
             The properties that the credential cannot access despite successful authentication.
              This is only returned for authentications that do not grant access to all data.
+    DataCategoriesResponseDTO:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataCategoryResponseDTO'
+    DataCategoryResponseDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
     DataLoadRequest:
       type: object
       properties:
@@ -1891,6 +1925,9 @@ components:
           type: integer
           description: The maximum amount of SQL table records the job can retrieve in each batch.
           format: int32
+        forceUpdateExistingArtifacts:
+          type: boolean
+          description: If "true" and `disableArtifactGeneration` is "false", updates extractor artifacts, which may overwrite the artifacts' manual overrides. Ignored if `disableArtifactGeneration` is "true".
     StartExtractionRequest:
       type: object
       properties:

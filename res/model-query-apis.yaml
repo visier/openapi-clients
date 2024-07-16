@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1389
+  version: 22222222.99201.1401
 paths:
   /v1/data/model/analytic-objects:
     get:
@@ -70,6 +70,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{id}/metrics:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of metrics for an analytic object by ID
+      description: If you know the ID of an analytic object, use this API to retrieve metrics for that object specifically.
+      operationId: DataModel_AnalyticMetrics
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the analytic object to retrieve metrics for.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/data/model/analytic-objects/{objectId}/dimensions:
     get:
       tags:
@@ -104,6 +131,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{objectId}/dimensions/{dimensionId}/mappings/validate:
+    post:
+      tags:
+        - DataModel
+      summary: Validate a member map's unmapped dimension members by ID
+      description: "If you know the ID of a member map, use this API to validate one of the member map's dimensions. \n You must also know the dimension's ID and the analytic object's ID. \n The response returns the member map ID, the requested dimension ID, a list of the dimension's unmapped members, and a list of errors found."
+      operationId: DataModel_DimensionMemberMapValidation
+      parameters:
+        - name: objectId
+          in: path
+          description: The ID of the analytic object.
+          required: true
+          schema:
+            type: string
+        - name: dimensionId
+          in: path
+          description: The ID of a dimension of the member map.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DimensionMappingValidationExecutionDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DimensionMappingValidationDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/data/model/analytic-objects/{objectId}/dimensions/{dimensionId}/members:
     get:
       tags:
@@ -125,13 +191,13 @@ paths:
       parameters:
         - name: objectId
           in: path
-          description: The ID of the analytic object
+          description: The ID of the analytic object.
           required: true
           schema:
             type: string
         - name: dimensionId
           in: path
-          description: The ID of the dimension
+          description: The ID of the dimension.
           required: true
           schema:
             type: string
@@ -204,13 +270,13 @@ paths:
       parameters:
         - name: objectId
           in: path
-          description: The ID of the analytic object
+          description: The ID of the analytic object.
           required: true
           schema:
             type: string
         - name: dimensionId
           in: path
-          description: The ID of the dimension
+          description: The ID of the dimension.
           required: true
           schema:
             type: string
@@ -221,7 +287,7 @@ paths:
             type: string
         - name: Id
           in: query
-          description: The ID of the member to retrieve
+          description: The ID of the member to retrieve.
           schema:
             type: string
       responses:
@@ -1529,6 +1595,31 @@ components:
             $ref: '#/components/schemas/TagMapElementDTO'
           description: The optional collection of tags defined for this element.
       description: A dimension organizes unique values of an attribute into a list or a hierarchical structure for use as a filter or group-by in your solution.
+    DimensionMappingValidationDTO:
+      type: object
+      properties:
+        dimensionMapId:
+          type: string
+        dimensionId:
+          type: string
+        unmappedMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionMemberReferenceDTO'
+        failures:
+          type: array
+          items:
+            type: string
+    DimensionMappingValidationExecutionDTO:
+      type: object
+      properties:
+        memberMapId:
+          type: string
+          description: memberMapId == dimensionMapId
+        analyticObject:
+          type: string
+          description: the analytic object associated with the dimension map
+      description: Instruction to execute a mapping validation query
     DimensionMemberReferenceDTO:
       type: object
       properties:
