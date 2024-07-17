@@ -4,7 +4,6 @@ import os
 
 import yaml
 
-prefix_to_postfix = ['V1', 'V1Alpha', 'V2', 'V2Alpha', 'V3', 'V3Alpha', 'V4', 'V4Alpha', 'V5', 'V5Alpha']
 special_operations = {
     'Authentication_ASIDTokenAuthentication': 'asid_token_authentication',
     'OAuth2_OAuth2Authorize': 'oauth2_authorize'
@@ -44,11 +43,6 @@ def update_operation_ids(spec):
                         new_operation_id = special_operations[operation_id]
                     elif operation_id.startswith(first_tag):
                         new_operation_id = operation_id[len(first_tag) + 1:]
-                        # To avoid operationIds collisions there will be added versions of the methods
-                        for postfix in prefix_to_postfix:
-                            if first_tag.endswith(postfix):
-                                new_operation_id = f"{new_operation_id}_{postfix}"
-                                break
                     if new_operation_id:
                         updated_spec[PATHS][path][method][OPERATION_ID] = new_operation_id
     return updated_spec
