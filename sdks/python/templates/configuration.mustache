@@ -230,7 +230,7 @@ conf = {{{packageName}}}.Configuration(
         self.client_secret = client_secret
         self.redirect_uri = redirect_uri
         self.vanity = vanity
-        self.scope = scope
+        self.scope = scope if scope else 'read'
         self.asid_token = asid_token
         self.access_token = access_token
         """Access token
@@ -533,7 +533,8 @@ conf = {{{packageName}}}.Configuration(
                 'key': 'VisierASIDToken',
                 'value': f'VisierASIDToken={self.asid_token}'
             }
-        elif self.access_token is not None:
+
+        if self.access_token:
             auth['OAuth2Auth'] = {
                 'type': 'bearer',
                 'in': 'header',
