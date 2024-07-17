@@ -145,9 +145,7 @@ conf = visier.model_query_apis.Configuration(
         """
         self.api_key = api_key
 
-        """dict to store API prefix (e.g. Bearer)
-        """
-        self.refresh_api_key_hook = _default_refresh_config
+        self.refresh_config = default_refresh_config
         """function hook to refresh API key if expired
         """
         self.username = username
@@ -386,8 +384,8 @@ conf = visier.model_query_apis.Configuration(
         :return: The Auth Settings information dict.
         """
         # Necessary key for all auth types
-        if self.refresh_api_key_hook:
-            self.refresh_api_key_hook(self, False)
+        if self.refresh_config:
+            self.refresh_config(self, False)
 
         auth = {'ApiKeyAuth': {
             'type': 'api_key',
@@ -489,6 +487,17 @@ conf = visier.model_query_apis.Configuration(
 
 # Additional logic to extend default behaviour
 ########################################################################################################################
+# Constants
+GRANT_TYPE = "grant_type"
+REFRESH_TOKEN = "refresh_token"
+AUTHORIZATION_CODE = "authorization_code"
+CLIENT_ID = "client_id"
+SCOPE = "scope"
+USERNAME = "username"
+PASSWORD = "password"
+CODE = "code"
+CODE_VERIFIER = "code_verifier"
+API_KEY = "apikey"
 
 
 class CallbackServer:
@@ -508,16 +517,9 @@ class CallbackServer:
 
     def callback(self):
         """The handler for the OAuth2 callback providing the auth code"""
-        code = request.args.get("code")
+        code = request.args.get(CODE)
         self.queue.put(code)
         return "<p>You can now close this window</p>"
-
-    def __enter__(self):
-        self.start()
-        return self
-
-    def __exit__(self, ex_type, ex_value, trace_back):
-        self.stop()
 
     def start(self):
         """Starts the callback server"""
@@ -533,6 +535,13 @@ class CallbackServer:
             self.server = None
             self.flask_thread = None
 
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, ex_type, ex_value, trace_back):
+        self.stop()
+
 
 def _post_request(url: str, data: dict, additional_headers: dict = None, auth=None):
     headers = {
@@ -541,14 +550,8 @@ def _post_request(url: str, data: dict, additional_headers: dict = None, auth=No
         'Content-Type': 'application/x-www-form-urlencoded'
     }
     if additional_headers:
-        headers = {**headers, **additional_headers}
-    # TODO currently using requests due some auth problems using urllib3
-    response = requests.post(
-        url,
-        headers=headers,
-        data=data,
-        auth=auth
-    )
+        headers.update(additional_headers)
+    response = requests.post(url, headers=headers, data=data, auth=auth)
     response.raise_for_status()
     return response
 
@@ -556,8 +559,8 @@ def _post_request(url: str, data: dict, additional_headers: dict = None, auth=No
 def _connect_asid(config):
     url = urljoin(config.host, '/v1/admin/visierSecureToken')
     data = {
-        'username': config.username,
-        'password': config.password
+        USERNAME: config.username,
+        PASSWORD: config.password
     }
     if config.vanity:
         data['vanityName'] = config.vanity
@@ -565,86 +568,83 @@ def _connect_asid(config):
     config.asid_token = response.text
 
 
-def _update_access_token(config: Configuration, body: dict):
+def _update_access_token(config, body: dict):
     url = config.host + "/v1/auth/oauth2/token"
     if config.redirect_uri:
         body["redirect_uri"] = config.redirect_uri
     auth = (config.client_id, quote(config.client_secret, safe=''))
     headers = {
-        "apikey": config.api_key,
+        API_KEY: config.api_key,
     }
 
     response = _post_request(url=url, data=body, additional_headers=headers, auth=auth)
     response_json = response.json()
     config.access_token = response_json.get('access_token')
     config.token_acquired_at = time.time()
-    config.refresh_token = response_json.get('refresh_token')
+    config.refresh_token = response_json.get(REFRESH_TOKEN)
 
 
 def _refresh_token(config):
     body = {
-        "grant_type": "refresh_token",
-        "refresh_token": config.refresh_token,
+        GRANT_TYPE: REFRESH_TOKEN,
+        REFRESH_TOKEN: config.refresh_token,
     }
     _update_access_token(config, body)
 
 
 def _connect_oauth_password(config):
     body = {
-        "grant_type": "password",
-        "client_id": config.client_id,
-        "scope": config.scope,
-        "username": config.username,
-        "password": config.password,
+        GRANT_TYPE: "password",
+        CLIENT_ID: config.client_id,
+        SCOPE: config.scope,
+        USERNAME: config.username,
+        PASSWORD: config.password,
     }
     _update_access_token(config, body)
 
 
 def _connect_oauth_code(config):
-    """Connect to Visier using (three-legged) OAuth2.
-           This method will attempt to open a browser for the authentication and consent screens.
-           It will also spin up a local web server to receive the OAuth2 authorization code."""
+    """Connect to Visier using (three-legged) OAuth2."""
     code_verifier = secrets.token_urlsafe(64)
     code_challenge_digest = hashlib.sha256(code_verifier.encode()).digest()
     code_challenge = base64.urlsafe_b64encode(code_challenge_digest).decode().rstrip("=")
 
     url_prefix = config.host + "/v1/auth/oauth2"
-    with CallbackServer(config.redirect_uri) as svr:
-        query_args = {
-            "apikey": config.api_key,
-            "response_type": "code",
-            "client_id": config.client_id,
-            "code_challenge_method": "S256",
-            "code_challenge": code_challenge
-        }
-        if config.redirect_uri:
-            query_args["redirect_uri"] = config.redirect_uri
+    svr = CallbackServer(config.redirect_uri)
+    query_args = {
+        API_KEY: config.api_key,
+        "response_type": "code",
+        CLIENT_ID: config.client_id,
+        "code_challenge_method": "S256",
+        "code_challenge": code_challenge
+    }
+    if config.redirect_uri:
+        query_args["redirect_uri"] = config.redirect_uri
 
-        browser_url = f'{url_prefix}/authorize?{urlencode(query_args)}'
-        # Launch the browser for authentication and consent screens
-        webbrowser.open(browser_url)
-        try:
-            # Wait up to 2 minutes for the user to complete the OAuth2 code flow
-            # TODO add timeouts
-            code = svr.queue.get(block=True, timeout=120)
-            body = {
-                "grant_type": "authorization_code",
-                "client_id": config.client_id,
-                "scope": "read",
-                "code": code,
-                "code_verifier": code_verifier
-            }
-            _update_access_token(config, body)
-            # self._update_session(get_token(code, code_verifier), self.configuration.api_key)
-        except Empty as empty:
-            raise ApiException("Timed out waiting for OAuth2 auth code") from empty
+    browser_url = f'{url_prefix}/authorize?{urlencode(query_args)}'
+    webbrowser.open(browser_url)
+    try:
+        svr.start()
+        code = svr.queue.get(block=True, timeout=120)
+        body = {
+            GRANT_TYPE: AUTHORIZATION_CODE,
+            CLIENT_ID: config.client_id,
+            SCOPE: "read",
+            CODE: code,
+            CODE_VERIFIER: code_verifier
+        }
+        _update_access_token(config, body)
+    except Empty as empty:
+        raise ApiException("Timed out waiting for OAuth2 auth code") from empty
+    finally:
+        svr.stop()
 
 
 def _connect_oauth(config):
     if config.refresh_token:
         _update_access_token(config, {
-            "grant_type": "refresh_token",
-            "refresh_token": config.refresh_token,
+            GRANT_TYPE: REFRESH_TOKEN,
+            REFRESH_TOKEN: config.refresh_token,
         })
     elif config.username and config.password:
         _connect_oauth_password(config)
@@ -652,7 +652,7 @@ def _connect_oauth(config):
         _connect_oauth_code(config)
 
 
-def _need_to_connect(config: Configuration):
+def _need_to_connect(config):
     if config.client_id and config.client_secret:
         return not config.access_token or config.is_token_expired()
 
@@ -662,7 +662,7 @@ def _need_to_connect(config: Configuration):
     raise ValueError("No valid authentication method found")
 
 
-def _default_refresh_config(config: Configuration, force_refresh: bool):
+def default_refresh_config(config, force_refresh: bool):
     if not force_refresh and not _need_to_connect(config):
         return
 

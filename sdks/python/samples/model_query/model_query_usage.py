@@ -67,7 +67,7 @@ def run_without_token_updating():
 
     # One of the way to refresh token, still necessary to make some changes in template
     # because currently
-    config.refresh_api_key_hook = refresh_api_key
+    config.refresh_config = refresh_api_key
     # Could be changed retry count or implemented custom retry logic
     # config.retries = CustomRetry() OR config.retries = 5
     # problem is that retry logic is used inside urlib3
