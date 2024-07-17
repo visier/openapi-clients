@@ -7,7 +7,6 @@ import copy
 import hashlib
 import http.client as httplib
 import logging
-import multiprocessing
 import secrets
 import sys
 import threading
@@ -23,7 +22,7 @@ import requests
 from flask import Flask, request
 from pydantic import BaseModel
 
-from visier.model_query_apis.exceptions import ApiException
+from {{packageName}}.exceptions import ApiException
 
 {{^asyncio}}
 import multiprocessing
@@ -169,9 +168,10 @@ conf = {{{packageName}}}.Configuration(
                  redirect_uri=None,
                  vanity=None,
                  scope=None,
+                 asid_token=None,
                  access_token=None,
                  refresh_token=None,
-                 token_expiration_time_secs=None,
+                 token_expiration_secs=None,
 {{#hasHttpSignatureMethods}}
                  signing_info=None,
 {{/hasHttpSignatureMethods}}
@@ -223,17 +223,20 @@ conf = {{{packageName}}}.Configuration(
         """
 
         # TODO add description
+        self.token_expiration_secs = token_expiration_secs
+        self._token_acquired_at = None
+
         self.client_id = client_id
         self.client_secret = client_secret
         self.redirect_uri = redirect_uri
         self.vanity = vanity
         self.scope = scope
-
+        self.asid_token = asid_token
         self.access_token = access_token
         """Access token
         """
         self.refresh_token = refresh_token
-        self.token_expiration_time_secs = token_expiration_time_secs
+
 
 {{#hasHttpSignatureMethods}}
         if signing_info is not None:
@@ -511,62 +514,32 @@ conf = {{{packageName}}}.Configuration(
 
         :return: The Auth Settings information dict.
         """
-        auth = {}
-{{#authMethods}}
-{{#isApiKey}}
-        if '{{name}}' in self.api_key{{#vendorExtensions.x-auth-id-alias}} or '{{.}}' in self.api_key{{/vendorExtensions.x-auth-id-alias}}:
-            auth['{{name}}'] = {
+
+        if self.refresh_config:
+            self.refresh_config(self, False)
+
+        # Necessary apiKey for all auth types
+        auth = {'ApiKeyAuth': {
+            'type': 'api_key',
+            'in': 'header',
+            'key': 'apikey',
+            'value': self.api_key
+        }}
+
+        if self.asid_token:
+            auth['CookieAuth'] = {
                 'type': 'api_key',
-                'in': {{#isKeyInCookie}}'cookie'{{/isKeyInCookie}}{{#isKeyInHeader}}'header'{{/isKeyInHeader}}{{#isKeyInQuery}}'query'{{/isKeyInQuery}},
-                'key': '{{keyParamName}}',
-                'value': self.get_api_key_with_prefix(
-                    '{{name}}',{{#vendorExtensions.x-auth-id-alias}}
-                    alias='{{.}}',{{/vendorExtensions.x-auth-id-alias}}
-                ),
+                'in': 'cookie',
+                'key': 'VisierASIDToken',
+                'value': f'VisierASIDToken={self.asid_token}'
             }
-{{/isApiKey}}
-{{#isBasic}}
-  {{#isBasicBasic}}
-        if self.username is not None and self.password is not None:
-            auth['{{name}}'] = {
-                'type': 'basic',
-                'in': 'header',
-                'key': 'Authorization',
-                'value': self.get_basic_auth_token()
-            }
-  {{/isBasicBasic}}
-  {{#isBasicBearer}}
-        if self.access_token is not None:
-            auth['{{name}}'] = {
+        elif self.access_token is not None:
+            auth['OAuth2Auth'] = {
                 'type': 'bearer',
                 'in': 'header',
-                {{#bearerFormat}}
-                'format': '{{{.}}}',
-                {{/bearerFormat}}
                 'key': 'Authorization',
                 'value': 'Bearer ' + self.access_token
             }
-  {{/isBasicBearer}}
-  {{#isHttpSignature}}
-        if self.signing_info is not None:
-            auth['{{name}}'] = {
-                'type': 'http-signature',
-                'in': 'header',
-                'key': 'Authorization',
-                'value': None  # Signature headers are calculated for every HTTP request
-            }
-  {{/isHttpSignature}}
-{{/isBasic}}
-{{#isOAuth}}
-        if self.access_token is not None:
-            auth['{{name}}'] = {
-                'type': 'oauth2',
-                'in': 'header',
-                'key': 'Authorization',
-                'value': 'Bearer ' + self.access_token
-            }
-{{/isOAuth}}
-{{/authMethods}}
         return auth
 
     def to_debug_report(self):
@@ -665,6 +638,35 @@ conf = {{{packageName}}}.Configuration(
         """Fix base path."""
         self._base_path = value
         self.server_index = None
+
+    @property
+    def access_token(self):
+        return self._access_token
+
+    @access_token.setter
+    def access_token(self, value):
+        self._access_token = value
+        self._token_acquired_at = time.time()
+
+    @property
+    def asid_token(self):
+        return self._asid_token
+
+    @asid_token.setter
+    def asid_token(self, value):
+        self._asid_token = value
+        self._token_acquired_at = time.time()
+
+    def is_token_expired(self):
+        # Not using token expiration logic
+        if self.token_expiration_secs is None:
+            return False
+
+        # Token has not been acquired yet
+        if not self._token_acquired_at:
+            return True
+
+        return time.time() - self._token_acquired_at > self.token_expiration_secs
 
 # Additional logic to handle authentication
 ########################################################################################################################

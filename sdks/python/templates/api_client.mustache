@@ -68,7 +68,8 @@ class ApiClient:
         configuration=None,
         header_name=None,
         header_value=None,
-        cookie=None
+        cookie=None,
+        auth_retries=2
     ) -> None:
         # use default configuration if none is provided
         if configuration is None:
@@ -83,6 +84,7 @@ class ApiClient:
         # Set default User-Agent.
         self.user_agent = '{{{httpUserAgent}}}{{^httpUserAgent}}OpenAPI-Generator/{{{packageVersion}}}/python{{/httpUserAgent}}'
         self.client_side_validation = configuration.client_side_validation
+        self.auth_retries = auth_retries
 
 {{#asyncio}}
     async def __aenter__(self):
@@ -274,7 +276,8 @@ class ApiClient:
         :return: RESTResponse
         """
 
-        try:
+        attempt = 0
+        while attempt < self.auth_retries:
             # perform request and return response
             response_data = {{#asyncio}}await {{/asyncio}}{{#tornado}}yield {{/tornado}}self.rest_client.request(
                 method, url,
@@ -282,11 +285,15 @@ class ApiClient:
                 body=body, post_params=post_params,
                 _request_timeout=_request_timeout
             )
+            if response_data.status == 401:
+                if not self.configuration.refresh_config:
+                    break
+                attempt += 1
+                self.configuration.refresh_config(self.configuration, True)
+                continue
+            return response_data
 
-        except ApiException as e:
-            raise e
-
-        return response_data
+        raise ApiException(f"Request failed after {self.auth_retries} retries")
 
     def response_deserialize(
         self,
