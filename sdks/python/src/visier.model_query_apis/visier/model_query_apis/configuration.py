@@ -29,6 +29,7 @@ from wsgiref.simple_server import make_server
 
 import requests
 from flask import Flask, request
+from pydantic import BaseModel
 
 from visier.model_query_apis.exceptions import ApiException
 
@@ -485,10 +486,11 @@ conf = visier.model_query_apis.Configuration(
         self.server_index = None
 
 
-# Additional logic to extend default behaviour
+# Additional logic to handle authentication
 ########################################################################################################################
-# Constants
+
 GRANT_TYPE = "grant_type"
+ACCESS_TOKEN = 'access_token'
 REFRESH_TOKEN = "refresh_token"
 AUTHORIZATION_CODE = "authorization_code"
 CLIENT_ID = "client_id"
@@ -498,6 +500,22 @@ PASSWORD = "password"
 CODE = "code"
 CODE_VERIFIER = "code_verifier"
 API_KEY = "apikey"
+REDIRECT_URI = "redirect_uri"
+RESPONSE_TYPE = "response_type"
+CODE_CHALLENGE_METHOD = "code_challenge_method"
+CODE_CHALLENGE = "code_challenge"
+
+
+class TokenRequestDTO(BaseModel):
+    grant_type: str
+    client_id: str
+    scope: str
+    username: str = None
+    password: str = None
+    code: str = None
+    code_verifier: str = None
+    redirect_uri: str = None
+    refresh_token: str = None
 
 
 class CallbackServer:
@@ -563,15 +581,16 @@ def _connect_asid(config):
         PASSWORD: config.password
     }
     if config.vanity:
-        data['vanityName'] = config.vanity
+        data["vanityName"] = config.vanity
     response = _post_request(url=url, data=data)
     config.asid_token = response.text
 
 
-def _update_access_token(config, body: dict):
+def _update_access_token(config, token_request: TokenRequestDTO):
     url = config.host + "/v1/auth/oauth2/token"
+    body = token_request.dict()
     if config.redirect_uri:
-        body["redirect_uri"] = config.redirect_uri
+        body[REDIRECT_URI] = config.redirect_uri
     auth = (config.client_id, quote(config.client_secret, safe=''))
     headers = {
         API_KEY: config.api_key,
@@ -579,28 +598,30 @@ def _update_access_token(config, body: dict):
 
     response = _post_request(url=url, data=body, additional_headers=headers, auth=auth)
     response_json = response.json()
-    config.access_token = response_json.get('access_token')
+    config.access_token = response_json.get(ACCESS_TOKEN)
     config.token_acquired_at = time.time()
     config.refresh_token = response_json.get(REFRESH_TOKEN)
 
 
 def _refresh_token(config):
-    body = {
-        GRANT_TYPE: REFRESH_TOKEN,
-        REFRESH_TOKEN: config.refresh_token,
-    }
-    _update_access_token(config, body)
+    token_request = TokenRequestDTO(
+        grant_type=REFRESH_TOKEN,
+        client_id=config.client_id,
+        scope=config.scope,
+        refresh_token=config.refresh_token
+    )
+    _update_access_token(config, token_request)
 
 
 def _connect_oauth_password(config):
-    body = {
-        GRANT_TYPE: "password",
-        CLIENT_ID: config.client_id,
-        SCOPE: config.scope,
-        USERNAME: config.username,
-        PASSWORD: config.password,
-    }
-    _update_access_token(config, body)
+    token_request = TokenRequestDTO(
+        grant_type="password",
+        client_id=config.client_id,
+        scope=config.scope,
+        username=config.username,
+        password=config.password
+    )
+    _update_access_token(config, token_request)
 
 
 def _connect_oauth_code(config):
@@ -613,27 +634,27 @@ def _connect_oauth_code(config):
     svr = CallbackServer(config.redirect_uri)
     query_args = {
         API_KEY: config.api_key,
-        "response_type": "code",
+        RESPONSE_TYPE: "code",
         CLIENT_ID: config.client_id,
-        "code_challenge_method": "S256",
-        "code_challenge": code_challenge
+        CODE_CHALLENGE_METHOD: "S256",
+        CODE_CHALLENGE: code_challenge
     }
     if config.redirect_uri:
-        query_args["redirect_uri"] = config.redirect_uri
+        query_args[REDIRECT_URI] = config.redirect_uri
 
     browser_url = f'{url_prefix}/authorize?{urlencode(query_args)}'
     webbrowser.open(browser_url)
     try:
         svr.start()
         code = svr.queue.get(block=True, timeout=120)
-        body = {
-            GRANT_TYPE: AUTHORIZATION_CODE,
-            CLIENT_ID: config.client_id,
-            SCOPE: "read",
-            CODE: code,
-            CODE_VERIFIER: code_verifier
-        }
-        _update_access_token(config, body)
+        token_request = TokenRequestDTO(
+            grant_type=AUTHORIZATION_CODE,
+            client_id=config.client_id,
+            scope=config.scope,
+            code=code,
+            code_verifier=code_verifier
+        )
+        _update_access_token(config, token_request)
     except Empty as empty:
         raise ApiException("Timed out waiting for OAuth2 auth code") from empty
     finally:
@@ -642,10 +663,7 @@ def _connect_oauth_code(config):
 
 def _connect_oauth(config):
     if config.refresh_token:
-        _update_access_token(config, {
-            GRANT_TYPE: REFRESH_TOKEN,
-            REFRESH_TOKEN: config.refresh_token,
-        })
+        _refresh_token(config)
     elif config.username and config.password:
         _connect_oauth_password(config)
     else:
@@ -657,12 +675,12 @@ def _need_to_connect(config):
         return not config.access_token or config.is_token_expired()
 
     if config.username and config.password:
-        return not config.api_key.get('CookieAuth') or config.is_token_expired()
+        return not config.asid_token or config.is_token_expired()
 
     raise ValueError("No valid authentication method found")
 
 
-def default_refresh_config(config, force_refresh: bool):
+def default_refresh_config(config, force_refresh: bool = False):
     if not force_refresh and not _need_to_connect(config):
         return
 
