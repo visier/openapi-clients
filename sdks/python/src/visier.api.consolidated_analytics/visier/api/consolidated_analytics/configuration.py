@@ -545,21 +545,21 @@ class Configuration:
 
 # Additional logic to handle authentication
 ########################################################################################################################
-GRANT_TYPE = "grant_type"
 ACCESS_TOKEN = 'access_token'
-REFRESH_TOKEN = "refresh_token"
+API_KEY = "apikey"
 AUTHORIZATION_CODE = "authorization_code"
 CLIENT_ID = "client_id"
+CODE = "code"
+CODE_CHALLENGE = "code_challenge"
+CODE_CHALLENGE_METHOD = "code_challenge_method"
+CODE_VERIFIER = "code_verifier"
+GRANT_TYPE = "grant_type"
+PASSWORD = "password"
+REDIRECT_URI = "redirect_uri"
+REFRESH_TOKEN = "refresh_token"
+RESPONSE_TYPE = "response_type"
 SCOPE = "scope"
 USERNAME = "username"
-PASSWORD = "password"
-CODE = "code"
-CODE_VERIFIER = "code_verifier"
-API_KEY = "apikey"
-REDIRECT_URI = "redirect_uri"
-RESPONSE_TYPE = "response_type"
-CODE_CHALLENGE_METHOD = "code_challenge_method"
-CODE_CHALLENGE = "code_challenge"
 
 # Disable werkzeug logging for the callback server
 logging.getLogger('werkzeug').disabled = True
@@ -625,6 +625,8 @@ def _post_request(url: str, data: dict, additional_headers: dict = None, auth=No
     }
     if additional_headers:
         headers.update(additional_headers)
+
+    # TODO replace requests with urllib3
     response = requests.post(url, headers=headers, data=data, auth=auth)
     response.raise_for_status()
     return response

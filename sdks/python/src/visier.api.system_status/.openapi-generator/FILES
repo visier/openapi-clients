@@ -1,7 +1,6 @@
 .github/workflows/python.yml
 .gitignore
 .gitlab-ci.yml
-.openapi-generator-ignore
 .travis.yml
 README.md
 docs/GoogleProtobufAny.md
@@ -15,10 +14,6 @@ setup.cfg
 setup.py
 test-requirements.txt
 test/__init__.py
-test/test_google_protobuf_any.py
-test/test_status.py
-test/test_system_status_api.py
-test/test_system_status_dto.py
 tox.ini
 visier/__init__.py
 visier/api/__init__.py

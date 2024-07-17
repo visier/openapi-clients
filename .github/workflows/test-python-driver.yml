@@ -10,13 +10,11 @@ jobs:
       PYTHON_DIR: ${{ github.workspace }}/sdks/python
       ORIG_SPEC_DIR: ${{ github.workspace }}/res
       SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
-      PREPROCESS: false
+      PREPROCESS: true
     strategy:
       max-parallel: 8
       matrix:
         driver: [
-#          "authentication-apis",
-#          "oauth2-apis",
           "consolidated-analytics-apis",
           "data-handling-apis",
           "data-intake-apis",

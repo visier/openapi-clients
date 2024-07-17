@@ -1,7 +1,6 @@
 .github/workflows/python.yml
 .gitignore
 .gitlab-ci.yml
-.openapi-generator-ignore
 .travis.yml
 README.md
 docs/DataIntakeApi.md
@@ -21,16 +20,6 @@ setup.cfg
 setup.py
 test-requirements.txt
 test/__init__.py
-test/test_data_intake_api.py
-test/test_direct_data_intake_api.py
-test/test_direct_data_job_config_dto.py
-test/test_direct_data_job_status_response_dto.py
-test/test_direct_data_load_config_dto.py
-test/test_direct_data_schema_field_dto.py
-test/test_direct_data_transaction_start_response_dto.py
-test/test_direct_data_upload_file_response_dto.py
-test/test_google_protobuf_any.py
-test/test_status.py
 tox.ini
 visier/__init__.py
 visier/api/__init__.py

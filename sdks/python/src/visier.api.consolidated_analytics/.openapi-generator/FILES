@@ -1,7 +1,6 @@
 .github/workflows/python.yml
 .gitignore
 .gitlab-ci.yml
-.openapi-generator-ignore
 .travis.yml
 README.md
 docs/ConsolidatedAnalyticsAPIExcludedSourceListDTO.md
@@ -22,17 +21,6 @@ setup.cfg
 setup.py
 test-requirements.txt
 test/__init__.py
-test/test_consolidated_analytics_api_excluded_source_list_dto.py
-test/test_consolidated_analytics_api_source_tenant_list_dto.py
-test/test_consolidated_analytics_api_tenant_create_request_dto.py
-test/test_consolidated_analytics_api_tenant_list_response_dto.py
-test/test_consolidated_analytics_api_tenant_with_details.py
-test/test_consolidated_analytics_api_tenant_with_details_list_response_dto.py
-test/test_consolidated_analytics_v1_alpha_api.py
-test/test_excluded_sources_body.py
-test/test_google_protobuf_any.py
-test/test_status.py
-test/test_tenant_code_body.py
 tox.ini
 visier/__init__.py
 visier/api/__init__.py
