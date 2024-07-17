@@ -290,6 +290,13 @@ class ApiClient:
                     break
                 attempt += 1
                 self.configuration.refresh_config(self.configuration, True)
+                self.update_params_for_auth(header_params,
+                                            post_params,
+                                            ['ApiKeyAuth', 'CookieAuth', 'OAuth2Auth'],
+                                            None,
+                                            None,
+                                            None
+                                            )
                 continue
             return response_data
 
