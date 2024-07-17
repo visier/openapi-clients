@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1389
+  version: 22222222.99201.1401
 paths:
   /v1/admin/system-status:
     get:
@@ -24,7 +24,7 @@ paths:
 
          **Note:** This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).
-      operationId: Get_SystemStatus_SystemStatus
+      operationId: SystemStatus_SystemStatus
       responses:
         "200":
           description: OK
@@ -51,7 +51,7 @@ paths:
 
          **Note:** This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).
-      operationId: Post_SystemStatus_SystemStatus
+      operationId: SystemStatus_PostSystemStatus
       responses:
         "200":
           description: OK
