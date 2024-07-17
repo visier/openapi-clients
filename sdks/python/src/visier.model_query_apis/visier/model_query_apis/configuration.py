@@ -400,7 +400,7 @@ conf = visier.model_query_apis.Configuration(
                 'type': 'api_key',
                 'in': 'cookie',
                 'key': 'VisierASIDToken',
-                'value': self.asid_token,
+                'value': f'VisierASIDToken={self.asid_token}'
             }
         elif self.access_token is not None:
             auth['OAuth2Auth'] = {
