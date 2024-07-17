@@ -28,7 +28,6 @@ from urllib.parse import urljoin, quote, urlparse, urlencode
 from wsgiref.simple_server import make_server
 
 import requests
-import urllib3
 from flask import Flask, request
 
 from visier.model_query_apis.exceptions import ApiException
@@ -47,13 +46,7 @@ class Configuration:
     :param ignore_operation_servers
       Boolean to ignore operation servers for the API client.
       Config will use `host` as the base url regardless of the operation servers.
-    :param api_key: Dict to store API key(s).
-      Each entry in the dict specifies an API key.
-      The dict key is the name of the security scheme in the OAS specification.
-      The dict value is the API key secret.
-    :param api_key_prefix: Dict to store API prefix (e.g. Bearer).
-      The dict key is the name of the security scheme in the OAS specification.
-      The dict value is an API key prefix when generating the auth data.
+    :param api_key: API key, necessary for all types of authentication.
     :param username: Username for HTTP basic authentication.
     :param password: Password for HTTP basic authentication.
     :param access_token: Access token.
@@ -98,8 +91,6 @@ conf = visier.model_query_apis.Configuration(
     def __init__(self,
                  host=None,
                  api_key=None,
-                 api_key_prefix=None,
-                 api_key_auth=None,
                  username=None,
                  password=None,
                  client_id=None,
@@ -124,6 +115,7 @@ conf = visier.model_query_apis.Configuration(
         """Constructor
         """
 
+        self.asid_token = None
         self.token_expiration_secs = 3600 if token_expiration_time_secs is None else token_expiration_time_secs
         self.token_acquired_at = None
 
@@ -151,17 +143,8 @@ conf = visier.model_query_apis.Configuration(
         self.temp_folder_path = None
         """Temp file folder for downloading files
         """
-        # Authentication Settings
-        self.api_key_auth = api_key_auth
-
         self.api_key = api_key
-        if api_key:
-            self.api_key = api_key
-        """dict to store API key(s)
-        """
-        self.api_key_prefix = {}
-        if api_key_prefix:
-            self.api_key_prefix = api_key_prefix
+
         """dict to store API prefix (e.g. Bearer)
         """
         self.refresh_api_key_hook = _default_refresh_config
@@ -397,38 +380,6 @@ conf = visier.model_query_apis.Configuration(
         self.__logger_format = value
         self.logger_formatter = logging.Formatter(self.__logger_format)
 
-    def get_api_key_with_prefix(self, identifier, alias=None):
-        """Gets API key (with prefix if set).
-
-        :param identifier: The identifier of apiKey.
-        :param alias: The alternative identifier of apiKey.
-        :return: The token for api key authentication.
-        """
-        if self.refresh_api_key_hook is not None:
-            self.refresh_api_key_hook(self)
-        key = self.api_key.get(identifier, self.api_key.get(alias) if alias is not None else None)
-        if key:
-            prefix = self.api_key_prefix.get(identifier)
-            if prefix:
-                return "%s %s" % (prefix, key)
-            else:
-                return key
-
-    def get_basic_auth_token(self):
-        """Gets HTTP basic authentication header (string).
-
-        :return: The token for basic HTTP authentication.
-        """
-        username = ""
-        if self.username is not None:
-            username = self.username
-        password = ""
-        if self.password is not None:
-            password = self.password
-        return urllib3.util.make_headers(
-            basic_auth=username + ':' + password
-        ).get('authorization')
-
     def auth_settings(self):
         """Gets Auth Settings dict for api client.
 
@@ -442,35 +393,19 @@ conf = visier.model_query_apis.Configuration(
             'type': 'api_key',
             'in': 'header',
             'key': 'apikey',
-            'value': self.api_key_auth
+            'value': self.api_key
         }}
 
-        if self.access_token is not None:
-            auth['BearerAuth'] = {
-                'type': 'bearer',
-                'in': 'header',
-                'key': 'Authorization',
-                'value': 'Bearer ' + self.access_token
-            }
-        if 'CookieAuth' in self.api_key:
+        if self.asid_token:
             auth['CookieAuth'] = {
                 'type': 'api_key',
                 'in': 'cookie',
                 'key': 'VisierASIDToken',
-                'value': self.get_api_key_with_prefix(
-                    'CookieAuth',
-                ),
+                'value': self.asid_token,
             }
-        if self.access_token is not None:
+        elif self.access_token is not None:
             auth['OAuth2Auth'] = {
-                'type': 'oauth2',
-                'in': 'header',
-                'key': 'Authorization',
-                'value': 'Bearer ' + self.access_token
-            }
-        if self.access_token is not None:
-            auth['OAuth2Auth'] = {
-                'type': 'oauth2',
+                'type': 'bearer',
                 'in': 'header',
                 'key': 'Authorization',
                 'value': 'Bearer ' + self.access_token
@@ -627,7 +562,7 @@ def _connect_asid(config):
     if config.vanity:
         data['vanityName'] = config.vanity
     response = _post_request(url=url, data=data)
-    config.api_key['CookieAuth'] = f'VisierASIDToken={response.text}'
+    config.asid_token = response.text
 
 
 def _update_access_token(config: Configuration, body: dict):
@@ -636,7 +571,7 @@ def _update_access_token(config: Configuration, body: dict):
         body["redirect_uri"] = config.redirect_uri
     auth = (config.client_id, quote(config.client_secret, safe=''))
     headers = {
-        "apikey": config.api_key["ApiKeyAuth"],
+        "apikey": config.api_key,
     }
 
     response = _post_request(url=url, data=body, additional_headers=headers, auth=auth)
@@ -676,7 +611,7 @@ def _connect_oauth_code(config):
     url_prefix = config.host + "/v1/auth/oauth2"
     with CallbackServer(config.redirect_uri) as svr:
         query_args = {
-            "apikey": config.api_key['ApiKeyAuth'],
+            "apikey": config.api_key,
             "response_type": "code",
             "client_id": config.client_id,
             "code_challenge_method": "S256",

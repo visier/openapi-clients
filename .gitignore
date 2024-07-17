@@ -1,3 +1,4 @@
 *.log
 
 /specs_preprocessed
+/sdks/python/src/visier.oauth2_apis/
