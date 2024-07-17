@@ -1,4 +1,4 @@
-on: [workflow_call]
+on: [ workflow_call ]
 
 jobs:
   test-python-driver:
@@ -8,35 +8,51 @@ jobs:
       image: openapitools/openapi-generator-cli:latest
     env:
       PYTHON_DIR: ${{ github.workspace }}/sdks/python
+      ORIG_SPEC_DIR: ${{ github.workspace }}/res
       SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
+      PREPROCESS: false
     strategy:
-      max-parallel: 8 #TODO this one to generate sdks one by one on local machine
+      max-parallel: 8
       matrix:
-        #        driver: [ "authentication-apis",
-        #                  "consolidated-analytics-apis",
-        #                  "data-handling-apis",
-        #                  "data-intake-apis",
-        #                  "data-version-export-apis",
-        #                  "direct-data-intake-apis",
-        #                  "document-search-apis",
-        #                  "model-query-apis",
-        #                  "oauth2-apis",
-        #                  "object-configuration-apis",
-        #                  "permission-management-apis",
-        #                  "profile-management-apis",
-        #                  "project-management-apis",
-        #                  "system-status-apis",
-        #                  "tenant-management-apis",
-        #                  "user-management-apis" ]
-        driver: [ "data-version-export-apis" ]
-        #        version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        driver: [
+#          "authentication-apis",
+#          "oauth2-apis",
+          "consolidated-analytics-apis",
+          "data-handling-apis",
+          "data-intake-apis",
+          "data-version-export-apis",
+          "direct-data-intake-apis",
+          "document-search-apis",
+          "model-query-apis",
+          "object-configuration-apis",
+          "permission-management-apis",
+          "profile-management-apis",
+          "project-management-apis",
+          "system-status-apis",
+          "tenant-management-apis",
+          "user-management-apis"
+        ]
         version: [ "3.8" ]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Python ${{ matrix.version }}
+        if: env.PREPROCESS == 'true'
+        run: |
+          apt-get update
+          apt-get install -y python3 python3-pip
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r $PYTHON_DIR/processing/requirements.txt
+
+      - name: Preprocess OpenAPI specs
+        if: env.PREPROCESS == 'true'
+        run: |
+          python3 $PYTHON_DIR/processing/spec_preprocessing.py $ORIG_SPEC_DIR $SPEC_DIR
+
       - name: Generate client wrapper for ${{ matrix.driver }} in Python
         run: |
           spec_file="$SPEC_DIR/${{ matrix.driver }}.yaml"
-          package_name="visier.$(echo "${{ matrix.driver }}" | sed 's/-/_/g')"
+          package_name="visier.api.$(echo "${{ matrix.driver }}" | sed 's/-apis$//; s/-/_/g')"
           output_dir="$PYTHON_DIR/src/$package_name"
           
           mkdir -p $output_dir
@@ -46,3 +62,4 @@ jobs:
             -t $PYTHON_DIR/templates \
             --package-name "$package_name" \
             -o "$output_dir" \
+            --skip-validate-spec

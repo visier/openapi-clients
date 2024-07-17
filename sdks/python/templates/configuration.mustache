@@ -687,19 +687,6 @@ RESPONSE_TYPE = "response_type"
 CODE_CHALLENGE_METHOD = "code_challenge_method"
 CODE_CHALLENGE = "code_challenge"
 
-
-class TokenRequestDTO(BaseModel):
-    grant_type: str
-    client_id: str
-    scope: str
-    username: str = None
-    password: str = None
-    code: str = None
-    code_verifier: str = None
-    redirect_uri: str = None
-    refresh_token: str = None
-
-
 # Disable werkzeug logging for the callback server
 logging.getLogger('werkzeug').disabled = True
 
@@ -745,6 +732,16 @@ class CallbackServer:
     def __exit__(self, ex_type, ex_value, trace_back):
         self.stop()
 
+class TokenRequestDTO(BaseModel):
+    grant_type: str
+    client_id: str
+    scope: str
+    username: str = None
+    password: str = None
+    code: str = None
+    code_verifier: str = None
+    redirect_uri: str = None
+    refresh_token: str = None
 
 def _post_request(url: str, data: dict, additional_headers: dict = None, auth=None):
     headers = {
@@ -800,7 +797,7 @@ def _refresh_token(config):
 
 def _connect_oauth_password(config):
     token_request = TokenRequestDTO(
-        grant_type="password",
+        grant_type=PASSWORD,
         client_id=config.client_id,
         scope=config.scope,
         username=config.username,
@@ -819,7 +816,7 @@ def _connect_oauth_code(config):
     svr = CallbackServer(config.redirect_uri)
     query_args = {
         API_KEY: config.api_key,
-        RESPONSE_TYPE: "code",
+        RESPONSE_TYPE: CODE,
         CLIENT_ID: config.client_id,
         CODE_CHALLENGE_METHOD: "S256",
         CODE_CHALLENGE: code_challenge
