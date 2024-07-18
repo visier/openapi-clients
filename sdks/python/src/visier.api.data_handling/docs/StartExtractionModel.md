@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **data_category_id** | **str** | The unique identifier of the data category on which to trigger the extraction job. Default is the tenant&#39;s primary data category. | [optional] 
 **disable_artifact_generation** | **bool** | If \&quot;true\&quot;, the job does not generate data load artifacts. If unspecified, the default is \&quot;false\&quot;. | [optional] 
 **extract_to_time_override** | **str** | An epoch timestamp in milliseconds for the end time up to which to retrieve data. | [optional] 
+**force_update_existing_artifacts** | **bool** | If \&quot;true\&quot; and &#x60;disableArtifactGeneration&#x60; is \&quot;false\&quot;, updates extractor artifacts, which may overwrite the artifacts&#39; manual overrides. Ignored if &#x60;disableArtifactGeneration&#x60; is \&quot;true\&quot;. | [optional] 
 **last_extraction_time_offset_weeks** | **int** | The number of weeks in the past to retrieve data. This overrides the last extraction date to retrieve more data. | [optional] 
 **months_to_extract** | **int** | The number of months to retrieve snapshot data. | [optional] 
 **override_last_extraction_timestamp** | **str** | The time from which to extract data. | [optional] 

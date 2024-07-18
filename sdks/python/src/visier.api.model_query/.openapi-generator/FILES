@@ -26,6 +26,8 @@ docs/CurrencyRateDTO.md
 docs/CurrencyRatesDTO.md
 docs/DataModelApi.md
 docs/DimensionDTO.md
+docs/DimensionMappingValidationDTO.md
+docs/DimensionMappingValidationExecutionDTO.md
 docs/DimensionMemberReferenceDTO.md
 docs/DimensionReferenceDTO.md
 docs/DimensionsDTO.md
@@ -102,6 +104,8 @@ setup.cfg
 setup.py
 test-requirements.txt
 test/__init__.py
+test/test_dimension_mapping_validation_dto.py
+test/test_dimension_mapping_validation_execution_dto.py
 tox.ini
 visier/__init__.py
 visier/api/__init__.py
@@ -136,6 +140,8 @@ visier/api/model_query/models/currency_dto.py
 visier/api/model_query/models/currency_rate_dto.py
 visier/api/model_query/models/currency_rates_dto.py
 visier/api/model_query/models/dimension_dto.py
+visier/api/model_query/models/dimension_mapping_validation_dto.py
+visier/api/model_query/models/dimension_mapping_validation_execution_dto.py
 visier/api/model_query/models/dimension_member_reference_dto.py
 visier/api/model_query/models/dimension_reference_dto.py
 visier/api/model_query/models/dimensions_dto.py

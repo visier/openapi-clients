@@ -4,6 +4,7 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**analytic_metrics**](DataModelApi.md#analytic_metrics) | **GET** /v1/data/model/analytic-objects/{id}/metrics | Retrieve a list of metrics for an analytic object by ID
 [**analytic_object**](DataModelApi.md#analytic_object) | **GET** /v1/data/model/analytic-objects/{id} | Retrieve an analytic object by ID
 [**analytic_objects**](DataModelApi.md#analytic_objects) | **GET** /v1/data/model/analytic-objects | Retrieve a list of analytic objects
 [**call_property**](DataModelApi.md#call_property) | **GET** /v1/data/model/analytic-objects/{objectId}/properties/{id} | Retrieve a property by ID
@@ -12,6 +13,7 @@ Method | HTTP request | Description
 [**currency_rates**](DataModelApi.md#currency_rates) | **GET** /v1/data/model/currencies/{id}/rates | Retrieve all exchange rates for a currency
 [**currency_rates_with_to_currency**](DataModelApi.md#currency_rates_with_to_currency) | **GET** /v1/data/model/currencies/{id}/rates/{toId} | Retrieve exchange rates from one currency to another currency
 [**dimension**](DataModelApi.md#dimension) | **GET** /v1/data/model/analytic-objects/{objectId}/dimensions/{id} | Retrieve a dimension by ID
+[**dimension_member_map_validation**](DataModelApi.md#dimension_member_map_validation) | **POST** /v1/data/model/analytic-objects/{objectId}/dimensions/{dimensionId}/mappings/validate | Validate a member map&#39;s unmapped dimension members by ID
 [**dimensions**](DataModelApi.md#dimensions) | **GET** /v1/data/model/analytic-objects/{objectId}/dimensions | Retrieve a list of dimensions
 [**member**](DataModelApi.md#member) | **GET** /v1/data/model/analytic-objects/{objectId}/dimensions/{dimensionId}/members/{id} | Retrieve a dimension member
 [**members**](DataModelApi.md#members) | **GET** /v1/data/model/analytic-objects/{objectId}/dimensions/{dimensionId}/members | Retrieve a list of dimension members
@@ -30,6 +32,105 @@ Method | HTTP request | Description
 [**selection_concept**](DataModelApi.md#selection_concept) | **GET** /v1/data/model/analytic-objects/{objectId}/selection-concepts/{id} | Retrieve an analytic object&#39;s selection concept by ID
 [**selection_concepts**](DataModelApi.md#selection_concepts) | **GET** /v1/data/model/analytic-objects/{objectId}/selection-concepts | Retrieve an analytic object&#39;s selection concepts
 
+
+# **analytic_metrics**
+> MetricsDTO analytic_metrics(id)
+
+Retrieve a list of metrics for an analytic object by ID
+
+If you know the ID of an analytic object, use this API to retrieve metrics for that object specifically.
+
+### Example
+
+* Api Key Authentication (CookieAuth):
+* Api Key Authentication (ApiKeyAuth):
+* OAuth Authentication (OAuth2Auth):
+* OAuth Authentication (OAuth2Auth):
+* Bearer Authentication (BearerAuth):
+
+```python
+import visier.api.model_query
+from visier.api.model_query.models.metrics_dto import MetricsDTO
+from visier.api.model_query.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = visier.api.model_query.Configuration(
+    host = "http://localhost"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure API key authorization: CookieAuth
+configuration.api_key['CookieAuth'] = os.environ["API_KEY"]
+
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['CookieAuth'] = 'Bearer'
+
+# Configure API key authorization: ApiKeyAuth
+configuration.api_key['ApiKeyAuth'] = os.environ["API_KEY"]
+
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['ApiKeyAuth'] = 'Bearer'
+
+configuration.access_token = os.environ["ACCESS_TOKEN"]
+
+configuration.access_token = os.environ["ACCESS_TOKEN"]
+
+# Configure Bearer authorization: BearerAuth
+configuration = visier.api.model_query.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with visier.api.model_query.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = visier.api.model_query.DataModelApi(api_client)
+    id = 'id_example' # str | The ID of the analytic object to retrieve metrics for.
+
+    try:
+        # Retrieve a list of metrics for an analytic object by ID
+        api_response = api_instance.analytic_metrics(id)
+        print("The response of DataModelApi->analytic_metrics:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataModelApi->analytic_metrics: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **str**| The ID of the analytic object to retrieve metrics for. | 
+
+### Return type
+
+[**MetricsDTO**](MetricsDTO.md)
+
+### Authorization
+
+[CookieAuth](../README.md#CookieAuth), [ApiKeyAuth](../README.md#ApiKeyAuth), [OAuth2Auth](../README.md#OAuth2Auth), [OAuth2Auth](../README.md#OAuth2Auth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+**0** | Default error response |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **analytic_object**
 > AnalyticObjectDTO analytic_object(id)
@@ -839,6 +940,110 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **dimension_member_map_validation**
+> DimensionMappingValidationDTO dimension_member_map_validation(object_id, dimension_id, dimension_mapping_validation_execution_dto)
+
+Validate a member map's unmapped dimension members by ID
+
+If you know the ID of a member map, use this API to validate one of the member map's dimensions.   You must also know the dimension's ID and the analytic object's ID.   The response returns the member map ID, the requested dimension ID, a list of the dimension's unmapped members, and a list of errors found.
+
+### Example
+
+* Api Key Authentication (CookieAuth):
+* Api Key Authentication (ApiKeyAuth):
+* OAuth Authentication (OAuth2Auth):
+* OAuth Authentication (OAuth2Auth):
+* Bearer Authentication (BearerAuth):
+
+```python
+import visier.api.model_query
+from visier.api.model_query.models.dimension_mapping_validation_dto import DimensionMappingValidationDTO
+from visier.api.model_query.models.dimension_mapping_validation_execution_dto import DimensionMappingValidationExecutionDTO
+from visier.api.model_query.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = visier.api.model_query.Configuration(
+    host = "http://localhost"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure API key authorization: CookieAuth
+configuration.api_key['CookieAuth'] = os.environ["API_KEY"]
+
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['CookieAuth'] = 'Bearer'
+
+# Configure API key authorization: ApiKeyAuth
+configuration.api_key['ApiKeyAuth'] = os.environ["API_KEY"]
+
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['ApiKeyAuth'] = 'Bearer'
+
+configuration.access_token = os.environ["ACCESS_TOKEN"]
+
+configuration.access_token = os.environ["ACCESS_TOKEN"]
+
+# Configure Bearer authorization: BearerAuth
+configuration = visier.api.model_query.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with visier.api.model_query.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = visier.api.model_query.DataModelApi(api_client)
+    object_id = 'object_id_example' # str | The ID of the analytic object.
+    dimension_id = 'dimension_id_example' # str | The ID of a dimension of the member map.
+    dimension_mapping_validation_execution_dto = visier.api.model_query.DimensionMappingValidationExecutionDTO() # DimensionMappingValidationExecutionDTO | 
+
+    try:
+        # Validate a member map's unmapped dimension members by ID
+        api_response = api_instance.dimension_member_map_validation(object_id, dimension_id, dimension_mapping_validation_execution_dto)
+        print("The response of DataModelApi->dimension_member_map_validation:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataModelApi->dimension_member_map_validation: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **object_id** | **str**| The ID of the analytic object. | 
+ **dimension_id** | **str**| The ID of a dimension of the member map. | 
+ **dimension_mapping_validation_execution_dto** | [**DimensionMappingValidationExecutionDTO**](DimensionMappingValidationExecutionDTO.md)|  | 
+
+### Return type
+
+[**DimensionMappingValidationDTO**](DimensionMappingValidationDTO.md)
+
+### Authorization
+
+[CookieAuth](../README.md#CookieAuth), [ApiKeyAuth](../README.md#ApiKeyAuth), [OAuth2Auth](../README.md#OAuth2Auth), [OAuth2Auth](../README.md#OAuth2Auth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+**0** | Default error response |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **dimensions**
 > DimensionsDTO dimensions(object_id, id=id)
 
@@ -997,10 +1202,10 @@ configuration = visier.api.model_query.Configuration(
 with visier.api.model_query.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = visier.api.model_query.DataModelApi(api_client)
-    object_id = 'object_id_example' # str | The ID of the analytic object
-    dimension_id = 'dimension_id_example' # str | The ID of the dimension
+    object_id = 'object_id_example' # str | The ID of the analytic object.
+    dimension_id = 'dimension_id_example' # str | The ID of the dimension.
     id = 'id_example' # str | 
-    id2 = 'id_example' # str | The ID of the member to retrieve (optional)
+    id2 = 'id_example' # str | The ID of the member to retrieve. (optional)
 
     try:
         # Retrieve a dimension member
@@ -1018,10 +1223,10 @@ with visier.api.model_query.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **object_id** | **str**| The ID of the analytic object | 
- **dimension_id** | **str**| The ID of the dimension | 
+ **object_id** | **str**| The ID of the analytic object. | 
+ **dimension_id** | **str**| The ID of the dimension. | 
  **id** | **str**|  | 
- **id2** | **str**| The ID of the member to retrieve | [optional] 
+ **id2** | **str**| The ID of the member to retrieve. | [optional] 
 
 ### Return type
 
@@ -1102,8 +1307,8 @@ configuration = visier.api.model_query.Configuration(
 with visier.api.model_query.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = visier.api.model_query.DataModelApi(api_client)
-    object_id = 'object_id_example' # str | The ID of the analytic object
-    dimension_id = 'dimension_id_example' # str | The ID of the dimension
+    object_id = 'object_id_example' # str | The ID of the analytic object.
+    dimension_id = 'dimension_id_example' # str | The ID of the dimension.
     id = ['id_example'] # List[str] | The IDs of the members to retrieve. Default is all members. (optional)
     max_level = 56 # int | The maximum level in the hierarchy to fetch. The top level of the hierarchy is 0. Default is all levels. (optional)
     filter = 'filter_example' # str | A regular expression that members must match to be retrieved. Default is to retrieve all members. (optional)
@@ -1128,8 +1333,8 @@ with visier.api.model_query.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **object_id** | **str**| The ID of the analytic object | 
- **dimension_id** | **str**| The ID of the dimension | 
+ **object_id** | **str**| The ID of the analytic object. | 
+ **dimension_id** | **str**| The ID of the dimension. | 
  **id** | [**List[str]**](str.md)| The IDs of the members to retrieve. Default is all members. | [optional] 
  **max_level** | **int**| The maximum level in the hierarchy to fetch. The top level of the hierarchy is 0. Default is all levels. | [optional] 
  **filter** | **str**| A regular expression that members must match to be retrieved. Default is to retrieve all members. | [optional] 

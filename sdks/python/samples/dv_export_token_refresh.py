@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from visier.api.data_version_export import ApiClient, Configuration, DataVersionExportV1AlphaApi
-
+from visier.api.model_query import Configuration, ApiClient, DataModelApi
 
 def main():
     load_dotenv(override=True)
@@ -19,8 +19,7 @@ def main():
     dv_api = DataVersionExportV1AlphaApi(api_client)
 
     available = dv_api.get_available_data_versions()
-
-    config.access_token = 'dummy_token'
+    config.asid_token = 'dummy_token'
 
     available = dv_api.get_available_data_versions()
 

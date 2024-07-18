@@ -19,6 +19,8 @@ docs/ConnectorInfoResponseDTO.md
 docs/CopyS3AuthParamsDTO.md
 docs/CredentialCreationAPIResponseDTO.md
 docs/DataAndJobHandlingApi.md
+docs/DataCategoriesResponseDTO.md
+docs/DataCategoryResponseDTO.md
 docs/DataLoadRequest.md
 docs/DataLoadRequestModel.md
 docs/DataLoadResponse.md
@@ -109,6 +111,8 @@ setup.cfg
 setup.py
 test-requirements.txt
 test/__init__.py
+test/test_data_categories_response_dto.py
+test/test_data_category_response_dto.py
 tox.ini
 visier/__init__.py
 visier/api/__init__.py
@@ -135,6 +139,8 @@ visier/api/data_handling/models/connector.py
 visier/api/data_handling/models/connector_info_response_dto.py
 visier/api/data_handling/models/copy_s3_auth_params_dto.py
 visier/api/data_handling/models/credential_creation_api_response_dto.py
+visier/api/data_handling/models/data_categories_response_dto.py
+visier/api/data_handling/models/data_category_response_dto.py
 visier/api/data_handling/models/data_load_request.py
 visier/api/data_handling/models/data_load_request_model.py
 visier/api/data_handling/models/data_load_response.py

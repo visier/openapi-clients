@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**create_tenant**](TenantManagementApi.md#create_tenant) | **POST** /v2/admin/tenants | Add an analytic tenant
+[**delete_tenant**](TenantManagementApi.md#delete_tenant) | **DELETE** /v2/admin/tenants/{tenantId} | Deprovision an analytic tenant
 [**list_tenants**](TenantManagementApi.md#list_tenants) | **GET** /v2/admin/tenants | Retrieve a list of all analytic tenants
 [**tenant_info**](TenantManagementApi.md#tenant_info) | **GET** /v2/admin/tenants/{tenantId} | Retrieve an analytic tenant&#39;s details
 [**update_tenant**](TenantManagementApi.md#update_tenant) | **PUT** /v2/admin/tenants/{tenantId} | Update an analytic tenant
@@ -99,6 +100,105 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+**0** | Default error response |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **delete_tenant**
+> TenantStatusAPIDTO delete_tenant(tenant_id)
+
+Deprovision an analytic tenant
+
+<em>Warning! Deprovisioning an analytic tenant is not reversible.</em>  Before deprovisioning, you must disable an analytic tenant. For more information, see **`/v1/admin/tenants/{tenantId}/disable`**.   This API removes an analytic tenant permanently from the Visier system. If you are unsure whether an analytic tenant  may be re-enabled on any of the Visier modules at any time, you may instead want to disable the analytic tenant.   If successful, the response returns the status \"Deprovisioned\". This indicates that the tenant is scheduled for  deprovisioning, which may take several days to complete.
+
+### Example
+
+* Api Key Authentication (CookieAuth):
+* Api Key Authentication (ApiKeyAuth):
+* OAuth Authentication (OAuth2Auth):
+* OAuth Authentication (OAuth2Auth):
+* Bearer Authentication (BearerAuth):
+
+```python
+import visier.api.tenant_management
+from visier.api.tenant_management.models.tenant_status_apidto import TenantStatusAPIDTO
+from visier.api.tenant_management.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = visier.api.tenant_management.Configuration(
+    host = "http://localhost"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure API key authorization: CookieAuth
+configuration.api_key['CookieAuth'] = os.environ["API_KEY"]
+
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['CookieAuth'] = 'Bearer'
+
+# Configure API key authorization: ApiKeyAuth
+configuration.api_key['ApiKeyAuth'] = os.environ["API_KEY"]
+
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['ApiKeyAuth'] = 'Bearer'
+
+configuration.access_token = os.environ["ACCESS_TOKEN"]
+
+configuration.access_token = os.environ["ACCESS_TOKEN"]
+
+# Configure Bearer authorization: BearerAuth
+configuration = visier.api.tenant_management.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with visier.api.tenant_management.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = visier.api.tenant_management.TenantManagementApi(api_client)
+    tenant_id = 'tenant_id_example' # str | The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}  is the analytic tenant code.
+
+    try:
+        # Deprovision an analytic tenant
+        api_response = api_instance.delete_tenant(tenant_id)
+        print("The response of TenantManagementApi->delete_tenant:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling TenantManagementApi->delete_tenant: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **tenant_id** | **str**| The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}  is the analytic tenant code. | 
+
+### Return type
+
+[**TenantStatusAPIDTO**](TenantStatusAPIDTO.md)
+
+### Authorization
+
+[CookieAuth](../README.md#CookieAuth), [ApiKeyAuth](../README.md#ApiKeyAuth), [OAuth2Auth](../README.md#OAuth2Auth), [OAuth2Auth](../README.md#OAuth2Auth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 ### HTTP response details
