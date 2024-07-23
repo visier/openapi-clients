@@ -1,0 +1,74 @@
+on: [ workflow_call ]
+
+env:
+  SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
+  PYTHON_DIR: ${{ github.workspace }}/sdks/python
+
+jobs:
+  setup-environment:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    env:
+      ORIG_SPEC_DIR: ${{ github.workspace }}/res
+      PREPROCESS: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        if: env.PREPROCESS == 'true'
+        run: |
+          apt-get update
+          apt-get install -y python3 python3-pip
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r $PYTHON_DIR/processing/requirements.txt
+
+      - name: Preprocess OpenAPI specs
+        if: env.PREPROCESS == 'true'
+        id: preprocess
+        run: |
+          python3 $PYTHON_DIR/processing/spec_preprocessing.py $ORIG_SPEC_DIR $SPEC_DIR
+          echo "SPEC_DIR=$SPEC_DIR" >> $GITHUB_ENV
+
+  generate-python-driver:
+    name: Test Python drivers
+    runs-on: ubuntu-latest
+    needs: setup-environment
+    container:
+      image: openapitools/openapi-generator-cli:latest
+    strategy:
+      max-parallel: 8
+      matrix:
+        driver: [
+          "consolidated-analytics-apis",
+          "data-handling-apis",
+          "data-intake-apis",
+          "data-version-export-apis",
+          "direct-data-intake-apis",
+          "document-search-apis",
+          "model-query-apis",
+          "object-configuration-apis",
+          "permission-management-apis",
+          "profile-management-apis",
+          "project-management-apis",
+          "system-status-apis",
+          "tenant-management-apis",
+          "user-management-apis"
+        ]
+        version: [ "3.8" ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate client wrapper for ${{ matrix.driver }} in Python
+        run: |
+          spec_file="$SPEC_DIR/${{ matrix.driver }}.yaml"
+          package_name="visier.api.$(echo "${{ matrix.driver }}" | sed 's/-apis$//; s/-/_/g')"
+          output_dir="$PYTHON_DIR/src/$package_name"
+          
+          mkdir -p $output_dir
+          docker-entrypoint.sh generate \
+            -i "$spec_file" \
+            -g python \
+            -t $PYTHON_DIR/templates \
+            --package-name "$package_name" \
+            -o "$output_dir" \
+            --skip-validate-spec
