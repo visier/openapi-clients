@@ -8,13 +8,13 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1401
+  version: 22222222.99201.1411
 paths:
   /v1/admin/visierSecureToken:
     post:
       tags:
         - Authentication
-      summary: Request a Visier authentication token.
+      summary: Request a Visier authentication token
       description: Generate a secure ASID token.
       operationId: Authentication_ASIDTokenAuthentication
       requestBody:
@@ -34,14 +34,51 @@ paths:
         "200":
           description: Authentication token response
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
+  /v1/admin/visierImpersonationToken:
+    post:
+      tags:
+        - Authentication
+      summary: Request an impersonation token
+      description: Generate an impersonation token for the given username.
+      operationId: Authentication_GenerateImpersonationToken
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: The tenant ID to execute the call on.
+          schema:
+            type: string
+      requestBody:
+        description: Request to generate an impersonation token.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateImpersonationTokenRequest'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: Impersonation token response
+          content:
             text/plain:
               schema:
                 type: string
 components:
   schemas:
+    GenerateImpersonationTokenRequest:
+      description: The details of the user to impersonate.
+      type: object
+      properties:
+        TargetUsername:
+          type: string
+          description: The username of the user to impersonate.
     AuthenticationRequest:
       type: object
       properties:

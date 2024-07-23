@@ -1,0 +1,400 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+  title: Visier Vee Query APIs
+  description: APIs for querying Vee, Visier's AI Assistant for People Analytics
+  license:
+    name: Apache License, Version 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: 22222222.99201.1411
+paths:
+  /v1alpha/rest/vee/query:
+    post:
+      tags:
+        - VeeQuery
+      summary: Ask Vee a question
+      description: |-
+        Use this API to ask Vee a People Analytic question and receive a response.
+         Options `includeData` and `includeVisual` can be set in the request data to receive additional data corresponding to the answer.
+         Example: `POST v1alpha/rest/vee/query` with body data
+         ```json
+         {
+             "question": "What's the current headcount?"
+                 "options": {
+                     "includeVisual": "false",
+                     "includeData": "true"
+             }
+         }
+         ```
+         returns
+         ```json
+         {
+             "threadState": {
+                 "message": [
+                     {
+                         "question": "What's the current headcount?",
+                         "queryFunction": "Query(metrics[employeeCount], intent[Single_Value], time[this_month], time_granularity[month]);",
+                         "routingType": "aggregate",
+                         "concepts": {
+                             "metrics": [
+                                 "employeeCount"
+                             ],
+                             "concepts": [
+                                 ""
+                             ]
+                         }
+                     }
+                 ]
+             },
+             "statusCode": {
+                 "statusMsg": "Query(metrics[Headcount], intent[Single_Value], time[this_month], time_granularity[month]);"
+             },
+             "narrative": "In Apr 2024, Headcount is 1.03K.",
+             "data": {
+                 "dataJson": "{...}"
+             },
+             "visual": {}
+         }
+         ```
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: VeeQuery_VeeQueryRequest
+      parameters:
+        - name: question
+          in: query
+          schema:
+            type: string
+        - name: options.includeVisual
+          in: query
+          schema:
+            type: boolean
+        - name: options.includeData
+          in: query
+          schema:
+            type: boolean
+        - name: options.dataFormat
+          in: query
+          schema:
+            enum:
+              - json
+            type: string
+            format: enum
+        - name: options.includeRewordedQuestion
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeeResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/rest/vee/query-feedback:
+    post:
+      tags:
+        - VeeQuery
+      summary: Submit Vee feedback
+      description: |-
+        Give Vee feedback on a previous response
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: VeeQuery_VeeQueryFeedback
+      parameters:
+        - name: question
+          in: query
+          schema:
+            type: string
+        - name: options.includeVisual
+          in: query
+          schema:
+            type: boolean
+        - name: options.includeData
+          in: query
+          schema:
+            type: boolean
+        - name: options.dataFormat
+          in: query
+          schema:
+            enum:
+              - json
+            type: string
+            format: enum
+        - name: options.includeRewordedQuestion
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeeFeedbackDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/rest/vee/sample-questions:
+    get:
+      tags:
+        - VeeQuery
+      summary: Get a list of sample questions
+      description: |-
+        To get started with Vee, use this API to get a list of sample questions.
+         Example: `GET /v1alpha/rest/vee/sample-questions` returns a string list of questions.
+            ```json
+            questions {
+                "questions": "What is the turnover rate?"
+                "metadata": {
+                    "categories": "metricQuestion""
+                }
+            }
+            ```
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: VeeQuery_VeeSampleQuestions
+      parameters:
+        - name: question
+          in: query
+          schema:
+            type: string
+        - name: options.includeVisual
+          in: query
+          schema:
+            type: boolean
+        - name: options.includeData
+          in: query
+          schema:
+            type: boolean
+        - name: options.dataFormat
+          in: query
+          schema:
+            enum:
+              - json
+            type: string
+            format: enum
+        - name: options.includeRewordedQuestion
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeeSampleQuestionLibraryDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+components:
+  schemas:
+    GoogleProtobufAny:
+      type: object
+      properties:
+        '@type':
+          type: string
+          description: The type of the serialized message.
+      additionalProperties: true
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+    QueryClarificationDTO:
+      type: object
+      properties:
+        message:
+          type: string
+    VeeDataDTO:
+      type: object
+      properties:
+        dataJson:
+          type: string
+        context:
+          type: string
+    VeeFeedbackDTO:
+      type: object
+      properties:
+        state:
+          $ref: '#/components/schemas/VeeThreadStateDTO'
+        isApproved:
+          type: boolean
+        description:
+          type: string
+      description: Query feedback DTOs
+    VeeQueryCorrectionsDTO:
+      type: object
+      properties:
+        warning:
+          type: array
+          items:
+            enum:
+              - VEE_NO_WARNING
+              - VEE_WARNING_RESPONSE_NOT_FOUND
+              - VEE_WARNING_RESPONSE_LOW_CONFIDENCE
+              - VEE_WARNING_RESPONSE_FOUND_CLOSE_MATCH
+              - VEE_WARNING_NO_ACCESS
+              - VEE_WARNING_TIME_SELECTION_ADJUSTED
+              - VEE_WARNING_FILTER_DROPPED
+            type: string
+            format: enum
+        clarifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryClarificationDTO'
+    VeeResponseConceptsDTO:
+      type: object
+      properties:
+        metrics:
+          type: array
+          items:
+            type: string
+        dimensions:
+          type: array
+          items:
+            type: string
+        concepts:
+          type: array
+          items:
+            type: string
+    VeeResponseDTO:
+      type: object
+      properties:
+        threadState:
+          $ref: '#/components/schemas/VeeThreadStateDTO'
+        statusCode:
+          $ref: '#/components/schemas/VeeStatusCodeDTO'
+        narrative:
+          type: string
+        corrections:
+          $ref: '#/components/schemas/VeeQueryCorrectionsDTO'
+        data:
+          $ref: '#/components/schemas/VeeDataDTO'
+        visual:
+          $ref: '#/components/schemas/VeeVisualDTO'
+        rewordedQuestion:
+          type: string
+      description: Server Response DTOs
+    VeeResponseMetadataDTO:
+      type: object
+      properties:
+        question:
+          type: string
+        queryFunction:
+          type: string
+        routingType:
+          type: string
+        concepts:
+          $ref: '#/components/schemas/VeeResponseConceptsDTO'
+        corrections:
+          type: array
+          items:
+            $ref: '#/components/schemas/VeeQueryCorrectionsDTO'
+    VeeSampleQuestionDTO:
+      type: object
+      properties:
+        question:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/VeeSampleQuestionMetadataDTO'
+      description: Query sample questions
+    VeeSampleQuestionLibraryDTO:
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/VeeSampleQuestionDTO'
+    VeeSampleQuestionMetadataDTO:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            type: string
+    VeeStatusCodeDTO:
+      type: object
+      properties:
+        statusCode:
+          enum:
+            - UNDEFINED
+            - VEE_API_SUCCESS
+            - VEE_API_WARNING
+            - VEE_API_ERROR
+          type: string
+          format: enum
+        statusMsg:
+          type: string
+    VeeThreadStateDTO:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/VeeResponseMetadataDTO'
+    VeeVisualDTO:
+      type: object
+      properties:
+        image:
+          type: string
+        context:
+          type: string
+    Status:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: Error classification.
+        message:
+          type: string
+          description: Error message describing the root cause of the error.
+      description: The response structure for errors.
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      name: VisierASIDToken
+      in: cookie
+    ApiKeyAuth:
+      type: apiKey
+      name: apikey
+      in: header
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /v1/auth/oauth2/authorize
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+        password:
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+tags:
+  - name: VeeQuery
+security:
+  - ApiKeyAuth: []
+    BearerAuth: []
+  - ApiKeyAuth: []
+    CookieAuth: []
+  - ApiKeyAuth: []
+    OAuth2Auth: []

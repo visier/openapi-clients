@@ -8,7 +8,7 @@ info:
     license:
         name: Apache License, Version 2.0
         url: https://www.apache.org/licenses/LICENSE-2.0
-    version: 22222222.99201.1401
+    version: 22222222.99201.1411
 paths:
     /v1alpha/admin/production-versions:
         get:
@@ -16,8 +16,7 @@ paths:
                 - ProductionVersions
             summary: Retrieve a list of all production versions
             description: |-
-                *
-                 This API allows you to retrieve a list of all projects that were published to production, ordered from latest published to earliest published.
+                This API allows you to retrieve a list of all projects that were published to production, ordered from latest published to earliest published.
 
                  <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
                  If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -53,8 +52,7 @@ paths:
                 - ProductionVersions
             summary: Perform an operation on production versions
             description: |-
-                *
-                 This API allows you to perform operations on production versions, such as exporting a production project's committed changes. If exporting, please specify `Accept: application/zip, application/json` in the header.
+                This API allows you to perform operations on production versions, such as exporting a production project's committed changes. If exporting, please specify `Accept: application/zip, application/json` in the header.
 
                  <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
                  If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -84,8 +82,7 @@ paths:
                 - ProjectManagement
             summary: Retrieve a list of draft projects accessible to the user
             description: |-
-                *
-                 This API allows you to get a list of draft projects accessible to the requesting user in the tenant.
+                This API allows you to get a list of draft projects accessible to the requesting user in the tenant.
 
                  A project is accessible if it is owned by the user or shared to the user.
 
@@ -130,8 +127,7 @@ paths:
                 - ProjectManagement
             summary: Create a new draft project
             description: |-
-                *
-                 This API allows you to create a new draft project in the tenant.
+                This API allows you to create a new draft project in the tenant.
 
                  <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
                  If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -161,8 +157,7 @@ paths:
                 - ProjectManagement
             summary: Retrieve a draft project's information
             description: |-
-                *
-                 This API allows you to retrieve the details of an accessible draft project. You must know the ID of the project to retrieve its details. To retrieve draft project IDs, see `GET v1alpha/admin/projects`.
+                This API allows you to retrieve the details of an accessible draft project. You must know the ID of the project to retrieve its details. To retrieve draft project IDs, see `GET v1alpha/admin/projects`.
 
                  A project is accessible if it is owned by the user or shared to the user.
 
@@ -212,8 +207,7 @@ paths:
                 - ProjectManagement
             summary: Perform an operation on a draft project
             description: |-
-                *
-                 This API allows you to perform operations on a draft project. The following operations are supported:
+                This API allows you to perform operations on a draft project. The following operations are supported:
                  * `commitAndPublish`: Commits project changes and publishes the project to production.
 
                  <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
@@ -249,8 +243,7 @@ paths:
                 - ProjectManagement
             summary: Delete a draft project
             description: |-
-                *
-                 This API allows you to delete a draft project in the tenant. The project will first be archived if applicable.
+                This API allows you to delete a draft project in the tenant. The project will first be archived if applicable.
 
                  <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
                  If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -281,8 +274,7 @@ paths:
                 - ProjectManagement
             summary: Retrieve a list of all committed changes in a project
             description: |-
-                *
-                 This API allows you to retrieve the full list of all committed changes in a project.
+                This API allows you to retrieve the full list of all committed changes in a project.
 
                  <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
                  If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -504,8 +496,7 @@ components:
 tags:
     - name: ProductionVersions
       description: |-
-        *
-         Use these APIs to retrieve information about data versions that were published to production.
+        Use these APIs to retrieve information about data versions that were published to production.
 
          In Visier, production is the version of Visier available to your end users.
 
@@ -513,8 +504,7 @@ tags:
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
     - name: ProjectManagement
       description: |-
-        *
-         Use these APIs to create and publish projects, and retrieve project details.
+        Use these APIs to create and publish projects, and retrieve project details.
 
          In Visier, a project is a workspace that allows you to define and edit the solution apart from the current production version of the solution. Projects allow you to collaborate with other administrators to ensure that all changes are reviewed and validated before they are published to production.
 
