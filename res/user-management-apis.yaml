@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1401
+  version: 22222222.99201.1411
 paths:
   /v1/admin/permissions/users:
     put:
@@ -607,10 +607,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v2alpha/admin/user-groups:
+  /v2beta/admin/user-groups:
     get:
       tags:
-        - UserGroupManagmentV2
+        - UserGroupManagementV2
       summary: Retrieve a list of user groups
       description: |-
         This API allows you to retrieve a collection of user groups. Use `with` to control the amount of detail returned in the response.
@@ -621,11 +621,13 @@ paths:
 
          This API can return a maximum of 1000 user groups. The default number of user groups to return is 100.
 
+         To specify the project in which to return user groups, provide a project UUID in the `ProjectID` request header.
+
          <br>To specify the tenant in which to retrieve user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: UserGroupManagmentV2_GetUserGroups
+      operationId: UserGroupManagementV2_GetUserGroups
       parameters:
         - name: with
           in: query
@@ -662,10 +664,10 @@ paths:
                 $ref: '#/components/schemas/Status'
     put:
       tags:
-        - UserGroupManagmentV2
+        - UserGroupManagementV2
       summary: Update multiple user groups
-      description: "This API allows you to update existing user groups. To specify the tenant in which to update a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each user group in the request body.\n\n When updating user groups, the user group definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the user group. We recommend that you retrieve a user group's details before you update the user group with new values. \n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: UserGroupManagmentV2_PutUserGroups
+      description: "This API allows you to update existing user groups. To specify the tenant in which to update a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each user group in the request body.\n\n When updating user groups, the user group definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the user group. We recommend that you retrieve a user group's details before you update the user group with new values. \n\n To specify the project in which to update user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: UserGroupManagementV2_PutUserGroups
       requestBody:
         content:
           application/json:
@@ -687,14 +689,16 @@ paths:
                 $ref: '#/components/schemas/Status'
     post:
       tags:
-        - UserGroupManagmentV2
+        - UserGroupManagementV2
       summary: Create multiple user groups
       description: |-
         This API allows you to create new user groups. To specify the tenant in which to add new user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         To specify the project in which to create new user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body.
+
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: UserGroupManagmentV2_CreateUserGroups
+      operationId: UserGroupManagementV2_CreateUserGroups
       requestBody:
         content:
           application/json:
@@ -716,14 +720,16 @@ paths:
                 $ref: '#/components/schemas/Status'
     delete:
       tags:
-        - UserGroupManagmentV2
+        - UserGroupManagementV2
       summary: Delete multiple user groups
       description: |-
         This API allows you to delete user groups in bulk. To specify the tenant in which to delete user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         To specify the project in which to delete user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body.
+
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: UserGroupManagmentV2_DeleteUserGroups
+      operationId: UserGroupManagementV2_DeleteUserGroups
       requestBody:
         content:
           application/json:
@@ -745,16 +751,18 @@ paths:
                 $ref: '#/components/schemas/Status'
     patch:
       tags:
-        - UserGroupManagmentV2
+        - UserGroupManagementV2
       summary: Patch multiple user groups
       description: |-
         This API allows you to make partial changes to user groups. To specify the tenant in which to patch a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each user group in the request body.
 
          Unlike `PUT`, which completely replaces the user group definition, use `PATCH` to change specific fields in the user group without affecting omitted fields.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         To specify the project in which to patch user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body.
+
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: UserGroupManagmentV2_PatchUserGroups
+      operationId: UserGroupManagementV2_PatchUserGroups
       requestBody:
         content:
           application/json:
@@ -774,13 +782,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v2alpha/admin/user-groups/{userGroupId}:
+  /v2beta/admin/user-groups/{userGroupId}:
     get:
       tags:
-        - UserGroupManagmentV2
+        - UserGroupManagementV2
       summary: Retrieve the details of a user group
-      description: "This API allows you to retrieve all available information about a specific user group.\n \n <br>To specify the tenant in which to retrieve a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: UserGroupManagmentV2_GetUserGroup
+      description: "This API allows you to retrieve all available information about a specific user group.\n \n <br>To specify the tenant in which to retrieve a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.\n\n To specify the project in which to return a user group, provide a project UUID in the `ProjectID` request header.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: UserGroupManagementV2_GetUserGroup
       parameters:
         - name: userGroupId
           in: path
@@ -817,14 +825,16 @@ paths:
                 $ref: '#/components/schemas/Status'
     delete:
       tags:
-        - UserGroupManagmentV2
+        - UserGroupManagementV2
       summary: Delete a user group
       description: |-
-        This API allows you to delete a specific user group. To specify the tenant in which to delete a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each user group in the request body.
+        This API allows you to delete a specific user group. To specify the tenant in which to delete a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         To specify the project in which to delete a user group, provide a project UUID in the `ProjectID` request header.
+
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: UserGroupManagmentV2_DeleteUserGroup
+      operationId: UserGroupManagementV2_DeleteUserGroup
       parameters:
         - name: userGroupId
           in: path
@@ -1493,6 +1503,11 @@ components:
           description: |-
             The code of the tenant to which the user group belongs or should be created in.
              Omit if creating or updating user groups in the current tenant.
+        projectId:
+          type: string
+          description: |-
+            The project ID in which to update or create the user group.
+             If omitted and the ProjectID request header is not defined, the change is published to production immediately.
     UserGroupChangeDimensionFilterDTO:
       type: object
       properties:
@@ -1525,6 +1540,9 @@ components:
         tenantCode:
           type: string
           description: The code of the tenant for which the user group could not be created or updated.
+        projectId:
+          type: string
+          description: The ID of the project in which the user group could not be created or updated.
     UserGroupChangeFilterDTO:
       type: object
       properties:
@@ -1575,6 +1593,9 @@ components:
         tenantCode:
           type: string
           description: The code of the tenant the user group was created or updated in.
+        projectId:
+          type: string
+          description: The ID of the project the user group was created or updated in.
     UserGroupChangeUsersDTO:
       type: object
       properties:
@@ -1616,6 +1637,11 @@ components:
         userGroupId:
           type: string
           description: Unique identifier for the user group.
+        projectId:
+          type: string
+          description: |-
+            The project ID in which to delete the user group.
+             If omitted and the `ProjectID` request header is not defined, the change is published to production immediately.
     UserGroupDeleteFailureDTO:
       type: object
       properties:
@@ -1631,6 +1657,9 @@ components:
         rci:
           type: string
           description: The root cause identifier to provide to Visier Technical Support if you require further troubleshooting.
+        projectId:
+          type: string
+          description: The ID of the project in which the user group could not be deleted.
     UserGroupDeleteResponseDTO:
       type: object
       properties:
@@ -1653,6 +1682,9 @@ components:
         userGroupId:
           type: string
           description: The unique identifier of the user group that was deleted.
+        projectId:
+          type: string
+          description: The ID of the project in which user group was deleted.
     UserGroupFiltersDTO:
       type: object
       properties:
@@ -1921,13 +1953,13 @@ components:
             read: Grants read access
             write: Grants write access
 tags:
-  - name: UserGroupManagmentV2
+  - name: UserGroupManagementV2
     description: |-
-      <br>**Note:** <em>These APIs are in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
        If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: UserManagement
     description: |-
-      Use these APIs to manage users within an organization.
+      Use this API to manage users within an organization.
 
        <br>**Tip**: Visier recommends that administrating tenant users focus primarily on managing users at the administrating
        tenant level. These users likely belong directly to your organization, such as customer support, customer value
@@ -1935,9 +1967,9 @@ tags:
        solution needs.
   - name: UserManagementV2
     description: |-
-      Use these APIs to manage users within an organization.
+      Use this API to manage users within an organization.
 
-       <br>**Note:** <em>These are version 2 of the User Management APIs and are released in **limited availability**.
+       <br>**Note:** <em>This is version 2 of the User Management API and is released in **limited availability**.
        If you are interested in using them, please contact your Customer Success Manager (CSM).</em>
 
        <br>**Tip:** Visier recommends that administrating tenant users focus primarily on managing users at the administrating
