@@ -1,0 +1,7 @@
+--pull=false
+-s GITHUB_TOKEN
+-W .github/workflows/generate-python-driver.yml
+--container-architecture linux/amd64
+--artifact-server-path /tmp/artifacts
+--bind
+--env PREPROCESS=false
