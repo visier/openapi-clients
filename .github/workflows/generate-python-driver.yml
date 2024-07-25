@@ -4,6 +4,21 @@ env:
   SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
   PYTHON_DIR: ${{ github.workspace }}/sdks/python
   VERSION: 0.0.1
+  SPECIFICATIONS: |
+    consolidated-analytics-apis,
+    data-handling-apis,
+    data-intake-apis,
+    data-version-export-apis,
+    direct-data-intake-apis,
+    document-search-apis,
+    model-query-apis,
+    object-configuration-apis,
+    permission-management-apis,
+    profile-management-apis,
+    project-management-apis,
+    system-status-apis,
+    tenant-management-apis,
+    user-management-apis
 
 jobs:
   setup-environment:
@@ -14,36 +29,13 @@ jobs:
       PREPROCESS: true
 
     steps:
-#      - name: check node
-#        run: |
-#          node --version
-#          return -1
-
       - uses: actions/checkout@v4
-
-      - name: Create Python SDK version branch
-        run: |
-          git config --global url."https://api:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
-          if [ ! -d "$PYTHON_DIR/src" ]; then
-            git clone https://github.com/visier/python-sdk.git $PYTHON_DIR/src
-            cd $PYTHON_DIR/src
-            git checkout -b versions/$VERSION
-            git push origin versions/$VERSION
-          else
-            echo "Directory $PYTHON_DIR/src already exists. Using the existing directory."
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Python
-        if: env.PREPROCESS == 'true'
-        run: |
-          python3 -m pip install -r $PYTHON_DIR/processing/requirements.txt
 
       - name: Preprocess OpenAPI specs
         if: env.PREPROCESS == 'true'
         id: preprocess
         run: |
+          python3 -m pip install -r $PYTHON_DIR/processing/requirements.txt
           python3 $PYTHON_DIR/processing/spec_preprocessing.py $ORIG_SPEC_DIR $SPEC_DIR
           echo "SPEC_DIR=$SPEC_DIR" >> $GITHUB_ENV
 
@@ -54,34 +46,17 @@ jobs:
           path: ${{ env.SPEC_DIR }}
           retention-days: 1
 
-  generate-python-driver:
-    name: Test Python drivers
+  generate-python-specification:
+    name: Generate Python SDK
     runs-on: ubuntu-latest
     needs: setup-environment
     container:
       image: openapitools/openapi-generator-cli:latest
     env:
+      PACKAGE_PREFIX: visier.sdk.api
       PACKAGE_DIR: ${{ github.workspace }}/specs_preprocessed
+      SDK_REPO_DIR: ${{ github.workspace }}/sdks/generated
 
-    strategy:
-      max-parallel: 8
-      matrix:
-        driver: [
-          "consolidated-analytics-apis",
-          #          "data-handling-apis",
-          #          "data-intake-apis",
-          #          "data-version-export-apis",
-          #          "direct-data-intake-apis",
-          #          "document-search-apis",
-          #          "model-query-apis",
-          #          "object-configuration-apis",
-          #          "permission-management-apis",
-          #          "profile-management-apis",
-          #          "project-management-apis",
-          #          "system-status-apis",
-          #          "tenant-management-apis",
-          #          "user-management-apis"
-        ]
     steps:
       - name: Install dependencies
         run: |
@@ -103,38 +78,37 @@ jobs:
       - name: Create Python SDK version branch
         run: |
           git config --global url."https://api:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
-          # Made to support --bind option for local debugging using Github Act
-          if [ ! -d "$PYTHON_DIR/src" ]; then
-            git clone https://github.com/visier/python-sdk.git $PYTHON_DIR/src
-            cd $PYTHON_DIR/src
-            git checkout versions/$VERSION
+          if [ ! -d "$SDK_REPO_DIR" ]; then
+            git clone https://github.com/visier/python-sdk.git $SDK_REPO_DIR
+            cd $SDK_REPO_DIR
+            git checkout -b versions/$VERSION
+            git push origin versions/$VERSION
           else
-            echo "Directory $PYTHON_DIR/src already exists. Using the existing directory."
+            echo "Directory $SDK_REPO_DIR already exists. Using the existing directory."
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate client wrapper for ${{ matrix.driver }} in Python
+      - name: Generate Python SDK for all specifications
         run: |
-          spec_file="$SPEC_DIR/${{ matrix.driver }}.yaml"
-          package_name="visier.api.$(echo "${{ matrix.driver }}" | sed 's/-apis$//; s/-/_/g')"
-          OUTPUT_DIR="$PYTHON_DIR/src/$package_name"
-          echo "OUTPUT_DIR=$OUTPUT_DIR" >> $GITHUB_ENV
+          SPECIFICATION_LIST=$(echo $SPECIFICATIONS | tr ',' '\n')
+          for specification in $SPECIFICATION_LIST; do
+            echo "Processing $specification"
+            spec_file="$SPEC_DIR/${specification}.yaml"
+            package_name="$PACKAGE_PREFIX.$(echo "$specification" | sed 's/-apis$//; s/-/_/g')"
+            output_dir="$SDK_REPO_DIR/src/$package_name"
           
-          # Extract the version from the OpenAPI spec file
-          # TODO for now, we will use debug version
-          # package_version=$(grep 'version:' "$spec_file" | sed 's/version: //; s/^[ \t]*//')
-          package_version="0.0.1"
-          
-          mkdir -p $OUTPUT_DIR
-          docker-entrypoint.sh generate \
-            -i "$spec_file" \
-            -g python \
-            -t $PYTHON_DIR/templates \
-            --package-name "$package_name" \
-            -o "$OUTPUT_DIR" \
-            --skip-validate-spec \
-            --additional-properties=packageVersion="$package_version"
+            # Extract the version from the OpenAPI spec file          
+            mkdir -p $output_dir
+            docker-entrypoint.sh generate \
+              -i "$spec_file" \
+              -g python \
+              -t $PYTHON_DIR/templates \
+              --package-name "$package_name" \
+              -o "$output_dir" \
+              --skip-validate-spec \
+              --additional-properties=packageVersion="$VERSION"
+          done
 
       # Pushing before tests to have the code available for debugging
       - name: Push Python SDK branch
@@ -142,25 +116,22 @@ jobs:
           git config --global url."https://api:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
           git config --global user.email "shmalikov@gmail.com"
           git config --global user.name "Shmalikov"
-          cd $PYTHON_DIR/src
+          cd $SDK_REPO_DIR
           ls .
-          git add $OUTPUT_DIR
-          git commit -m "Add ${{ matrix.driver }} Python SDK"
+          git add *
+          git commit -m "Autogenerated Python SDK version $VERSION"
           git push origin versions/$VERSION
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Test generated Python SDK
+      - name: Run tests
         run: |
-          cd $OUTPUT_DIR
-          tox
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6.1.0
-        with:
-          path: ${{ env.PYTHON_DIR }}/src
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: origin/versions/$VERSION
-          base: main
-          title: "Autogenerated PR to add ${{ matrix.driver }} Python SDK"
-          body: "This PR adds the ${{ matrix.driver }} Python SDK generated from OpenAPI specs."
+          error_flag=0
+          find "$SDK_REPO_DIR/src/" -type d -name "${PACKAGE_PREFIX}*" -print | 
+          while read -r dir; do
+            (cd "$dir" && tox)
+            if [ $? -ne 0 ]; then
+              error_flag=1
+            fi
+          done
+          exit $error_flag
