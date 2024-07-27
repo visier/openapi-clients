@@ -1269,40 +1269,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/data-connector-credentials/{id}:
-    delete:
-      tags:
-        - DataAndJobHandling
-      summary: Delete a connector credential
-      description: |-
-        Use this API to delete connector credentials from your tenants. Credentials that are no longer valid
-         should be deleted.
-      operationId: DataAndJobHandling_DeleteConnectorCredential
-      parameters:
-        - name: id
-          in: path
-          description: The credentialId of the credential you want to delete.
-          required: true
-          schema:
-            type: string
-        - name: tenantCode
-          in: query
-          description: The tenant code of the analytic tenant in which the credential you're deleting.
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: string
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
   /v1/data/directloads/{draftId}/transactions/{transactionId}/{objectName}:
     put:
       tags:
@@ -1345,7 +1311,41 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectDataUploadFileResponseDTO'
+                $ref: "#/components/schemas/DirectDataUploadFileResponseDTO"
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+  /v1/op/data-connector-credentials/{id}:
+    delete:
+      tags:
+        - DataAndJobHandling
+      summary: Delete a connector credential
+      description: |-
+        Use this API to delete connector credentials from your tenants. Credentials that are no longer valid
+         should be deleted.
+      operationId: DataAndJobHandling_DeleteConnectorCredential
+      parameters:
+        - name: id
+          in: path
+          description: The credentialId of the credential you want to delete.
+          required: true
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: The tenant code of the analytic tenant in which the credential you're deleting.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
         default:
           description: Default error response
           content:
