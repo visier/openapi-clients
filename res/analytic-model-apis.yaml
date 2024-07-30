@@ -1,0 +1,2193 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+  title: Visier Analytic Model APIs
+  description: Visier APIs for retrieving and configuring your analytic model in Visier.
+  license:
+    name: Apache License, Version 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: 22222222.99201.1418
+paths:
+  /v1/admin/calculation-concepts:
+    get:
+      tags:
+        - ObjectConfiguration
+      summary: Retrieve all calculation concepts
+      description: Retrieve the calculation concepts available in production.
+      operationId: ObjectConfiguration_GetCalculationConcepts
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculationConceptListDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/calculation-concepts/{conceptId}:
+    get:
+      tags:
+        - ObjectConfiguration
+      summary: Retrieve the configuration of a calculation concept
+      description: Retrieve the configuration details of a calculation concept in production.
+      operationId: ObjectConfiguration_GetCalculationConcept
+      parameters:
+        - name: conceptId
+          in: path
+          description: The ID of the concept to retrieve the configuration for.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculationConceptDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/calculation-concepts/{conceptId}/configure:
+    put:
+      tags:
+        - ObjectConfiguration
+      summary: Map dimension members to nodes in a calculation concept
+      description: |-
+        Map dimension members to nodes in a calculation concept.
+         The changes are applied in a new project and published to production.
+
+         The body of this API is the source of truth for dimension members mapped to the concept. For example, if a node in
+         the body does not have any dimension members, all existing dimension members mapped to that node will be removed.
+      operationId: ObjectConfiguration_MapCalculationConcept
+      parameters:
+        - name: conceptId
+          in: path
+          description: The UUID of the concept to configure.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculationConceptConfigurationMapDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConceptConfigurationResultDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/selection-concepts:
+    get:
+      tags:
+        - ObjectConfiguration
+      summary: Retrieve all selection concepts
+      description: Retrieve the selection concepts available in production.
+      operationId: ObjectConfiguration_GetSelectionConcepts
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectionConceptListDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/selection-concepts/{conceptId}:
+    get:
+      tags:
+        - ObjectConfiguration
+      summary: Retrieve the configuration of a selection concept
+      description: Retrieve the configuration details of a selection concept in production.
+      operationId: ObjectConfiguration_GetSelectionConcept
+      parameters:
+        - name: conceptId
+          in: path
+          description: The ID of the concept to retrieve the configuration for.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectionConceptDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/selection-concepts/{conceptId}/configure:
+    put:
+      tags:
+        - ObjectConfiguration
+      summary: Map dimension members to a selection concept
+      description: |-
+        Map dimension members to a selection concept.
+         The changes are applied to a new project and published to production.
+
+         The body of this API is the source of truth for dimension members mapped to the concept. For example, if a node in
+         the body does not have any dimension members, all existing dimension members mapped to that node will be removed.
+      operationId: ObjectConfiguration_MapSelectionConcept
+      parameters:
+        - name: conceptId
+          in: path
+          description: The UUID of the concept to configure.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectionConceptConfigurationMapDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConceptConfigurationResultDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of analytic objects
+      description: Retrieve all the analytic objects in your Visier solution.
+      operationId: DataModel_AnalyticObjects
+      parameters:
+        - name: id
+          in: query
+          description: The IDs of the analytic objects to retrieve. Default is all analytic objects.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: objectType
+          in: query
+          description: The object type to filter the returned analytic objects by.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticObjectsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve an analytic object by ID
+      description: If you know the ID of an analytic object, use this API to retrieve that object specifically.
+      operationId: DataModel_AnalyticObject
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the analytic object to retrieve.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticObjectDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{id}/metrics:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of metrics for an analytic object by ID
+      description: If you know the ID of an analytic object, use this API to retrieve metrics for that object specifically.
+      operationId: DataModel_AnalyticMetrics
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the analytic object to retrieve metrics for.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{objectId}/dimensions:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of dimensions
+      description: Retrieve a list of dimensions for a specific analytic object.
+      operationId: DataModel_Dimensions
+      parameters:
+        - name: objectId
+          in: path
+          description: The ID of the analytic object to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: The IDs of the dimensions to retrieve. Default is all dimensions.
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DimensionsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{objectId}/dimensions/{dimensionId}/mappings/validate:
+    post:
+      tags:
+        - DataModel
+      summary: Validate a member map's unmapped dimension members by ID
+      description: "If you know the ID of a member map, use this API to validate one of the member map's dimensions. \n You must also know the dimension's ID and the analytic object's ID. \n The response returns the member map ID, the requested dimension ID, a list of the dimension's unmapped members, and a list of errors found."
+      operationId: DataModel_DimensionMemberMapValidation
+      parameters:
+        - name: objectId
+          in: path
+          description: The ID of the analytic object.
+          required: true
+          schema:
+            type: string
+        - name: dimensionId
+          in: path
+          description: The ID of a dimension of the member map.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DimensionMappingValidationExecutionDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DimensionMappingValidationDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{objectId}/dimensions/{dimensionId}/members:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of dimension members
+      description: |-
+        If you know the ID of a dimension, use this API to retrieve the members of that dimension specifically. You must
+         also know the analytic object's ID. Dimension members exist in a hierarchy. The levels in the hierarchy may be
+         fixed or non-uniform. Leveled dimensions have fixed hierarchies, while parent-child dimensions have non-uniform
+         levels. When you retrieve dimension members with this API, the response returns the level of the dimension and the
+         path to get to that level. For example, in a Location dimension, Vancouver is 3 levels deep:
+
+         - All > Canada > British Columbia > Vancouver
+
+         Parent-child hierarchies are non-uniform and exhibit distinct characteristics such as time dependence and data
+         attributes. These traits reflect the dynamic nature of hierarchies, for example, organizational hierarchies. The API
+         response includes elements that express the validity ranges for retrieved members.
+      operationId: DataModel_Members
+      parameters:
+        - name: objectId
+          in: path
+          description: The ID of the analytic object.
+          required: true
+          schema:
+            type: string
+        - name: dimensionId
+          in: path
+          description: The ID of the dimension.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: The IDs of the members to retrieve. Default is all members.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: maxLevel
+          in: query
+          description: The maximum level in the hierarchy to fetch. The top level of the hierarchy is 0. Default is all levels.
+          schema:
+            type: integer
+            format: int32
+        - name: filter
+          in: query
+          description: A regular expression that members must match to be retrieved. Default is to retrieve all members.
+          schema:
+            type: string
+        - name: field
+          in: query
+          description: |-
+            Indicates the aspect of the member to apply the filter to. Possible values are:
+             - **id**: Match the filter to the member ID.
+             - **display**: Match the filter to the member's display name.
+             - **either**: Match the filter to the member ID or display name.
+
+             Default is `id`.
+          schema:
+            type: string
+        - name: includeDataMembers
+          in: query
+          description: Indicates whether data members are included in the response. Parent-child dimensions only. Default is `false`.
+          schema:
+            type: boolean
+        - name: offset
+          in: query
+          description: For paginated member requests against high-cardinality dimensions, the offset of the first member to retrieve. Default is 0. If the `offset` value is specified to a non-default value, all other non-pagination parameters are ignored.
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: For paginated member requests against high-cardinality dimensions, the maximum number of members to retrieve. Default is -1, meaning no limit. If the `limit` value is specified to a non-default value, all other non-pagination parameters are ignored.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembersDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{objectId}/dimensions/{dimensionId}/members/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a dimension member
+      description: If you know the ID of a dimension member, use this API to retrieve that dimension member specifically. You must also know the dimension's ID and the analytic object's ID.
+      operationId: DataModel_Member
+      parameters:
+        - name: objectId
+          in: path
+          description: The ID of the analytic object.
+          required: true
+          schema:
+            type: string
+        - name: dimensionId
+          in: path
+          description: The ID of the dimension.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: Id
+          in: query
+          description: The ID of the member to retrieve.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembersDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{objectId}/dimensions/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a dimension by ID
+      description: If you know the ID of a dimension, use this API to retrieve that dimension specifically. You must also know the analytic object's ID.
+      operationId: DataModel_Dimension
+      parameters:
+        - name: objectId
+          in: path
+          description: The ID of the analytic object to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: The ID of the dimension to retrieve.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DimensionDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{objectId}/properties:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of properties
+      description: Retrieve a list of properties for a specific analytic object.
+      operationId: DataModel_Properties
+      parameters:
+        - name: objectId
+          in: path
+          description: The ID of the analytic object to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: The IDs of the properties to retrieve. Default is all properties.
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertiesDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{objectId}/properties/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a property by ID
+      description: If you know the ID of a property, use this API to retrieve that property specifically. You must also know the analytic object's ID..
+      operationId: DataModel_Property
+      parameters:
+        - name: objectId
+          in: path
+          description: The ID of the analytic object to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: The ID of the property to retrieve.
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{objectId}/selection-concepts:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve an analytic object's selection concepts
+      description: Retrieve a list of selection concepts for a specific analytic object.
+      operationId: DataModel_SelectionConcepts
+      parameters:
+        - name: objectId
+          in: path
+          description: The ID of the analytic object to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: The IDs of the selection concepts to retrieve. Default is all selection concepts.
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectionConceptsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/analytic-objects/{objectId}/selection-concepts/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve an analytic object's selection concept by ID
+      description: If you know the ID of a selection concept, use this API to retrieve that selection concept specifically. You must also know the analytic object's ID.
+      operationId: DataModel_SelectionConcept
+      parameters:
+        - name: objectId
+          in: path
+          description: The ID of the analytic object to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: The ID of the selection concept to retrieve.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectionConceptDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/currencies:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve all currencies
+      description: Retrieve all the available currencies in your Visier solution.
+      operationId: DataModel_Currencies
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrenciesDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/currencies/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a currency
+      description: Retrieve a specific currency if you know the currency code.
+      operationId: DataModel_Currency
+      parameters:
+        - name: id
+          in: path
+          description: The ISO 4217 3-letter code for the currency.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/currencies/{id}/rates:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve all exchange rates for a currency
+      description: |-
+        Retrieve exchange rates for a specific currency from Visier.
+         You can optionally specify query parameter options for the returned rates, such as the number of decimals to round the exchange rate to.
+      operationId: DataModel_CurrencyRates
+      parameters:
+        - name: id
+          in: path
+          description: The ISO 4217 3-letter code for the currency to get rates for.
+          required: true
+          schema:
+            type: string
+        - name: startTime
+          in: query
+          description: The earliest time instant to retrieve exchange rates from. Default is to use 0 milliseconds.
+          schema:
+            type: string
+        - name: endTime
+          in: query
+          description: The latest time instant to retrieve exchange rates from. Default is to use the time of this request in milliseconds.
+          schema:
+            type: string
+        - name: decimals
+          in: query
+          description: The number of decimals to round exchange rates to. Default is to round to 2 decimal places.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyRatesDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/currencies/{id}/rates/{toId}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve exchange rates from one currency to another currency
+      description: |-
+        Retrieve exchange rates from a specific currency to another specific currency.
+         You can optionally specify query parameter options for the returned rates, such as the number of decimals to round the exchange rate to.
+      operationId: DataModel_CurrencyRatesWithToCurrency
+      parameters:
+        - name: id
+          in: path
+          description: The ISO 4217 3-letter code for the currency to convert from.
+          required: true
+          schema:
+            type: string
+        - name: toId
+          in: path
+          description: The ISO 4217 3-letter code for the currency to convert to.
+          required: true
+          schema:
+            type: string
+        - name: startTime
+          in: query
+          description: The earliest time instant to retrieve exchange rates from. Default is to use 0 milliseconds.
+          schema:
+            type: string
+        - name: endTime
+          in: query
+          description: The latest time instant to retrieve exchange rates from. Default is to use the time of this request in milliseconds.
+          schema:
+            type: string
+        - name: decimals
+          in: query
+          description: The number of decimals to round exchange rates to. Default is to round to 2 decimal places.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyRatesDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/metrics:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of metrics
+      description: Retrieve all the metrics in your Visier solution.
+      operationId: DataModel_Metrics
+      parameters:
+        - name: id
+          in: query
+          description: The IDs of the metrics to retrieve. Default is all metrics.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: category
+          in: query
+          description: The category to filter the returned metrics by.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/metrics/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a metric by ID
+      description: If you know the ID of a metric, use this API to retrieve that metric specifically.
+      operationId: DataModel_Metric
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the metric to retrieve.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/metrics/{metricId}/dimensions:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a metric's dimensions
+      description: Retrieve a list of dimensions for a specific metric.
+      operationId: DataModel_MetricDimensions
+      parameters:
+        - name: metricId
+          in: path
+          description: The ID of the metric to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: The IDs of the dimensions to retrieve. Default is all dimensions.
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DimensionsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/metrics/{metricId}/selection-concepts:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a metric's selection concepts
+      description: Retrieve a list of selection concepts for a specific metric.
+      operationId: DataModel_MetricSelectionConcepts
+      parameters:
+        - name: metricId
+          in: path
+          description: The ID of the metric to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: The IDs of the selection concepts to retrieve. Default is all selection concepts.
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectionConceptsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/plan-models:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of planning models
+      description: Retrieve all the planning models you have access to.
+      operationId: DataModel_PlanningModels
+      parameters:
+        - name: id
+          in: query
+          description: The IDs of the planning models to retrieve. Default is all models.
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanningModelsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/plan-models/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a planning model by ID
+      description: Retrieve a specific planning model you have access to.
+      operationId: DataModel_PlanningModel
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the planning model to retrieve.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanningModelDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/plan-models/{id}/metrics:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve metrics by planning model ID
+      description: Retrieve all the metrics you have access to for a planning model.
+      operationId: DataModel_PlanningMetrics
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the planning model to retrieve.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/plan-models/{modelId}/plans:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of plans
+      description: Retrieve all the plans you have access to for a planning model.
+      operationId: DataModel_PlanningPlans
+      parameters:
+        - name: modelId
+          in: path
+          description: The ID of the planning model to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: The IDs of the plans to retrieve. Default is all plans.
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanningPlansDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/plan-models/{modelId}/plans/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a plan by ID
+      description: Retrieve a specific plan that you have access to in a planning model.
+      operationId: DataModel_PlanningPlan
+      parameters:
+        - name: modelId
+          in: path
+          description: The ID of the planning model to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: The ID of the plan to retrieve.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanningPlanDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/predictions:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of predictions
+      description: Retrieve all the predictions in your Visier solution.
+      operationId: DataModel_Predictions
+      parameters:
+        - name: id
+          in: query
+          description: The IDs of the predictions to retrieve. Default is all predictions.
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictionsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/predictions/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a prediction by ID
+      description: If you know the ID of a prediction, use this API to retrieve that prediction specifically.
+      operationId: DataModel_Prediction
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the prediction to retrieve.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictionDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+components:
+  schemas:
+    AggregationTypeOptionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the parameter option.
+        displayName:
+          type: string
+          description: The localized display name of the parameter option.
+        propertyName:
+          type: string
+          description: The property name of the parameter option.
+        aggregationFunction:
+          type: string
+          description: The aggregation function of the parameter option.
+        isDefault:
+          type: boolean
+          description: '`true` if the parameter option is the default one and `false` otherwise.'
+      description: The definition of an aggregation option.
+    AggregationTypeParameterDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the parameter.
+        displayName:
+          type: string
+          description: The localized display name of the parameter.
+        description:
+          type: string
+          description: The localized description of the parameter.
+        parameterOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AggregationTypeOptionDTO'
+          description: The options defined for the parameter.
+      description: |-
+        The definition of an aggregation parameter. These parameters resolve metrics that use aggregation parameters.
+         For example, Visier Benchmarks metrics often use aggregation parameters to enable callers to aggregate metric values according to their average or different percentiles.
+    AnalyticObjectDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            The unique ID of the analytic object.
+             Note: See `AnalyticObjects` to get the ID.
+        displayName:
+          type: string
+          description: The localized display name of the analytic object.
+        description:
+          type: string
+          description: The localized description of the analytic object.
+        type:
+          enum:
+            - SUBJECT
+            - EVENT
+            - OVERLAY
+          type: string
+          description: 'The analytic object type: SUBJECT, EVENT, or OVERLAY.'
+          format: enum
+        dataStartDate:
+          type: string
+          description: |-
+            The date from which data becomes available for this analytic object.
+             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
+             limitation in representing large numbers.
+        dataEndDate:
+          type: string
+          description: |-
+            The date from which data is no longer available for this analytic object.
+             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
+             limitation in representing large numbers.
+        propertyIds:
+          type: array
+          items:
+            type: string
+          description: A list of strings representing IDs of the properties that belong to this analytic object.
+        dimensionIds:
+          type: array
+          items:
+            type: string
+          description: A list of strings representing IDs of the dimensions that belong to this analytic object.
+        selectionConceptIds:
+          type: array
+          items:
+            type: string
+          description: |-
+            A list of strings representing IDs of the selection concepts that belong to this analytic object.
+             Note: If there are no selection concepts, this field is omitted.
+        objectReferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectReferenceDTO'
+          description: |-
+            A list of references from this analytic object to other analytic objects.
+             Note: If there are no references, this field is omitted.
+        populationConfiguration:
+          allOf:
+            - $ref: '#/components/schemas/PopulationConfigurationDTO'
+          description: |-
+            A set of property and dimension references configured by Visier or an administrator to tell the platform what
+             properties and dimensions to use when doing population insight calculations. These are the distinguishing
+             properties, change history properties, and grouping dimensions to use in AI insights. This field is optional and
+             is only available for subjects.
+      description: Analytic objects are the various items that users can analyze in Visier. Analytic objects include subjects, events, and overlays.
+    AnalyticObjectFilterDTO:
+      type: object
+      properties:
+        analyticObjectUuid:
+          type: string
+          description: The UUID of the analytic object used in the selection concept.
+        symbolName:
+          type: string
+          description: The symbol name of the analytic object.
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionFilterDTO'
+          description: A list of dimensions included in the concept.
+    AnalyticObjectsDTO:
+      type: object
+      properties:
+        analyticObjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalyticObjectDTO'
+      description: A collection of analytic objects
+    CalculationConceptConfigurationDTO:
+      type: object
+      properties:
+        perspectives:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerspectiveConfigurationDTO'
+          description: A list of objects representing the perspectives in the calculation concept.
+    CalculationConceptConfigurationMapDTO:
+      type: object
+      properties:
+        perspectivesToMap:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerspectiveConfigurationDTO'
+          description: A list of objects representing the list of perspectives in the calculation concept.
+      description: The configuration to apply to the concept.
+    CalculationConceptDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The unique identifier associated with the calculation concept.
+        name:
+          type: string
+          description: The display name of the calculation concept.
+        configuration:
+          allOf:
+            - $ref: '#/components/schemas/CalculationConceptConfigurationDTO'
+          description: A list of objects representing the configuration for the calculation concept.
+    CalculationConceptListDTO:
+      type: object
+      properties:
+        concepts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalculationConceptDTO'
+          description: A list of objects representing calculation concepts.
+    ConceptConfigurationResultDTO:
+      type: object
+      properties:
+        conceptId:
+          type: string
+          description: The unique identifier of the configured concept.
+        projectId:
+          type: string
+          description: The unique identifier of the system-generated project.
+        message:
+          type: string
+          description: A meaningful message about the API result.
+    CurrenciesDTO:
+      type: object
+      properties:
+        currencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CurrencyDTO'
+      description: A collection of currencies.
+    CurrencyDTO:
+      type: object
+      properties:
+        currencyCode:
+          type: string
+          description: The ISO 4217 3-letter code for the currency.
+        displayName:
+          type: string
+          description: The display name for the currency.
+        symbol:
+          type: string
+          description: The symbol name for the currency.
+        shortSymbol:
+          type: string
+          description: |-
+            The shortened symbol name for the currency.
+             Removes all alphabetic characters. If **symbol** only has alphabetic characters, **shortSymbol** is empty.
+             If **symbol** contains only non-alphabetic characters, **shortSymbol** is the same as **symbol**.
+             For example, if **symbol** is CA$, **shortSymbol** is $. If **symbol** is $, then **shortSymbol** is $.
+      description: Information about a currency type.
+    CurrencyRateDTO:
+      type: object
+      properties:
+        fromCurrencyCode:
+          type: string
+          description: |-
+            The currency to convert **from**.
+             **Note:** If USD is the `fromCurrencyCode`, you are retrieving the exchange rates from USD to a different currency.
+        toCurrencyCode:
+          type: string
+          description: |-
+            The currency to convert **to**.
+             **Note:** If USD is the `toCurrencyCode`, you are retrieving the exchange rates from a different currency to USD.
+        rate:
+          type: number
+          description: |-
+            The numeric value of the exchange rate.
+             **Note:** If **decimals** is specified, rate rounds to that value. If **decimals** is undefined, **rate** rounds to 2 significant figures after the decimal point.
+          format: double
+        startTime:
+          type: string
+          description: |-
+            The earliest time instant to retrieve exchange rates from.
+             **Note:** Format is the number of milliseconds since Jan 1, 1970 12:00 AM UTC.
+        endTime:
+          type: string
+          description: |-
+            The latest time instant to retrieve exchange rates from.
+             **Note:** Format is the number of milliseconds since Jan 1, 1970 12:00 AM UTC.
+      description: Information about a currency exchange rate.
+    CurrencyRatesDTO:
+      type: object
+      properties:
+        currencyRates:
+          type: array
+          items:
+            $ref: '#/components/schemas/CurrencyRateDTO'
+      description: |-
+        A collection of currency exchange rates.
+         Note: Currencies may have different exchange rates in different time intervals, depending what rate data is stored in Visier.
+         For example, USD:CAD can be 1.2 between January 1 - March 1, while USD:EUR can be 0.92 between January 1 - February 1, but 0.88 between February  1 - March 1.
+    DimensionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            The unique ID of the dimension.
+             Note: See `Dimensions` to get the ID`.
+        displayName:
+          type: string
+          description: The localized display name of the dimension.
+        description:
+          type: string
+          description: The localized description of the dimension.
+        levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/LevelDTO'
+          description: 'The levels defined for the dimension. Note: For parent-child dimensions, a level name is generated by Visier.'
+        unknownMember:
+          type: array
+          items:
+            type: string
+          description: The optional path to the unknown member, if defined.
+        memberCount:
+          type: integer
+          description: The total number of members for the dimension, excluding the (All) member.
+          format: int32
+        visibleInApp:
+          type: boolean
+          description: '`true` if this dimension is set to be visible in your solution.'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagMapElementDTO'
+          description: The optional collection of tags defined for this element.
+      description: A dimension organizes unique values of an attribute into a list or a hierarchical structure for use as a filter or group-by in your solution.
+    DimensionFilterDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The UUID of the dimension.
+        symbolName:
+          type: string
+          description: The symbol name of the dimension.
+        dimensionMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionMemberDTO'
+          description: |-
+            A list of dimension members to map to the perspective node.
+
+             Note: If this array is empty, all dimension members will be removed for the node.
+    DimensionMappingValidationDTO:
+      type: object
+      properties:
+        dimensionMapId:
+          type: string
+        dimensionId:
+          type: string
+        unmappedMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionMemberReferenceDTO'
+        failures:
+          type: array
+          items:
+            type: string
+    DimensionMappingValidationExecutionDTO:
+      type: object
+      properties:
+        memberMapId:
+          type: string
+          description: memberMapId == dimensionMapId
+        analyticObject:
+          type: string
+          description: the analytic object associated with the dimension map
+      description: Instruction to execute a mapping validation query
+    DimensionMemberDTO:
+      type: object
+      properties:
+        dimensionMember:
+          type: array
+          items:
+            type: string
+          description: |-
+            A list of strings representing the dimension members. Dimension members in a hierarchical dimension
+             will have an array with multiple strings.
+    DimensionMemberReferenceDTO:
+      type: object
+      properties:
+        path:
+          type: array
+          items:
+            type: string
+          description: |-
+            A list of strings representing the members within a dimension path. For example, a dimension for Location
+             may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
+      description: The members of a dimension.
+    DimensionReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The ID of the dimension. See `Dimensions` to get the ID.
+        qualifyingPath:
+          type: string
+          description: |-
+            The qualifying path to the dimension in Visier, such as the analytic object or event the dimension is
+             associated with. If the path has multiple objects, each object is separated by a period.
+      description: The name and qualifying path of a dimension to query.
+    DimensionsDTO:
+      type: object
+      properties:
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionDTO'
+      description: A collection of dimensions.
+    GoogleProtobufAny:
+      type: object
+      properties:
+        '@type':
+          type: string
+          description: The type of the serialized message.
+      additionalProperties: true
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+    LevelDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of a level within a dimension.
+        displayName:
+          type: string
+          description: The localized display name of the dimension.
+        depth:
+          type: integer
+          description: The level depth of the dimension.
+          format: int32
+      description: Levels are the hierarchical structure of members within a dimension.
+    MemberDTO:
+      type: object
+      properties:
+        fullName:
+          type: string
+          description: The fully qualified name of the member. This is the dimension's object name and the member's display name, separated by a period.
+        displayName:
+          type: string
+          description: The localized display name of the member.
+        level:
+          type: integer
+          description: The numeric level of the hierarchy the member belongs to.
+          format: sint32
+        path:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of identifiers that reference members on the query axis as part of dimensionMemberSelection.
+        validityRanges:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidityRangeDTO'
+          description: The validity ranges that exist for this member.
+        displayNamePath:
+          type: array
+          items:
+            type: string
+          description: The display names for each level in the member's ancestral path.
+      description: |-
+        A member is an element of a dimension. Dimension members are organized hierarchically. For example, Argentina is
+         a member of the Location dimension at the Country level of the hierarchy Region > Country > Province > City.
+    MemberParameterDefinitionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the member parameter.
+        displayName:
+          type: string
+          description: The localized display name of the member parameter.
+        description:
+          type: string
+          description: The localized description of the member parameter.
+        dimensionId:
+          type: string
+          description: The unique ID of the dimension on which the member parameter is based.
+        referencePath:
+          type: array
+          items:
+            type: string
+          description: The analytic object reference path from the metric to the dimension.
+        default:
+          allOf:
+            - $ref: '#/components/schemas/MemberValuesDTO'
+          description: The default value if the end user does not select a member at run time.
+      description: The definition of a filter parameter. These elements are returned as part of the definition for metrics that include parameters in their definition.
+    MemberValuesDTO:
+      type: object
+      properties:
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionMemberReferenceDTO'
+          description: The unique IDs of members to include when evaluating the metric.
+        excluded:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionMemberReferenceDTO'
+          description: The unique IDs of members to exclude when evaluating the metric.
+      description: |-
+        Member filter values are discrete member references in a dimension filter. You can define
+         included and excluded members simultaneously. This is typically done with filtering applied on
+         dimensions with multiple levels. For example, a Location parameter may include “South
+         America” and exclude “Brazil” which results in the metric being evaluated for all South American
+         countries except Brazil.
+    MembersDTO:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberDTO'
+      description: A collection of members.
+    MetricDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'The unique ID of the metric. Note: See `Metrics` to get the ID.'
+        displayName:
+          type: string
+          description: The localized display name of the metric.
+        description:
+          type: string
+          description: The localized description of the metric.
+        dataStartDate:
+          type: string
+          description: |-
+            The date from which data becomes available for this metric.
+             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
+             limitation in representing large numbers.
+        dataEndDate:
+          type: string
+          description: |-
+            The date from which data is no longer available for this metric.
+             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
+             limitation in representing large numbers.
+        analyticObjectId:
+          type: string
+          description: The unique ID of the analytic object.
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParameterDefinitionDTO'
+          description: The collection of parameters defined for the metric.
+        category:
+          enum:
+            - REGULAR
+            - DERIVED
+            - PLANNING
+          type: string
+          description: 'The category of the metric. Will be one of: `REGULAR`, `DERIVED` or `PLANNING`.'
+          format: enum
+        visibleInApp:
+          type: boolean
+          description: // `true` if this metric is set to be visible in your solution.
+      description: A metric is a calculation based on one or more attribute values of analytic objects.
+    MetricsDTO:
+      type: object
+      properties:
+        metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricDTO'
+      description: A collection of metrics.
+    NumericParameterDefinitionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the numeric parameter.
+        displayName:
+          type: string
+          description: The localized display name of the numeric parameter.
+        description:
+          type: string
+          description: The localized description of the numeric parameter.
+        lowerBound:
+          type: number
+          description: The lowest value for the numeric parameter.
+          format: double
+        upperBound:
+          type: number
+          description: The highest value for the numeric parameter.
+          format: double
+        default:
+          type: number
+          description: The default value if the end user does not select a member at run time.
+          format: double
+      description: The definition of a numeric parameter. These elements are returned as part of the query definition for metric parameter values.
+    ObjectReferenceDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the object reference.
+        displayName:
+          type: string
+          description: The localized display name of the object reference.
+        description:
+          type: string
+          description: The localized description of the object reference.
+        fromObject:
+          type: string
+          description: The ID of the referencing analytic object.
+        toObject:
+          type: string
+          description: The ID of the referenced analytic object.
+        type:
+          enum:
+            - SUBJECT_REFERENCE
+            - MULTI_VALUE_REFERENCE
+          type: string
+          description: The type of object reference.
+          format: enum
+        isStrongReference:
+          type: boolean
+          description: True if this is a strong reference.
+      description: |-
+        A link between one analytic object and another. An ObjectReference allows you to discover the relationships between
+         analytic objects. In some queries, you may need to provide a qualifyingPath, which is built from ObjectReference information.
+    ParameterDefinitionDTO:
+      type: object
+      properties:
+        memberParameter:
+          allOf:
+            - $ref: '#/components/schemas/MemberParameterDefinitionDTO'
+          description: A filter parameter that can be set with dimension members for the end user to select.
+        numericParameter:
+          allOf:
+            - $ref: '#/components/schemas/NumericParameterDefinitionDTO'
+          description: A parameter with a numeric data type. A numeric parameter can be set with an optional default value and value range.
+        planParameter:
+          allOf:
+            - $ref: '#/components/schemas/PlanParameterDefinitionDTO'
+          description: A parameter on a planning metric. Plan parameters resolve planning model metrics to a specific plan and scenario or snapshot.
+        aggregationTypeParameter:
+          allOf:
+            - $ref: '#/components/schemas/AggregationTypeParameterDTO'
+          description: An aggregation parameter. Such parameters enable control over how applicable metrics aggregate their results.
+      description: Parameters generalize object definitions so that end users can provide values at query run time.
+    PerspectiveConfigurationDTO:
+      type: object
+      properties:
+        perspectiveId:
+          type: string
+          description: The UUID of the perspective.
+        perspectiveName:
+          type: string
+          description: The display name of the perspective.
+        perspectiveNodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerspectiveNodeDTO'
+          description: A list of nodes in the perspective.
+    PerspectiveNodeDTO:
+      type: object
+      properties:
+        selectionConceptUuid:
+          type: string
+          description: The UUID of the node's selection concept. Perspective nodes are generated as selection concepts to enable filtering.
+        symbolName:
+          type: string
+          description: The symbol name of the selection concept. For example, "isExitActualSystemTermination".
+        analyticObjectFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalyticObjectFilterDTO'
+          description: A list of analytic object filters indicating the analytic object and dimensions used for the selection concept.
+    PlanParameterDefinitionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the parameter.
+        displayName:
+          type: string
+          description: The localized display name of the parameter.
+        description:
+          type: string
+          description: The localized description of the parameter.
+        modelName:
+          type: string
+          description: The name of the planning model to which the parameter applies.
+      description: |-
+        The definition of a plan parameter. These parameters resolve planning model metrics to a specific plan and scenario
+         or snapshot values at query runtime.
+    PlanningConceptFilterContextDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The object name of the selection concept.
+      description: A plan context defined using a selection concept.
+    PlanningHierarchyFilterContextDTO:
+      type: object
+      properties:
+        hierarchyName:
+          type: string
+          description: The object name of the hierarchy.
+        includedMembers:
+          type: array
+          items:
+            type: string
+          description: The unique IDs of the included dimension members.
+        excludedMembers:
+          type: array
+          items:
+            type: string
+          description: The unique IDs of excluded dimension members.
+      description: A plan context defined using hierarchy members
+    PlanningModelDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            The unique identifier of the planning model.
+             Note: See `PlanningModels` to get the ID.
+        displayName:
+          type: string
+          description: The localized display name of the planning model.
+        description:
+          type: string
+          description: The localized description of the planning model.
+      description: The basic information about the planning model. A planning model captures the planning intent, plan items, and the relationship between them.
+    PlanningModelsDTO:
+      type: object
+      properties:
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanningModelDTO'
+      description: A collection of planning modules.
+    PlanningPlanContextDTO:
+      type: object
+      properties:
+        hierarchyFilterContext:
+          allOf:
+            - $ref: '#/components/schemas/PlanningHierarchyFilterContextDTO'
+          description: A plan context defined using hierarchy members.
+        conceptFilterContext:
+          allOf:
+            - $ref: '#/components/schemas/PlanningConceptFilterContextDTO'
+          description: A plan context defined using a selection concept.
+      description: The filter context for a plan. Plan contexts are defined using a set of hierarchy members or a concept.
+    PlanningPlanDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            The unique identifier of the plan.
+             Note: See `PlanningPlans` to get the ID.
+        name:
+          type: string
+          description: The name of the plan.
+        subjectId:
+          type: string
+          description: The ID of subject for the plan.
+        defaultContexts:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanningPlanContextDTO'
+          description: The contexts defined for the plan.
+        planDimensionIds:
+          type: array
+          items:
+            type: string
+          description: The IDs of the dimensions defined for the plan.
+        scenarios:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScenarioOrSnapshotDTO'
+          description: The available scenarios for the plan.
+        snapshots:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScenarioOrSnapshotDTO'
+          description: The available snapshots for the plan.
+      description: The definition of a plan. Plans are defined on planning models, and each plan may define multiple scenarios or snapshots.
+    PlanningPlansDTO:
+      type: object
+      properties:
+        plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanningPlanDTO'
+      description: A collection of plan definitions.
+    PopulationConfigurationDTO:
+      type: object
+      properties:
+        distinguishingProperties:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyReferenceDTO'
+          description: Properties that are used by default to compare subject members.
+        changeHistoryProperties:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyReferenceDTO'
+          description: Properties that are used by default to compare subject members over time.
+        groupingDimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionReferenceDTO'
+          description: Dimensions to use for grouping and clustering the population.
+      description: |-
+        A set of property and dimension references configured by Visier or an administrator to tell the platform what
+         properties and dimensions to use when doing population insight calculations. These are the distinguishing properties,
+         change history properties, and grouping dimensions to use in AI insights.
+    PredictionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            The unique ID of the prediction.
+             Note: See `Predictions` to get the ID.
+        displayName:
+          type: string
+          description: The localized display name of the prediction.
+        description:
+          type: string
+          description: The localized description of the prediction.
+        subject:
+          type: string
+          description: The object name of the subject that the prediction applies to. For example, Employee.
+        subjectKey:
+          type: string
+          description: The unique ID of the subject's property that the prediction applies to. For example, Employee.EmployeeID.
+        subjectParentKey:
+          type: string
+          description: |-
+            The unique ID of the reference that connects a subject member to other members. For example, Employee.Direct_Manager.
+             Note: The `subjectParentKey` defines parent, child, and peer relationships between subject members.
+        subjectFilter:
+          type: string
+          description: |-
+            The object name of a selection concept to filter the subject population. Filtering the population selects
+             specific subject members in the prediction's training data. For example, using the isHighPerformer concept will
+             filter the prediction to only high performing employees.
+        event:
+          type: string
+          description: |-
+            The object name of the event to predict. The prediction's training data uses past occurrences of the event to
+             make predictions. For example, the Predicted Risk of Resignation model uses the Employee_Exit event to estimate
+             likelihood of exit from the organization.
+        eventFilter:
+          type: string
+          description: The object name of a selection concept to filter event occurrences in the prediction's training data.
+        labelProperty:
+          type: string
+          description: The unique ID of the property label for the prediction. This is automatically generated.
+        factorProperties:
+          type: array
+          items:
+            type: string
+          description: |-
+            The list of unique IDs of the properties used as prediction factors.
+             Note: Factors are conditions used as part of a Visier prediction. For example, Compensation might be a factor in
+             predicting an individual's risk of resignation. Factors are chosen based on:
+             - Availability in tenants.
+             - Prediction impact, such as salary.
+             - Reducing bias.
+        factorDimensions:
+          type: array
+          items:
+            type: string
+          description: The list of unique IDs of the dimensions used as prediction factors.
+        factorConcepts:
+          type: array
+          items:
+            type: string
+          description: The list of unique IDs of the concepts used as prediction factors.
+        dataStartDate:
+          type: string
+          description: |-
+            The date from which data becomes available for this prediction.
+             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
+             limitation in representing large numbers.
+        dataEndDate:
+          type: string
+          description: |-
+            The date from which data is no longer available for this prediction.
+             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
+             limitation in representing large numbers.
+        scoreName:
+          type: string
+          description: The unique name of the score property.  The prediction's formula references the score property as an object. This is automatically generated.
+        factorsName:
+          type: string
+          description: The unique name of the factor property. The prediction's formula references the factor property as an object. This is automatically generated.
+        minimumTrainingMonths:
+          type: string
+          description: The minimum amount of time, in months, to train the prediction model.
+        isMultiTenant:
+          type: boolean
+          description: If `true`, this prediction applies to more than one tenant. If "false", the prediction only applies to the current tenant.
+      description: A prediction is a forecast of future events with advanced machine learning models.
+    PredictionsDTO:
+      type: object
+      properties:
+        predictions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PredictionDTO'
+      description: A collection of predictions.
+    PropertiesDTO:
+      type: object
+      properties:
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDTO'
+      description: A collection of properties.
+    PropertyDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            The unique ID of the property.
+             **Note:** See `Properties` to get the ID.
+        displayName:
+          type: string
+          description: The localized display name of the property.
+        description:
+          type: string
+          description: The localized description of the property.
+        dataType:
+          type: string
+          description: The data type of the property, such as Categorical, HourDuration, or Ratio.
+        primitiveDataType:
+          type: string
+          description: The primitive data type of the property, such as Number, String, or Boolean.
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParameterDefinitionDTO'
+          description: The collection of parameters defined for the property.
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagMapElementDTO'
+          description: The optional collection of tags defined for this element.
+      description: Properties are qualities of an analytic object.
+    PropertyReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The ID of the property. See `Properties` to get the ID.
+        qualifyingPath:
+          type: string
+          description: |-
+            The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.
+             If the path has multiple objects, each object is separated by a period.
+      description: The name and qualifying path of a property to query.
+    ScenarioOrSnapshotDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The identifier of the scenario or snapshot.
+        displayName:
+          type: string
+          description: The scenario or snapshot display name.
+      description: The unique identifier and display name for plan scenarios and snapshots.
+    SelectionConceptConfigurationMapDTO:
+      type: object
+      properties:
+        analyticObjectFiltersToMap:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalyticObjectFilterDTO'
+          description: |-
+            A list of analytic object filters indicating the analytic object and dimension members used
+             for the selection concept.
+
+             Note: If this array is empty, all filters will be removed for the concept.
+    SelectionConceptDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            The unique ID of the selection concept
+             Note: See `SelectionConcepts` to get the ID.
+        displayName:
+          type: string
+          description: The localized display name of the selection concept.
+        description:
+          type: string
+          description: The localized description of the selection concept.
+        visibleInApp:
+          type: boolean
+          description: '`true` if this selection concept is set to be visible in your solution.'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagMapElementDTO'
+          description: The optional collection of tags defined for this element.
+      description: Selection concepts select a population of subject members of a given subject or event.
+    SelectionConceptListDTO:
+      type: object
+      properties:
+        concepts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SelectionConceptDTO'
+          description: A list of objects representing selection concepts.
+    SelectionConceptsDTO:
+      type: object
+      properties:
+        selectionConcepts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SelectionConceptDTO'
+      description: A collection of selection concepts
+    TagMapElementDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the tag.
+        displayName:
+          type: string
+          description: The localized display name of the tag.
+      description: Tag identifier and display name pair.
+    ValidityRangeDTO:
+      type: object
+      properties:
+        start:
+          type: string
+          description: |-
+            The date from which data becomes available.
+             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+        end:
+          type: string
+          description: |-
+            The date from which data is no longer available.
+             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+      description: |-
+        A pair of values that represent the time interval to which the data is valid.
+         The validity range is defined in Unix epoch format and UTC timezone.
+         Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
+         limitation in representing large numbers.
+    Status:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: Error classification.
+        message:
+          type: string
+          description: Error message describing the root cause of the error.
+        rci:
+          type: string
+          description: Optional root cause identifier.
+      description: The response structure for errors.
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      name: VisierASIDToken
+      in: cookie
+    ApiKeyAuth:
+      type: apiKey
+      name: apikey
+      in: header
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /v1/auth/oauth2/authorize
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+        password:
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+tags:
+  - name: DataModel
+    description: |-
+      Discover the objects that make up your Visier solution and provide detailed information on the object's schema.
+      You can retrieve detailed information about objects in Visier by retrieving a list of all objects or retrieving information about an object by object ID.
+      The types of objects you can retrieve using the data model API are:
+        * Analytic objects
+        * Properties
+        * Dimensions
+        * Selection concepts
+        * Metrics
+        * Predictions
+  - name: ObjectConfiguration
+    description: |-
+      Manage objects in your analytic model.
+security:
+  - ApiKeyAuth: []
+    BearerAuth: []
+  - ApiKeyAuth: []
+    CookieAuth: []
+  - ApiKeyAuth: []
+    OAuth2Auth: []

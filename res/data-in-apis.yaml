@@ -3,20 +3,251 @@
 
 openapi: 3.0.3
 info:
-  title: Visier Data and Job Handling APIs
-  description: Visier APIs for data and job handling
+  title: Visier Data In APIs
+  description: Visier APIs for sending data to Visier and running data load jobs.
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1411
+  version: 22222222.99201.1418
 paths:
+  /v1/data/directloads/{draftId}/configs:
+    get:
+      tags:
+        - DirectDataIntake
+      summary: Get the direct data intake configuration
+      description: Get the direct data intake configuration.
+      operationId: DirectDataIntake_GetConfig
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectDataLoadConfigDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    put:
+      tags:
+        - DirectDataIntake
+      summary: Update the direct data intake configuration
+      description: |-
+        Configure the data intake settings, such as the direct data intake job type. Only provide values for the configuration options that should change.
+
+         Configuration options that are not present in the PUT request are ignored and left unchanged.
+      operationId: DirectDataIntake_PutConfig
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectDataLoadConfigDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectDataLoadConfigDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/directloads/{draftId}/schemas/{objectName}:
+    get:
+      tags:
+        - DirectDataIntake
+      summary: Retrieve an object's data load schema
+      description: |-
+        Gets the load schema for a specified object. The object's load schema represents the structure that the data upload file must follow to upload data to the object.
+
+         In the load schema, the listed columns must be present in the data file as column headers and exactly match the load schema (case sensitive), however,  only the columns whose `isMandatory` field is `true` must contain values in the data file.
+      operationId: DirectDataIntake_ObjectSchema
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: objectName
+          in: path
+          description: The name of the object to return the load schema for.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectDataSchemaFieldDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/directloads/{draftId}/transactions:
+    post:
+      tags:
+        - DirectDataIntake
+      summary: Start a direct data intake transaction
+      description: |-
+        Create a transaction to contain your data files. To upload files to objects in Visier, you must first start a transaction.
+
+         After starting a transaction and uploading files to the transaction, you can commit the transaction to process the uploaded files or roll back the transaction to discard the uploaded files.
+      operationId: DirectDataIntake_StartTransaction
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectDataTransactionStartResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/directloads/{draftId}/transactions/{transactionId}:
+    get:
+      tags:
+        - DirectDataIntake
+      summary: Check transaction status
+      description: Retrieve the status of a committed transaction's processing job.
+      operationId: DirectDataIntake_JobStatus
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectDataJobStatusResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    post:
+      tags:
+        - DirectDataIntake
+      summary: Commit a transaction
+      description: |-
+        Process a transaction and its uploaded data files. This starts a processing job to load the data files into Visier.
+
+         After committing a transaction, you cannot upload additional files to the transaction. Use the `Check transaction status` endpoint to monitor the progress of the processing job.
+      operationId: DirectDataIntake_CommitTransaction
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectDataUploadFileResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    delete:
+      tags:
+        - DirectDataIntake
+      summary: Roll back a transaction
+      description: |-
+        Rolls back the specified transaction. This discards all files uploaded within the transaction and deletes the transaction.
+
+         After rolling back a transaction, you cannot use the transaction to upload data files.
+      operationId: DirectDataIntake_RollbackTransaction
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectDataUploadFileResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/op/data-connector-credentials:
     get:
       tags:
         - DataAndJobHandling
       summary: Retrieve a list of all data connector credentials
       description: |-
-        Use this API to retrieve a list of the connector credentials in a specified tenant. Connector credentials allow
+        Retrieve a list of the connector credentials in a specified tenant. Connector credentials allow
          Visier to retrieve data from your source systems through an integration user in the source system.
       operationId: DataAndJobHandling_DataConnectorCredentials
       parameters:
@@ -55,7 +286,7 @@ paths:
         - DataAndJobHandling
       summary: Create a connector credential
       description: |-
-        Use this API to create connector credentials for a specified tenant. Connector credentials allow Visier to
+        Create connector credentials for a specified tenant. Connector credentials allow Visier to
          retrieve data from your source systems through an integration user in the source system.
       operationId: DataAndJobHandling_CreateConnectorCredential
       parameters:
@@ -89,7 +320,7 @@ paths:
         - DataAndJobHandling
       summary: Retrieve a list of all data connectors
       description: |-
-        Use this API to retrieve a list of the data connectors in a specified tenant. Data connectors are an alternative
+        Retrieve a list of the data connectors in a specified tenant. Data connectors are an alternative
          to generating flat files and transferring them to Visier via SFTP.
       operationId: DataAndJobHandling_DataConnectors
       parameters:
@@ -128,7 +359,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Assign connector credentials to data connectors
-      description: This API allows you to assign a connector credential to a data connector.
+      description: Assign a connector credential to a data connector.
       operationId: DataAndJobHandling_AssignConnectorCredential
       requestBody:
         content:
@@ -149,6 +380,222 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1/op/data-sources:
+    get:
+      tags:
+        - DataIntake
+      summary: Retrieve a list of sources
+      description: |-
+        Prior to transferring data to Visier, you must identify the sources you want to target. Sources store data for
+         the solution and are used to map data to Visier's data model.
+
+         **Note:** To set up sources in your tenant, contact Visier Customer Success.
+         This API allows you to query the list of available sources, and identify the source schema and required fields.
+      operationId: DataIntake_GetSources
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushDataSourceDefinitionsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/data-transfer-sessions:
+    post:
+      tags:
+        - DataIntake
+      summary: Start a transfer session
+      description: |-
+        Start a new transfer session. A transfer session can include one or more batches of records to be
+         sent to Visier. Batches of records may be transferred as JSON or file payloads.
+
+         Recommended: For optimal performance, please include all batches of records in a single transfer session.
+      operationId: DataIntake_StartTransfer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartTransferResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/data-transfer-sessions/{transferSessionId}/add:
+    put:
+      tags:
+        - DataIntake
+      summary: Transfer data to sources via JSON
+      description: |-
+        Transfer data to Visier in batches of records. Each request includes a batch of records
+         formatted as a comma separated array with the first row containing the column headers in the request body. Each
+         subsequent request should also include the first row as a header.
+
+         Each request transfers a batch of records to a single source. Transfer sessions may include one or more batches before completion.
+
+         Each batch is identified by a sequence number. Sequence numbers help identify any batches  that were delivered incorrectly.
+
+         Each batch is limited to the following request size:
+         - Batch size limit: 10 MB
+         - Record count limit: 300,000 rows
+      operationId: DataIntake_PushData
+      parameters:
+        - name: transferSessionId
+          in: path
+          description: The transfer session ID returned after the data transfer session starts.
+          required: true
+          schema:
+            type: string
+        - name: sourceId
+          in: query
+          description: The unique identifier associated with the source you want to transfer data to.
+          schema:
+            type: string
+        - name: sequence
+          in: query
+          description: The unique sequence number associated with a batch of records.
+          schema:
+            type: integer
+            format: uint32
+        - name: tenantCode
+          in: query
+          description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushDataResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/data-transfer-sessions/{transferSessionId}/cancel:
+    put:
+      tags:
+        - DataIntake
+      summary: Cancel a transfer session
+      description: |-
+        Cancel a transfer session after starting it. If a transfer session is cancelled, all
+         records within the transfer session do not persist in Visier's data store.
+
+         If you cancel a transfer session, please start a new transfer session and resend the complete data set.
+
+         You might cancel a transfer session if:
+         - A request to send a batch of records failed.
+         - The original set of records is incomplete.
+         - An infrastructure error occurs.
+      operationId: DataIntake_PushDataCancel
+      parameters:
+        - name: transferSessionId
+          in: path
+          description: The transfer session ID to cancel.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushDataCancelResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/data-transfer-sessions/{transferSessionId}/upload:
+    put:
+      tags:
+        - DataIntake
+      summary: Transfer data to sources via file upload
+      description: |-
+        Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the
+         data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make
+         multiple requests within the same transfer session.
+
+         File size limit: 3 GB
+
+         Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.
+
+         If you define a specific source in the request, all files within the request will target the declared source. If
+         a source is not defined, the filenames are matched against the source regex to correctly assign each file to a
+         source. To find out the source regex, please contact Visier Customer Success.
+
+         **Note:** If you include files that should target multiple sources in one ZIP file, do not define a source in the request.
+
+         Analytic tenants: For optimal transfer speed, provide one ZIP file per source.
+         Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.
+         In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:
+
+         File1.zip
+         - Folder1: WFF_tenantCode1
+            - Filename1.csv
+            - Filename2.csv
+         - Folder2: WFF_tenantCode2
+            - Filename3.csv
+            - Filename4.csv
+      operationId: DataIntake_UploadData
+      parameters:
+        - name: transferSessionId
+          in: path
+          description: The transfer session ID returned after the data transfer session starts.
+          required: true
+          schema:
+            type: string
+        - name: sourceId
+          in: query
+          description: The unique identifier associated with the source you want to transfer data to.
+          schema:
+            type: string
+        - name: sequence
+          in: query
+          description: The unique sequence number associated with a batch of records.
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json: {}
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushDataResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/op/data-versions:
     get:
       tags:
@@ -158,7 +605,7 @@ paths:
         If you discover any inconsistencies after running metric value validation, you may want to find the data versions
          causing inconsistencies so you can later disable them.
 
-         Use this API to retrieve up to five (5) of the latest enabled data versions for all your analytic tenants or a
+         Retrieve up to five (5) of the latest enabled data versions for all your analytic tenants or a
          single specified analytic tenant.
       operationId: DataAndJobHandling_LatestEnabledDV
       parameters:
@@ -211,10 +658,10 @@ paths:
         If you discover that a data version is not what is expected after running metric value validation on a data load,
          you may want to disable the data version for that processing job.
 
-         Use this API to disable the latest enabled data versions for affected analytic tenants or to disable a particular
+         Disable the latest enabled data versions for affected analytic tenants or to disable a particular
          data version for each analytic tenant.
 
-         Note: Disabling an older data version may not have an effect on the state of the solution.
+         **Note:** Disabling an older data version may not have an effect on the state of the solution.
       operationId: DataAndJobHandling_DisableDV
       requestBody:
         content:
@@ -240,7 +687,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a list of all data categories
-      description: Use this API to retrieve a list of all available data categories.
+      description: Retrieve a list of all available data categories.
       operationId: DataAndJobHandling_RetrieveDataCategories
       responses:
         "200":
@@ -261,7 +708,7 @@ paths:
         - DataAndJobHandling
       summary: Trigger extraction jobs
       description: |-
-        Use this API to generate extraction jobs for a list of analytic tenants or for the administrating tenant.
+        Generate extraction jobs for a list of analytic tenants or for the administrating tenant.
          This API creates a dispatching job that generates one extraction job per tenant. The extraction jobs retrieve
          data from your source systems through data connectors. The dispatching job is the "parent" of the extraction
          jobs and its job ID is returned in the response.
@@ -335,7 +782,7 @@ paths:
         - DataAndJobHandling
       summary: Retrieve data uploads
       description: |-
-        Use this API to retrieve the data uploads and whether they're included in one of:
+        Retrieve the data uploads and whether they're included in one of:
          - A list of analytic tenants managed by you.
          - A single specified analytic tenant.
          - An upload job.
@@ -388,7 +835,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Exclude data uploads
-      description: Use this API to exclude either a specified list of data uploads or all data uploads for each analytic tenant.
+      description: Exclude either a specified list of data uploads or all data uploads for each analytic tenant.
       operationId: DataAndJobHandling_ExcludeDataUplaods
       requestBody:
         content:
@@ -414,7 +861,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Include data uploads
-      description: Use this API to include either the specified list of data uploads or all data uploads for each analytic tenant.
+      description: Include either the specified list of data uploads or all data uploads for each analytic tenant.
       operationId: DataAndJobHandling_IncludeDataUploads
       requestBody:
         content:
@@ -440,7 +887,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve the statuses of all jobs
-      description: Use this API to retrieve the list of statuses for all jobs.
+      description: Retrieve the list of statuses for all jobs.
       operationId: DataAndJobHandling_JobStatus
       parameters:
         - name: startTime
@@ -455,7 +902,7 @@ paths:
             type: string
         - name: status
           in: query
-          description: The specific status to restrict the list of job to.
+          description: The specific status to restrict the list of jobs to.
           schema:
             type: string
       responses:
@@ -464,34 +911,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReceivingJobStatusResponse'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-  /v1/op/job-status/jobs/{jobId}:
-    get:
-      tags:
-        - DataAndJobHandling
-      summary: Retrieve a specific job's status
-      description: Use this API to retrieve the list of statuses for a specific job with id `jobId`.
-      operationId: DataAndJobHandling_JobIdStatus
-      parameters:
-        - name: jobId
-          in: path
-          description: The unique ID of the job to retrieve the status for.
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReceivingJobStatusResponse'
+                $ref: '#/components/schemas/JobStatusListResponse'
         default:
           description: Default error response
           content:
@@ -504,9 +924,9 @@ paths:
         - DataAndJobHandling
       summary: Cancel a list of jobs
       description: |-
-        Use this API to cancel a list of processing jobs, upload jobs, receiving jobs, and extraction jobs.
+        Cancel a list of processing jobs, upload jobs, receiving jobs, and extraction jobs.
 
-         Note: Receiving jobs with the Running status cannot be cancelled.
+         **Note:** Receiving jobs with the Running status cannot be cancelled.
       operationId: DataAndJobHandling_CancelJobs
       requestBody:
         content:
@@ -532,7 +952,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a dispatching job's status
-      description: Use this API to retrieve the status of a dispatching job, including its job ID and the number of jobs it generated.
+      description: Retrieve the status of a dispatching job, including its job ID and the number of jobs it generated.
       operationId: DataAndJobHandling_DispatchingJobStatus
       parameters:
         - name: jobId
@@ -560,7 +980,7 @@ paths:
         - DataAndJobHandling
       summary: Retrieve a dispatching job's extraction jobs with their statuses
       description: |-
-        Use this API to retrieve the statuses of extraction jobs associated with a dispatching job. The dispatching job
+        Retrieve the statuses of extraction jobs associated with a dispatching job. The dispatching job
          is a "parent" to extraction jobs, which retrieve data from your source systems through data connectors.
       operationId: DataAndJobHandling_ExtractionJobAndStatus
       parameters:
@@ -613,7 +1033,7 @@ paths:
         - DataAndJobHandling
       summary: Retrieve a dispatching job's processing jobs with their statuses
       description: |-
-        Use this API to retrieve the statuses of processing jobs associated with a dispatching job. The dispatching job
+        Retrieve the statuses of processing jobs associated with a dispatching job. The dispatching job
          is a "parent" to extraction jobs, which in turn generate processing jobs and receiving jobs.
       operationId: DataAndJobHandling_ProcessingJobAndStatus
       parameters:
@@ -666,7 +1086,7 @@ paths:
         - DataAndJobHandling
       summary: Retrieve a dispatching job's receiving jobs with their statuses
       description: |-
-        Use this API to retrieve the statuses of receiving jobs associated with a dispatching job. The dispatching job
+        Retrieve the statuses of receiving jobs associated with a dispatching job. The dispatching job
          is a "parent" to extraction jobs, which in turn generate processing jobs and receiving jobs.
       operationId: DataAndJobHandling_ReceivingJobAndStatus
       parameters:
@@ -719,7 +1139,7 @@ paths:
         - DataAndJobHandling
       summary: Retrieve processing job statuses by receiving job ID
       description: |-
-        Use this API to retrieve a list of statuses for all processing jobs associated with the given receiving job ID.
+        Retrieve a list of statuses for all processing jobs associated with the given receiving job ID.
          Processing jobs deal with an individual analytic tenant's data load. A processing job is either triggered through
          the UI or is one of many processing jobs spawned from a receiving job. When a processing job is triggered as part
          of a set from an receiving job, it is associated to the receiving job through a Parent ID.
@@ -763,6 +1183,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1/op/jobs/receiving-jobs:
+    post:
+      tags:
+        - DataIntake
+      summary: Complete a transfer session
+      description: |-
+        Complete the specified transfer session by triggering a receiving job. A receiving job
+         validates the transferred data and adds the transferred data to Visier's data store.
+
+         You can set an optional parameter to generate a data version through a processing job immediately after the receiving job completes.
+      operationId: DataIntake_PushDataComplete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushDataCompleteRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushDataCompleteResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/op/jobs/receiving-jobs/{receivingJobId}:
     get:
       tags:
@@ -773,7 +1223,7 @@ paths:
          receiving jobs. A receiving job validates the transferred data and adds the transferred data to Visier's data
          store.
 
-         Use this API to retrieve the receiving job status and summary of analytic tenant receiving jobs.
+         Retrieve the receiving job status and summary of analytic tenant receiving jobs.
       operationId: DataAndJobHandling_ReceivingJobStatus
       parameters:
         - name: receivingJobId
@@ -784,7 +1234,7 @@ paths:
             type: string
         - name: jobs
           in: query
-          description: If "true", returns the status of receiving jobs spawned by the receiving job specified by jobId.
+          description: If `true`, returns the status of receiving jobs spawned by the receiving job specified by `jobId`.
           schema:
             type: boolean
         - name: tenantCode
@@ -819,6 +1269,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1/data/directloads/{draftId}/transactions/{transactionId}/{objectName}:
+    put:
+      tags:
+        - DirectDataIntake
+      summary: Upload files
+      description: |-
+        Send upload files to a previously-created transaction. Each upload file is associated with a target object in Visier. The files are not processed in Visier until you commit the transaction.
+      operationId: DirectDataIntake_UploadFile
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction to load data files into.
+          required: true
+          schema:
+            type: string
+        - name: objectName
+          in: path
+          description: |-
+            The name of the object to upload the data to.
+
+            If uploading data to a multi-value property (MVP), specify the property in `{object}--{property}` format; for example, `Employee--Employee_Budgeted_Compensation`.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/octetstream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DirectDataUploadFileResponseDTO"
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
   /v1/op/data-connector-credentials/{id}:
     delete:
       tags:
@@ -847,6 +1346,64 @@ paths:
             application/json:
               schema:
                 type: string
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/job-status/jobs/{jobId}:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a specific job's status
+      description: |-
+        Use this API to retrieve the list of statuses for a specific job with id `jobId`.
+        You can retrieve all job statuses or specify a time period to retrieve statuses from.
+      operationId: DataAndJobHandling_JobIdStatus
+      parameters:
+        - name: jobId
+          in: path
+          description: The unique ID of the job to retrieve the status for.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: '#/components/schemas/ReceivingJobStatusResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/upload/files/{filename}:
+    put:
+      tags:
+        - DataUpload
+      summary: Upload a data file to Visier
+      description: "Use this API to upload data files to Visier. You can upload ZIP, CSV, XLS, and XLSX filetypes in plaintext or encrypted with Visier's PGP key.\n\n Use of this API requires client redirect. This API redirects requests directly to Visier's upload infrastructure to support long-running uploads. \n To ensure efficient uploading, we recommend that you use an HTTP client that supports the 100 Continue status code.\n\n The maximum file upload size is 500 MB. We recommend using SFTP for larger file sizes."
+      parameters:
+        - name: filename
+          in: path
+          description: The filename of the data file to upload, including the file extension (such as .zip or .csv).
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          "*/*":
+            schema:
+              type: string
+              format: binary
+      responses:
+        "307":
+          description: Redirect to Visier's upload infrastructure.
         default:
           description: Default error response
           content:
@@ -1051,7 +1608,7 @@ components:
              `"files": "/path/to/file1.zip.gpg,/path/to/another/file.zip.gpg"`
         skipDataLoad:
           type: boolean
-          description: If "true", receives the files and skips data loading. Does not generate a data version.
+          description: If `true`, receives the files and skips data loading. Does not generate a data version.
     DataLoadResponse:
       type: object
       properties:
@@ -1222,6 +1779,23 @@ components:
       properties:
         canChildrenInherit:
           type: boolean
+    DataTransferResultDetail:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The code of the tenant that data was transferred to. For example, WFF_j1r or WFF_j1r~c7o.
+        sourceNames:
+          type: array
+          items:
+            type: string
+          description: A list of strings representing the sources that received a data transfer.
+        dataSize:
+          type: string
+          description: The total size of the transfer session in bytes.
+        rows:
+          type: string
+          description: The total number of rows transferred during the transfer session.
     DataVersionAndDateDTO:
       type: object
       properties:
@@ -1268,6 +1842,97 @@ components:
           type: string
         password:
           type: string
+    DirectDataJobConfigDTO:
+      type: object
+      properties:
+        supplementalMode:
+          enum:
+            - UNCHANGED
+            - IS_PRIMARY
+            - IS_SUPPLEMENTAL
+          type: string
+          description: "The configuration for the processing job as a primary job (default) or a supplemental job. If a primary job is already defined, the direct data \n intake job must be supplemental. The valid values are `IS_PRIMARY`, `IS_SUPPLEMENTAL`, and `UNCHANGED`."
+          format: enum
+        extendObjects:
+          type: array
+          items:
+            type: string
+          description: |-
+            The target analytic objects to load using extension tables.
+             You can extend objects if the job type is supplemental and the target objects already contain data from a previous data version.
+             This allows you to load data for objects that already contain data in Visier.
+      description: Whether the direct data intake job is a primary job or a supplemental job.
+    DirectDataJobStatusResponseDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant for the data load.
+        transactionId:
+          type: string
+          description: The unique identifier of the committed transaction.
+        jobId:
+          type: string
+          description: The unique identifier of the processing job.
+        status:
+          type: string
+          description: The status of the processing job.
+        message:
+          type: string
+          description: If the processing job fails, this field contains details specific to the failure.
+      description: The job status information for a committed transaction.
+    DirectDataLoadConfigDTO:
+      type: object
+      properties:
+        job:
+          allOf:
+            - $ref: '#/components/schemas/DirectDataJobConfigDTO'
+          description: The direct data intake job configuration.
+      description: The configuration for the direct data intake, such as the  direct data intake job type.
+    DirectDataSchemaFieldDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The field's column name. Column names are case sensitive.
+        dataType:
+          type: string
+          description: The column's data type.
+        formats:
+          type: array
+          items:
+            type: string
+          description: The column's accepted formats, such as date formats like "yyyy-MM-dd".
+        isMandatory:
+          type: boolean
+          description: If true, the field must contain a value to successfully load data into the object.
+        emptyValuesAllowed:
+          type: boolean
+          description: If true, the value may be empty.
+      description: The definition of each field in an object's schema.
+    DirectDataTransactionStartResponseDTO:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: The transaction's unique identifier.
+      description: The response after successfully creating a transaction.
+    DirectDataUploadFileResponseDTO:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: The unique transaction identifier.
+        status:
+          type: string
+          description: The status of the request.
+        message:
+          type: string
+          description: The upload response message from the provisioning service.
+      description: |-
+        The transaction results.
+
+        If uploading a file, a success response means the upload was successful and doesn't always mean the file was successfully loaded into its target object.
     DisableDVModel:
       type: object
       properties:
@@ -1564,6 +2229,38 @@ components:
           items:
             $ref: '#/components/schemas/JobCancellationResultDTO'
           description: A list of objects representing the job cancellation results.
+    JobStatusListResponse:
+      type: object
+      properties:
+        queryStartTime:
+          type: string
+          description: The start time from which to retrieve job statuses.
+        queryEndTime:
+          type: string
+          description: The end time from which to retrieve job statuses.
+        jobStatus:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobStatusWithStartTime'
+          description: The specific status to restrict the list of jobs to.
+    JobStatusWithStartTime:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: The unique ID of the job.
+        tenant:
+          type: string
+          description: The tenant code.
+        status:
+          type: string
+          description: The status of the job, such as Running or Completed.
+        jobType:
+          type: string
+          description: The type of the job, such as a processing job or receiving job.
+        startTime:
+          type: string
+          description: The time that the job started.
     LeverAuthParamsDTO:
       type: object
       properties:
@@ -1696,7 +2393,7 @@ components:
       properties:
         parentJobId:
           type: string
-          description: The job ID of the receiving job that spawned this job
+          description: The job ID of the receiving job that spawned this job.
         parentTenantCode:
           type: string
           description: The tenant code of the receiving job that spawned this job.
@@ -1713,6 +2410,124 @@ components:
           items:
             $ref: '#/components/schemas/ProcessingJob'
           description: A list of objects representing the processing jobs to retrieve.
+    PushDataCancelResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A meaningful message about the transfer session.
+        transferSessionId:
+          type: string
+          description: The unique identifier associated with the transfer session.
+        dataTransferResultDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataTransferResultDetail'
+          description: A list of objects representing the results of the transfer session.
+        status:
+          type: string
+          description: The status of the transfer session. A cancelled session returns the status CANCELLED.
+    PushDataColumnDefinitionDTO:
+      type: object
+      properties:
+        columnName:
+          type: string
+          description: The name of the column.
+        dataType:
+          type: string
+          description: The data type associated with the column.
+        dataFormats:
+          type: array
+          items:
+            type: string
+          description: The expected format for datetime data types.
+        isMandatory:
+          type: boolean
+          description: If true, the column value is required. If a column is mandatory, and the file is missing this column, the request will fail.
+        allowEmpty:
+          type: boolean
+          description: If true, the column allows an empty value for the record.
+        defaultValue:
+          type: string
+          description: The default value of the column.
+      description: Definition of the source column.
+    PushDataCompleteRequest:
+      type: object
+      properties:
+        transferSessionId:
+          type: string
+          description: The unique identifier associated with the transfer session.
+        processingData:
+          type: boolean
+          description: If `true`, a processing job will be triggered after the receiving job successfully completes. This generates a new data version.
+    PushDataCompleteResponse:
+      type: object
+      properties:
+        dataReceivingJobId:
+          type: string
+          description: The unique identifier associated with the receiving job.
+        message:
+          type: string
+          description: A meaningful message about the transfer session.
+        transferSessionId:
+          type: string
+          description: The unique identifier associated with the transfer session.
+        dataTransferResultDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataTransferResultDetail'
+          description: A list of objects representing the results of the transfer session.
+        status:
+          type: string
+          description: The status of the transfer session. A completed session returns the status SUCCEED.
+    PushDataResponse:
+      type: object
+      properties:
+        transferSessionId:
+          type: string
+          description: The unique identifier associated with the transfer session.
+        sequence:
+          type: integer
+          description: The unique sequence number associated with a batch of records.
+          format: uint32
+        status:
+          type: string
+          description: The status of the data transfer.
+        message:
+          type: string
+          description: Any additional information about the data transfer.
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
+          description: A list of strings representing the tenants that data was pushed to and their data transfer results.
+    PushDataSourceDefinitionDTO:
+      type: object
+      properties:
+        sourceId:
+          type: string
+          description: The unique identifier associated with the source.
+        name:
+          type: string
+          description: The object name of the source.
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/PushDataColumnDefinitionDTO'
+          description: A list of objects representing the source columns.
+        isInherited:
+          type: boolean
+          description: If true, the source is inherited by all analytic tenants.
+      description: Details of each existing source.
+    PushDataSourceDefinitionsDTO:
+      type: object
+      properties:
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/PushDataSourceDefinitionDTO'
+          description: A list of objects representing the target sources for the request.
+      description: The existing sources.
     QualtricsAuthParamsDTO:
       type: object
       properties:
@@ -1862,6 +2677,27 @@ components:
           type: string
         privateKey:
           type: string
+    Source:
+      type: object
+      properties:
+        sourceId:
+          type: string
+          description: The unique identifier associated with the source that data was transferred to.
+        sourceName:
+          type: string
+          description: The object name of the source.
+        dataSize:
+          type: string
+          description: The size of the data transfer in bytes.
+        rows:
+          type: string
+          description: The number of rows in the data transfer.
+        status:
+          type: string
+          description: The status of the data transfer for this source.
+        message:
+          type: string
+          description: A meaningful message about the data transfer.
     SqlServerAuthParamsDTO:
       type: object
       properties:
@@ -1885,22 +2721,22 @@ components:
           description: A list of analytic tenants to dispatch extraction jobs for. One extraction job is dispatched per tenant.
         allTenants:
           type: boolean
-          description: If "true", one extraction job is dispatched for each accessible analytic tenant.
+          description: If `true`, one extraction job is dispatched for each accessible analytic tenant.
         overrideLastExtractionTimestamp:
           type: string
           description: The time from which to extract data.
         publishDataLoadArtifacts:
           type: boolean
-          description: If "true", the generated data load artifacts are published to Production immediately.
+          description: If `true`, the generated data load artifacts are published to production immediately.
         runProcessingJob:
           type: boolean
-          description: If "true", a processing job is spawned after a dispatched extraction job runs successfully.
+          description: If `true`, a processing job is spawned after a dispatched extraction job runs successfully.
         dataCategoryId:
           type: string
           description: The unique identifier of the data category on which to trigger the extraction job. Default is the tenant's primary data category.
         disableArtifactGeneration:
           type: boolean
-          description: If "true", the job does not generate data load artifacts. If unspecified, the default is "false".
+          description: If `true`, the job does not generate data load artifacts. If unspecified, the default is `false`.
         connectorIds:
           type: array
           items:
@@ -1927,7 +2763,7 @@ components:
           format: int32
         forceUpdateExistingArtifacts:
           type: boolean
-          description: If "true" and `disableArtifactGeneration` is "false", updates extractor artifacts, which may overwrite the artifacts' manual overrides. Ignored if `disableArtifactGeneration` is "true".
+          description: If `true` and `disableArtifactGeneration` is `false`, updates extractor artifacts, which may overwrite the artifacts' manual overrides. Ignored if `disableArtifactGeneration` is `true`.
     StartExtractionRequest:
       type: object
       properties:
@@ -1941,22 +2777,12 @@ components:
         JobId:
           type: string
           description: The ID of the dispatching job that generated the extraction jobs.
-    Status:
+    StartTransferResponse:
       type: object
       properties:
-        code:
-          type: integer
-          description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
-          format: int32
-        message:
+        transferSessionId:
           type: string
-          description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleProtobufAny'
-          description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
-      description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+          description: The unique identifier associated with the transfer session.
     SubjectMissingAccessDTO:
       type: object
       properties:
@@ -2008,6 +2834,20 @@ components:
           type: string
         publicX509Cert:
           type: string
+    Tenant:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The code of the tenant that data was transferred to. For example, WFF_j1r or WFF_j1r~c7o.
+        status:
+          type: string
+          description: The status of the data transfer for this tenant.
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+          description: A list of objects representing the sources that data was pushed to and their data transfer results.
     TenantAndCredential:
       type: object
       properties:
@@ -2105,7 +2945,7 @@ components:
           description: The tenant code of the analytic tenant you are excluding a data upload for.
         excludeAll:
           type: boolean
-          description: If "true", all data uploads are excluded for the analytic tenant.
+          description: If `true`, all data uploads are excluded for the analytic tenant.
         uploadTimes:
           type: array
           items:
@@ -2127,7 +2967,7 @@ components:
           description: The tenant code of the analytic tenant you are including a data upload for.
         includeAll:
           type: boolean
-          description: If "true", all data uploads are included for the analytic tenant.
+          description: If `true`, all data uploads are included for the analytic tenant.
         uploadTimes:
           type: array
           items:
@@ -2207,6 +3047,25 @@ components:
           type: string
         clientSecret:
           type: string
+    Status:
+      type: object
+      properties:
+        localizedMessage:
+          type: string
+          description: Localized error message describing the root cause of the error.
+        errorCode:
+          type: string
+          description: Error classification.
+        message:
+          type: string
+          description: Not used.
+        rci:
+          type: string
+          description: Optional root cause identifier.
+        userError:
+          type: boolean
+          description: Indicates whether the error is a user error.
+      description: The response structure for errors.
   securitySchemes:
     CookieAuth:
       type: apiKey
@@ -2234,7 +3093,21 @@ components:
             read: Grants read access
             write: Grants write access
 tags:
+  - name: DirectDataIntake
+    description: |-
+      Use the Direct Data Intake API to load data directly into Visier objects. These objects can be delivered as part of Visier Blueprint, locally modified objects, or even completely custom objects. Objects must be released to production to receive data through the DDI API.
+      You can load data into:
+      - Subjects
+      - Events
+      - Parent-child dimensions
+      - Multi-value properties
+  - name: DataIntake
+    description: |-
+      Send raw or untransformed data to Visier. After we receive the data, Visier runs business rules to transform your data into the expected format for the existing mappings.
+      <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
   - name: DataAndJobHandling
+    description: |-
+      Initiate and manage jobs, included or excluded data, and data connector credentials. Administrating tenant users can manage jobs and data for their analytic tenants.
 security:
   - ApiKeyAuth: []
     BearerAuth: []
