@@ -68,7 +68,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: processed-specs-${{env.VERSION}}
+          name: processed-specs-${{env.BRANCH_NAME}}
           path: ${{ env.SPEC_DIR }}
 
       - name: Create a token
@@ -96,7 +96,7 @@ jobs:
             spec_file="$SPEC_DIR/${specification}.yaml"
             package_name="$PACKAGE_PREFIX.$(echo "$specification" | sed 's/-apis$//; s/-/_/g')"
             output_dir="$SDK_REPO_DIR/src/$package_name"
-            spec_version=$(jq -r '.info.version' "$spec_file")
+            spec_version=$(awk '/version:/ {gsub(/"| /, "", $2); print $2}' "$spec_file")
           
             mkdir -p $output_dir
             openapi-generator-cli generate \
