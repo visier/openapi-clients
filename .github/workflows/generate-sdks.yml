@@ -64,7 +64,7 @@ jobs:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - name: Create Pull Request
+      - name: Create Pull Request for openapi-clients
         id: create_pr
         env:
           GH_TOKEN: ${{ steps.create-token.outputs.token }}
