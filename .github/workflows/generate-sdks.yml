@@ -49,7 +49,7 @@ jobs:
       contents: write
       pull-requests: write
     outputs:
-      pr_url: ${{ steps.create_pr.outputs.pr_url }}
+      pr_number: ${{ steps.create_pr.outputs.pr_number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -59,16 +59,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pr_url=$(gh pr create \
+          pr_output=$(gh pr create \
             --title "PR for ${{ github.ref_name }}" \
             --body "This PR created automatically after pushing changes to language-sdk repos." \
             --head "${{ github.ref_name }}" \
-            --base "${{ env.OPEN_API_BASE_BRANCH }}" \
-            --json url --jq .url)
-          echo "::set-output name=pr_url::$pr_url"
+            --base "${{ inputs.base_branch }}")
+          pr_number=$(echo "$pr_output" | grep -oP '(?<=#)\d+')
+          echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
+          echo "Pull Request #$pr_number created successfully."
 
       - name: Merge Pull Request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr merge ${{ steps.create_pr.outputs.pr_url }} --squash --delete-branch --subject "Auto-merge: Update openapi"
+          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --squash --delete-branch --subject "Auto-merge: Update openapi"
