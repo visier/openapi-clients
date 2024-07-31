@@ -14,7 +14,6 @@ jobs:
       ORIG_SPEC_DIR: ${{ github.workspace }}/res
       SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
       PREPROCESSING_DIR: ${{ github.workspace }}/sdk-blueprints/preprocessing
-      OPEN_API_BASE_BRANCH: github-actions-test
 
     steps:
       - name: Checkout workflow repository
@@ -45,6 +44,8 @@ jobs:
     name: Create and Merge Pull Request for release
     needs: generate-python-sdk
     runs-on: ubuntu-22.04
+    env:
+      OPEN_API_BASE_BRANCH: github-actions-test
     permissions:
       contents: write
       pull-requests: write
