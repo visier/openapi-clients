@@ -39,13 +39,15 @@ jobs:
     needs: preprocess-specifications
     uses: ./.github/workflows/generate-python-sdk.yml
     secrets: inherit
+    with:
+      python_sdk_pr_base_branch: ${{ vars.PYTHON_SDK_PR_BASE_BRANCH }}
 
   create-and-merge-pr:
     name: Create and Merge Pull Request for release
     needs: generate-python-sdk
     runs-on: ubuntu-22.04
     env:
-      OPENAPI_CLIENT_PR_BASE_BRANCH: ${{ vars.PR_BASE_BRANCH }}
+      OPENAPI_CLIENT_PR_BASE_BRANCH: ${{ vars.OPENAPI_CLIENT_PR_BASE_BRANCH }}
     permissions:
       contents: write
       pull-requests: write
@@ -71,7 +73,7 @@ jobs:
             --title "PR for ${{ github.ref_name }}" \
             --body "This PR created automatically after pushing changes to language-sdk repos." \
             --head "${{ github.ref_name }}" \
-            --base "${{ env.PR_BASE_BRANCH }}")
+            --base "${{ env.OPENAPI_CLIENT_PR_BASE_BRANCH }}")
           pr_number=$(echo "$pr_output" | grep -oP '(?<=#)\d+')
           echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
           echo "Pull Request #$pr_number created successfully."
