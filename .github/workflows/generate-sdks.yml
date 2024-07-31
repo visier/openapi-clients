@@ -1,0 +1,41 @@
+name: Generate SDKs
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'release-**'
+
+jobs:
+  preprocess-specifications:
+    name: Preprocess OpenAPI specifications
+    runs-on: ubuntu-22.04
+    env:
+      ORIG_SPEC_DIR: ${{ github.workspace }}/res
+      SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
+      PREPROCESSING_DIR: ${{ github.workspace }}/sdk-blueprints/preprocessing
+
+    steps:
+      - name: Checkout workflow repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Preprocess OpenAPI specifications
+        id: preprocess
+        run: |
+          python3 -m pip install -r $PREPROCESSING_DIR/requirements.txt
+          python3 $PREPROCESSING_DIR/preprocessing.py $ORIG_SPEC_DIR $SPEC_DIR
+
+      - name: Upload preprocessed specifications as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: processed-specs-${{ github.ref_name }}
+          path: ${{ env.SPEC_DIR }}
+          retention-days: 7
+
+  generate-python-sdk:
+    name: Generate Python SDK
+    needs: preprocess-specifications
+    uses: ./.github/workflows/generate-python-sdk.yml
+    secrets: inherit
