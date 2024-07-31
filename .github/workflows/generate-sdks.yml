@@ -14,7 +14,6 @@ jobs:
       ORIG_SPEC_DIR: ${{ github.workspace }}/res
       SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
       PREPROCESSING_DIR: ${{ github.workspace }}/sdk-blueprints/preprocessing
-      OPEN_API_BASE_BRANCH: github-actions-test
 
     steps:
       - name: Checkout workflow repository
@@ -40,32 +39,53 @@ jobs:
     needs: preprocess-specifications
     uses: ./.github/workflows/generate-python-sdk.yml
     secrets: inherit
+    with:
+      python_sdk_pr_base_branch: ${{ vars.PYTHON_SDK_PR_BASE_BRANCH }}
 
   create-and-merge-pr:
     name: Create and Merge Pull Request for release
     needs: generate-python-sdk
     runs-on: ubuntu-22.04
+    env:
+      OPENAPI_CLIENT_PR_BASE_BRANCH: ${{ vars.OPENAPI_CLIENT_PR_BASE_BRANCH }}
+    permissions:
+      contents: write
+      pull-requests: write
     outputs:
-      pr_url: ${{ steps.create_pr.outputs.pr_url }}
+      pr_number: ${{ steps.create_pr.outputs.pr_number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Create Pull Request
+      - name: Create a token
+        id: create-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Create Pull Request for openapi-clients
         id: create_pr
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.create-token.outputs.token }}
         run: |
-          pr_url=$(gh pr create \
+          pr_output=$(gh pr create \
             --title "PR for ${{ github.ref_name }}" \
             --body "This PR created automatically after pushing changes to language-sdk repos." \
             --head "${{ github.ref_name }}" \
-            --base "${{ env.OPEN_API_BASE_BRANCH }}" \
-            --json url --jq .url)
-          echo "::set-output name=pr_url::$pr_url"
+            --base "${{ env.OPENAPI_CLIENT_PR_BASE_BRANCH }}")
+          pr_number=$(echo "$pr_output" | grep -oE '[0-9]+$')
+          echo "Pull Request #$pr_number created successfully."
+          echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
+          
 
       - name: Merge Pull Request
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.create-token.outputs.token }}
         run: |
-          gh pr merge ${{ steps.create_pr.outputs.pr_url }} --squash --delete-branch --subject "Auto-merge: Update openapi"
+          gh pr merge ${{ steps.create_pr.outputs.pr_number }} \
+            --squash \
+            --delete-branch \
+            --subject "Auto-merge: Update openapi"
