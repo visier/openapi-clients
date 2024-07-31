@@ -116,7 +116,7 @@ jobs:
           error_flag=0
           find "$SDK_REPO_DIR/src/" -type d -name "${PACKAGE_PREFIX}*" -print |
           while read -r dir; do
-            (cd "$dir" && tox -p auto)
+            (cd "$dir" && tox -p 3)
             if [ $? -ne 0 ]; then
               error_flag=1
             fi
