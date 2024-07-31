@@ -45,6 +45,9 @@ jobs:
     name: Create and Merge Pull Request for release
     needs: generate-python-sdk
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      pull-requests: write
     outputs:
       pr_url: ${{ steps.create_pr.outputs.pr_url }}
     steps:
