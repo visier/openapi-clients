@@ -70,7 +70,7 @@ jobs:
             --title "PR for ${{ github.ref_name }}" \
             --body "This PR created automatically after pushing changes to language-sdk repos." \
             --head "${{ github.ref_name }}" \
-            --base "${{ inputs.base_branch }}")
+            --base "${{ env.OPEN_API_BASE_BRANCH }}")
           pr_number=$(echo "$pr_output" | grep -oP '(?<=#)\d+')
           echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
           echo "Pull Request #$pr_number created successfully."
@@ -79,4 +79,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.create-token.outputs.token }}
         run: |
-          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --squash --delete-branch --subject "Auto-merge: Update openapi"
+          gh pr merge ${{ steps.create_pr.outputs.pr_number }} \
+            --squash \
+            --delete-branch \
+            --subject "Auto-merge: Update openapi"
