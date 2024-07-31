@@ -71,6 +71,7 @@ jobs:
           token: ${{ steps.create-token.outputs.token }}
           path: ${{ env.SDK_REPO_DIR }}
           persist-credentials: false
+          ref: ${{ env.BASE_BRANCH }}
 
       - name: Generate Python SDK for all specifications
         shell: bash
