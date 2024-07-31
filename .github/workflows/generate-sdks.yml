@@ -14,6 +14,7 @@ jobs:
       ORIG_SPEC_DIR: ${{ github.workspace }}/res
       SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
       PREPROCESSING_DIR: ${{ github.workspace }}/sdk-blueprints/preprocessing
+      OPEN_API_BASE_BRANCH: github-actions-test
 
     steps:
       - name: Checkout workflow repository
@@ -39,3 +40,32 @@ jobs:
     needs: preprocess-specifications
     uses: ./.github/workflows/generate-python-sdk.yml
     secrets: inherit
+
+  create-and-merge-pr:
+    name: Create and Merge Pull Request for release
+    needs: generate-python-sdk
+    runs-on: ubuntu-22.04
+    outputs:
+      pr_url: ${{ steps.create_pr.outputs.pr_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create Pull Request
+        id: create_pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr_url=$(gh pr create \
+            --title "PR for ${{ github.ref_name }}" \
+            --body "This PR created automatically after pushing changes to language-sdk repos." \
+            --head "${{ github.ref_name }}" \
+            --base "${{ env.OPEN_API_BASE_BRANCH }}" \
+            --json url --jq .url)
+          echo "::set-output name=pr_url::$pr_url"
+
+      - name: Merge Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ steps.create_pr.outputs.pr_url }} --squash --delete-branch --subject "Auto-merge: Update openapi"
