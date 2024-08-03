@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1418
+  version: 22222222.99201.1430
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -160,14 +160,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/Status"
         "200":
-          description: The JSON Web Token. Use this token in your API calls to authenticate the call.
+          description: Returns access and refresh tokens along with the expiration time.
           content:
-            application/jwt:
-              schema:
-                type: string
             application/json:
               schema:
-                type: string
+                $ref: "#/components/schemas/TokenResponse"
       security:
         - ApiKeyAuth: []
         - ApiKeyAuth: []
@@ -242,6 +239,7 @@ components:
             - ContentReassignment
             - ReportDownloading
             - PlutoUser
+            - ReportingManagement
           type: string
           format: enum
         accessLevel:
@@ -412,9 +410,21 @@ components:
     TokenResponse:
       type: object
       properties:
-        token:
+        access_token:
           type: string
-          description: The security token. Use this token in your API calls to authenticate the call. Expires after 60 minutes.
+          description: The access token to be used for API calls.
+        refresh_token:
+          type: string
+          description: The token used to obtain new access tokens.
+        id_token:
+          type: string
+          description: The ID token containing user identity information.
+        token_type:
+          type: string
+          description: The type of the token, typically "Bearer".
+        expires_in:
+          type: integer
+          description: The duration in seconds for which the access token is valid.
     TokenRequestBody:
       type: object
       properties:

@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1418
+  version: 22222222.99201.1430
 paths:
   /v1/data/directloads/{draftId}/configs:
     get:
@@ -1679,6 +1679,7 @@ components:
             - GoogleWorkspace
             - OracleDb
             - SmartRecruiters
+            - WorkdayWQL
           type: string
           description: |-
             The data provider associated with the credential.
@@ -2110,6 +2111,10 @@ components:
           type: string
         clientSecret:
           type: string
+        serviceAccount:
+          type: string
+        privacyMode:
+          type: string
     GreenhouseAuthParamsDTO:
       type: object
       properties:
@@ -2285,6 +2290,8 @@ components:
         clientId:
           type: string
         clientSecret:
+          type: string
+        privacyMode:
           type: string
     MultipleTenantDataVersionsDetailsDTO:
       type: object
@@ -2950,7 +2957,18 @@ components:
           type: array
           items:
             type: string
-          description: A comma-separated list of strings representing the upload time of each data upload to exclude.
+          description: A comma-separated list of ISO8601 time strings representing the upload time of each data upload to exclude.
+        minUploadTime:
+          type: string
+          description: An ISO8601 time for the earliest upload time. If defined, omit `uploadTimes`. If omitted and `maxUploadTime` is defined, excludes files up to earliest time available.
+        maxUploadTime:
+          type: string
+          description: An ISO8601 time for the latest upload time. If defined, omit `uploadTimes`. If omitted and `minUploadTime` is defined, excludes files up to latest time available.
+        sources:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings representing the object name of each source to exclude. If `uploadTimes` is omitted, excludes files for the given sources for all `uploadTimes`.
     UploadToExcludeModel:
       type: object
       properties:
@@ -2972,7 +2990,18 @@ components:
           type: array
           items:
             type: string
-          description: A comma-separated list of strings representing the upload time of each data upload to include.
+          description: A comma-separated list of ISO8601 time strings representing the upload time of each data upload to include.
+        minUploadTime:
+          type: string
+          description: An ISO8601 time for the earliest upload time. If defined, omit `uploadTimes`. If omitted and `maxUploadTime` is defined, includes files up to earliest time available.
+        maxUploadTime:
+          type: string
+          description: An ISO8601 time for the latest upload time. If defined, omit `uploadTimes`. If omitted and `minUploadTime` is defined, includes files up to latest time available.
+        sources:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings representing the object name of each source to include. If `uploadTimes` is omitted, includes files for the given sources for all `uploadTimes`.
     UploadToIncludeModel:
       type: object
       properties:
