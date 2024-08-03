@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1418
+  version: 22222222.99201.1429
 paths:
   /v1/admin/capabilities:
     get:
@@ -2585,7 +2585,44 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetProjectCommitsAPIResponseDTO'
+                $ref: '#/components/schemas/ProjectCommitsAPIResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    put:
+      tags:
+        - Projects
+      summary: Import committed changes into a project
+      description: |-
+        *
+         Import a ZIP file that contains a list of committed changes into a draft project. The file must be an export from `POST /v1alpha/admin/production-versions`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Projects_PutProjectCommits
+      parameters:
+        - name: projectId
+          in: path
+          description: The unique identifier of the draft project you want to import committed changes into.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutProjectCommitsRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCommitsAPIResponseDTO'
         default:
           description: Default error response
           content:
@@ -3856,6 +3893,19 @@ components:
             Configures the analytic object to inherit population access filters from. The target analytic object must be assigned population access in the permission and have a binding (strong) reference from the source analytic object.
              * For example, assume `Applicant` -> `Requisition` is configured to be a binding (strong) reference.
              For `Applicant` (source analytic object) to inherit population access filters from `Requisition` (target analytic object), in the Applicant `dataSecurityProfile`, set `inheritedReferenceMemberFilterConfig` to `Requisition`. In this example, Applicant will inherit filters from Requisition because Requsition is assigned data security in this permission and there is a binding (strong) reference from Applicant to Requisition.
+        analyticObjectStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: |-
+            The analytic object's validity status. Valid values: Valid, NoData, NotFound.
+             * **Valid**: The object exists and has loaded data.
+             * **NoData**: The object exists but doesn't have loaded data.
+             * **NotFound**: The object doesn't exist.
+          format: enum
     DeletePermissionsRequestDTO:
       type: object
       properties:
@@ -4060,14 +4110,6 @@ components:
           items:
             $ref: '#/components/schemas/ProjectDTO'
           description: A list of projects that were published to production.
-    GetProjectCommitsAPIResponseDTO:
-      type: object
-      properties:
-        commits:
-          type: array
-          items:
-            $ref: '#/components/schemas/CommitDTO'
-          description: A list of committed changes in the project.
     GetProjectsAPIResponseDTO:
       type: object
       properties:
@@ -4137,9 +4179,13 @@ components:
         targetAnalyticObjectId:
           type: string
           description: |-
-            *
             The unique ID of the analytic object that the source
             analytic object should inherit filters from. The target analytic object must have a binding (strong) reference from the source analytic object.
+        analyticObjectReference:
+          type: string
+          description: |-
+            The optional object name of a binding (strong) reference to the target analytic object. If not specified, uses the first binding reference from the source
+            to the target analytic object.
     LastLoginDTO:
       type: object
       properties:
@@ -4550,6 +4596,14 @@ components:
           items:
             $ref: '#/components/schemas/ProfileGetAPIResponseDTO'
           description: A list of objects representing the available profiles.
+    ProjectCommitsAPIResponseDTO:
+      type: object
+      properties:
+        commits:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommitDTO'
+          description: A list of committed changes in the project.
     ProjectDTO:
       type: object
       properties:
@@ -4658,6 +4712,12 @@ components:
           allOf:
             - $ref: '#/components/schemas/ShareableDataAccessSet'
           description: A shareable data access set. Shareable data access sets may be linked in multiple permissions.
+    PutProjectCommitsRequest:
+      type: object
+      properties:
+        projectId:
+          type: string
+          description: The unique identifier of the draft project you want to import committed changes into.
     ReducedErrorDTO:
       type: object
       properties:
