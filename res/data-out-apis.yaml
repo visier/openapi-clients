@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1429
+  version: 22222222.99201.1431
 paths:
   /v1/data/query/aggregate:
     post:
@@ -315,36 +315,123 @@ paths:
       description: |-
         Use this API to ask Vee a People Analytic question and receive a response.
          Options `includeData` and `includeVisual` can be set in the request data to receive additional data corresponding to the answer.
-         Example: `POST v1alpha/rest/vee/query` with body data
+
+         [ Example 1 ] initiating a conversation with Vee: `POST v1alpha/rest/vee/query` with body data
          ```json
          {
-             "question": "who is Adam?"
-                 "options": {
-                     "includeVisual": "false",
-                     "includeData": "true"
+             "question": "what is the headcount by gender in each org?",
+             "options": {
+                 "includeVisual": "true",
+                 "includeData": "true",
+                 "rewordedQuestion": "true"
              }
          }
          ```
          returns
          ```json
          {
-            "threadState": { .. },
+            "threadState": {
+                "questionState": [
+                    "(encrypted threadState string)"
+                ]
+            },
             "statusCode": {
                 "statusCode": "VEE_API_SUCCESS",
-                "statusMsg": "Successful Vee response for question=who is Adam?"
+                "statusMsg": "Successful Vee response for question=what is the headcount by gender in each org?"
             },
-            "narrative": "For Adam Mccallum in Apr 2024: Performance Rating is Level 4, and it changed once on Feb 2024, Potential is High, and it changed once on Feb 2023, Email Address is adam.mccallum.d3m@visierinc.com, Compa Ratio is 28.9%, Period Change Direct Compensation is 0.00%, Manager Status is 1, Direct Span of Control is 3, Manager Change Count is 0, Average Overall Experience Score is N/A and Job Name is Operations Director.",
-            "queryFunction": "Info_Card(filters[Employee.Full_Name = \"Adam Mccallum\"]);",
-            "concepts": {},
+            "narrative": "In Apr 2024, the Headcount: for Man & Operations was the largest at 165 (16.1% of total) and for Woman & BlueSphere was the smallest at 1 (0.1% of total).",
+            "chartUrl": "http://(vanity).visier.com/hr/prod/appcontainer#/analytics/queryFnChart?fn=(chartPath)",
+            "schema": {
+                "metrics": [
+                    "Headcount"
+                ],
+                "dimensions": [
+                    {
+                        "name": "Organization"
+                    },
+                    {
+                        "name": "Gender"
+                    },
+                    {
+                        "name": "Gender",
+                        "paths": [
+                            "Employee"
+                        ]
+                    },
+                    {
+                        "name": "Organization",
+                        "paths": [
+                            "Employee"
+                        ]
+                    }
+                ]
+            },
             "data": {
-                "dataJson": "..",
+                "dataJson": "(hidden for length)",
+                "context": "{\"filters\":[],\"timeFilter\":[\"Apr 2024\"]}"
+          ,
+            "visual": {
+                "image": "(base64 encoded PNG of rasterized chart)"
+                "title": "Trend of Average Hourly Rate by Gender",
                 "context": "{\"filters\":[],\"timeFilter\":[\"Apr 2024\"]}"
             },
-            "visual": {},
-            "rewordedQuestion": "What is the current status and details of Adam Mccallum's employment as of April 2024?"
+            "rewordedQuestion": "What is the gender breakdown of our workforce by organization this month?"
          }
          ```
 
+         [ Example 2 ] Asking Vee a followup question: `POST v1alpha/rest/vee/query` with body data:
+         ```json
+         {
+            "question": "what about by tenure?",
+            "threadState": {
+                "questionState": [
+                    "(valueof_questionState_from_Example_1_above)"
+                ]
+            },
+            "options": {
+                "includeVisual": "false",
+                "includeData": "true",
+                "rewordedQuestion": "false"
+            }
+         }
+         ````
+         returns
+         ```json
+         {
+            "threadState": {
+                "questionState": [
+                    "(valueof_questionState_from_Example_1_above)",
+                    "(new encrypted threadState string)"
+                ]
+            },
+            "statusCode": {
+                "statusCode": "VEE_API_SUCCESS",
+                "statusMsg": "Successful Vee response for question=what about by tenure?"
+            },
+            "narrative": "In Apr 2024, the Headcount by Tenure Range were: 0 to 1 yr was 205 (20% of total), 1 to 2 yrs was 121 (11.8% of total) and 2 to 3 yrs was 91 (8.86% of total)and 4 more.",
+            "chartUrl": "http://(vanity).visier.com/hr/prod/appcontainer#/analytics/queryFnChart?fn=(chartPath)",
+            "schema": {
+                "metrics": [
+                    "Headcount"
+                ],
+                "dimensions": [
+                    {
+                        "name": "Tenure Range"
+                    },
+                    {
+                        "name": "Tenure Range",
+                        "paths": [
+                            "Employee"
+                        ]
+                    }
+                ]
+            },
+            "data": {
+                "dataJson": "(hidden)",
+                "context": "{\"filters\":[],\"timeFilter\":[\"Apr 2024\"]}"
+            }
+         }
+         ```
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: VeeQuery_VeeQueryRequest
@@ -363,6 +450,16 @@ paths:
           in: query
           schema:
             type: boolean
+        - name: options.chartOptions.width
+          in: query
+          schema:
+            type: integer
+            format: uint32
+        - name: options.chartOptions.height
+          in: query
+          schema:
+            type: integer
+            format: uint32
         - name: options.includeData
           in: query
           schema:
@@ -397,19 +494,19 @@ paths:
         - VeeQuery
       summary: Submit Vee feedback
       description: |-
-        Give Vee feedback on a previous response. POST the `threadState` field returned from  `query` endpoint above,
+        Give Vee feedback on a previous response. POST the JSON response returned from `query` endpoint above,
          along with a positive or negative rating (`isApproved`) and any further information you'd like to provide (`description`).
 
+         Example: `POST /v1alpha/rest/vee/query-feedback` returns a success or failure:
+         ```json
+         {
+             "response": { (valueof_json_response_from_query_endpoint) },
+             "isApproved": "false",
+             "description": "I wanted to see more orgs in the answer!"
+         }
+         ```
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-         Example: `POST /v1alpha/rest/vee/query-feedback` returns a success or failure:
-            ```json
-         {
-             "response": { .. },
-             "isApproved": "false",
-             "description": "API testing"
-         }
-            ```
       operationId: VeeQuery_VeeQueryFeedback
       parameters:
         - name: question
@@ -426,6 +523,16 @@ paths:
           in: query
           schema:
             type: boolean
+        - name: options.chartOptions.width
+          in: query
+          schema:
+            type: integer
+            format: uint32
+        - name: options.chartOptions.height
+          in: query
+          schema:
+            type: integer
+            format: uint32
         - name: options.includeData
           in: query
           schema:
@@ -462,14 +569,14 @@ paths:
       description: |-
         To get started with Vee, use this API to get a list of sample questions.
          Example: `GET /v1alpha/rest/vee/sample-questions` returns a string list of questions.
-            ```json
+         ```json
             questions {
                 "questions": "What is the turnover rate?"
                 "metadata": {
                     "categories": "metricQuestion""
                 }
             }
-            ```
+         ```
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -489,6 +596,16 @@ paths:
           in: query
           schema:
             type: boolean
+        - name: options.chartOptions.width
+          in: query
+          schema:
+            type: integer
+            format: uint32
+        - name: options.chartOptions.height
+          in: query
+          schema:
+            type: integer
+            format: uint32
         - name: options.includeData
           in: query
           schema:
@@ -2155,6 +2272,8 @@ components:
       type: object
       properties:
         image:
+          type: string
+        title:
           type: string
         context:
           type: string
