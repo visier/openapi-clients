@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1431
+  version: 22222222.99201.1435
 paths:
   /v1/data/query/aggregate:
     post:
@@ -307,165 +307,159 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
-  /v1alpha/rest/vee/query:
+  /v1alpha/rest/vee/feedback:
     post:
       tags:
-        - VeeQuery
-      summary: Ask Vee a question
+        - Vee
+      summary: Submit Vee feedback
       description: |-
-        Use this API to ask Vee a People Analytic question and receive a response.
-         Options `includeData` and `includeVisual` can be set in the request data to receive additional data corresponding to the answer.
+        Give Vee feedback for a previous answer. To submit feedback, include:
+         * The response object from the `/question` response.
+         * A rating of Vee's answer. If `isApproved` is `true`, Vee answered the question correctly. If `isApproved` is `false`, Vee's answer was incorrect or lacked details.
+         * A description of how Vee should have answered the question or how Vee can improve the answer, such as "Expected Headcount metric, but Vee returned Average Headcount".
 
-         [ Example 1 ] initiating a conversation with Vee: `POST v1alpha/rest/vee/query` with body data
-         ```json
-         {
-             "question": "what is the headcount by gender in each org?",
-             "options": {
-                 "includeVisual": "true",
-                 "includeData": "true",
-                 "rewordedQuestion": "true"
-             }
-         }
-         ```
-         returns
-         ```json
-         {
-            "threadState": {
-                "questionState": [
-                    "(encrypted threadState string)"
-                ]
-            },
-            "statusCode": {
-                "statusCode": "VEE_API_SUCCESS",
-                "statusMsg": "Successful Vee response for question=what is the headcount by gender in each org?"
-            },
-            "narrative": "In Apr 2024, the Headcount: for Man & Operations was the largest at 165 (16.1% of total) and for Woman & BlueSphere was the smallest at 1 (0.1% of total).",
-            "chartUrl": "http://(vanity).visier.com/hr/prod/appcontainer#/analytics/queryFnChart?fn=(chartPath)",
-            "schema": {
-                "metrics": [
-                    "Headcount"
-                ],
-                "dimensions": [
-                    {
-                        "name": "Organization"
-                    },
-                    {
-                        "name": "Gender"
-                    },
-                    {
-                        "name": "Gender",
-                        "paths": [
-                            "Employee"
-                        ]
-                    },
-                    {
-                        "name": "Organization",
-                        "paths": [
-                            "Employee"
-                        ]
-                    }
-                ]
-            },
-            "data": {
-                "dataJson": "(hidden for length)",
-                "context": "{\"filters\":[],\"timeFilter\":[\"Apr 2024\"]}"
-          ,
-            "visual": {
-                "image": "(base64 encoded PNG of rasterized chart)"
-                "title": "Trend of Average Hourly Rate by Gender",
-                "context": "{\"filters\":[],\"timeFilter\":[\"Apr 2024\"]}"
-            },
-            "rewordedQuestion": "What is the gender breakdown of our workforce by organization this month?"
-         }
-         ```
-
-         [ Example 2 ] Asking Vee a followup question: `POST v1alpha/rest/vee/query` with body data:
-         ```json
-         {
-            "question": "what about by tenure?",
-            "threadState": {
-                "questionState": [
-                    "(valueof_questionState_from_Example_1_above)"
-                ]
-            },
-            "options": {
-                "includeVisual": "false",
-                "includeData": "true",
-                "rewordedQuestion": "false"
-            }
-         }
-         ````
-         returns
-         ```json
-         {
-            "threadState": {
-                "questionState": [
-                    "(valueof_questionState_from_Example_1_above)",
-                    "(new encrypted threadState string)"
-                ]
-            },
-            "statusCode": {
-                "statusCode": "VEE_API_SUCCESS",
-                "statusMsg": "Successful Vee response for question=what about by tenure?"
-            },
-            "narrative": "In Apr 2024, the Headcount by Tenure Range were: 0 to 1 yr was 205 (20% of total), 1 to 2 yrs was 121 (11.8% of total) and 2 to 3 yrs was 91 (8.86% of total)and 4 more.",
-            "chartUrl": "http://(vanity).visier.com/hr/prod/appcontainer#/analytics/queryFnChart?fn=(chartPath)",
-            "schema": {
-                "metrics": [
-                    "Headcount"
-                ],
-                "dimensions": [
-                    {
-                        "name": "Tenure Range"
-                    },
-                    {
-                        "name": "Tenure Range",
-                        "paths": [
-                            "Employee"
-                        ]
-                    }
-                ]
-            },
-            "data": {
-                "dataJson": "(hidden)",
-                "context": "{\"filters\":[],\"timeFilter\":[\"Apr 2024\"]}"
-            }
-         }
-         ```
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: VeeQuery_VeeQueryRequest
+      operationId: Vee_VeeFeedback
+      parameters:
+        - name: response.conversationState.questionState
+          in: query
+          description: The unique identifier of the conversation with Vee.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: response.statusCode.statusCode
+          in: query
+          description: A status code indicating whether or not Vee successfully answered the question.
+          schema:
+            enum:
+              - UNDEFINED
+              - VEE_API_SUCCESS
+              - VEE_API_WARNING
+              - VEE_API_ERROR
+            type: string
+            format: enum
+        - name: response.statusCode.statusMsg
+          in: query
+          description: Additional information about whether or not Vee successfully answered the question.
+          schema:
+            type: string
+        - name: response.narrative
+          in: query
+          description: Vee's answer to the question.
+          schema:
+            type: string
+        - name: response.chartUrl
+          in: query
+          description: A URL to view the visualization in Visier.
+          schema:
+            type: string
+        - name: response.schema.metrics
+          in: query
+          description: A list of the metrics that contribute to Vee's answer.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: response.data.dataJson
+          in: query
+          description: A JSON string of fields and numerical values representing the data contributing to Vee's answer. For example, the number of employees per gender in Vee's answer.
+          schema:
+            type: string
+        - name: response.data.context
+          in: query
+          description: The filter applied to the visualization generated by Vee. For example, a time filter of April 2024.
+          schema:
+            type: string
+        - name: response.visual.image
+          in: query
+          description: A PNG visualization encoded in a base64 string.
+          schema:
+            type: string
+        - name: response.visual.title
+          in: query
+          description: The visualization title.
+          schema:
+            type: string
+        - name: response.visual.context
+          in: query
+          description: Any filters applied to the visualization. For example, a time filter of April 2024.
+          schema:
+            type: string
+        - name: response.rewordedQuestion
+          in: query
+          description: Vee's plain language interpretation of the original question. For example, if you asked "what is the headcount by gender in each org?", Vee might reword the question as "What is the gender breakdown of our workforce by organization this month?".
+          schema:
+            type: string
+        - name: isApproved
+          in: query
+          description: If `true`, Vee answered the question correctly. If `false`, Vee's answer was incorrect or lacked details.
+          schema:
+            type: boolean
+        - name: description
+          in: query
+          description: A description of how Vee should have answered the question or how Vee can improve the answer; for example, "Expected Headcount metric, but Vee returned Average Headcount".
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeeStatusCodeDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/rest/vee/question:
+    post:
+      tags:
+        - Vee
+      summary: Ask Vee a question
+      description: "Use plain language to ask Vee a people question. Use query parameters to specify how Vee should respond, such as returning a visualization, data, or rewording the question.\n \n The response always returns a `conversationState` object containing a unique ID for the conversation. To ask a follow-up question or continue the conversation with Vee, include the `conversationState` from the response in your next `/question` call. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: Vee_VeeQuestionRequest
       parameters:
         - name: question
           in: query
+          description: The question to ask Vee. If asking a follow-up question or continuing a conversation with Vee, specify the `conversationState` object from the question's response.
           schema:
             type: string
-        - name: threadState.questionState
+        - name: conversationState.questionState
           in: query
+          description: The unique identifier of the conversation with Vee.
           schema:
             type: array
             items:
               type: string
         - name: options.includeVisual
           in: query
+          description: If `true`, returns a base64 string-encoded PNG of a rendered visualization with Vee's answer. Default is `false`.
           schema:
             type: boolean
-        - name: options.chartOptions.width
+        - name: options.visualOptions.width
           in: query
+          description: The pixel width of the rendered visualization. Default is 600. Valid values are between 160 and 1600.
           schema:
             type: integer
             format: uint32
-        - name: options.chartOptions.height
+        - name: options.visualOptions.height
           in: query
+          description: The pixel height of the rendered visualization. Default is 338. Valid values are between 90 and 900.
           schema:
             type: integer
             format: uint32
         - name: options.includeData
           in: query
+          description: If `true`, returns additional data relevant to the question, including `dataJson` (visualization data) and `context` (filters applied to the visualization). Default is `false`.
           schema:
             type: boolean
         - name: options.dataFormat
           in: query
+          description: 'The format to return visualization data in. Valid values: `json`.'
           schema:
             enum:
               - json
@@ -473,6 +467,7 @@ paths:
             format: enum
         - name: options.includeRewordedQuestion
           in: query
+          description: If `true`, returns Vee's plain language interpretation of the original question. For example, if you asked "what is the headcount by gender in each org?", Vee might reword the question as "What is the gender breakdown of our workforce by organization this month?". Default is `false`.
           schema:
             type: boolean
       responses:
@@ -488,139 +483,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/rest/vee/query-feedback:
-    post:
-      tags:
-        - VeeQuery
-      summary: Submit Vee feedback
-      description: |-
-        Give Vee feedback on a previous response. POST the JSON response returned from `query` endpoint above,
-         along with a positive or negative rating (`isApproved`) and any further information you'd like to provide (`description`).
-
-         Example: `POST /v1alpha/rest/vee/query-feedback` returns a success or failure:
-         ```json
-         {
-             "response": { (valueof_json_response_from_query_endpoint) },
-             "isApproved": "false",
-             "description": "I wanted to see more orgs in the answer!"
-         }
-         ```
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: VeeQuery_VeeQueryFeedback
-      parameters:
-        - name: question
-          in: query
-          schema:
-            type: string
-        - name: threadState.questionState
-          in: query
-          schema:
-            type: array
-            items:
-              type: string
-        - name: options.includeVisual
-          in: query
-          schema:
-            type: boolean
-        - name: options.chartOptions.width
-          in: query
-          schema:
-            type: integer
-            format: uint32
-        - name: options.chartOptions.height
-          in: query
-          schema:
-            type: integer
-            format: uint32
-        - name: options.includeData
-          in: query
-          schema:
-            type: boolean
-        - name: options.dataFormat
-          in: query
-          schema:
-            enum:
-              - json
-            type: string
-            format: enum
-        - name: options.includeRewordedQuestion
-          in: query
-          schema:
-            type: boolean
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VeeFeedbackDTO'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
   /v1alpha/rest/vee/sample-questions:
     get:
       tags:
-        - VeeQuery
-      summary: Get a list of sample questions
-      description: |-
-        To get started with Vee, use this API to get a list of sample questions.
-         Example: `GET /v1alpha/rest/vee/sample-questions` returns a string list of questions.
-         ```json
-            questions {
-                "questions": "What is the turnover rate?"
-                "metadata": {
-                    "categories": "metricQuestion""
-                }
-            }
-         ```
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: VeeQuery_VeeSampleQuestions
-      parameters:
-        - name: question
-          in: query
-          schema:
-            type: string
-        - name: threadState.questionState
-          in: query
-          schema:
-            type: array
-            items:
-              type: string
-        - name: options.includeVisual
-          in: query
-          schema:
-            type: boolean
-        - name: options.chartOptions.width
-          in: query
-          schema:
-            type: integer
-            format: uint32
-        - name: options.chartOptions.height
-          in: query
-          schema:
-            type: integer
-            format: uint32
-        - name: options.includeData
-          in: query
-          schema:
-            type: boolean
-        - name: options.dataFormat
-          in: query
-          schema:
-            enum:
-              - json
-            type: string
-            format: enum
-        - name: options.includeRewordedQuestion
-          in: query
-          schema:
-            type: boolean
+        - Vee
+      summary: Retrieve a list of sample questions to ask Vee
+      description: "Get a list of sample questions to help your users start using Vee. The response returns a list of questions, such as \"What is the turnover rate?\". \n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: Vee_VeeSampleQuestions
       responses:
         "200":
           description: OK
@@ -1558,11 +1427,6 @@ components:
       description: |-
         QueryAxisOptions allows you to customize an axis in the query, such as changing the display mode for its cell set values or providing a custom column name.
          Only available when the Accept header is a table format, such as text/csv or application/jsonlines.
-    QueryClarificationDTO:
-      type: object
-      properties:
-        message:
-          type: string
     QueryDimensionDataMemberSelectionDTO:
       type: object
       properties:
@@ -2143,24 +2007,21 @@ components:
           description: The direction to extend. Default is BACKWARD.
           format: enum
       description: The amount of time to shift the time interval by, such as backward by one year.
-    VeeDataDTO:
+    VeeClarificationDTO:
       type: object
       properties:
-        dataJson:
+        message:
           type: string
-        context:
-          type: string
-    VeeFeedbackDTO:
+          description: If Vee needs more context to answer your question, the follow-up question should address this clarification.
+    VeeConversationStateDTO:
       type: object
       properties:
-        response:
-          $ref: '#/components/schemas/VeeResponseDTO'
-        isApproved:
-          type: boolean
-        description:
-          type: string
-      description: Query feedback DTOs
-    VeeQueryCorrectionsDTO:
+        questionState:
+          type: array
+          items:
+            type: string
+          description: The unique identifier of the conversation with Vee.
+    VeeCorrectionsDTO:
       type: object
       properties:
         warning:
@@ -2176,32 +2037,62 @@ components:
               - VEE_WARNING_FILTER_DROPPED
             type: string
             format: enum
+          description: A list of warnings from Vee that accompanies an unsure answer; for example, Vee might return a close match warning if Vee finds multiple employees named Adam that relate to your question.
         clarifications:
           type: array
           items:
-            $ref: '#/components/schemas/QueryClarificationDTO'
+            $ref: '#/components/schemas/VeeClarificationDTO'
+          description: A list of clarifying questions if Vee needs more context to answer your question; for example, if asking about someone named Adam, Vee might clarify which Adam by asking for Adam's email address.
+    VeeDataDTO:
+      type: object
+      properties:
+        dataJson:
+          type: string
+          description: A JSON string of fields and numerical values representing the data contributing to Vee's answer. For example, the number of employees per gender in Vee's answer.
+        context:
+          type: string
+          description: The filter applied to the visualization generated by Vee. For example, a time filter of April 2024.
     VeeResponseDTO:
       type: object
       properties:
-        threadState:
-          $ref: '#/components/schemas/VeeThreadStateDTO'
+        conversationState:
+          allOf:
+            - $ref: '#/components/schemas/VeeConversationStateDTO'
+          description: The current conversation's details. To ask a follow-up question or continue the conversation with Vee, include the `conversationState` from the response in your next `/question` call. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.
         statusCode:
-          $ref: '#/components/schemas/VeeStatusCodeDTO'
+          allOf:
+            - $ref: '#/components/schemas/VeeStatusCodeDTO'
+          description: A status code indicating whether or not Vee successfully answered the question.
         narrative:
           type: string
+          description: Vee's answer to the question.
         chartUrl:
           type: string
+          description: A URL to view the visualization in Visier.
         schema:
-          $ref: '#/components/schemas/VeeResponseSchemaDTO'
+          allOf:
+            - $ref: '#/components/schemas/VeeResponseSchemaDTO'
+          description: The metrics, dimensions, and concepts that contribute to Vee's answer.
         corrections:
-          $ref: '#/components/schemas/VeeQueryCorrectionsDTO'
+          type: array
+          items:
+            $ref: '#/components/schemas/VeeCorrectionsDTO'
+          description: A list of corrections and clarifications if the question was ambiguous or Vee was unsure in the answer.
         data:
-          $ref: '#/components/schemas/VeeDataDTO'
+          allOf:
+            - $ref: '#/components/schemas/VeeDataDTO'
+          description: Returned if `includeData` is `true`. Provides additional data relevant to the question, such as the visualization data and any filters applied to the visualization.
         visual:
-          $ref: '#/components/schemas/VeeVisualDTO'
+          allOf:
+            - $ref: '#/components/schemas/VeeVisualDTO'
+          description: A base64 string-encoded PNG of a visualization generated by Vee to answer a question. For example, Vee can return a Breakdown visualization if asked about the headcount in each organization.
         rewordedQuestion:
           type: string
-      description: Server Response DTOs
+          description: Vee's plain language interpretation of the original question. For example, if you asked "what is the headcount by gender in each org?", Vee might reword the question as "What is the gender breakdown of our workforce by organization this month?".
+      description: |-
+        *****************************************
+         Server Response DTOs for question endpoint
+        ****************************************
     VeeResponseSchemaDTO:
       type: object
       properties:
@@ -2209,31 +2100,38 @@ components:
           type: array
           items:
             type: string
+          description: A list of the metrics that contribute to Vee's answer.
         dimensions:
           type: array
           items:
             $ref: '#/components/schemas/VeeResponseSchemaReferenceDTO'
+          description: A list of the dimensions that contribute to Vee's answer.
         concepts:
           type: array
           items:
             $ref: '#/components/schemas/VeeResponseSchemaReferenceDTO'
+          description: A list of the concepts that contribute to Vee's answer.
     VeeResponseSchemaReferenceDTO:
       type: object
       properties:
         name:
           type: string
+          description: The name of an attribute in the visualization; for example, Gender.
         paths:
           type: array
           items:
             type: string
+          description: The hierarchy path of an attribute in the visualization; for example, Employee.Gender.
     VeeSampleQuestionDTO:
       type: object
       properties:
         question:
           type: string
+          description: A question in plain language.
         metadata:
-          $ref: '#/components/schemas/VeeSampleQuestionMetadataDTO'
-      description: Query sample questions
+          allOf:
+            - $ref: '#/components/schemas/VeeSampleQuestionMetadataDTO'
+          description: Details about the sample question, such as what categories the question belongs to.
     VeeSampleQuestionLibraryDTO:
       type: object
       properties:
@@ -2241,6 +2139,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/VeeSampleQuestionDTO'
+          description: A list of sample questions to help your users start using Vee.
+      description: |-
+        ***************************************************
+         Server Response DTOs for sample-questions endpoint
+        **************************************************
     VeeSampleQuestionMetadataDTO:
       type: object
       properties:
@@ -2248,6 +2151,7 @@ components:
           type: array
           items:
             type: string
+          description: A list of topics that the sample question relates to.
     VeeStatusCodeDTO:
       type: object
       properties:
@@ -2258,25 +2162,23 @@ components:
             - VEE_API_WARNING
             - VEE_API_ERROR
           type: string
+          description: A status code indicating whether or not Vee successfully answered the question.
           format: enum
         statusMsg:
           type: string
-    VeeThreadStateDTO:
-      type: object
-      properties:
-        questionState:
-          type: array
-          items:
-            type: string
+          description: Additional information about whether or not Vee successfully answered the question.
     VeeVisualDTO:
       type: object
       properties:
         image:
           type: string
+          description: A PNG visualization encoded in a base64 string.
         title:
           type: string
+          description: The visualization title.
         context:
           type: string
+          description: Any filters applied to the visualization. For example, a time filter of April 2024.
     DvExportStatus:
       type: object
       properties:
@@ -2344,9 +2246,9 @@ tags:
       Export Visier data version information, such as tables, columns, and file information, in CSV format.
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-  - name: VeeQuery
+  - name: Vee
     description: |-
-      Submit questions and context to the Visier Vee engine.
+      Use Vee through Visier APIs, such as asking questions, submitting feedback, and getting sample questions.
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: Search
