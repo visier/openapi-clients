@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1431
+  version: 22222222.99201.1435
 paths:
   /v1/data/directloads/{draftId}/configs:
     get:
@@ -1269,6 +1269,180 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1alpha/op/jobs/consolidated-analytics-jobs:
+    post:
+      tags:
+        - DataAndJobHandling
+      summary: Run a consolidated analytics job
+      description: Run a job for a consolidated analytics tenant. This request retrieves data for all source tenants in a consolidated analytics tenant. After the job completes, you can run a processing job to generate a data version for the consolidated analytics tenant. To run a processing job, see `POST /v1alpha/op/jobs/processing-jobs`.
+      operationId: DataAndJobHandling_AdhocConsolidatedAnalyticsJob
+      parameters:
+        - name: tenantCode
+          in: query
+          description: The tenant code of the consolidated analytics tenant; for example, "WFF_j1r~CAa7s".
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobIdResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/op/jobs/extraction-jobs:
+    post:
+      tags:
+        - DataAndJobHandling
+      summary: Run a data connector extraction job
+      description: |-
+        Run an extraction job to retrieve data through a Visier data connector and generate a new data version. Administrating tenants can run extraction jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.
+         If running extraction jobs for an administating tenant or their analytic tenants, this request starts a dispatching job that generates one extraction job per tenant. The response returns the job ID of the extraction job or dispatching job.
+      operationId: DataAndJobHandling_AdhocExtractionJob
+      parameters:
+        - name: tenants
+          in: query
+          description: The unique IDs of the tenants to run an extraction job for.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: allTenants
+          in: query
+          description: If "true", runs an extraction job for all tenants and ignores the tenants field.
+          schema:
+            type: boolean
+        - name: overrideLastExtractionTimestamp
+          in: query
+          description: An epoch timestamp in milliseconds from which to retrieve data. This overrides the last extraction date to retrieve more data.
+          schema:
+            type: string
+        - name: publishDataLoadArtifacts
+          in: query
+          description: If "true", publishes the project to production.
+          schema:
+            type: boolean
+        - name: runProcessingJob
+          in: query
+          description: If "true", runs a processing job to generate a data version after the extraction job succeeds.
+          schema:
+            type: boolean
+        - name: dataCategoryId
+          in: query
+          description: The unique ID of the data category in which to generate objects.
+          schema:
+            type: string
+        - name: disableArtifactGeneration
+          in: query
+          description: If "true", doesn't generate objects after the extraction jobs succeeds.
+          schema:
+            type: boolean
+        - name: connectorIds
+          in: query
+          description: The unique IDs of the connectors to run extraction jobs for.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: lastExtractionTimeOffsetWeeks
+          in: query
+          description: The number of weeks from which to retrieve data. This overrides the last extraction date to retrieve more data.
+          schema:
+            type: integer
+            format: int32
+        - name: monthsToExtract
+          in: query
+          description: The number of months to retrieve snapshot data from.
+          schema:
+            type: integer
+            format: int32
+        - name: extractToTimeOverride
+          in: query
+          description: An epoch timestamp in milliseconds for the end time up to which to retrieve data.
+          schema:
+            type: string
+        - name: batchSizeOverride
+          in: query
+          description: The maximum amount of IDs the job can retrieve in each batch.
+          schema:
+            type: integer
+            format: int32
+        - name: sqlBatchSize
+          in: query
+          description: The maximum amount of SQL table records the job can retrieve in each batch.
+          schema:
+            type: integer
+            format: int32
+        - name: forceUpdateExistingArtifacts
+          in: query
+          description: If "true" and `disableArtifactGeneration` is "false", updates extractor artifacts, which may overwrite the artifacts' manual overrides. Ignored if `disableArtifactGeneration` is "true".
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobIdResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/op/jobs/processing-jobs:
+    post:
+      tags:
+        - DataAndJobHandling
+      summary: Run a processing job
+      description: |-
+        Run a processing job to generate a new data version. Administrating tenants can run processing jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.
+         If running processing jobs for an administating tenant or their analytic tenants, this request starts a dispatching job that generates one processing job per tenant. The response returns the job ID of the processing job or dispatching job.
+      operationId: DataAndJobHandling_AdhocProcessingJobs
+      parameters:
+        - name: tenants
+          in: query
+          description: The tenant codes of the tenants to run processing jobs for. If omitted, runs a processing job for the tenant associated with the user who made the API request.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: allTenants
+          in: query
+          description: If `true`, runs processing jobs for all accessible analytic tenants. Default is `false`.
+          schema:
+            type: boolean
+        - name: dataCategoryId
+          in: query
+          description: |-
+            The unique identifier of the data category to run the job. If omitted, runs a job using the primary data category.
+             To retrieve a list of all data categories, see `GET /v1/op/data/categories`.
+          schema:
+            type: string
+        - name: publishToProduction
+          in: query
+          description: If `true`, publishes the generated data version to production. Default is `false`.
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobIdResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/data/directloads/{draftId}/transactions/{transactionId}/{objectName}:
     put:
       tags:
@@ -1581,13 +1755,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DataCategoryResponseDTO'
+      description: A list of data categories.
     DataCategoryResponseDTO:
       type: object
       properties:
         name:
           type: string
+          description: The display name of the data category.
         id:
           type: string
+          description: The UUID of the data category.
+      description: The data category's UUID and display name.
     DataLoadRequest:
       type: object
       properties:
@@ -2234,6 +2412,15 @@ components:
           items:
             $ref: '#/components/schemas/JobCancellationResultDTO'
           description: A list of objects representing the job cancellation results.
+    JobIdResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+      description: |-
+        * @exclude
+         Response for requests with `jobId` as key to maintain compatibility with legacy APIs.
+         Future APIs returning a UUID should return `UUIDResponse`.
     JobStatusListResponse:
       type: object
       properties:
