@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1436
+  version: 22222222.99201.1438
 paths:
   /v1/admin/capabilities:
     get:
@@ -2448,28 +2448,10 @@ paths:
       parameters:
         - name: projectId
           in: path
+          description: The unique identifier of the draft project you want to retrieve.
           required: true
           schema:
             type: string
-        - name: with
-          in: query
-          description: |-
-            The types of draft projects to include in the request response.
-             * If empty, returns all the `Open` draft projects.
-             * If `Open`, returns all Open draft projects.
-             * If `Approval`, returns all draft projects in the approval stage. Changes cannot made in Approval projects.
-             * If `Rejected`, returns all draft projects that have been rejected. Changes cannot be committed in Rejected projects.
-             * If `Archived`, returns all draft projects that have been archived. Changes cannot be committed in Archived projects.
-          schema:
-            type: array
-            items:
-              type: string
-        - name: limit
-          in: query
-          description: The number of projects to return per type. The maximum number of projects to retrieve per type is 1000. The default is 100.
-          schema:
-            type: integer
-            format: int32
       responses:
         "200":
           description: OK
@@ -4370,7 +4352,7 @@ components:
           format: uint32
         start:
           type: integer
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The index of the tenant to start retrieving results from, also known as offset. The index begins at 0.
           format: uint32
       description: Users that are assigned a specific permission.
     PermissionBulkOperationResponseDTO:
