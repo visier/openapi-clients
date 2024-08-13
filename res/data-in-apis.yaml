@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1439
+  version: 22222222.99201.1443
 paths:
   /v1/data/directloads/{draftId}/configs:
     get:
@@ -1937,6 +1937,8 @@ components:
           $ref: '#/components/schemas/GoogleWorkspaceAuthParamsDTO'
         oracleDbAuthParams:
           $ref: '#/components/schemas/OracleDbAuthParamsDTO'
+        serviceNowV2AuthParams:
+          $ref: '#/components/schemas/ServiceNowV2AuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -2844,6 +2846,19 @@ components:
         username:
           type: string
         password:
+          type: string
+    ServiceNowV2AuthParamsDTO:
+      type: object
+      properties:
+        hostDomainName:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+        authCode:
+          type: string
+        alternateDomain:
           type: string
     SlackAuthParamsDTO:
       type: object
