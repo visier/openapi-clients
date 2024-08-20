@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1448
+  version: 22222222.99201.1452
 paths:
   /v1/admin/capabilities:
     get:
@@ -2357,6 +2357,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1alpha/admin/production-versions/{productionVersionId}:
+    post:
+      tags:
+        - ProductionVersions
+      summary: Perform an operation on a production version
+      description: |-
+        Perform operations on a specific production version. The following operations are supported:
+         * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: ProductionVersions_PostProductionVersion
+      parameters:
+        - name: productionVersionId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: operation
+          in: query
+          description: |-
+            The operation to perform. Valid values:
+             * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
+          schema:
+            enum:
+              - unknownProductionVersionAPIOperation
+              - rollBackTo
+            type: string
+            format: enum
+      requestBody:
+        content:
+          application/json: {}
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductionVersionAPIOperationResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1alpha/admin/projects:
     get:
       tags:
@@ -4477,6 +4523,13 @@ components:
           items:
             $ref: '#/components/schemas/PermissionsToUserGroupRequestDTO'
           description: A list of objects representing the user groups and permissions to assign or remove.
+    ProductionVersionAPIOperationResponseDTO:
+      type: object
+      properties:
+        rollBackTo:
+          allOf:
+            - $ref: '#/components/schemas/ProjectDTO'
+          description: The project created by the `rollBackTo` operation.
     ProductionVersionsAPIOperationRequestDTO:
       type: object
       properties:
