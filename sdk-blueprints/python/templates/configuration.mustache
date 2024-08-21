@@ -780,7 +780,11 @@ def _post_request(url: str, data: dict, additional_headers: dict = None, auth=No
         retries=False
     )
     if response.status != HTTPStatus.OK:
-        raise ApiException.from_response(response)
+        raise ApiException.from_response(
+            http_resp=response,
+            body=None,
+            data=None
+        )
 
     return response
 
