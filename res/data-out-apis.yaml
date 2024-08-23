@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1454
+  version: 22222222.99201.1456
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1895,7 +1895,32 @@ components:
       properties:
         message:
           type: string
-          description: If Vee needs more context to answer your question, the follow-up question should address this clarification.
+          description: Returned if Vee needs more context to answer your question.
+        questions:
+          type: array
+          items:
+            type: string
+          description: Some related questions that could be helpful.
+        metrics:
+          type: array
+          items:
+            type: string
+          description: Suggested metrics to look at, that are similar or related to your question.
+        dimensions:
+          type: array
+          items:
+            type: string
+          description: Suggested dimensions to look at, that are similar or related to your question.
+        filters:
+          type: array
+          items:
+            type: string
+          description: Suggested filters that could be a better fit for the data.
+        attributes:
+          type: array
+          items:
+            type: string
+          description: Suggested attributes to look at, that are similar or related to your question.
     VeeConversationStateDTO:
       type: object
       properties:
