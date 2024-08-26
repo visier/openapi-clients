@@ -96,7 +96,15 @@ jobs:
             output_dir="$SDK_REPO_DIR/src/$package_name"
             spec_version=$(awk '/version:/ {gsub(/"| /, "", $2); print $2}' "$spec_file")
           
-            mkdir -p $output_dir
+            if [ -d "$output_dir" ]; then
+                echo "Cleaning existing output directory: $output_dir"
+                rm -rf "$output_dir"/*
+            else
+                echo "Creating output directory: $output_dir"
+                mkdir -p "$output_dir"
+            fi
+          
+            echo "Generating Python SDK for $specification"
             openapi-generator-cli generate \
               -i "$spec_file" \
               -g python \
