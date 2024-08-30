@@ -1,0 +1,12 @@
+# import apis into sdk package
+{{#apiInfo}}{{#apis}}from {{apiPackage}}.{{classFilename}} import {{classname}}
+{{/apis}}{{/apiInfo}}
+# import ApiClient
+from {{corePackageName}}.api_response import ApiResponse
+from {{corePackageName}}.api_client import ApiClient
+from {{corePackageName}}.configuration import Configuration
+from {{corePackageName}}.rest import RESTClientObject, RESTResponseType
+from {{corePackageName}}.exceptions import OpenApiException, ApiTypeError, ApiValueError, ApiKeyError, ApiAttributeError, ApiException
+{{#hasHttpSignatureMethods}}
+from {{corePackageName}}.signing import HttpSigningConfiguration
+{{/hasHttpSignatureMethods}}

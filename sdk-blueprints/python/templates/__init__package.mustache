@@ -6,23 +6,6 @@
 
 __version__ = "{{packageVersion}}"
 
-# import apis into sdk package
-{{#apiInfo}}{{#apis}}from {{apiPackage}}.{{classFilename}} import {{classname}}
-{{/apis}}{{/apiInfo}}
-# import ApiClient
-from {{corePackageName}}.api_response import ApiResponse
-from {{corePackageName}}.api_client import ApiClient
-from {{corePackageName}}.configuration import Configuration
-from {{corePackageName}}.exceptions import OpenApiException
-from {{corePackageName}}.exceptions import ApiTypeError
-from {{corePackageName}}.exceptions import ApiValueError
-from {{corePackageName}}.exceptions import ApiKeyError
-from {{corePackageName}}.exceptions import ApiAttributeError
-from {{corePackageName}}.exceptions import ApiException
-{{#hasHttpSignatureMethods}}
-from {{packageName}}.signing import HttpSigningConfiguration
-{{/hasHttpSignatureMethods}}
-
 # import models into sdk package
 {{#models}}
 {{#model}}

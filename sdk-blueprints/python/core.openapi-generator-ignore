@@ -1,0 +1,14 @@
+# Ignore folders
+docs/
+.github/
+
+# Ignore files in the root by default
+/*
+
+# Allow specific files for PyPI publishing
+!setup.py
+!setup.cfg
+!requirements.txt
+!test-requirements.txt
+!tox.ini
+!pyproject.toml
