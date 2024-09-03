@@ -1,6 +1,9 @@
 # Ignore folders
 docs/
 .github/
+test/
+visier/sdk/api/core/api/
+visier/sdk/api/core/models/
 
 # Ignore files in the root by default
 /*

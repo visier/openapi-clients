@@ -6,6 +6,10 @@
 
 __version__ = "{{packageVersion}}"
 
+# import apis into sdk package
+{{#apiInfo}}{{#apis}}from {{apiPackage}}.{{classFilename}} import {{classname}}
+{{/apis}}{{/apiInfo}}
+
 # import models into sdk package
 {{#models}}
 {{#model}}
