@@ -88,32 +88,8 @@ jobs:
       - name: Generate Python SDK for all specifications
         shell: bash
         run: |
-          SPECIFICATION_LIST=$(echo $SPECIFICATIONS | tr ',' '\n')
-          for specification in $SPECIFICATION_LIST; do
-            echo "Processing $specification"
-            spec_file="$SPEC_DIR/${specification}.yaml"
-            package_name="$PACKAGE_PREFIX.$(echo "$specification" | sed 's/-apis$//; s/-/_/g')"
-            output_dir="$SDK_REPO_DIR/src/$package_name"
-            spec_version=$(awk '/version:/ {gsub(/"| /, "", $2); print $2}' "$spec_file")
-          
-            if [ -d "$output_dir" ]; then
-                echo "Cleaning existing output directory: $output_dir"
-                rm -rf "$output_dir"/*
-            else
-                echo "Creating output directory: $output_dir"
-                mkdir -p "$output_dir"
-            fi
-          
-            echo "Generating Python SDK for $specification"
-            openapi-generator-cli generate \
-              -i "$spec_file" \
-              -g python \
-              -t $PYTHON_DIR/templates \
-              --package-name "$package_name" \
-              -o "$output_dir" \
-              --skip-validate-spec \
-              --additional-properties=packageVersion="$spec_version"
-          done
+          chmod +x ${{ github.workspace }}/sdk-blueprints/python/generate-package.sh
+          ${{ github.workspace }}/sdk-blueprints/python/generate-package.sh "$SDK_REPO_DIR/src/"
 
       # Pushing before tests to have the code available for debugging
       - name: Push Python SDK branch
@@ -132,15 +108,8 @@ jobs:
       - name: Run tox tests
         shell: bash
         run: |
-          error_flag=0
-          find "$SDK_REPO_DIR/src/" -type d -name "${PACKAGE_PREFIX}*" -print |
-          while read -r dir; do
-            (cd "$dir" && tox -p 3)
-            if [ $? -ne 0 ]; then
-              error_flag=1
-            fi
-          done
-          exit $error_flag
+          chmod +x ${{ github.workspace }}/path/to/run-tox-tests.sh
+          ${{ github.workspace }}/path/to/run-tox-tests.sh "$SDK_REPO_DIR/src/"
 
       - name: Create Pull Request for python-sdk
         shell: bash

@@ -12,6 +12,5 @@ visier/sdk/api/core/models/
 !setup.py
 !setup.cfg
 !requirements.txt
-!test-requirements.txt
 !tox.ini
 !pyproject.toml

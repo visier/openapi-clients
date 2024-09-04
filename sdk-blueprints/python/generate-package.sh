@@ -6,8 +6,16 @@ set -e
 package_name=$1
 spec_file=$2
 blueprints_dir=$3
+output_dir=$4
 
-output_dir="sdk-generation-test/$package_name"
+# Check if all required arguments are provided
+if [ -z "$package_name" ] || [ -z "$spec_file" ] || [ -z "$blueprints_dir" ] || [ -z "$output_dir" ]; then
+  echo "Error: Missing required arguments."
+  echo "Usage: $0 <package_name> <spec_file> <blueprints_dir> <output_dir>"
+  exit 1
+fi
+
+output_api_dir="$4/$package_name"
 templates_dir="$blueprints_dir/templates"
 
 # Extract the specification version
@@ -16,8 +24,15 @@ spec_version=$(awk '/version:/ {gsub(/"| /, "", $2); print $2}' "$spec_file")
 echo "Generating Visier API $package_name $spec_version $spec_file"
 
 # Prepare directories
-mkdir -p "$output_dir"
-cp -f "$blueprints_dir/.openapi-generator-ignore" "$output_dir/.openapi-generator-ignore"
+if [ -d "$output_api_dir" ]; then
+    echo "Cleaning existing output directory: $output_api_dir"
+    rm -rf "$output_api_dir"/*
+else
+    echo "Creating output directory: $output_api_dir"
+    mkdir -p "$output_api_dir"
+fi
+
+cp -f "$blueprints_dir/.openapi-generator-ignore" "$output_api_dir/.openapi-generator-ignore"
 
 # Generate the SDK
 openapi-generator-cli generate \
@@ -25,6 +40,6 @@ openapi-generator-cli generate \
   -g python \
   -t "$templates_dir" \
   --package-name "$package_name" \
-  -o "$output_dir" \
+  -o "$output_api_dir" \
   --skip-validate-spec \
   --additional-properties=packageVersion="$spec_version",corePackageName="visier.sdk.api.core"

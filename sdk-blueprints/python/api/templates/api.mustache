@@ -6,9 +6,7 @@ from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
-from {{corePackageName}}.api_client import ApiClient, RequestSerialized
-from {{corePackageName}}.api_response import ApiResponse
-from {{corePackageName}}.rest import RESTResponseType
+from {{corePackageName}} import ApiClient, ApiResponse, RequestSerialized, RESTResponseType
 
 {{#imports}}
 {{import}}
