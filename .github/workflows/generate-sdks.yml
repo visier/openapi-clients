@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - 'release-**'
-      - 'github-actions-test'
 
 jobs:
   preprocess-specifications:
