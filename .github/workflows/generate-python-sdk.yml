@@ -108,8 +108,8 @@ jobs:
       - name: Run tests
         shell: bash
         run: |
-          chmod +x ${{ github.workspace }}/path/to/run-tests.sh
-          ${{ github.workspace }}/path/to/run-tests.sh "$SDK_REPO_DIR/src/"
+          chmod +x ${{ github.workspace }}/sdk-blueprints/python/run-tests.sh
+          ${{ github.workspace }}/sdk-blueprints/python/run-tests.sh "$SDK_REPO_DIR/src/"
 
       - name: Create Pull Request for python-sdk
         shell: bash
