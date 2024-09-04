@@ -3,6 +3,7 @@
 # Check if the search path argument is provided
 if [ -z "$1" ]; then
   echo "Error: Search path argument is required."
+  echo "Provided argument: search_path=${1:-<not provided>}"
   exit 1
 fi
 

@@ -8,6 +8,7 @@ output_dir=$1
 if [ -z "$output_dir" ]; then
   echo "Error: Missing required argument."
   echo "Usage: $0 <output_dir>"
+  echo "Provided argument: output_dir=${output_dir:-<not provided>}"
   exit 1
 fi
 

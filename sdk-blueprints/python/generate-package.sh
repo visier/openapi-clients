@@ -12,6 +12,7 @@ output_dir=$4
 if [ -z "$package_name" ] || [ -z "$spec_file" ] || [ -z "$blueprints_dir" ] || [ -z "$output_dir" ]; then
   echo "Error: Missing required arguments."
   echo "Usage: $0 <package_name> <spec_file> <blueprints_dir> <output_dir>"
+  echo "Provided arguments: package_name=${package_name:-<not provided>}, spec_file=${spec_file:-<not provided>}, blueprints_dir=${blueprints_dir:-<not provided>}, output_dir=${output_dir:-<not provided>}"
   exit 1
 fi
 
