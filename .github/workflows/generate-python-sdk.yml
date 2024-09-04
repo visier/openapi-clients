@@ -12,11 +12,6 @@ on:
 env:
   SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
   PYTHON_DIR: ${{ github.workspace }}/sdk-blueprints/python
-  SPECIFICATIONS: |
-    administration-apis,
-    analytic-model-apis,
-    data-in-apis,
-    data-out-apis
 
 jobs:
   generate-python-sdk:
