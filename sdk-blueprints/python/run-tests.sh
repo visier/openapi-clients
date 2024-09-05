@@ -16,7 +16,7 @@ SEARCH_PATH=$1
 # Find directories matching the pattern and run tox tests
 while IFS= read -r dir; do
   cd "$dir"
-  if ! tox -p 3; then
+  if ! tox -p 2; then
     error_flag=1
   fi
   cd - > /dev/null

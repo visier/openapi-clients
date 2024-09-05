@@ -20,7 +20,7 @@ output_api_dir="$4/$package_name"
 templates_dir="$blueprints_dir/templates"
 
 # Extract the specification version
-spec_version="0.0.105"
+spec_version="0.0.106"
 
 echo "Generating Visier API $package_name $spec_version $spec_file"
 
