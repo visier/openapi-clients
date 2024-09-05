@@ -80,7 +80,7 @@ jobs:
         run: |
           chmod +x ${{ github.workspace }}/sdk-blueprints/python/generate-all.sh
           chmod +x ${{ github.workspace }}/sdk-blueprints/python/generate-package.sh
-          ${{ github.workspace }}/sdk-blueprints/python/generate-all.sh "$SDK_REPO_DIR/src/"
+          ${{ github.workspace }}/sdk-blueprints/python/generate-all.sh "$SDK_REPO_DIR/src/" "$SPEC_DIR"
 
       # Pushing before tests to have the code available for debugging
       - name: Push Python SDK branch
