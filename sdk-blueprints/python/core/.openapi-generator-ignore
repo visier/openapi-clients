@@ -1,0 +1,16 @@
+# Ignore folders
+docs/
+.github/
+test/
+visier/sdk/api/core/api/
+visier/sdk/api/core/models/
+
+# Ignore files in the root by default
+/*
+
+# Allow specific files for PyPI publishing
+!setup.py
+!setup.cfg
+!requirements.txt
+!tox.ini
+!pyproject.toml

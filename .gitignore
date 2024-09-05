@@ -1,6 +1,14 @@
 *.log
-
+/.venv
 /.idea
 /specs_preprocessed
+
+# Generated SDKs
 /sdks/python/generated
+
+# Configuration files
 .actrc
+openapitools.json
+
+# Directory for local debugging
+/sdk-generation-test

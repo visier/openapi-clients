@@ -1,0 +1,22 @@
+# Ignore folders
+docs/
+.github/
+
+# Ignore core library .py files
+visier/sdk/api/*/*.py
+!visier/sdk/api/*/__init__.py
+
+# Resolving pytest import errors: init.py in /test/ causes conflicts
+# Removing init.py ensures pytest prioritizes installed packages, avoiding ambiguity.
+/test/__init__.py
+
+# Ignore files in the root by default
+/*
+
+# Allow specific files for PyPI publishing
+!setup.py
+!setup.cfg
+!requirements.txt
+!test-requirements.txt
+!tox.ini
+!pyproject.toml

@@ -1,9 +1,10 @@
 [tox]
-envlist = py38, py39, py310, py311, py312
+envlist = py38
 
 [testenv]
 deps=-r{toxinidir}/requirements.txt
      -r{toxinidir}/test-requirements.txt
+     ../visier.sdk.api.core
 
 commands=
    pytest --cov={{{packageName}}}
