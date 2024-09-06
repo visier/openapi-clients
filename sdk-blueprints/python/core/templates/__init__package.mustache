@@ -10,8 +10,8 @@ __version__ = "{{packageVersion}}"
 from {{packageName}}.api_response import ApiResponse
 from {{packageName}}.api_client import ApiClient, RequestSerialized
 from {{packageName}}.configuration import Configuration
-from {{corePackageName}}.rest import RESTClientObject, RESTResponseType
-from {{corePackageName}}.exceptions import OpenApiException, ApiTypeError, ApiValueError, ApiKeyError, ApiAttributeError, ApiException
+from {{corePackageModule}}.rest import RESTClientObject, RESTResponseType
+from {{corePackageModule}}.exceptions import OpenApiException, ApiTypeError, ApiValueError, ApiKeyError, ApiAttributeError, ApiException
 {{#hasHttpSignatureMethods}}
 from {{packageName}}.signing import HttpSigningConfiguration
 {{/hasHttpSignatureMethods}}

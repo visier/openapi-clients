@@ -19,10 +19,10 @@ from pydantic import SecretStr
 import tornado.gen
 {{/tornado}}
 
-from {{corePackageName}}.configuration import Configuration
-from {{corePackageName}}.api_response import ApiResponse, T as ApiResponseT
-from {{corePackageName}} import rest
-from {{corePackageName}}.exceptions import (
+from {{corePackageModule}}.configuration import Configuration
+from {{corePackageModule}}.api_response import ApiResponse, T as ApiResponseT
+from {{corePackageModule}} import rest
+from {{corePackageModule}}.exceptions import (
     ApiValueError,
     ApiException,
     BadRequestException,

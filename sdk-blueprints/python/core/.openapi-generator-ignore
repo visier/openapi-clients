@@ -2,8 +2,8 @@
 docs/
 .github/
 test/
-visier/sdk/api/core/api/
-visier/sdk/api/core/models/
+visier_api*/api/
+visier_api*/models/
 
 # Ignore files in the root by default
 /*
