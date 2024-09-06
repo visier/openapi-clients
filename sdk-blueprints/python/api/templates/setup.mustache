@@ -17,7 +17,7 @@ PYTHON_REQUIRES = ">=3.8"
 {{#apis}}
 {{#-last}}
 REQUIRES = [
-    "visier.sdk.api.core == {{packageVersion}}",
+    "{{corePackageName}} ~= {{packageVersion}}",
 ]
 
 setup(

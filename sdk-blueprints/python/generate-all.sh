@@ -16,8 +16,8 @@ fi
 # Get the directory of the current script
 script_dir=$(dirname "$0")
 
-"$script_dir"/generate-package.sh visier.sdk.api.core "$spec_dir/authentication-apis.yaml" sdk-blueprints/python/core "$output_dir"
-"$script_dir"/generate-package.sh visier.sdk.api.analytic_model "$spec_dir/analytic-model-apis.yaml" sdk-blueprints/python/api "$output_dir"
-"$script_dir"/generate-package.sh visier.sdk.api.administration "$spec_dir/administration-apis.yaml" sdk-blueprints/python/api "$output_dir"
-"$script_dir"/generate-package.sh visier.sdk.api.data_in "$spec_dir/data-in-apis.yaml" sdk-blueprints/python/api "$output_dir"
-"$script_dir"/generate-package.sh visier.sdk.api.data_out "$spec_dir/data-out-apis.yaml" sdk-blueprints/python/api "$output_dir"
+"$script_dir"/generate-package.sh visier_api_core "$spec_dir/authentication-apis.yaml" sdk-blueprints/python/core "$output_dir"
+"$script_dir"/generate-package.sh visier_api_analytic_model "$spec_dir/analytic-model-apis.yaml" sdk-blueprints/python/api "$output_dir"
+"$script_dir"/generate-package.sh visier_api_administration "$spec_dir/administration-apis.yaml" sdk-blueprints/python/api "$output_dir"
+"$script_dir"/generate-package.sh visier_api_data_in "$spec_dir/data-in-apis.yaml" sdk-blueprints/python/api "$output_dir"
+"$script_dir"/generate-package.sh visier_api_data_out "$spec_dir/data-out-apis.yaml" sdk-blueprints/python/api "$output_dir"

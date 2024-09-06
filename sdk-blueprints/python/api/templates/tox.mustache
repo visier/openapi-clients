@@ -4,7 +4,7 @@ envlist = py38
 [testenv]
 deps=-r{toxinidir}/requirements.txt
      -r{toxinidir}/test-requirements.txt
-     ../visier.sdk.api.core
+     ../{{corePackageName}}
 
 commands=
    pytest --cov={{{packageName}}}

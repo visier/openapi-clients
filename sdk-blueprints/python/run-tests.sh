@@ -20,7 +20,7 @@ while IFS= read -r dir; do
     error_flag=1
   fi
   cd - > /dev/null
-done < <(find "$SEARCH_PATH" -type d -name "visier.sdk.api*" -print)
+done < <(find "$SEARCH_PATH" -type d -name "visier-api*" -print)
 
 # Exit with the error flag status
 exit $error_flag
