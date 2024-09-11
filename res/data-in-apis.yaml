@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 0.99201.1474
+  version: 0.99201.1475
 paths:
   /v1/data/directloads/{draftId}/configs:
     get:
@@ -101,7 +101,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectDataSchemaFieldDTO'
+                $ref: '#/components/schemas/DirectDataSchemaDTO'
         default:
           description: Default error response
           content:
@@ -1381,16 +1381,16 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: The file to upload
+          requestBody:
+            content:
+              multipart/form-data:
+                schema:
+                  type: object
+                  properties:
+                    file:
+                      type: string
+                      format: binary
+                      description: The file to upload
       responses:
         "200":
           description: OK
@@ -1989,6 +1989,15 @@ components:
             - $ref: '#/components/schemas/DirectDataJobConfigDTO'
           description: The direct data intake job configuration.
       description: The configuration for the direct data intake, such as the  direct data intake job type.
+    DirectDataSchemaDTO:
+      type: object
+      properties:
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/DirectDataSchemaFieldDTO'
+          description: The schema definition for loading a specific object
+      description: Public API Direct Intake schema response object
     DirectDataSchemaFieldDTO:
       type: object
       properties:

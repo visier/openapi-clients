@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 0.99201.1474
+  version: 0.99201.1475
 paths:
   /v1/data/query/aggregate:
     post:
@@ -237,7 +237,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DataVersionExportsDTO'
+                $ref: '#/components/schemas/DataVersionExportDTO'
         default:
           description: Default error response
           content:
