@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 0.99201.1475
+  version: 0.99201.1476
 paths:
   /v1/data/directloads/{draftId}/configs:
     get:
@@ -1381,16 +1381,16 @@ paths:
           required: true
           schema:
             type: string
-          requestBody:
-            content:
-              multipart/form-data:
-                schema:
-                  type: object
-                  properties:
-                    file:
-                      type: string
-                      format: binary
-                      description: The file to upload
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to upload
       responses:
         "200":
           description: OK
