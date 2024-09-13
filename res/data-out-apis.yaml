@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1474
+  version: 22222222.99201.1481
 paths:
   /v1/data/query/aggregate:
     post:
@@ -237,7 +237,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DataVersionExportsDTO'
+                $ref: '#/components/schemas/DataVersionExportDTO'
         default:
           description: Default error response
           content:
@@ -1446,19 +1446,19 @@ components:
             - COMPACT_DISPLAY
           type: string
           description: |-
-            Define the `memberDisplayMode` options to control how member values are rendered in the aggregate query result set. You can override the `memberDisplayMode` on a per-axis basis, if required.
+            Control how member values are displayed. You can override the `memberDisplayMode` on a per-axis basis, if required.
 
              Valid values are `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `DEFAULT`.
 
-             * `DEFAULT`: The default member name representation. For non-time members, this means returning the technical member name path.
+             * `DEFAULT`: The default member name representation. For non-time members, this returns the technical member name path.
                For time members, this includes a bracketed member index.
                For example, Time instant member: `2019-06-01T00:00:00.000Z - [0]`
                For example, Time interval member: `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`
-             * `COMPACT`: Compacts the time member name representation. This also transforms the representation of time intervals to the end time of the interval.
+             * `COMPACT`: Shortens the member name representation. For time intervals, the member name is the end time of the interval.
                 For example, Time instant member: `2019-06-01T00:00:00.000Z`
                 For example, Time interval member: `2022-07-01T00:00:00.000Z` where the interval member name was `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`
-             * `DISPLAY`: Emit the members' display names whenever possible. When combined with `axisVisibility = VERBOSE`, the full display name path will be emitted.
-             * `MDX`: Emit member name paths where each element is enclosed in square brackets, `[]`. Multidimensional expression (MDX) display mode automatically encloses time members in square brackets and puts them in `COMPACT` format.
+             * `DISPLAY`: Emits the members' display names whenever possible. When combined with `axisVisibility = VERBOSE`, the full display name path will be emitted.
+             * `MDX`: Emits member name paths where each element is enclosed in square brackets, `[]`. Multidimensional expression (MDX) display mode automatically encloses time members in square brackets and puts them in `COMPACT` format.
                For example, Location member `North America.United States.California` becomes `[North America].[United States].[California]` in MDX display mode.
                For example, Time instant member `2019-06-01T00:00:00.000Z - [0]` becomes `[2019-06-01T00:00:00.000Z]` in MDX display mode.
           format: enum

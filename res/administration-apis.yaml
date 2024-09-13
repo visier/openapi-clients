@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1474
+  version: 22222222.99201.1481
 paths:
   /v1/admin/capabilities:
     get:
@@ -2625,8 +2625,7 @@ paths:
         - Projects
       summary: Import committed changes into a project
       description: |-
-        *
-         Import a ZIP file that contains a list of committed changes into a draft project. The file must be an export from `POST /v1alpha/admin/production-versions`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
+        Import a ZIP file that contains a list of committed changes into a draft project. The file must be an export from `POST /v1alpha/admin/production-versions`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -2661,10 +2660,9 @@ paths:
     put:
       tags:
         - Sources
-      summary: Import a ZIP file that contains a list of sources
+      summary: Import a list of sources
       description: |-
-        *
-         Import a ZIP file that contains a list of sources. The file must be an export from `POST /v1alpha/admin/sources`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
+        Import a list of sources in ZIP format. The file must be an export from `POST /v1alpha/admin/sources`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -2672,7 +2670,7 @@ paths:
       parameters:
         - name: replaceAllExistingSources
           in: query
-          description: '`false` if the sources from the ZIP archive should be added to the sources in the target tenant. `true` if all sources in the target tenant should be removed while importing the ZIP archive.'
+          description: If `false`, adds the sources from the ZIP to the sources in the target tenant. If `true`, removes all sources in the target tenant and adds the sources from the ZIP. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -2695,9 +2693,9 @@ paths:
     post:
       tags:
         - Sources
-      summary: Perform an operation on the collection of all sources
+      summary: Perform an operation on all sources
       description: |-
-        Perform operations on the collection of sources. The following operations are supported:
+        Perform operations on all sources. The following operations are supported:
          * `exportSources`: Export a ZIP file that contains a list of all sources in the application.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
@@ -4940,11 +4938,11 @@ components:
           format: int32
         ignored:
           type: integer
-          description: The number of imported sources that already existed and were ignored in the target tenant.
+          description: The number of imported sources that already existed and were unchanged in the target tenant.
           format: int32
         deleted:
           type: integer
-          description: The number of imported sources that existed in the target tenant prior to the import, and were deleted during the import.
+          description: The number of imported sources that existed in the target tenant prior to the import and were deleted during the import.
           format: int32
     SourcesAPIOperationRequestDTO:
       type: object
@@ -4964,7 +4962,7 @@ components:
         summary:
           allOf:
             - $ref: '#/components/schemas/SourceImportResultSummaryDTO'
-          description: A summary of the changes made to the sources during the PUT operation.
+          description: The changes made to the sources during the operation.
     StaticDimensionFilterDTO:
       type: object
       properties:
@@ -5250,6 +5248,7 @@ components:
           type: integer
           description: |-
             The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 000000.
+
              For 2-digit codes, add trailing zeros at the end to reach 6 digits, such as 620000. Required if creating new tenants.
           format: uint32
         primaryBusinessLocation:
@@ -5260,7 +5259,13 @@ components:
           type: array
           items:
             type: string
-          description: A comma-separated collection of strings that represent the Visier modules assigned to the new analytic tenant. Required if creating new tenants.
+          description: |-
+            A comma-separated collection of strings that represent the Visier modules assigned to the new analytic tenant. Required if creating new tenants.
+
+             To get the module name:
+             1. In Visier, open a project and navigate to **Model > Modules**.
+             2. Select a module.
+             3. In **Basic Information**, copy the **Object name**. This is the module name.
         embeddableDomains:
           type: array
           items:
