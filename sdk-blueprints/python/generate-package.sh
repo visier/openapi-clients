@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script is used for debugging purposes to generate Python SDK packages locally using openapi-generator-cli.
+# This script is used to generate Python SDK packages using openapi-generator-cli.
 set -e
 
 # Define variables
@@ -43,4 +43,5 @@ openapi-generator-cli generate \
   --package-name "$package_name" \
   -o "$output_api_dir" \
   --skip-validate-spec \
-  --additional-properties=packageVersion="$spec_version",corePackageModule="visier_api_core",corePackageName="visier-api-core"
+  --enable-post-process-file \
+  --additional-properties=packageVersion="$spec_version",corePackageModule="visier_api_core",corePackageName="visier-api-core",infoName="Visier",infoEmail="alpine@visier.com",licenseInfo="Apache-2.0"
