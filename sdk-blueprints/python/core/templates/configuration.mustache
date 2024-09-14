@@ -8,6 +8,7 @@ import hashlib
 import http.client as httplib
 import logging
 import multiprocessing
+import os
 import secrets
 import sys
 import threading
@@ -31,6 +32,16 @@ import multiprocessing
 {{/asyncio}}
 import urllib3
 
+VISIER_USERNAME='VISIER_USERNAME'
+VISIER_PASSWORD='VISIER_PASSWORD'
+VISIER_APIKEY='VISIER_APIKEY'
+VISIER_HOST='VISIER_HOST'
+VISIER_VANITY='VISIER_VANITY'
+VISIER_CLIENT_ID='VISIER_CLIENT_ID'
+VISIER_CLIENT_SECRET='VISIER_CLIENT_SECRET'
+VISIER_REDIRECT_URI='VISIER_REDIRECT_URI'
+VISIER_TARGET_TENANT_ID='VISIER_TARGET_TENANT_ID'
+VISIER_OAUTH_CALLBACK_URL='VISIER_OAUTH_CALLBACK_URL'
 
 JSON_SCHEMA_VALIDATION_KEYWORDS = {
     'multipleOf', 'maximum', 'exclusiveMaximum',
@@ -371,16 +382,6 @@ conf = {{{packageName}}}.Configuration(
         cls._default = default
 
     @classmethod
-    def get_default_copy(cls):
-        """Deprecated. Please use `get_default` instead.
-
-        Deprecated. Please use `get_default` instead.
-
-        :return: The configuration object.
-        """
-        return cls.get_default()
-
-    @classmethod
     def get_default(cls):
         """Return the default configuration.
 
@@ -391,7 +392,16 @@ conf = {{{packageName}}}.Configuration(
         :return: The configuration object.
         """
         if cls._default is None:
-            cls._default = Configuration()
+            cls._default = Configuration(
+                host=os.getenv(VISIER_HOST),
+                api_key=os.getenv(VISIER_APIKEY),
+                username=os.getenv(VISIER_USERNAME),
+                password=os.getenv(VISIER_PASSWORD),
+                client_id=os.getenv(VISIER_CLIENT_ID),
+                client_secret=os.getenv(VISIER_CLIENT_SECRET),
+                redirect_uri=os.getenv(VISIER_REDIRECT_URI),
+                vanity=os.getenv(VISIER_VANITY)
+            )
         return cls._default
 
     @property
