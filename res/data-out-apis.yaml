@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1481
+  version: 22222222.99201.1482
 paths:
   /v1/data/query/aggregate:
     post:
@@ -136,7 +136,31 @@ paths:
       tags:
         - DataQuery
       summary: Query aggregate or list data using SQL-like syntax
-      description: "To retrieve a list of values for specific objects or aggregate values from metrics, you can write queries using SQL-like syntax.\n The response format matches the query type whether aggregate or list. If requested, aggregate query results may be flattened into tabular format. \n\n A SQL-like query is an aggregate if it contains at least one metric. Aggregate queries must specify a time interval divided into periods; for example:\n ```sql\n SELECT\n   employeeCount() AS \"Employee Count\",\n   level(Gender, \"Gender\") AS Gender\n FROM\n   Employee\n WHERE\n  Visier_Time IN periods(date(\"2023-01-01\"), 4, period(3, Month));\n ```\n\n A SQL-like query is a list if it does not contain any metrics. List queries define time intervals as simple intervals; for example:\n ```sql\n SELECT\n   EmployeeID AS \"Employee ID\",\n   level(Gender, \"Gender\") AS Gender\n FROM\n   Employee\n WHERE\n  Visier_Time BETWEEN date(\"2022-01-01\") AND date(\"2023-01-01\");\n ```"
+      description: |-
+        To retrieve a list of values for specific objects or aggregate values from metrics, you can write queries using SQL-like syntax.
+         The response format matches the query type whether aggregate or list. If requested, aggregate query results may be flattened into tabular format.
+
+         A SQL-like query is an aggregate if it contains at least one metric. Aggregate queries must specify a time interval divided into periods; for example:
+         ```sql
+         SELECT
+           employeeCount() AS "Employee Count",
+           level(Gender, "Gender") AS Gender
+         FROM
+           Employee
+         WHERE
+          Visier_Time IN periods(date("2023-01-01"), 4, period(3, Month));
+         ```
+
+         A SQL-like query is a list if it does not contain any metrics. List queries define time intervals as simple intervals; for example:
+         ```sql
+         SELECT
+           EmployeeID AS "Employee ID",
+           level(Gender, "Gender") AS Gender
+         FROM
+           Employee
+         WHERE
+          Visier_Time BETWEEN date("2022-01-01") AND date("2023-01-01");
+         ```
       operationId: DataQuery_SqlLike
       requestBody:
         content:
@@ -307,85 +331,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
-  /v1alpha/rest/vee/feedback:
-    post:
-      tags:
-        - Vee
-      summary: Submit Vee feedback
-      description: |-
-        Give Vee feedback for a previous answer. To submit feedback, include:
-         * The response object from the `/question` response.
-         * A rating of Vee's answer. If `isApproved` is `true`, Vee answered the question correctly. If `isApproved` is `false`, Vee's answer was incorrect or lacked details.
-         * A description of how Vee should have answered the question or how Vee can improve the answer, such as "Expected Headcount metric, but Vee returned Average Headcount".
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: Vee_VeeFeedback
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VeeFeedbackDTO'
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VeeStatusCodeDTO'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-  /v1alpha/rest/vee/question:
-    post:
-      tags:
-        - Vee
-      summary: Ask Vee a question
-      description: "Use plain language to ask Vee a people question. Use body parameters to specify how Vee should respond, such as returning a visualization, data, or rewording the question.\n \n The response always returns a `conversationState` object containing a unique ID for the conversation. To ask a follow-up question or continue the conversation with Vee, include the `conversationState` from the response in your next `/question` call. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: Vee_VeeQuestionRequest
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VeeQuestionDTO'
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VeeResponseDTO'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-  /v1alpha/rest/vee/sample-questions:
-    get:
-      tags:
-        - Vee
-      summary: Retrieve a list of sample questions to ask Vee
-      description: "Get a list of sample questions to help your users start using Vee. The response returns a list of questions, such as \"What is the turnover rate?\". \n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: Vee_VeeSampleQuestions
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VeeSampleQuestionLibraryDTO'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
   /v1alpha/search/simple/document-headers:
     get:
       tags:
@@ -423,6 +368,95 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SimpleDocumentHeaderSearchResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/vee/feedback:
+    post:
+      tags:
+        - Vee
+      summary: Submit Vee feedback
+      description: |-
+        Give Vee feedback for a previous answer. To submit feedback, include:
+         * The response object from the `/question` response.
+         * A rating of Vee's answer. If `isApproved` is `true`, Vee answered the question correctly. If `isApproved` is `false`, Vee's answer was incorrect or lacked details.
+         * A description of how Vee should have answered the question or how Vee can improve the answer, such as "Expected Headcount metric, but Vee returned Average Headcount".
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Vee_VeeFeedback
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VeeFeedbackDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeeStatusCodeDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/vee/question:
+    post:
+      tags:
+        - Vee
+      summary: Ask Vee a question
+      description: |-
+        Use plain language to ask Vee a people question. Use body parameters to specify how Vee should respond, such as returning a visualization, data, or rewording the question.
+
+         The response always returns a `conversationState` object containing a unique ID for the conversation. To ask a follow-up question or continue the conversation with Vee, include the `conversationState` from the response in your next `/question` call. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Vee_VeeQuestionRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VeeQuestionDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeeResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/vee/sample-questions:
+    get:
+      tags:
+        - Vee
+      summary: Retrieve a list of sample questions to ask Vee
+      description: |-
+        Get a list of sample questions to help your users start using Vee. The response returns a list of questions, such as "What is the turnover rate?".
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Vee_VeeSampleQuestions
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeeSampleQuestionLibraryDTO'
         default:
           description: Default error response
           content:
