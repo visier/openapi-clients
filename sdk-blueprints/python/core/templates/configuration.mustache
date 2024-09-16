@@ -381,6 +381,25 @@ conf = {{{packageName}}}.Configuration(
         """
         cls._default = default
 
+    @staticmethod
+    def from_dict(config_dict):
+        """Construct a new Configuration object from a dict.
+
+        :param config_dict: A dictionary of parameters to construct a Configuration object.
+        :return: The configuration object.
+        """
+
+        return Configuration(
+            host=config_dict[VISIER_HOST],
+            api_key=config_dict[VISIER_APIKEY],
+            username=config_dict[VISIER_USERNAME],
+            password=config_dict[VISIER_PASSWORD],
+            client_id=config_dict[VISIER_CLIENT_ID],
+            client_secret=config_dict[VISIER_CLIENT_SECRET],
+            redirect_uri=config_dict[VISIER_REDIRECT_URI],
+            vanity=config_dict[VISIER_VANITY]
+        )
+
     @classmethod
     def get_default(cls):
         """Return the default configuration.

@@ -20,7 +20,11 @@ output_api_dir="$4/$package_name"
 templates_dir="$blueprints_dir/templates"
 
 # Extract the specification version
-spec_version=$(awk '/version:/ {gsub(/"| /, "", $2); print $2}' "$spec_file")
+spec_version=$(awk '/version:/ {
+    gsub(/"| /, "", $2);
+    sub(/[0-9]+\./, "0.", $2);
+    print $2
+}' "$spec_file")
 
 echo "Generating Visier API $package_name $spec_version $spec_file"
 
