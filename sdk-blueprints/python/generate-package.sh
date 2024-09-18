@@ -47,4 +47,4 @@ openapi-generator-cli generate \
   --package-name "$package_name" \
   -o "$output_api_dir" \
   --skip-validate-spec \
-  --additional-properties=packageVersion="$spec_version",corePackageModule="visier_api_core",corePackageName="visier-api-core"
+  --additional-properties=packageVersion="$spec_version",corePackageModule="visier_api_core",corePackageName="visier-api-core",hasAuthMethods="false"
