@@ -1,5 +1,6 @@
 import argparse
 import copy
+import logging
 import os
 
 import yaml
@@ -15,6 +16,8 @@ OPERATION_ID = 'operationId'
 TAGS = 'tags'
 METHODS = ['get', 'post', 'put', 'delete', 'patch']
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def load_yaml(file_path):
     with open(file_path, 'r') as file:
@@ -24,6 +27,19 @@ def load_yaml(file_path):
 def save_yaml(data, file_path):
     with open(file_path, 'w') as file:
         yaml.safe_dump(data, file)
+
+
+def find_null_schemas(spec):
+    null_schemas = []
+    for path, methods in spec.get('paths', {}).items():
+        for method, details in methods.items():
+            if 'requestBody' in details:
+                content = details['requestBody'].get('content', {})
+                if 'application/json' in content:
+                    schema = content['application/json'].get('schema')
+                    if schema is None:
+                        null_schemas.append(f"Null schema found in endpoint: {method.upper()} {path}")
+    return null_schemas
 
 
 def update_operation_ids(spec):
@@ -52,16 +68,25 @@ def process_directory(input_dir, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+    error_code = 0
     for filename in os.listdir(input_dir):
         if filename.endswith('.yaml') or filename.endswith('.yml'):
             input_file_path = os.path.join(input_dir, filename)
             output_file_path = os.path.join(output_dir, filename)
 
             spec = load_yaml(input_file_path)
+            errors = find_null_schemas(spec)
+            if len(errors) > 0:
+                logging.error(f"File: {filename}")
+                for log in errors:
+                    logging.error(log)
+                error_code = 1
+
             updated_spec = update_operation_ids(spec)
             save_yaml(updated_spec, output_file_path)
+            logging.info(f"Processed {filename} and saved updated specification to {output_file_path}")
 
-            print(f"Processed {filename} and saved updated specification to {output_file_path}")
+    return error_code
 
 
 def main():
@@ -72,7 +97,8 @@ def main():
 
     args = parser.parse_args()
 
-    process_directory(args.input_dir, args.output_dir)
+    error_code = process_directory(args.input_dir, args.output_dir)
+    # TODO uncomment sys.exit(error_code)
 
 
 if __name__ == "__main__":
