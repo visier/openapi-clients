@@ -97,8 +97,7 @@ def main():
 
     args = parser.parse_args()
 
-    error_code = process_directory(args.input_dir, args.output_dir)
-    # TODO uncomment sys.exit(error_code)
+    process_directory(args.input_dir, args.output_dir)
 
 
 if __name__ == "__main__":
