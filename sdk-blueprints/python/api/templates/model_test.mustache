@@ -44,11 +44,16 @@ class Test{{classname}}(unittest.TestCase):
     def test{{classname}}(self):
         """Test {{classname}}"""
 {{^isEnum}}
+        def validate_instance(instance):
+            {{classname}}.model_validate(inst_req_only)
+            instance_deserialized = {{classname}}.from_dict(instance.to_dict())
+            assert instance == instance_deserialized
+
         inst_req_only = self.make_instance(include_optional=False)
-        {{classname}}.model_validate(inst_req_only)
+        validate_instance(inst_req_only)
 
         inst_req_and_optional = self.make_instance(include_optional=True)
-        {{classname}}.model_validate(inst_req_and_optional)
+        validate_instance(inst_req_and_optional)
 {{/isEnum}}
 {{#isEnum}}
         # inst = {{{classname}}}()

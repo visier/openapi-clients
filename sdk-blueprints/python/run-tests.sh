@@ -7,8 +7,8 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-# Set error flag to 0
-error_flag=0
+# Set error code to 0
+error_code=0
 
 # Path to search for directories
 SEARCH_PATH=$1
@@ -17,10 +17,11 @@ SEARCH_PATH=$1
 while IFS= read -r dir; do
   cd "$dir"
   if ! tox -p 2; then
-    error_flag=1
+    error_code=1
   fi
   cd - > /dev/null
 done < <(find "$SEARCH_PATH" -type d -name "visier_api*" -print)
 
-# Exit with the error flag status
-exit $error_flag
+# Exit with the error code
+echo "Error code: $error_code"
+exit $error_code

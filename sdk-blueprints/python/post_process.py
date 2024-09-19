@@ -1,5 +1,4 @@
 import os
-import re
 import sys
 
 
@@ -14,8 +13,17 @@ def process_file(file_path):
     if "(unittest.TestCase)" not in orig_content or "class Test" not in orig_content:
         return
 
-    # Replace 'null' with 'None'
-    content = re.sub(r'\bnull\b', 'None', orig_content)
+    # Replace 'null' with 'None' in the content, as OpenAPI generator uses 'null' instead of 'None' for Python code.
+    content = orig_content.replace('= null', '= None')
+
+    # Workaround for EmptyAuthParamsDTO in data-in, where properties are empty (properties: {}).
+    # OpenAPI generator does not generate the model for it and replaces it with a dictionary.
+    if (file_path.endswith('visier_api_data_in/test/test_data_provider_auth_information_dto.py')
+            or file_path.endswith('visier_api_data_in/test/test_data_provider_auth_params_dto.py')):
+        content = content.replace(
+            'empty_auth_params = visier_api_data_in.models.empty_auth_params_dto.EmptyAuthParamsDTO()',
+            'empty_auth_params = {}'
+        )
 
     if content == orig_content:
         print(f"There is no need to update unit test {file_path}.")
