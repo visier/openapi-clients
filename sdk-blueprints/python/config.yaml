@@ -1,0 +1,16 @@
+generatorName: python
+outputDir: $output_api_dir
+templateDir: $templates_dir
+inputSpec: $spec_file
+packageName: $package_name
+skipValidateSpec: true
+enablePostProcessFile: true
+additionalProperties:
+  packageVersion: $spec_version
+  corePackageModule: visier_api_core
+  corePackageName: visier-api-core
+  infoName: Visier
+  infoEmail: alpine@visier.com
+  licenseInfo: Apache-2.0
+  hasAuthMethods: false
+  allowEmptyValue: true

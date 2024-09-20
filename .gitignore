@@ -9,6 +9,7 @@
 # Configuration files
 .actrc
 openapitools.json
+/sdk-blueprints/python/config_expanded.yaml
 
 # Directory for local debugging
 /sdk-generation-test

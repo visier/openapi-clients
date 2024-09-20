@@ -16,6 +16,9 @@ fi
 # Get the directory of the current script
 script_dir=$(dirname "$0")
 
+# Script for py post processing.
+export PYTHON_POST_PROCESS_FILE="python3 $script_dir/post_process.py"
+
 "$script_dir"/generate-package.sh visier_api_core "$spec_dir/authentication-apis.yaml" sdk-blueprints/python/core "$output_dir"
 "$script_dir"/generate-package.sh visier_api_analytic_model "$spec_dir/analytic-model-apis.yaml" sdk-blueprints/python/api "$output_dir"
 "$script_dir"/generate-package.sh visier_api_administration "$spec_dir/administration-apis.yaml" sdk-blueprints/python/api "$output_dir"
