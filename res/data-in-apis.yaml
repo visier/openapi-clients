@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1482
+  version: 22222222.99201.1489
 paths:
   /v1/data/directloads/{draftId}/configs:
     get:
@@ -2154,6 +2154,11 @@ components:
         forceUpdateExistingArtifacts:
           type: boolean
           description: If "true" and `disableArtifactGeneration` is "false", updates extractor artifacts, which may overwrite the artifacts' manual overrides. Ignored if `disableArtifactGeneration` is "true".
+        excludedTenants:
+          type: array
+          items:
+            type: string
+          description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true".
     ExtractionJob:
       type: object
       properties:
@@ -2581,6 +2586,11 @@ components:
         publishToProduction:
           type: boolean
           description: If `true`, publishes the generated data version to production. Default is `false`.
+        excludedTenants:
+          type: array
+          items:
+            type: string
+          description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true".
     ProcessingJobStatusResponse:
       type: object
       properties:
@@ -2970,6 +2980,11 @@ components:
         forceUpdateExistingArtifacts:
           type: boolean
           description: If `true` and `disableArtifactGeneration` is `false`, updates extractor artifacts, which may overwrite the artifacts' manual overrides. Ignored if `disableArtifactGeneration` is `true`.
+        excludedTenants:
+          type: array
+          items:
+            type: string
+          description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true".
     StartExtractionRequest:
       type: object
       properties:
