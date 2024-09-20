@@ -2,7 +2,9 @@ import os
 import sys
 
 
-def process_file(file_path):
+def update_unit_test_file(file_path):
+    """Updates unit test file to fix generation issues."""
+
     file_name = os.path.basename(file_path)
     if not file_name.startswith('test_'):
         return
@@ -35,6 +37,6 @@ def process_file(file_path):
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        process_file(sys.argv[1])
+        update_unit_test_file(sys.argv[1])
     else:
         print("Please provide the python file path as an argument.")
