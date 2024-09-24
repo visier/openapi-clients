@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1489
+  version: 22222222.99201.1494
 paths:
   /v1/data/directloads/{draftId}/configs:
     get:
@@ -2574,10 +2574,10 @@ components:
           type: array
           items:
             type: string
-          description: The tenant codes of the tenants to run processing jobs for. If omitted, runs a processing job for the tenant associated with the user who made the API request.
+          description: The tenant codes of the tenants to run processing jobs for. If omitted, runs a processing job for the tenant associated with the user who made the API request. Only valid for requests from an administrating tenant.
         allTenants:
           type: boolean
-          description: If `true`, runs processing jobs for all accessible analytic tenants. Default is `false`.
+          description: If `true`, runs processing jobs for all accessible analytic tenants. Default is `false`. Only valid for requests from an administrating tenant.
         dataCategoryId:
           type: string
           description: |-
@@ -2590,7 +2590,7 @@ components:
           type: array
           items:
             type: string
-          description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true".
+          description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true". Only valid for requests from an administrating tenant.
     ProcessingJobStatusResponse:
       type: object
       properties:
@@ -2934,10 +2934,10 @@ components:
           type: array
           items:
             type: string
-          description: A list of analytic tenants to dispatch extraction jobs for. One extraction job is dispatched per tenant.
+          description: A list of analytic tenants to dispatch extraction jobs for. One extraction job is dispatched per tenant. Only valid for requests from an administrating tenant.
         allTenants:
           type: boolean
-          description: If `true`, one extraction job is dispatched for each accessible analytic tenant.
+          description: If `true`, one extraction job is dispatched for each accessible analytic tenant. Only valid for requests from an administrating tenant.
         overrideLastExtractionTimestamp:
           type: string
           description: The time from which to extract data.
@@ -2984,7 +2984,7 @@ components:
           type: array
           items:
             type: string
-          description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true".
+          description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true". Only valid for requests from an administrating tenant.
     StartExtractionRequest:
       type: object
       properties:
