@@ -8,10 +8,6 @@ on:
         required: true
         type: string
         default: 'main'
-      specs_artifact_name:
-        description: 'The name of the artifact containing the preprocessed specs'
-        required: true
-        type: string
       version_postfix:
         description: 'Additional version postfix for the SDK'
         required: false
@@ -52,10 +48,16 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
+      - name: Sanitize artifact name
+        id: sanitize
+        run: |
+          specs_artifact_name=$(echo "processed-specs-${{ github.ref_name }}" | tr -d '\r\n' | tr '":<>|*?\\/' '_')
+          echo "specs_artifact_name=$specs_artifact_name" >> $GITHUB_ENV
+
       - name: Download openapi specifications artifact
         uses: actions/download-artifact@v4
         with:
-          name: processed-specs-${{ github.ref_name }}
+          name: ${{ env.specs_artifact_name }}
           path: ${{ env.SPEC_DIR }}
 
       - name: Create a token
