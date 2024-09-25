@@ -33,10 +33,16 @@ jobs:
           python3 -m pip install -r $PREPROCESSING_DIR/requirements.txt
           python3 $PREPROCESSING_DIR/preprocessing.py $ORIG_SPEC_DIR $SPEC_DIR
 
+      - name: Sanitize artifact name
+        id: sanitize
+        run: |
+          specs_artifact_name=$(echo "processed-specs-${{ github.ref_name }}" | tr -d '\r\n' | tr '":<>|*?\\/' '_')
+          echo "specs_artifact_name=$specs_artifact_name" >> $GITHUB_ENV
+
       - name: Upload preprocessed specifications as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: processed-specs-${{ github.ref_name }}
+          name: ${{ env.specs_artifact_name }}
           path: ${{ env.SPEC_DIR }}
           retention-days: 7
 
@@ -46,8 +52,9 @@ jobs:
     uses: ./.github/workflows/generate-python-sdk.yml
     secrets: inherit
     with:
-      version_postfix: ${{ github.event.inputs.version_postfix }}
       python_sdk_pr_base_branch: ${{ vars.PYTHON_SDK_PR_BASE_BRANCH }}
+      specs_artifact_name: ${{ env.specs_artifact_name }}
+      version_postfix: ${{ github.event.inputs.version_postfix }}
 
   create-and-merge-pr:
     name: Create and Merge Pull Request for release
