@@ -7,12 +7,12 @@ on:
         description: 'The branch to push the generated SDK to'
         required: true
         type: string
-        default: 'release-postfix'
+        default: 'release-beta'
       version_postfix:
         description: 'Additional version postfix for the SDK'
         required: true
         type: string
-        default: ''
+        default: 'beta1'
   push:
     branches:
       - 'release-**'

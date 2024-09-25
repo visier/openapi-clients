@@ -7,7 +7,6 @@ on:
         description: 'The base branch for the Python SDK PR'
         required: true
         type: string
-        default: 'main'
       python_sdk_branch:
         description: 'The branch to push the generated Python SDK to'
         required: true
@@ -16,7 +15,6 @@ on:
         description: 'Additional version postfix for the SDK'
         required: false
         type: string
-        default: ''
 env:
   SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
   PYTHON_DIR: ${{ github.workspace }}/sdk-blueprints/python
