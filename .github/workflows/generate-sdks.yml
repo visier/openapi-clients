@@ -6,6 +6,7 @@ on:
       version_postfix:
         description: 'Additional version postfix for the SDK'
         required: false
+        type: string
         default: ''
   push:
     branches:
