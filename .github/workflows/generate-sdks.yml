@@ -58,8 +58,8 @@ jobs:
     secrets: inherit
     with:
       python_sdk_pr_base_branch: ${{ vars.PYTHON_SDK_PR_BASE_BRANCH }}
-      python_sdk_branch: ${{ github.event.inputs.manual_sdk_branch || github.ref_name }}
-      version_postfix: ${{ github.event.inputs.version_postfix }}
+      python_sdk_branch: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.manual_sdk_branch || github.ref_name }}
+      version_postfix: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version_postfix || '' }}
 
   create-and-merge-pr:
     name: Create and Merge Pull Request for release
