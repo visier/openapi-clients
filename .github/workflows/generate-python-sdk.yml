@@ -87,7 +87,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.create-token.outputs.token }}
         run: |
           cd $SDK_REPO_DIR
-          git checkout -b ${{ github.ref_name }}
+          git checkout -b ${{ inputs.python_sdk_branch }}
 
       - name: Generate Python SDK for all specifications
         shell: bash
