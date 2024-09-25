@@ -2,6 +2,11 @@ name: Generate SDKs
 
 on:
   workflow_dispatch:
+    inputs:
+      version_postfix:
+        description: 'Additional version postfix for the SDK'
+        required: false
+        default: ''
   push:
     branches:
       - 'release-**'
@@ -40,6 +45,7 @@ jobs:
     uses: ./.github/workflows/generate-python-sdk.yml
     secrets: inherit
     with:
+      version_postfix: ${{ github.event.inputs.version_postfix }}
       python_sdk_pr_base_branch: ${{ vars.PYTHON_SDK_PR_BASE_BRANCH }}
 
   create-and-merge-pr:

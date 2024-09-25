@@ -3,6 +3,10 @@ name: Generate Python SDK
 on:
   workflow_call:
     inputs:
+      version_postfix:
+        description: 'Additional version postfix for the SDK'
+        required: false
+        default: ''
       python_sdk_pr_base_branch:
         description: 'The base branch for the Python SDK PR'
         required: true
@@ -80,7 +84,7 @@ jobs:
         run: |
           chmod +x ${{ github.workspace }}/sdk-blueprints/python/generate-all.sh
           chmod +x ${{ github.workspace }}/sdk-blueprints/python/generate-package.sh
-          ${{ github.workspace }}/sdk-blueprints/python/generate-all.sh "$SDK_REPO_DIR/src/" "$SPEC_DIR"
+          ${{ github.workspace }}/sdk-blueprints/python/generate-all.sh "$SDK_REPO_DIR/src/" "$SPEC_DIR" "${{ inputs.version_postfix }}"
 
       # Pushing before tests to have the code available for debugging
       - name: Push Python SDK branch
