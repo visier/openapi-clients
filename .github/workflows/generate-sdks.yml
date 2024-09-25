@@ -3,7 +3,7 @@ name: Generate SDKs
 on:
   workflow_dispatch:
     inputs:
-      python_sdk_branch:
+      manual_sdk_branch:
         description: 'The branch to push the generated SDK to'
         required: true
         type: string
