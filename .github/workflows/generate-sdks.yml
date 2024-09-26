@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       manual_sdk_branch:
-        description: 'The branch to push the generated SDK to'
+        description: 'The branch to push the generated SDK to.'
         required: true
         type: string
         default: 'release-beta1'
       version_postfix:
-        description: 'Additional version postfix for the SDK'
+        description: 'Additional version postfix for the SDK. For fix use "post{N}", for beta use "beta{N}".'
         required: true
         type: string
         default: 'beta1'
