@@ -15,18 +15,13 @@ on:
         default: 'beta1'
       manual_openapi_client_pr_base_branch:
         description: |
-          Base branch for OpenAPI client PR.
-          WARNING: Set main branch for production releases!
+          Base branch for OpenAPI client PR.\nWARNING: Set main branch for production releases!
         required: true
         type: string
         default: 'github-actions-test'
       manual_python_sdk_pr_base_branch:
         description: |
-          Base branch for Python SDK PR.
-          WARNING: Set main branch for production releases!
-        required: true
-        type: string
-        default: 'github-actions-test'
+          Base branch for Python SDK PR.\nWARNING: Set main branch for production releases!
   push:
     branches:
       - 'release-**'
