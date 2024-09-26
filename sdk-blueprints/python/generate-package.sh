@@ -7,7 +7,7 @@ package_name=$1
 spec_file=$2
 blueprints_dir=$3
 output_dir=$4
-post_version=$5
+version_postfix=$5
 
 # Check if all required arguments are provided
 if [ -z "$package_name" ] || [ -z "$spec_file" ] || [ -z "$blueprints_dir" ] || [ -z "$output_dir" ]; then
@@ -27,8 +27,8 @@ spec_version=$(awk '/version:/ {
     print $2
 }' "$spec_file")
 
-if [ -n "$post_version" ]; then
-    spec_version="${spec_version}.${post_version}"
+if [ -n "$version_postfix" ]; then
+    spec_version="${spec_version}.${version_postfix}"
 fi
 
 echo "Generating Visier API $package_name $spec_version $spec_file"
