@@ -380,6 +380,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1/op/data-connectors/connector-settings:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve data connector settings
+      description: Get a list of settings for all data connectors. This request retrieves data connectors from the production environment. The response returns a list of settings, if available, for each data connector in the tenant.
+      operationId: DataAndJobHandling_ListConnectorSettings
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtractorSettingsAPIDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    put:
+      tags:
+        - DataAndJobHandling
+      summary: Update data connector settings
+      description: Define the settings for one or more data connectors. To find the available settings, see `Retrieve data connector settings`.
+      operationId: DataAndJobHandling_SetConnectorSetting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetConnectorSettingsRequestDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetConnectorSettingsResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/op/data-sources:
     get:
       tags:
@@ -1636,6 +1681,38 @@ components:
           description: An identifiable data connector name that is displayed within Visier.
         description:
           type: string
+    ConnectorSettingRequestDTO:
+      type: object
+      properties:
+        settingKey:
+          type: string
+          description: The unique identifier associated with the setting.
+        value:
+          type: string
+          description: The setting's value.
+    ConnectorSettingResponseDTO:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The unique identifier of the connector setting.
+        value:
+          type: string
+          description: The value that was set for the connector setting.
+        message:
+          type: string
+    ConnectorSettingsResponseDTO:
+      type: object
+      properties:
+        connector:
+          allOf:
+            - $ref: '#/components/schemas/ConnectorInfoResponseDTO'
+          description: The data connector that was updated in the API request.
+        settings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectorSettingResponseDTO'
+          description: The settings that were updated for a data connector.
     ConsolidatedAnalyticsJobRequestDTO:
       type: object
       properties:
@@ -2233,6 +2310,37 @@ components:
           type: integer
           description: The index to start retrieving values from, also known as offset. The index begins at 0.
           format: uint32
+    ExtractorSettingAPIDTO:
+      type: object
+      properties:
+        connectorId:
+          type: string
+          description: The unique identifier associated with the data connector.
+        displayName:
+          type: string
+          description: An identifiable data connector name that is displayed within Visier.
+        connectorSettings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtractorSettingKeyValueAPIDTO'
+          description: A list of objects representing the settings that are available for the data connector.
+    ExtractorSettingKeyValueAPIDTO:
+      type: object
+      properties:
+        settingKey:
+          type: string
+          description: The unique identifier associated with the setting.
+        value:
+          type: string
+          description: The current value of the setting.
+    ExtractorSettingsAPIDTO:
+      type: object
+      properties:
+        connectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtractorSettingAPIDTO'
+          description: A list of all data connectors in the production environment and their settings.
     FusionAuthParamsDTO:
       type: object
       properties:
@@ -2867,6 +2975,54 @@ components:
           type: string
         alternateDomain:
           type: string
+    SetConnectorSettingRequestDTO:
+      type: object
+      properties:
+        connectorId:
+          type: string
+          description: The unique identifier associated with the data connector.
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/TenantConnectorSettingsRequestDTO'
+          description: The tenant codes and data connector settings to update.
+    SetConnectorSettingResponseDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The unique identifier associated with the tenant.
+        connectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectorSettingsResponseDTO'
+          description: A list of objects representing the assigned settings and connectors.
+        status:
+          enum:
+            - Unknown
+            - Succeed
+            - Failed
+          type: string
+          description: The state of the setting assignment. Valid values are Succeed or Failed.
+          format: enum
+        message:
+          type: string
+    SetConnectorSettingsRequestDTO:
+      type: object
+      properties:
+        connectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SetConnectorSettingRequestDTO'
+          description: The settings to define for each data connector and tenant.
+    SetConnectorSettingsResponseDTO:
+      type: object
+      properties:
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/SetConnectorSettingResponseDTO'
+          description: The tenants and data connectors that were updated in the API request.
     SlackAuthParamsDTO:
       type: object
       properties:
@@ -3078,6 +3234,17 @@ components:
         credentialId:
           type: string
           description: The unique identifier associated with the credential.
+    TenantConnectorSettingsRequestDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The unique identifier associated with the tenant.
+        connectorSettings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectorSettingRequestDTO'
+          description: The settings to update.
     TenantDataUploadStatusResponseDTO:
       type: object
       properties:
