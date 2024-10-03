@@ -2372,23 +2372,15 @@ paths:
       parameters:
         - name: productionVersionId
           in: path
+          description: The production version to use as the target of the operation; for example, the production version to roll back to for the `rollBackTo` operation.
           required: true
           schema:
             type: string
-        - name: operation
-          in: query
-          description: |-
-            The operation to perform. Valid values:
-             * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
-          schema:
-            enum:
-              - unknownProductionVersionAPIOperation
-              - rollBackTo
-            type: string
-            format: enum
       requestBody:
         content:
-          application/json: {}
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductionVersionAPIOperationRequestDTO'
         required: true
       responses:
         "200":
@@ -2657,39 +2649,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
   /v1alpha/admin/sources:
-    put:
-      tags:
-        - Sources
-      summary: Import a list of sources
-      description: |-
-        Import a list of sources in ZIP format. The file must be an export from `POST /v1alpha/admin/sources`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: Sources_PutSources
-      parameters:
-        - name: replaceAllExistingSources
-          in: query
-          description: If `false`, adds the sources from the ZIP to the sources in the target tenant. If `true`, removes all sources in the target tenant and adds the sources from the ZIP. Default is `false`.
-          schema:
-            type: boolean
-      requestBody:
-        content:
-          application/json: {}
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SourcesAPIPutResponseDTO'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
     post:
       tags:
         - Sources
@@ -2714,6 +2673,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ExportSourcesAPIOperationResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    put:
+      tags:
+        - Sources
+      summary: Import a list of sources
+      description: |-
+        Import a list of sources in ZIP format. The file must be an export from `POST /v1alpha/admin/sources`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Sources_PutSources
+      parameters:
+        - name: replaceAllExistingSources
+          in: query
+          description: If `false`, adds the sources from the ZIP to the sources in the target tenant. If `true`, removes all sources in the target tenant and adds the sources from the ZIP. Default is `false`.
+          schema:
+            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/zip:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourcesAPIPutResponseDTO'
         default:
           description: Default error response
           content:
@@ -4589,6 +4584,18 @@ components:
           items:
             $ref: '#/components/schemas/PermissionsToUserGroupRequestDTO'
           description: A list of objects representing the user groups and permissions to assign or remove.
+    ProductionVersionAPIOperationRequestDTO:
+      type: object
+      properties:
+        operation:
+          enum:
+            - unknownProductionVersionAPIOperation
+            - rollBackTo
+          type: string
+          description: |-
+            The operation to perform. Valid values:
+             * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
+          format: enum
     ProductionVersionAPIOperationResponseDTO:
       type: object
       properties:
@@ -4925,25 +4932,6 @@ components:
         username:
           type: string
           description: The user's username. This is typically the user's email, such as john@visier.com.
-    SourceImportResultSummaryDTO:
-      type: object
-      properties:
-        created:
-          type: integer
-          description: The number of imported sources that were newly created in the target tenant.
-          format: int32
-        updated:
-          type: integer
-          description: The number of imported sources that already existed and were updated in the target tenant.
-          format: int32
-        ignored:
-          type: integer
-          description: The number of imported sources that already existed and were unchanged in the target tenant.
-          format: int32
-        deleted:
-          type: integer
-          description: The number of imported sources that existed in the target tenant prior to the import and were deleted during the import.
-          format: int32
     SourcesAPIOperationRequestDTO:
       type: object
       properties:
@@ -4956,13 +4944,6 @@ components:
             The operation to perform. Valid values:
              * `exportSources`: Export all sources from the tenant. If successful, a ZIP file is returned containing a compressed JSON file with the sources.
           format: enum
-    SourcesAPIPutResponseDTO:
-      type: object
-      properties:
-        summary:
-          allOf:
-            - $ref: '#/components/schemas/SourceImportResultSummaryDTO'
-          description: The changes made to the sources during the operation.
     StaticDimensionFilterDTO:
       type: object
       properties:
@@ -6068,6 +6049,32 @@ components:
         email:
           type: string
           description: The user's email address.
+    SourceImportResultSummaryDTO:
+      type: object
+      properties:
+        created:
+          type: integer
+          description: The number of imported sources that were newly created in the target tenant.
+          format: int32
+        updated:
+          type: integer
+          description: The number of imported sources that already existed and were updated in the target tenant.
+          format: int32
+        ignored:
+          type: integer
+          description: The number of imported sources that already existed and were unchanged in the target tenant.
+          format: int32
+        deleted:
+          type: integer
+          description: The number of imported sources that existed in the target tenant prior to the import and were deleted during the import.
+          format: int32
+    SourcesAPIPutResponseDTO:
+      type: object
+      properties:
+        summary:
+          allOf:
+            - $ref: '#/components/schemas/SourceImportResultSummaryDTO'
+          description: The changes made to the sources during the operation.
     Status:
       type: object
       properties:

@@ -570,77 +570,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/op/data-transfer-sessions/{transferSessionId}/upload:
-    put:
-      tags:
-        - DataIntake
-      summary: Transfer data to sources via file upload
-      description: |-
-        Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the
-         data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make
-         multiple requests within the same transfer session.
-
-         File size limit: 3 GB
-
-         Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.
-
-         If you define a specific source in the request, all files within the request will target the declared source. If
-         a source is not defined, the filenames are matched against the source regex to correctly assign each file to a
-         source. To find out the source regex, please contact Visier Customer Success.
-
-         **Note:** If you include files that should target multiple sources in one ZIP file, do not define a source in the request.
-
-         Analytic tenants: For optimal transfer speed, provide one ZIP file per source.
-         Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.
-         In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:
-
-         File1.zip
-         - Folder1: WFF_tenantCode1
-            - Filename1.csv
-            - Filename2.csv
-         - Folder2: WFF_tenantCode2
-            - Filename3.csv
-            - Filename4.csv
-      operationId: DataIntake_UploadData
-      parameters:
-        - name: transferSessionId
-          in: path
-          description: The transfer session ID returned after the data transfer session starts.
-          required: true
-          schema:
-            type: string
-        - name: sourceId
-          in: query
-          description: The unique identifier associated with the source you want to transfer data to.
-          schema:
-            type: string
-        - name: sequence
-          in: query
-          description: The unique sequence number associated with a batch of records.
-          schema:
-            type: string
-        - name: tenantCode
-          in: query
-          description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json: {}
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PushDataResponse'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
   /v1/op/data-versions:
     get:
       tags:
@@ -1449,6 +1378,84 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Status"
+  /v1/op/data-transfer-sessions/{transferSessionId}/upload:
+    put:
+      tags:
+        - DataIntake
+      summary: Transfer data to sources via file upload
+      description: |-
+        Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the
+         data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make
+         multiple requests within the same transfer session.
+
+         File size limit: 3 GB
+
+         Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.
+
+         If you define a specific source in the request, all files within the request will target the declared source. If
+         a source is not defined, the filenames are matched against the source regex to correctly assign each file to a
+         source. To find out the source regex, please contact Visier Customer Success.
+
+         **Note:** If you include files that should target multiple sources in one ZIP file, do not define a source in the request.
+
+         Analytic tenants: For optimal transfer speed, provide one ZIP file per source.
+         Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.
+         In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:
+
+         File1.zip
+         - Folder1: WFF_tenantCode1
+            - Filename1.csv
+            - Filename2.csv
+         - Folder2: WFF_tenantCode2
+            - Filename3.csv
+            - Filename4.csv
+      operationId: DataIntake_UploadData
+      parameters:
+        - name: transferSessionId
+          in: path
+          description: The transfer session ID returned after the data transfer session starts.
+          required: true
+          schema:
+            type: string
+        - name: sourceId
+          in: query
+          description: The unique identifier associated with the source you want to transfer data to.
+          schema:
+            type: string
+        - name: sequence
+          in: query
+          description: The unique sequence number associated with a batch of records.
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to upload
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushDataResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/op/data-connector-credentials/{id}:
     delete:
       tags:
