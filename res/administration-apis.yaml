@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1494
+  version: 22222222.99201.1497
 paths:
   /v1/admin/capabilities:
     get:
@@ -2649,6 +2649,36 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
   /v1alpha/admin/sources:
+    post:
+      tags:
+        - Sources
+      summary: Perform an operation on all sources
+      description: |-
+        Perform operations on all sources. The following operations are supported:
+         * `exportSources`: Export a ZIP file that contains a list of all sources in the application.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Sources_RunSourcesOperation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourcesAPIOperationRequestDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportSourcesAPIOperationResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
     put:
       tags:
         - Sources
@@ -2679,36 +2709,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SourcesAPIPutResponseDTO'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-    post:
-      tags:
-        - Sources
-      summary: Perform an operation on all sources
-      description: |-
-        Perform operations on all sources. The following operations are supported:
-         * `exportSources`: Export a ZIP file that contains a list of all sources in the application.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: Sources_RunSourcesOperation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SourcesAPIOperationRequestDTO'
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExportSourcesAPIOperationResponseDTO'
         default:
           description: Default error response
           content:
