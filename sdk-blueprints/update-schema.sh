@@ -1,5 +1,5 @@
-# This script is for internal usage to debug SDK generation locally
-# This script should be run from the root of the openapi-clients repository (current repository)
+# Internal script for debugging SDK generation locally.
+# Run from the root of the openapi-clients repository.
 
 # Define directory where projects are stored
 projects_dir="$HOME/projects"
