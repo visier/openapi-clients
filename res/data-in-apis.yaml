@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1494
+  version: 22222222.99201.1508
 paths:
   /v1/data/directloads/{draftId}/configs:
     get:
@@ -285,9 +285,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Create a connector credential
-      description: |-
-        Create connector credentials for a specified tenant. Connector credentials allow Visier to
-         retrieve data from your source systems through an integration user in the source system.
+      description: "Create credentials for a data connector. Connector credentials allow Visier to retrieve data from your source systems through an integration user in the source system. \n \n In the request body, specify one data provider in the `dataProviderAuthParams` parameter. For example, to create connector credentials for a UKG data connector, your request body might look like the following sample.\n ```json\n {\n   model={\n     \"dataProviderAuthParams\": {\n        \"provider\": \"UKG\",\n        \"ultimateAuthParams\": {\n           \"hostDomainName\": \"exampleHostDomain\",\n           \"apiKey\": \"apiKey1234\",\n           \"username\": \"username1234\",\n           \"password\": \"password1234\",\n           \"userAccessKey\": \"accessKey1234\"\n        }\n     },\n     \"dataProviderBasicInformation\": {\n        \"displayName\": \"exampleDisplayName\",\n        \"description\": \"exampleDescription\"\n     }\n }\n ```"
       operationId: DataAndJobHandling_CreateConnectorCredential
       parameters:
         - name: tenantCode
@@ -625,16 +623,9 @@ paths:
           schema:
             type: string
       requestBody:
-        required: true
         content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: The file to upload
+          application/json: {}
+        required: true
       responses:
         "200":
           description: OK
@@ -758,12 +749,8 @@ paths:
     post:
       tags:
         - DataAndJobHandling
-      summary: Trigger extraction jobs
-      description: |-
-        Generate extraction jobs for a list of analytic tenants or for the administrating tenant.
-         This API creates a dispatching job that generates one extraction job per tenant. The extraction jobs retrieve
-         data from your source systems through data connectors. The dispatching job is the "parent" of the extraction
-         jobs and its job ID is returned in the response.
+      summary: Trigger data connector extraction jobs
+      description: "Run data connector extraction jobs for the administrating tenant or a list of analytic tenants.\n \n This API creates a dispatching job that generates one extraction job per tenant. The dispatching job is the \"parent\" of the extraction jobs and the dispatching job ID is returned in the response. Use that ID to monitor the extraction job statuses by calling `GET /v1/op/jobs/dispatching-jobs/{jobId}/extraction-jobs`.\n\n The extraction job generates receiving jobs to validate the data and processing jobs to populate data in the analytic tenants. Use the dispatching job ID to monitor the receiving and processing job statuses by calling `GET /v1/op/jobs/dispatching-jobs/{jobId}/receiving-jobs` or `GET /v1/op/jobs/dispatching-jobs/{jobId}/processing-jobs`."
       operationId: DataAndJobHandling_StartExtraction
       requestBody:
         content:
@@ -788,7 +775,7 @@ paths:
     post:
       tags:
         - DataAndJobHandling
-      summary: Start the data load for an analytic tenant
+      summary: Start the data load for analytic tenants
       description: |-
         This API starts the data load process for all analytic tenants included in the specified data files uploaded
          to the Visier SFTP server. On success, you receive a job ID that can be filtered and searched for within the
@@ -1270,12 +1257,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a receiving job's status
-      description: |-
-        After sending data to Visier, you may want to know the status of the receiving job and the associated tenant
-         receiving jobs. A receiving job validates the transferred data and adds the transferred data to Visier's data
-         store.
-
-         Retrieve the receiving job status and summary of analytic tenant receiving jobs.
+      description: "After sending data to Visier, you may want to know the status of the receiving job and the associated tenant\n receiving jobs. A receiving job validates the transferred data and adds the transferred data to Visier's data\n store. \n\n A successful response indicates that the receiving job was successful. To get the status of the jobs spawned by the receiving job, set the `jobs` parameter to `true`."
       operationId: DataAndJobHandling_ReceivingJobStatus
       parameters:
         - name: receivingJobId
@@ -1862,9 +1844,7 @@ components:
             - WorkdayWQL
             - OEMCornerstone
           type: string
-          description: |-
-            The data provider associated with the credential.
-             - Valid values: UKG, Dimensions, Workday, Redshift, BasicS3, CopyS3, SqlServer, Snowflake
+          description: The data provider associated with the credential.
           format: enum
         bambooAuthParams:
           $ref: '#/components/schemas/BambooAuthParamsDTO'

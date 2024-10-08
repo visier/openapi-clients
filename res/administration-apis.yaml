@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1494
+  version: 22222222.99201.1508
 paths:
   /v1/admin/capabilities:
     get:
@@ -2372,15 +2372,23 @@ paths:
       parameters:
         - name: productionVersionId
           in: path
-          description: The production version to use as the target of the operation; for example, the production version to roll back to for the `rollBackTo` operation.
           required: true
           schema:
             type: string
+        - name: operation
+          in: query
+          description: |-
+            The operation to perform. Valid values:
+             * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
+          schema:
+            enum:
+              - unknownProductionVersionAPIOperation
+              - rollBackTo
+            type: string
+            format: enum
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ProductionVersionAPIOperationRequestDTO'
+          application/json: {}
         required: true
       responses:
         "200":
@@ -2666,12 +2674,9 @@ paths:
           schema:
             type: boolean
       requestBody:
-        required: true
         content:
-          application/zip:
-            schema:
-              type: string
-              format: binary
+          application/json: {}
+        required: true
       responses:
         "200":
           description: OK
@@ -4584,18 +4589,6 @@ components:
           items:
             $ref: '#/components/schemas/PermissionsToUserGroupRequestDTO'
           description: A list of objects representing the user groups and permissions to assign or remove.
-    ProductionVersionAPIOperationRequestDTO:
-      type: object
-      properties:
-        operation:
-          enum:
-            - unknownProductionVersionAPIOperation
-            - rollBackTo
-          type: string
-          description: |-
-            The operation to perform. Valid values:
-             * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
-          format: enum
     ProductionVersionAPIOperationResponseDTO:
       type: object
       properties:
@@ -4932,6 +4925,25 @@ components:
         username:
           type: string
           description: The user's username. This is typically the user's email, such as john@visier.com.
+    SourceImportResultSummaryDTO:
+      type: object
+      properties:
+        created:
+          type: integer
+          description: The number of imported sources that were newly created in the target tenant.
+          format: int32
+        updated:
+          type: integer
+          description: The number of imported sources that already existed and were updated in the target tenant.
+          format: int32
+        ignored:
+          type: integer
+          description: The number of imported sources that already existed and were unchanged in the target tenant.
+          format: int32
+        deleted:
+          type: integer
+          description: The number of imported sources that existed in the target tenant prior to the import and were deleted during the import.
+          format: int32
     SourcesAPIOperationRequestDTO:
       type: object
       properties:
@@ -4944,6 +4956,13 @@ components:
             The operation to perform. Valid values:
              * `exportSources`: Export all sources from the tenant. If successful, a ZIP file is returned containing a compressed JSON file with the sources.
           format: enum
+    SourcesAPIPutResponseDTO:
+      type: object
+      properties:
+        summary:
+          allOf:
+            - $ref: '#/components/schemas/SourceImportResultSummaryDTO'
+          description: The changes made to the sources during the operation.
     StaticDimensionFilterDTO:
       type: object
       properties:
@@ -6049,32 +6068,6 @@ components:
         email:
           type: string
           description: The user's email address.
-    SourceImportResultSummaryDTO:
-      type: object
-      properties:
-        created:
-          type: integer
-          description: The number of imported sources that were newly created in the target tenant.
-          format: int32
-        updated:
-          type: integer
-          description: The number of imported sources that already existed and were updated in the target tenant.
-          format: int32
-        ignored:
-          type: integer
-          description: The number of imported sources that already existed and were unchanged in the target tenant.
-          format: int32
-        deleted:
-          type: integer
-          description: The number of imported sources that existed in the target tenant prior to the import and were deleted during the import.
-          format: int32
-    SourcesAPIPutResponseDTO:
-      type: object
-      properties:
-        summary:
-          allOf:
-            - $ref: '#/components/schemas/SourceImportResultSummaryDTO'
-          description: The changes made to the sources during the operation.
     Status:
       type: object
       properties:
