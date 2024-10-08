@@ -2,6 +2,26 @@ name: Generate SDKs
 
 on:
   workflow_dispatch:
+    inputs:
+      version_postfix:
+        description: 'Additional version postfix for the SDK. For fix use "post{N}", for beta use "beta{N}".'
+        required: true
+        type: string
+        default: 'beta1'
+      manual_openapi_client_pr_base_branch:
+        description: |
+          WARNING: Set this to the `main` branch for production releases!
+          This workflow will create a Pull Request (PR) for the `openapi-clients` repository and merge it into the specified base branch.
+        required: true
+        type: string
+        default: 'github-actions-test'
+      manual_sdk_pr_base_branch:
+        description: |
+          WARNING: Set this to the `main` branch for production releases!
+          This workflow will create a Pull Request (PR) for the `language-sdk` (e.g. `python-sdk`) repository and merge it into the specified base branch.
+        required: true
+        type: string
+        default: 'github-actions-test'
   push:
     branches:
       - 'release-**'
@@ -27,10 +47,16 @@ jobs:
           python3 -m pip install -r $PREPROCESSING_DIR/requirements.txt
           python3 $PREPROCESSING_DIR/preprocessing.py $ORIG_SPEC_DIR $SPEC_DIR
 
+      - name: Sanitize artifact name
+        id: sanitize
+        run: |
+          specs_artifact_name=$(echo "processed-specs-${{ github.ref_name }}" | tr -d '\r\n' | tr '":<>|*?\\/' '_')
+          echo "specs_artifact_name=$specs_artifact_name" >> $GITHUB_ENV
+
       - name: Upload preprocessed specifications as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: processed-specs-${{ github.ref_name }}
+          name: ${{ env.specs_artifact_name }}
           path: ${{ env.SPEC_DIR }}
           retention-days: 7
 
@@ -40,14 +66,14 @@ jobs:
     uses: ./.github/workflows/generate-python-sdk.yml
     secrets: inherit
     with:
-      python_sdk_pr_base_branch: ${{ vars.PYTHON_SDK_PR_BASE_BRANCH }}
+      python_sdk_pr_base_branch: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.manual_sdk_pr_base_branch || vars.PYTHON_SDK_PR_BASE_BRANCH }}
+      python_sdk_branch: ${{ github.event_name == 'workflow_dispatch' && format('release-manual-{0}', github.event.inputs.version_postfix) || github.ref_name }}
+      version_postfix: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version_postfix || '' }}
 
   create-and-merge-pr:
     name: Create and Merge Pull Request for release
     needs: generate-python-sdk
     runs-on: ubuntu-22.04
-    env:
-      OPENAPI_CLIENT_PR_BASE_BRANCH: ${{ vars.OPENAPI_CLIENT_PR_BASE_BRANCH }}
     permissions:
       contents: write
       pull-requests: write
@@ -75,7 +101,7 @@ jobs:
             --title "PR for ${{ github.ref_name }}" \
             --body "This PR created automatically after pushing changes to language-sdk repos." \
             --head "${{ github.ref_name }}" \
-            --base "${{ env.OPENAPI_CLIENT_PR_BASE_BRANCH }}")
+            --base "${{ github.event_name == 'workflow_dispatch' && github.event.inputs.manual_openapi_client_pr_base_branch || vars.OPENAPI_CLIENT_PR_BASE_BRANCH }}")
           pr_number=$(echo "$pr_output" | grep -oE '[0-9]+$')
           echo "Pull Request #$pr_number created successfully."
           echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
