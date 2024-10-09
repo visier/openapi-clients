@@ -24,10 +24,10 @@ jobs:
       - name: Transform to JS spec assignment
         run: for f in json/*.json; do fn=${f##*/}; echo "const spec = $(cat $f)" > js/${fn%.*}.js; done
       - name: Make a release archive
-        run: tar -czf ${{ github.head_ref }}.tar.gz json/ js/
+        run: tar -czf ${{ github.head_ref || github.ref_name }}.tar.gz json/ js/
       - name: Create release and upload
         uses: ncipollo/release-action@v1
         with:
-          artifacts: ${{ github.head_ref }}.tar.gz
-          tag: ${{ github.head_ref }}
+          artifacts: ${{ github.head_ref || github.ref_name }}.tar.gz
+          tag: ${{ github.head_ref || github.ref_name }}
           omitBody: true
