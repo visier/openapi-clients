@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1508
+  version: 22222222.99201.1523
 paths:
   /v1/data/query/aggregate:
     post:
@@ -180,7 +180,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CellSetDTO'
+                oneOf:
+                  - $ref: '#/components/schemas/TableResponseDTO'
+                  - $ref: '#/components/schemas/CellSetDTO'
             application/octet-stream:
               schema:
                 type: string
@@ -2196,6 +2198,21 @@ components:
           type: boolean
           description: Indicates whether the error is a user error.
       description: The response structure for errors.
+    TableResponseDTO:
+      type: object
+      properties:
+        header:
+          type: object
+          additionalProperties:
+            type: string
+          description: Description of the columns in the result set.
+        rows:
+          type: array
+          description: Result rows in key-value format.
+          items:
+            type: object
+            additionalProperties:
+              type: string
     Status:
       type: object
       properties:
