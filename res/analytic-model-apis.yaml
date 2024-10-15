@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1508
+  version: 22222222.99201.1523
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -417,6 +417,16 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: sortType
+          in: query
+          description: |-
+            The order of the members in the response. Valid values:
+             - **configured**: Sorts the members according to their configuration; for example, the configured order of dimension members in the studio experience.
+             - **natural**: Sorts the members by their natural order; for example, sorted in ascending order by level in a parent-child dimension.
+
+             Default is `natural`.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1109,6 +1119,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PredictionDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/model/properties:
+    patch:
+      tags:
+        - DataModel
+      summary: Update properties
+      description: Change the display name, short display name, and description of one or more properties. In each API request, update up to 10 properties per tenant with a maximum of 500 tenants.
+      operationId: DataModel_UpdateProperties
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PropertiesChangeDefinitionsDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertiesBulkChangeResponseDTO'
         default:
           description: Default error response
           content:
@@ -1990,6 +2026,27 @@ components:
           items:
             $ref: '#/components/schemas/PredictionDTO'
       description: A collection of predictions.
+    PropertiesBulkChangeResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyChangeSuccessDTO'
+          description: The properties that were successfully changed.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyChangeFailureDTO'
+          description: The properties that were not successfully changed.
+    PropertiesChangeDefinitionsDTO:
+      type: object
+      properties:
+        propertiesByTenant:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyChangeDefinitionsByTenantDTO'
+          description: The property updates to make in each tenant.
     PropertiesDTO:
       type: object
       properties:
@@ -1998,6 +2055,71 @@ components:
           items:
             $ref: '#/components/schemas/PropertyDTO'
       description: A collection of properties.
+    PropertyChangeDefinitionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the object; for example, Employee.Birth_Date
+        displayName:
+          type: string
+          description: The user-friendly name for the object.
+        shortDisplayName:
+          type: string
+          description: A shortened version of the display name. If the object is visible in the solution experience, this name is displayed in visualization titles.
+        description:
+          type: string
+          description: A short description of the object. Descriptions provide in-context help for your users while working in Visier.
+    PropertyChangeDefinitionsByTenantDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the tenant in which to update properties.
+        projectId:
+          type: string
+          description: To make changes in a project, specify a project ID.
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyChangeDefinitionDTO'
+          description: The list of properties to update.
+    PropertyChangeFailureDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the object that was not successfully changed.
+        displayName:
+          type: string
+          description: The display name of the property.
+        message:
+          type: string
+          description: An error message describing the cause of the failure.
+        rci:
+          type: string
+          description: The root cause identifier to provide to Visier Technical Support if you require further troubleshooting.
+        tenantCode:
+          type: string
+          description: The tenant that the property was not successfully changed in.
+        projectId:
+          type: string
+          description: The project that the property was not successfully changed in.
+    PropertyChangeSuccessDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the property that was successfully changed.
+        displayName:
+          type: string
+          description: The display name of the property.
+        tenantCode:
+          type: string
+          description: The tenant that the property was changed in.
+        projectId:
+          type: string
+          description: The project that the property was changed in.
     PropertyDTO:
       type: object
       properties:

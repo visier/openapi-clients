@@ -8,8 +8,123 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1508
+  version: 22222222.99201.1523
 paths:
+  /v1/api/pgpkey:
+    get:
+      tags:
+        - PGPKey
+      summary: Retrieve all PGP public keys
+      description: Retrieve a list of all PGP public keys in your tenant.
+      operationId: PGPKey_GetAllPGPPublicKeys
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmptyParameter'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeysDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    post:
+      tags:
+        - PGPKey
+      summary: Download a public encryption key
+      description: "Generate a key pair and retrieve the public key that you can use to encrypt your data to send to Visier. \n \n In the request body, optionally set the UTC expiration date for the key pair in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years."
+      operationId: PGPKey_GeneratePGPKeyPair
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyPairGenerateRequestDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeyDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/api/pgpkey/{keyID}:
+    get:
+      tags:
+        - PGPKey
+      summary: Retrieve a PGP public key using the key ID
+      description: If you know your PGP key ID, use it to retrieve the PGP public key. To get a list of all key IDs, see `Retrieve all PGP public keys`.
+      operationId: PGPKey_GetPGPPublicKey
+      parameters:
+        - name: keyID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmptyParameter'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeyDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/api/pgpkey{keyID}:
+    delete:
+      tags:
+        - PGPKey
+      summary: Delete a PGP key pair
+      description: Delete a PGP key pair using a key ID.
+      operationId: PGPKey_DeletePGPKeyPair
+      parameters:
+        - name: keyID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmptyParameter'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyPairDeleteResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/data/directloads/{draftId}/configs:
     get:
       tags:
@@ -562,77 +677,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PushDataCancelResponse'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-  /v1/op/data-transfer-sessions/{transferSessionId}/upload:
-    put:
-      tags:
-        - DataIntake
-      summary: Transfer data to sources via file upload
-      description: |-
-        Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the
-         data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make
-         multiple requests within the same transfer session.
-
-         File size limit: 3 GB
-
-         Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.
-
-         If you define a specific source in the request, all files within the request will target the declared source. If
-         a source is not defined, the filenames are matched against the source regex to correctly assign each file to a
-         source. To find out the source regex, please contact Visier Customer Success.
-
-         **Note:** If you include files that should target multiple sources in one ZIP file, do not define a source in the request.
-
-         Analytic tenants: For optimal transfer speed, provide one ZIP file per source.
-         Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.
-         In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:
-
-         File1.zip
-         - Folder1: WFF_tenantCode1
-            - Filename1.csv
-            - Filename2.csv
-         - Folder2: WFF_tenantCode2
-            - Filename3.csv
-            - Filename4.csv
-      operationId: DataIntake_UploadData
-      parameters:
-        - name: transferSessionId
-          in: path
-          description: The transfer session ID returned after the data transfer session starts.
-          required: true
-          schema:
-            type: string
-        - name: sourceId
-          in: query
-          description: The unique identifier associated with the source you want to transfer data to.
-          schema:
-            type: string
-        - name: sequence
-          in: query
-          description: The unique sequence number associated with a batch of records.
-          schema:
-            type: string
-        - name: tenantCode
-          in: query
-          description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json: {}
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PushDataResponse'
         default:
           description: Default error response
           content:
@@ -1438,6 +1482,84 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Status"
+  /v1/op/data-transfer-sessions/{transferSessionId}/upload:
+    put:
+      tags:
+        - DataIntake
+      summary: Transfer data to sources via file upload
+      description: |-
+        Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the
+         data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make
+         multiple requests within the same transfer session.
+
+         File size limit: 3 GB
+
+         Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.
+
+         If you define a specific source in the request, all files within the request will target the declared source. If
+         a source is not defined, the filenames are matched against the source regex to correctly assign each file to a
+         source. To find out the source regex, please contact Visier Customer Success.
+
+         **Note:** If you include files that should target multiple sources in one ZIP file, do not define a source in the request.
+
+         Analytic tenants: For optimal transfer speed, provide one ZIP file per source.
+         Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.
+         In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:
+
+         File1.zip
+         - Folder1: WFF_tenantCode1
+            - Filename1.csv
+            - Filename2.csv
+         - Folder2: WFF_tenantCode2
+            - Filename3.csv
+            - Filename4.csv
+      operationId: DataIntake_UploadData
+      parameters:
+        - name: transferSessionId
+          in: path
+          description: The transfer session ID returned after the data transfer session starts.
+          required: true
+          schema:
+            type: string
+        - name: sourceId
+          in: query
+          description: The unique identifier associated with the source you want to transfer data to.
+          schema:
+            type: string
+        - name: sequence
+          in: query
+          description: The unique sequence number associated with a batch of records.
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to upload
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushDataResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/op/data-connector-credentials/{id}:
     delete:
       tags:
@@ -2158,6 +2280,9 @@ components:
     EmptyAuthParamsDTO:
       type: object
       properties: {}
+    EmptyParameter:
+      type: object
+      properties: {}
     ExcludeDataUploadsRequest:
       type: object
       properties:
@@ -2533,6 +2658,18 @@ components:
         startTime:
           type: string
           description: The time that the job started.
+    KeyPairDeleteResponseDTO:
+      type: object
+      properties:
+        keyID:
+          type: string
+          description: The key ID in 16-letter hexadecimal format, including leading zeros.
+    KeyPairGenerateRequestDTO:
+      type: object
+      properties:
+        expirationDate:
+          type: string
+          description: The UTC expiration date of the key in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years.
     LeverAuthParamsDTO:
       type: object
       properties:
@@ -2708,6 +2845,32 @@ components:
           items:
             $ref: '#/components/schemas/ProcessingJob'
           description: A list of objects representing the processing jobs to retrieve.
+    PublicKeyDTO:
+      type: object
+      properties:
+        keyID:
+          type: string
+          description: The key ID of the generated key pair in 16-letter hexadecimal format, including leading zeros.
+        dateGenerated:
+          type: string
+          description: The UTC date that the key pair was generated in milliseconds since the Unix epoch.
+        expiryDate:
+          type: string
+          description: The UTC expiration date of the key in milliseconds since the Unix epoch.
+        recipient:
+          type: string
+          description: The tenant code and creation date in milliseconds of the PGP key; for example, WFF_j1r_13490234234.
+        publicKey:
+          type: string
+          description: The public key of the generated key pair.
+    PublicKeysDTO:
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicKeyDTO'
+          description: A list of the tenant's public keys.
     PushDataCancelResponse:
       type: object
       properties:
@@ -3176,6 +3339,9 @@ components:
           items:
             type: string
           description: The attributes that cannot be accessed.
+        errorMessage:
+          type: string
+          description: The error message detailing the access issue.
     SuccessFactorsAuthParamsDTO:
       type: object
       properties:
