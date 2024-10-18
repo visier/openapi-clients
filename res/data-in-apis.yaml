@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1533
+  version: 22222222.99201.1534
 paths:
   /v1/api/pgpkey:
     get:
@@ -17,12 +17,6 @@ paths:
       summary: Retrieve all PGP public keys
       description: Retrieve a list of all PGP public keys in your tenant.
       operationId: PGPKey_GetAllPGPPublicKeys
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmptyParameter'
-        required: true
       responses:
         "200":
           description: OK
@@ -71,15 +65,10 @@ paths:
       parameters:
         - name: keyID
           in: path
+          description: The key ID of the generated key pair in 16-letter hexadecimal format, including leading zeros.
           required: true
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmptyParameter'
-        required: true
       responses:
         "200":
           description: OK
@@ -93,7 +82,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/api/pgpkey{keyID}:
     delete:
       tags:
         - PGPKey
@@ -103,15 +91,10 @@ paths:
       parameters:
         - name: keyID
           in: path
+          description: The key ID of the generated key pair in 16-letter hexadecimal format, including leading zeros.
           required: true
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmptyParameter'
-        required: true
       responses:
         "200":
           description: OK
@@ -2280,9 +2263,6 @@ components:
     EmptyAuthParamsDTO:
       type: object
       properties: {}
-    EmptyParameter:
-      type: object
-      properties: {}
     ExcludeDataUploadsRequest:
       type: object
       properties:
@@ -3693,6 +3673,10 @@ tags:
   - name: DataAndJobHandling
     description: |-
       Initiate and manage jobs, included or excluded data, and data connector credentials. Administrating tenant users can manage jobs and data for their analytic tenants.
+  - name: PGPKey
+    description: |-
+      The Pretty Good Privacy (PGP) Key API generates key pairs and provides a public key to encrypt data that you send to Visier. PGP encryption adds an additional layer of security against data disclosure.
+      <br><br>After you generate a key pair and retrieve the public encryption key, you can encrypt your data files before sending them to Visier. When Visier receives files encrypted with the public key, we retrieve the associated private key to decrypt and process the file.
 security:
   - ApiKeyAuth: []
     BearerAuth: []
