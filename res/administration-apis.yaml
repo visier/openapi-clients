@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1523
+  version: 22222222.99201.1531
 paths:
   /v1/admin/capabilities:
     get:
@@ -2332,11 +2332,7 @@ paths:
       tags:
         - ProductionVersions
       summary: Perform an operation on production versions
-      description: |-
-        Perform operations on production versions, such as exporting a production project's committed changes. If exporting, please specify `Accept: application/zip, application/json` in the header.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Perform operations on production versions, such as exporting a production project's committed changes. \n \n If exporting, please specify `Accept: application/zip, application/json` in the header. The API returns exported changes in ZIP format and error messages in JSON format. If your request returns an error and it doesn't accept `application/json`, you will receive an HTTP 406 status code instead of the appropriate error response body.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ProductionVersions_PostProductionVersions
       requestBody:
         content:
