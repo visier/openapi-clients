@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1534
+  version: 22222222.99201.1537
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -793,6 +793,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1/data/model/dimensions:
+    patch:
+      tags:
+        - DataModel
+      summary: Update dimensions
+      description: |-
+        Change the display name, short display name, and description of one or more dimensions. This API supports updating leveled dimensions.
+         In each API request, update up to 10 dimensions per tenant with a maximum of 500 tenants.
+      operationId: DataModel_UpdateDimensions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DimensionsChangeDefinitionsDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectsBulkChangeResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/data/model/metrics:
     get:
       tags:
@@ -1144,7 +1172,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PropertiesBulkChangeResponseDTO'
+                $ref: '#/components/schemas/ObjectsBulkChangeResponseDTO'
         default:
           description: Default error response
           content:
@@ -1402,6 +1430,35 @@ components:
         A collection of currency exchange rates.
          Note: Currencies may have different exchange rates in different time intervals, depending what rate data is stored in Visier.
          For example, USD:CAD can be 1.2 between January 1 - March 1, while USD:EUR can be 0.92 between January 1 - February 1, but 0.88 between February  1 - March 1.
+    DimensionChangeDefinitionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the dimension; for example, `Career_Level` or `Employee.Vaccination_Status`
+        displayName:
+          type: string
+          description: The user-friendly name for the dimension.
+        shortDisplayName:
+          type: string
+          description: A shortened version of the display name. If the dimension is visible in the solution experience, this name is displayed in visualization titles.
+        description:
+          type: string
+          description: A short description of the dimension. Descriptions provide in-context help for your users while working in Visier.
+    DimensionChangeDefinitionsByTenantDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the tenant in which to update dimensions.
+        projectId:
+          type: string
+          description: To make changes in a project, specify a project ID.
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionChangeDefinitionDTO'
+          description: The list of dimensions to update.
     DimensionDTO:
       type: object
       properties:
@@ -1514,6 +1571,14 @@ components:
             The qualifying path to the dimension in Visier, such as the analytic object or event the dimension is
              associated with. If the path has multiple objects, each object is separated by a period.
       description: The name and qualifying path of a dimension to query.
+    DimensionsChangeDefinitionsDTO:
+      type: object
+      properties:
+        dimensionsByTenant:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionChangeDefinitionsByTenantDTO'
+          description: The dimension updates to make in each tenant.
     DimensionsDTO:
       type: object
       properties:
@@ -1706,6 +1771,42 @@ components:
           description: The default value if the end user does not select a member at run time.
           format: double
       description: The definition of a numeric parameter. These elements are returned as part of the query definition for metric parameter values.
+    ObjectChangeFailureDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the object that was not successfully changed.
+        displayName:
+          type: string
+          description: The display name of the object.
+        message:
+          type: string
+          description: An error message describing the cause of the failure.
+        rci:
+          type: string
+          description: The root cause identifier to provide to Visier Technical Support if you require further troubleshooting.
+        tenantCode:
+          type: string
+          description: The tenant that the object was not successfully changed in.
+        projectId:
+          type: string
+          description: The project that the object was not successfully changed in.
+    ObjectChangeSuccessDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the object that was successfully changed.
+        displayName:
+          type: string
+          description: The display name of the object.
+        tenantCode:
+          type: string
+          description: The tenant that the object was changed in.
+        projectId:
+          type: string
+          description: The project that the object was changed in.
     ObjectReferenceDTO:
       type: object
       properties:
@@ -1737,6 +1838,19 @@ components:
       description: |-
         A link between one analytic object and another. An ObjectReference allows you to discover the relationships between
          analytic objects. In some queries, you may need to provide a qualifyingPath, which is built from ObjectReference information.
+    ObjectsBulkChangeResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectChangeSuccessDTO'
+          description: The objects that were successfully changed.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectChangeFailureDTO'
+          description: The objects that were not successfully changed.
     ParameterDefinitionDTO:
       type: object
       properties:
@@ -2026,19 +2140,6 @@ components:
           items:
             $ref: '#/components/schemas/PredictionDTO'
       description: A collection of predictions.
-    PropertiesBulkChangeResponseDTO:
-      type: object
-      properties:
-        successes:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyChangeSuccessDTO'
-          description: The properties that were successfully changed.
-        failures:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyChangeFailureDTO'
-          description: The properties that were not successfully changed.
     PropertiesChangeDefinitionsDTO:
       type: object
       properties:
@@ -2060,16 +2161,16 @@ components:
       properties:
         id:
           type: string
-          description: The symbol name of the object; for example, Employee.Birth_Date
+          description: The symbol name of the property; for example, Employee.Birth_Date
         displayName:
           type: string
-          description: The user-friendly name for the object.
+          description: The user-friendly name for the property.
         shortDisplayName:
           type: string
-          description: A shortened version of the display name. If the object is visible in the solution experience, this name is displayed in visualization titles.
+          description: A shortened version of the display name. If the property is visible in the solution experience, this name is displayed in visualization titles.
         description:
           type: string
-          description: A short description of the object. Descriptions provide in-context help for your users while working in Visier.
+          description: A short description of the property. Descriptions provide in-context help for your users while working in Visier.
     PropertyChangeDefinitionsByTenantDTO:
       type: object
       properties:
@@ -2084,42 +2185,6 @@ components:
           items:
             $ref: '#/components/schemas/PropertyChangeDefinitionDTO'
           description: The list of properties to update.
-    PropertyChangeFailureDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The symbol name of the object that was not successfully changed.
-        displayName:
-          type: string
-          description: The display name of the property.
-        message:
-          type: string
-          description: An error message describing the cause of the failure.
-        rci:
-          type: string
-          description: The root cause identifier to provide to Visier Technical Support if you require further troubleshooting.
-        tenantCode:
-          type: string
-          description: The tenant that the property was not successfully changed in.
-        projectId:
-          type: string
-          description: The project that the property was not successfully changed in.
-    PropertyChangeSuccessDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The symbol name of the property that was successfully changed.
-        displayName:
-          type: string
-          description: The display name of the property.
-        tenantCode:
-          type: string
-          description: The tenant that the property was changed in.
-        projectId:
-          type: string
-          description: The project that the property was changed in.
     PropertyDTO:
       type: object
       properties:
