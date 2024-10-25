@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1537
+  version: 22222222.99201.1542
 paths:
   /v1/api/pgpkey:
     get:
@@ -2328,6 +2328,21 @@ components:
           items:
             type: string
           description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true".
+        spillDebugInfoPartitionsDTO:
+          enum:
+            - spillNone
+            - spillStagesAndRecords
+            - spillAll
+          type: string
+          description: The partitioning of debugging info to be generated, if any
+          format: enum
+        spillDebugInfoDetailLevelDTO:
+          enum:
+            - fileAndLine
+            - mappingName
+          type: string
+          description: The detail level of the debugging info to be generated
+          format: enum
     ExtractionJob:
       type: object
       properties:
