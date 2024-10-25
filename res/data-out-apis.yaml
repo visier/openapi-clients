@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1537
+  version: 22222222.99201.1542
 paths:
   /v1/data/query/aggregate:
     post:
@@ -242,7 +242,7 @@ paths:
     get:
       tags:
         - DataVersionExport
-      summary: Retrieve the details of a data version export.
+      summary: Retrieve the details of a data version export
       description: |-
         Retrieve information for a specific data version export.
          **Note:** Data version exports are available for 14 days after export job completes.
@@ -469,7 +469,7 @@ paths:
     get:
       tags:
         - DataVersionExport
-      summary: Download a file from a data version export.
+      summary: Download a file from a data version export
       description: |-
         This API allows you to download a file from a data version export.
         Data version export files are in CSV format, compressed with gzip.

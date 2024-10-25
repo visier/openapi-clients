@@ -8,13 +8,13 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1537
+  version: 22222222.99201.1542
 paths:
   /v1/auth/oauth2/userinfo:
     get:
       tags:
         - OAuth2
-      summary: Retrieve the user-specific metadata
+      summary: Retrieve user-specific metadata
       description: Retrieve user-specific metadata, such as a user's ID, username, and profile capabilities.
       operationId: OAuth2_UserInfo
       parameters:
@@ -100,7 +100,7 @@ paths:
     get:
       tags:
         - OAuth2
-      summary: Request an authorization code.
+      summary: Request an authorization code
       description: Request an authorization code for the authorization_code grant type. Not required in other OAuth 2.0 grant types.
       operationId: OAuth2_OAuth2Authorize
       parameters:
@@ -143,7 +143,7 @@ paths:
     post:
       tags:
         - OAuth2
-      summary: Request a JSON Web Token.
+      summary: Request a JSON Web Token
       description: Use an OAuth 2.0 grant type to request a JWT.
       operationId: OAuth2_OAuth2Token
       requestBody:
