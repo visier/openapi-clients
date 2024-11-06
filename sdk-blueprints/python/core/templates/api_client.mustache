@@ -183,7 +183,6 @@ class ApiClient:
         header_params = header_params or {}
         for key, value in self.default_headers.items():
             header_params.setdefault(key, value)
-
         if self.cookie:
             header_params['Cookie'] = self.cookie
         if header_params:
