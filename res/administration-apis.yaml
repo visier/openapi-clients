@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1551
+  version: 22222222.99201.1559
 paths:
   /v1/admin/capabilities:
     get:
@@ -6135,5 +6135,3 @@ tags:
   - name: SystemStatus
     description: |-
       Check the health and status of Visier's platform and services.
-      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>

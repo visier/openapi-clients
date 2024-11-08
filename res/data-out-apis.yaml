@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1551
+  version: 22222222.99201.1559
 paths:
   /v1/data/query/aggregate:
     post:
@@ -189,6 +189,31 @@ paths:
             text/csv:
               schema:
                 type: string
+  /v1/vee/status:
+    get:
+      tags:
+        - Vee
+      summary: Check the overall current status of Vee
+      description: |-
+        Check the current overall status of Vee.
+
+         The overall status is one of:
+         * `UP` :  Vee is operational.
+         * `DOWN`: Vee is not operational.
+      operationId: Vee_VeeStatus
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VeeStatusDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1alpha/data/data-version-exports/data-versions:
     get:
       tags:
@@ -2156,6 +2181,12 @@ components:
         statusMsg:
           type: string
           description: Additional information about whether or not Vee successfully answered the question.
+    VeeStatusDTO:
+      type: object
+      properties:
+        overall:
+          type: string
+          description: The overall status of Vee.
     VeeVisualDTO:
       type: object
       properties:
