@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1559
+  version: 22222222.99201.1573
 paths:
   /v1/api/pgpkey:
     get:
@@ -17,6 +17,12 @@ paths:
       summary: Retrieve all PGP public keys
       description: Retrieve a list of all PGP public keys in your tenant.
       operationId: PGPKey_GetAllPGPPublicKeys
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -36,6 +42,12 @@ paths:
       summary: Download a public encryption key
       description: "Generate a key pair and retrieve the public key that you can use to encrypt your data to send to Visier. \n \n In the request body, optionally set the UTC expiration date for the key pair in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years."
       operationId: PGPKey_GeneratePGPKeyPair
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -69,6 +81,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -93,6 +110,11 @@ paths:
           in: path
           description: The key ID of the generated key pair in 16-letter hexadecimal format, including leading zeros.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -122,6 +144,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -149,6 +176,11 @@ paths:
           in: path
           description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       requestBody:
@@ -193,6 +225,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -221,6 +258,11 @@ paths:
           in: path
           description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -254,6 +296,11 @@ paths:
           in: path
           description: The unique identifier of the transaction.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -291,6 +338,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -324,6 +376,11 @@ paths:
           in: path
           description: The unique identifier of the transaction.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -366,6 +423,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -389,6 +451,11 @@ paths:
         - name: tenantCode
           in: query
           description: The tenant code of a specific analytic tenant that you want to create the credential for.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       requestBody:
@@ -437,6 +504,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -457,6 +529,12 @@ paths:
       summary: Assign connector credentials to data connectors
       description: Assign a connector credential to a data connector.
       operationId: DataAndJobHandling_AssignConnectorCredential
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -483,6 +561,12 @@ paths:
       summary: Retrieve data connector settings
       description: Get a list of settings for all data connectors. This request retrieves data connectors from the production environment. The response returns a list of settings, if available, for each data connector in the tenant.
       operationId: DataAndJobHandling_ListConnectorSettings
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -502,6 +586,12 @@ paths:
       summary: Update data connector settings
       description: Define the settings for one or more data connectors. To find the available settings, see `Retrieve data connector settings`.
       operationId: DataAndJobHandling_SetConnectorSetting
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -533,6 +623,12 @@ paths:
          **Note:** To set up sources in your tenant, contact Visier Customer Success.
          This API allows you to query the list of available sources, and identify the source schema and required fields.
       operationId: DataIntake_GetSources
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -557,6 +653,12 @@ paths:
 
          Recommended: For optimal performance, please include all batches of records in a single transfer session.
       operationId: DataIntake_StartTransfer
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -611,6 +713,11 @@ paths:
           description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -651,6 +758,11 @@ paths:
           in: path
           description: The transfer session ID to cancel.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -706,6 +818,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -733,6 +850,12 @@ paths:
 
          **Note:** Disabling an older data version may not have an effect on the state of the solution.
       operationId: DataAndJobHandling_DisableDV
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -759,6 +882,12 @@ paths:
       summary: Retrieve a list of all data categories
       description: Retrieve a list of all available data categories.
       operationId: DataAndJobHandling_RetrieveDataCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -779,6 +908,12 @@ paths:
       summary: Trigger data connector extraction jobs
       description: "Run data connector extraction jobs for the administrating tenant or a list of analytic tenants.\n \n This API creates a dispatching job that generates one extraction job per tenant. The dispatching job is the \"parent\" of the extraction jobs and the dispatching job ID is returned in the response. Use that ID to monitor the extraction job statuses by calling `GET /v1/op/jobs/dispatching-jobs/{jobId}/extraction-jobs`.\n\n The extraction job generates receiving jobs to validate the data and processing jobs to populate data in the analytic tenants. Use the dispatching job ID to monitor the receiving and processing job statuses by calling `GET /v1/op/jobs/dispatching-jobs/{jobId}/receiving-jobs` or `GET /v1/op/jobs/dispatching-jobs/{jobId}/processing-jobs`."
       operationId: DataAndJobHandling_StartExtraction
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -823,6 +958,12 @@ paths:
           - For performance and efficiency, Visier requires that the uncompressed batch file size is below 5 GB and that no
             more than 5000 tenants are included in a batch.
       operationId: DataAndJobHandling_StartLoad
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -883,6 +1024,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -903,6 +1049,12 @@ paths:
       summary: Exclude data uploads
       description: Exclude either a specified list of data uploads or all data uploads for each analytic tenant.
       operationId: DataAndJobHandling_ExcludeDataUplaods
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -929,6 +1081,12 @@ paths:
       summary: Include data uploads
       description: Include either the specified list of data uploads or all data uploads for each analytic tenant.
       operationId: DataAndJobHandling_IncludeDataUploads
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -971,6 +1129,11 @@ paths:
           description: The specific status to restrict the list of jobs to.
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -994,6 +1157,12 @@ paths:
 
          **Note:** Receiving jobs with the Running status cannot be cancelled.
       operationId: DataAndJobHandling_CancelJobs
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1025,6 +1194,11 @@ paths:
           in: path
           description: The ID of the job you want to retrieve.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -1080,6 +1254,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1133,6 +1312,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1186,6 +1370,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1236,6 +1425,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1260,6 +1454,12 @@ paths:
 
          You can set an optional parameter to generate a data version through a processing job immediately after the receiving job completes.
       operationId: DataIntake_PushDataComplete
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1317,6 +1517,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1335,7 +1540,15 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Download source files
-      description: "Download a tenant's source files. You can download all source files or specify a list of sources to download. List of sources can be specified by object names or unique identifiers.\n \n If `minTimestamp` and `maxTimestamp` are defined, downloads the source files uploaded within the specified time range for all sources or the specified sources.\n \n Administrating tenants can specify the tenant from which to download sources using the `TargetTenantID` header.\n \n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: |-
+        Download a tenant's source files. You can download all source files or specify a list of sources to download. List of sources can be specified by object names or unique identifiers.
+
+         If `minTimestamp` and `maxTimestamp` are defined, downloads the source files uploaded within the specified time range for all sources or the specified sources.
+
+         Administrating tenants can specify the tenant from which to download sources using the `TargetTenantID` header.
+
+         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: DataAndJobHandling_DownloadSourceFiles
       parameters:
         - name: TargetTenantID
@@ -1365,6 +1578,12 @@ paths:
     get:
       tags:
         - DataUpload
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: File contents
@@ -1386,6 +1605,12 @@ paths:
       summary: Run a consolidated analytics job
       description: Run a job for a consolidated analytics tenant. This request retrieves data for all source tenants in a consolidated analytics tenant. After the job completes, you can run a processing job to generate a data version for the consolidated analytics tenant. To run a processing job, see `POST /v1alpha/op/jobs/processing-jobs`.
       operationId: DataAndJobHandling_AdhocConsolidatedAnalyticsJob
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1414,6 +1639,12 @@ paths:
         Run an extraction job to retrieve data through a Visier data connector and generate a new data version. Administrating tenants can run extraction jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.
          If running extraction jobs for an administrating tenant or their analytic tenants, this request starts a dispatching job that generates one extraction job per tenant. The response returns the job ID of the extraction job or dispatching job.
       operationId: DataAndJobHandling_AdhocExtractionJob
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1442,6 +1673,12 @@ paths:
         Run a processing job to generate a new data version. Administrating tenants can run processing jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.
          If running processing jobs for an administrating tenant or their analytic tenants, this request starts a dispatching job that generates one processing job per tenant. The response returns the job ID of the processing job or dispatching job.
       operationId: DataAndJobHandling_AdhocProcessingJobs
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1489,6 +1726,11 @@ paths:
 
             If uploading data to a multi-value property (MVP), specify the property in `{object}--{property}` format; for example, `Employee--Employee_Budgeted_Compensation`.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       requestBody:
@@ -1568,6 +1810,11 @@ paths:
           description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1578,7 +1825,7 @@ paths:
                 file:
                   type: string
                   format: binary
-                  description: The file to upload
+                  description: The file to upload in CSV or ZIP format.
       responses:
         "200":
           description: OK
@@ -1613,6 +1860,11 @@ paths:
           description: The tenant code of the analytic tenant in which the credential you're deleting.
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1642,6 +1894,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1667,6 +1924,11 @@ paths:
           in: path
           description: The filename of the data file to upload, including the file extension (such as .zip or .csv).
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       requestBody:
