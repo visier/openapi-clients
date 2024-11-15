@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1559
+  version: 22222222.99201.1573
 paths:
   /v1/data/query/aggregate:
     post:
@@ -20,6 +20,12 @@ paths:
          retrieves values over a period of time, such as multiple months. You can also group and filter your data in an
          aggregation query to retrieve detailed information.
       operationId: DataQuery_Aggregate
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -28,11 +34,17 @@ paths:
         required: true
       responses:
         "200":
-          description: OK
+          description: Aggregate query response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CellSetDTO'
+            application/jsonlines:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
         default:
           description: Default error response
           content:
@@ -49,6 +61,12 @@ paths:
          about values for selected data points, and is not an aggregated value. In Visier's interface, a list query is
          comparable to View Details for a specific data point in a visualization.
       operationId: DataQuery_List
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -62,7 +80,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListResponse'
-            application/octet-stream:
+            application/jsonlines:
               schema:
                 type: string
             text/csv:
@@ -106,6 +124,12 @@ paths:
             }
             ```
       operationId: Query_Snapshot
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -119,7 +143,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListResponse'
-            application/octet-stream:
+            application/jsonlines:
               schema:
                 type: string
             text/csv:
@@ -162,6 +186,12 @@ paths:
           Visier_Time BETWEEN date("2022-01-01") AND date("2023-01-01");
          ```
       operationId: DataQuery_SqlLike
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -183,7 +213,7 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/TableResponseDTO'
                   - $ref: '#/components/schemas/CellSetDTO'
-            application/octet-stream:
+            application/jsonlines:
               schema:
                 type: string
             text/csv:
@@ -201,6 +231,12 @@ paths:
          * `UP` :  Vee is operational.
          * `DOWN`: Vee is not operational.
       operationId: Vee_VeeStatus
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -225,6 +261,12 @@ paths:
          **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: DataVersionExport_GetAvailableDataVersions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -250,6 +292,12 @@ paths:
          **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: DataVersionExport_GetAvailableExports
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -282,6 +330,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -308,6 +361,12 @@ paths:
          **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: DataVersionExport_ScheduleExportJob
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -343,6 +402,11 @@ paths:
           in: path
           description: The unique identifier of the data version export job.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -388,6 +452,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -415,6 +484,12 @@ paths:
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Vee_VeeFeedback
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -447,6 +522,12 @@ paths:
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Vee_VeeQuestionRequest
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -477,6 +558,12 @@ paths:
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Vee_VeeSampleQuestions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -512,6 +599,11 @@ paths:
           required: true
           schema:
             type: integer
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: File contents

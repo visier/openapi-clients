@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1559
+  version: 22222222.99201.1573
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -17,6 +17,12 @@ paths:
       summary: Retrieve all calculation concepts
       description: Retrieve the calculation concepts available in production.
       operationId: ObjectConfiguration_GetCalculationConcepts
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -42,6 +48,11 @@ paths:
           in: path
           description: The ID of the concept to retrieve the configuration for.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -76,6 +87,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -102,6 +118,12 @@ paths:
       summary: Retrieve all selection concepts
       description: Retrieve the selection concepts available in production.
       operationId: ObjectConfiguration_GetSelectionConcepts
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -127,6 +149,11 @@ paths:
           in: path
           description: The ID of the concept to retrieve the configuration for.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -159,6 +186,11 @@ paths:
           in: path
           description: The UUID of the concept to configure.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       requestBody:
@@ -200,6 +232,11 @@ paths:
           description: The object type to filter the returned analytic objects by.
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -227,6 +264,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -252,6 +294,11 @@ paths:
           in: path
           description: The ID of the analytic object to retrieve metrics for.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -288,6 +335,11 @@ paths:
             type: array
             items:
               type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -319,6 +371,11 @@ paths:
           in: path
           description: The ID of a dimension of the member map.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       requestBody:
@@ -427,6 +484,11 @@ paths:
              Default is `natural`.
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -470,6 +532,11 @@ paths:
           description: The ID of the member to retrieve.
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -501,6 +568,11 @@ paths:
           in: path
           description: The ID of the dimension to retrieve.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -537,6 +609,11 @@ paths:
             type: array
             items:
               type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -572,6 +649,11 @@ paths:
             type: array
             items:
               type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -606,6 +688,11 @@ paths:
             type: array
             items:
               type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -639,6 +726,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -659,6 +751,12 @@ paths:
       summary: Retrieve all currencies
       description: Retrieve all the available currencies in your Visier solution.
       operationId: DataModel_Currencies
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -684,6 +782,11 @@ paths:
           in: path
           description: The ISO 4217 3-letter code for the currency.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -728,6 +831,11 @@ paths:
         - name: decimals
           in: query
           description: The number of decimals to round exchange rates to. Default is to round to 2 decimal places.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -780,6 +888,11 @@ paths:
           description: The number of decimals to round exchange rates to. Default is to round to 2 decimal places.
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -802,6 +915,18 @@ paths:
         Change the display name, short display name, and description of one or more dimensions. This API supports updating leveled dimensions.
          In each API request, update up to 10 dimensions per tenant with a maximum of 500 tenants.
       operationId: DataModel_UpdateDimensions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
@@ -841,6 +966,11 @@ paths:
           description: The category to filter the returned metrics by.
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -866,6 +996,11 @@ paths:
           in: path
           description: The ID of the metric to retrieve.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -902,6 +1037,11 @@ paths:
             type: array
             items:
               type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -936,6 +1076,11 @@ paths:
             type: array
             items:
               type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -964,6 +1109,11 @@ paths:
             type: array
             items:
               type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -991,6 +1141,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1016,6 +1171,11 @@ paths:
           in: path
           description: The ID of the planning model to retrieve.
           required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -1052,6 +1212,11 @@ paths:
             type: array
             items:
               type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1085,6 +1250,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1113,6 +1283,11 @@ paths:
             type: array
             items:
               type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1140,6 +1315,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -1160,6 +1340,18 @@ paths:
       summary: Update properties
       description: Change the display name, short display name, and description of one or more properties. In each API request, update up to 10 properties per tenant with a maximum of 500 tenants.
       operationId: DataModel_UpdateProperties
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
