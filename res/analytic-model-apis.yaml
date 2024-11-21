@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1573
+  version: 22222222.99201.1598
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1195,7 +1195,7 @@ paths:
     get:
       tags:
         - DataModel
-      summary: Retrieve a list of plans
+      summary: Retrieve a list of plans by planning model ID
       description: Retrieve all the plans you have access to for a planning model.
       operationId: DataModel_PlanningPlans
       parameters:
@@ -1234,7 +1234,7 @@ paths:
     get:
       tags:
         - DataModel
-      summary: Retrieve a plan by ID
+      summary: Retrieve a plan by planning model ID and plan ID
       description: Retrieve a specific plan that you have access to in a planning model.
       operationId: DataModel_PlanningPlan
       parameters:
@@ -1365,6 +1365,145 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ObjectsBulkChangeResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/planning/model/plans:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of plans
+      description: "Retrieve all the plans you have access to. The response returns plan information you can use to call the Planning Data Load API.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataModel_PlanDataLoadlList
+      parameters:
+        - name: displayName
+          in: query
+          description: Returns plans that match the specified display name. Ignores text case and includes partial matches. For example, `displayName=WFP Plan` returns plans named "WFP Plan 2024", "WFP plan v1", and "WFP plan - Product".
+          schema:
+            type: string
+        - name: model
+          in: query
+          description: Returns plans that belong to the specified planning model ID.
+          schema:
+            type: string
+        - name: planStatus
+          in: query
+          description: |-
+            Returns plans with the specified plan status. Valid values:
+             - **ASSIGNED**: The subplan has been assigned to a subplanner.
+             - **IN_PROGRESS**: The subplanner has opened the subplan.
+             - **OVERDUE**: The subplan was not completed on time.
+             - **SUBMITTED**: The subplan has been submitted for review.
+             - **SENT_BACK**: The subplan was rejected and returned to the subplanner for editing.
+             - **CONSOLIDATED**: The subplan has been accepted and combined into the primary plan.
+          schema:
+            type: string
+        - name: createdStart
+          in: query
+          description: Returns plans created on or after this date. The format is YYYY-MM-DD.
+          schema:
+            type: string
+        - name: createdEnd
+          in: query
+          description: Return plans created on or before this date. The format is YYYY-MM-DD.
+          schema:
+            type: string
+        - name: editedStart
+          in: query
+          description: Returns plans edited on or after this date. The format is YYYY-MM-DD.
+          schema:
+            type: string
+        - name: editedEnd
+          in: query
+          description: Returns plans edited on or before this date. The format is YYYY-MM-DD.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: |-
+            Orders plan results by the specified value. Valid values:
+             - **LAST_EDITED_DATE**: Orders plans by the last edited date. This is the default.
+             - **CREATED_DATE**: Orders plans by the creation date.
+             - **PLAN_MODEL**: Orders plans alphabetically by planning model.
+          schema:
+            type: string
+        - name: sortOrder
+          in: query
+          description: Sorts plan results by the specified value. Valid values are `ASCENDING` or `DESCENDING`. Default is `DESCENDING`.
+          schema:
+            type: string
+        - name: excludeSubplans
+          in: query
+          description: If `true`, the response doesn't return subplans. Default is `true`.
+          schema:
+            type: boolean
+        - name: maxResults
+          in: query
+          description: Sets the maximum number of results to return per page. Default is 50.
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Sets the results page to return. If undefined, returns the first 50 results. To get the next 50 results, specify `page=2`.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPlanListResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/planning/model/plans/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a plan's details
+      description: "Retrieve the details of a specific plan. The response returns plan information you can use to call the Planning Data Load API.\n  \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataModel_PlanInfoWithSchema
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the plan.
+          required: true
+          schema:
+            type: string
+        - name: withSchema
+          in: query
+          description: If `true`, the response returns the plan's schema. Default is `false`.
+          schema:
+            type: boolean
+        - name: segmentIdFilter
+          in: query
+          description: If defined, returns segment levels and members for the specified segment.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanWithSchemaDTO'
         default:
           description: Default error response
           content:
@@ -1779,6 +1918,19 @@ components:
           items:
             $ref: '#/components/schemas/DimensionDTO'
       description: A collection of dimensions.
+    GetPlanListResponseDTO:
+      type: object
+      properties:
+        plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanInfoDTO'
+          description: A list of plans accessible to the user.
+        page:
+          type: integer
+          description: The current page number of results that the user is viewing.
+          format: int32
+      description: A collection of plans.
     GoogleProtobufAny:
       type: object
       properties:
@@ -2091,6 +2243,60 @@ components:
           items:
             $ref: '#/components/schemas/AnalyticObjectFilterDTO'
           description: A list of analytic object filters indicating the analytic object and dimensions used for the selection concept.
+    PlanInfoDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The UUID of the plan.
+        displayName:
+          type: string
+          description: The display name of the plan.
+        modelId:
+          type: string
+          description: The unique identifier of the planning model that the plan is using.
+        scenarios:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScenarioInfoDTO'
+          description: Information about the plan's scenarios.
+        parentPlanUuid:
+          type: string
+          description: If the plan is a subplan, the response returns its parent plan's UUID. Not returned for main plans.
+        currencyCode:
+          type: string
+          description: The 3-digit ISO 4217 currency code of the plan's data.
+      description: Information about a plan and its scenarios.
+    PlanItemDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the plan item.
+        displayName:
+          type: string
+          description: The display name of the plan item.
+        dataType:
+          enum:
+            - unknown
+            - number
+            - currency
+            - decimal
+            - rate
+          type: string
+          description: |-
+            The data type of the plan item. The data types are:
+             - rate
+               - Converts values into a percentage in the planning grid. The provided value is multiplied by 100 to get the display value.
+                 For example, a provided value of 0.5 is displayed as 50% in the grid.
+             - number
+               - Displays values as whole numbers. Decimal values are rounded to a whole number when displayed in the planning grid.
+             - currency
+               - Displays values as a currency. Values must not contain thousand separators, currency codes, or currency symbols.
+             - decimal
+               - Displays values with decimals.
+          format: enum
+      description: A plan item is a metric in your plan. The available plan items depend on the planning model.
     PlanParameterDefinitionDTO:
       type: object
       properties:
@@ -2109,6 +2315,101 @@ components:
       description: |-
         The definition of a plan parameter. These parameters resolve planning model metrics to a specific plan and scenario
          or snapshot values at query runtime.
+    PlanSchemaDTO:
+      type: object
+      properties:
+        planItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanItemDTO'
+          description: A collection of editable plan items in a plan.
+        timePeriods:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanTimePeriodDTO'
+          description: The editable time periods in a plan. These time periods are the columns in the planning grid.
+        planSegmentLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanSegmentLevelDTO'
+          description: The dimensions that the plan is segmented by.
+        planSegmentLevelMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanSegmentLevelMemberListDTO'
+          description: |-
+            A collection of members grouped by their dimension and level.
+             The combination of these member IDs points to a specific row in the plan.
+      description: Information about a plan's schema.
+    PlanSegmentLevelDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the dimension appended with its level ID.
+        displayName:
+          type: string
+          description: The display name of the dimension level.
+        order:
+          type: integer
+          description: The number that describes the segment's position in the plan's overall structure.
+          format: int32
+        segmentId:
+          type: string
+          description: The symbol name of the dimension.
+        segmentDisplayName:
+          type: string
+          description: The display name of the dimension.
+      description: A dimension and dimension level that segments the plan.
+    PlanSegmentLevelMemberDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the dimension member.
+        displayName:
+          type: string
+          description: The display name of the dimension member.
+        isCustom:
+          type: boolean
+          description: If `true`, this is a custom member created for use in the plan and all its subplans.
+        parentId:
+          type: string
+          description: The unique identifier of the dimension member's parent.
+      description: A member in the dimension.
+    PlanSegmentLevelMemberListDTO:
+      type: object
+      properties:
+        segmentLevelId:
+          type: string
+          description: The unique identifier of the dimension and dimension level.
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanSegmentLevelMemberDTO'
+          description: The dimension members.
+        segmentId:
+          type: string
+          description: The unique identifier of the dimension.
+      description: A collection of dimension members.
+    PlanTimePeriodDTO:
+      type: object
+      properties:
+        date:
+          type: string
+          description: The date of the time period. The format is YYYY-MM-DD.
+        displayName:
+          type: string
+          description: The display name of the time period; for example, March 2024.
+      description: A time period in the plan.
+    PlanWithSchemaDTO:
+      type: object
+      properties:
+        plan:
+          $ref: '#/components/schemas/PlanInfoDTO'
+        schema:
+          $ref: '#/components/schemas/PlanSchemaDTO'
+      description: Details about the plan, including its schema.
     PlanningConceptFilterContextDTO:
       type: object
       properties:
@@ -2420,6 +2721,19 @@ components:
             The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.
              If the path has multiple objects, each object is separated by a period.
       description: The name and qualifying path of a property to query.
+    ScenarioInfoDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The UUID of the scenario.
+        displayName:
+          type: string
+          description: The full display name of the scenario.
+        versionedScenarioId:
+          type: string
+          description: If the scenario belongs to a managed plan, the response returns the scenario's user-readable symbol name.
+      description: Information about a plan's scenario.
     ScenarioOrSnapshotDTO:
       type: object
       properties:
