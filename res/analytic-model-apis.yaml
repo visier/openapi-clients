@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1598
+  version: 22222222.99201.1600
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1826,6 +1826,9 @@ components:
           items:
             $ref: '#/components/schemas/TagMapElementDTO'
           description: The optional collection of tags defined for this element.
+        explanation:
+          type: string
+          description: The localized explanation of the dimension.
       description: A dimension organizes unique values of an attribute into a list or a hierarchical structure for use as a filter or group-by in your solution.
     DimensionFilterDTO:
       type: object
@@ -2708,6 +2711,9 @@ components:
           items:
             $ref: '#/components/schemas/TagMapElementDTO'
           description: The optional collection of tags defined for this element.
+        explanation:
+          type: string
+          description: The localized explanation of the property.
       description: Properties are qualities of an analytic object.
     PropertyReferenceDTO:
       type: object
@@ -2778,6 +2784,9 @@ components:
           items:
             $ref: '#/components/schemas/TagMapElementDTO'
           description: The optional collection of tags defined for this element.
+        explanation:
+          type: string
+          description: The localized explanation of the selection concept.
       description: Selection concepts select a population of subject members of a given subject or event.
     SelectionConceptListDTO:
       type: object

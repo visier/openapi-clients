@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1598
+  version: 22222222.99201.1600
 paths:
   /v1/admin/capabilities:
     get:
@@ -2616,7 +2616,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/admin/production-versions:
+  /v1beta/admin/production-versions:
     get:
       tags:
         - ProductionVersions
@@ -2624,7 +2624,7 @@ paths:
       description: |-
         Retrieve a list of all projects that were published to production, ordered from latest published to earliest published.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ProductionVersions_GetProductionVersions
       parameters:
@@ -2662,7 +2662,7 @@ paths:
       tags:
         - ProductionVersions
       summary: Perform an operation on production versions
-      description: "Perform operations on production versions, such as exporting a production project's committed changes. \n \n If exporting, please specify `Accept: application/zip, application/json` in the header. The API returns exported changes in ZIP format and error messages in JSON format. If your request returns an error and it doesn't accept `application/json`, you will receive an HTTP 406 status code instead of the appropriate error response body.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Perform operations on production versions, such as exporting a production project's committed changes. \n \n If exporting, please specify `Accept: application/zip, application/json` in the header. The API returns exported changes in ZIP format and error messages in JSON format. If your request returns an error and it doesn't accept `application/json`, you will receive an HTTP 406 status code instead of the appropriate error response body.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ProductionVersions_PostProductionVersions
       parameters:
         - name: TargetTenantID
@@ -2689,7 +2689,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/admin/production-versions/{productionVersionId}:
+  /v1beta/admin/production-versions/{productionVersionId}:
     post:
       tags:
         - ProductionVersions
@@ -2698,7 +2698,7 @@ paths:
         Perform operations on a specific production version. The following operations are supported:
          * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ProductionVersions_PostProductionVersion
       parameters:
@@ -2732,7 +2732,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/admin/projects:
+  /v1beta/admin/projects:
     get:
       tags:
         - Projects
@@ -2742,7 +2742,7 @@ paths:
 
          A project is accessible if it is owned by the user or shared to the user.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Projects_GetProjects
       parameters:
@@ -2790,7 +2790,7 @@ paths:
       description: |-
         Create a new draft project in the tenant.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Projects_CreateProject
       parameters:
@@ -2818,17 +2818,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/admin/projects/{projectId}:
+  /v1beta/admin/projects/{projectId}:
     get:
       tags:
         - Projects
       summary: Retrieve a draft project's information
       description: |-
-        Retrieve the details of an accessible draft project. You must know the ID of the project to retrieve its details. To retrieve draft project IDs, see `GET v1alpha/admin/projects`.
+        Retrieve the details of an accessible draft project. You must know the ID of the project to retrieve its details. To retrieve draft project IDs, see `GET v1beta/admin/projects`.
 
          A project is accessible if it is owned by the user or shared to the user.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Projects_GetProject
       parameters:
@@ -2864,7 +2864,7 @@ paths:
         Perform operations on a draft project. The following operations are supported:
          * `commitAndPublish`: Commits project changes and publishes the project to production.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Projects_RunProjectOperation
       parameters:
@@ -2904,7 +2904,7 @@ paths:
       description: |-
         Delete a draft project in the tenant. The project will first be archived if applicable.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Projects_DeleteProject
       parameters:
@@ -2932,7 +2932,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/admin/projects/{projectId}/commits:
+  /v1beta/admin/projects/{projectId}/commits:
     get:
       tags:
         - Projects
@@ -2940,7 +2940,7 @@ paths:
       description: |-
         Retrieve the full list of all committed changes in a project.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Projects_GetProjectCommits
       parameters:
@@ -2985,9 +2985,9 @@ paths:
         - Projects
       summary: Import committed changes into a project
       description: |-
-        Import a ZIP file that contains a list of committed changes into a draft project. The file must be an export from `POST /v1alpha/admin/production-versions`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
+        Import a ZIP file that contains a list of committed changes into a draft project. The file must be an export from `POST /v1beta/admin/production-versions`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Projects_PutProjectCommits
       parameters:
@@ -3021,7 +3021,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/admin/sources:
+  /v1beta/admin/sources:
     post:
       tags:
         - Sources
@@ -3030,7 +3030,7 @@ paths:
         Perform operations on all sources. The following operations are supported:
          * `exportSources`: Export a ZIP file that contains a list of all sources in the application.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Sources_RunSourcesOperation
       parameters:
@@ -3065,8 +3065,8 @@ paths:
       description: |-
         Import a list of sources in ZIP format. The file must be an export from `POST /v1alpha/admin/sources`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
 
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+        <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
+        If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: Sources_PutSources
       parameters:
         - name: replaceAllExistingSources
@@ -6596,14 +6596,13 @@ tags:
   - name: Projects
     description: |-
       Create projects, publish projects, and retrieve project details.
-      <br>In Visier, a project is a workspace that allows you to define and edit the solution apart from the current production version of the solution. Projects allow you to collaborate with other administrators to ensure that all changes are reviewed and validated before they are published to production.
-      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: ProductionVersions
     description: |-
       Use this API to retrieve information about data versions that were published to production.
       In Visier, production is the version of Visier available to your end users.
-      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: UsersV2
     description: |-

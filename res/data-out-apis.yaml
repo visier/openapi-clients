@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1598
+  version: 22222222.99201.1600
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1486,6 +1486,34 @@ components:
          of leaf-level members for the given dimension. Leaf members are those members that have
          no descendents. A member may be a leaf member regardless of the level it is positioned at.
          This member selection option, excludes data members.
+    QueryDimensionLevelPropertyDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/DimensionReferenceDTO'
+          description: A dimension and its qualifying path to query.
+        memberValueMode:
+          enum:
+            - NAME
+            - PATH
+          type: string
+          description: |-
+            Controls how to display member values.
+
+             Valid values are `NAME`, `PATH`.
+
+             * `NAME`: Returns the member's display name. This is the default.
+             * `PATH`: Returns the member's name path.
+          format: enum
+        levelId:
+          type: string
+          description: The level ID.
+        levelDepth:
+          type: integer
+          description: The level depth.
+          format: int32
+      description: A QueryDimensionLevelPropertyDTO defines an existing dimension level and its dimension to query.
     QueryDimensionLevelSelectionDTO:
       type: object
       properties:
@@ -1732,6 +1760,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/QueryEffectiveDatePropertyDTO'
           description: A property that yields the effective date for the record
+        dimensionLevelSelection:
+          allOf:
+            - $ref: '#/components/schemas/QueryDimensionLevelPropertyDTO'
+          description: A dimension-based property that returns the member values of the dimension level.
       description: |-
         A QueryProperty defines a property of a data point returned from a query.
          This is not the same as a `property` in Visier's data mode.
