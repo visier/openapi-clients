@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1600
+  version: 22222222.99201.1603
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -137,8 +137,6 @@ paths:
                 $ref: "#/components/schemas/Status"
         "3XX":
           description: Redirect to authorization page.
-      security:
-        - ApiKeyAuth: []
   /v1/auth/oauth2/token:
     post:
       tags:
@@ -165,10 +163,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TokenResponse"
-      security:
-        - ApiKeyAuth: []
-        - ApiKeyAuth: []
-          BasicAuth: []
 components:
   schemas:
     CapabilityGroupDTO:
@@ -458,14 +452,6 @@ components:
           type: string
       description: |-
         Token request body definition.
-  securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
-    ApiKeyAuth:
-      type: apiKey
-      name: apikey
-      in: header
 tags:
   - name: BasicAuthentication
     description: |-
