@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1603
+  version: 22222222.99201.1607
 paths:
   /v1/data/query/aggregate:
     post:
@@ -428,7 +428,7 @@ paths:
         - SourceFilesDownload
       summary: Download source files
       description: |-
-        Download a tenant's source files. You can download all source files or specify a list of sources to download. List of sources can be specified by object names or unique identifiers.
+        Download a tenant's source files. You can download all included source files or specify a list of sources to download. Use object names or unique identifiers to specify the list of sources. Excluded source files will not be downloaded.
 
          If `minTimestamp` and `maxTimestamp` are defined, downloads the source files uploaded within the specified time range for all sources or the specified sources.
 
