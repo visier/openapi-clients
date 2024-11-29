@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1607
+  version: 22222222.99201.1614
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2289,15 +2289,10 @@ components:
           type: string
           description: |-
             The data type of the plan item. The data types are:
-             - rate
-               - Converts values into a percentage in the planning grid. The provided value is multiplied by 100 to get the display value.
-                 For example, a provided value of 0.5 is displayed as 50% in the grid.
-             - number
-               - Displays values as whole numbers. Decimal values are rounded to a whole number when displayed in the planning grid.
-             - currency
-               - Displays values as a currency. Values must not contain thousand separators, currency codes, or currency symbols.
-             - decimal
-               - Displays values with decimals.
+             - **rate**: Converts values into a percentage in the planning grid. The provided value is multiplied by 100 to get the display value. For example, a provided value of 0.5 is displayed as 50% in the grid.
+             - **number**: Displays values as whole numbers. Decimal values are rounded to a whole number when displayed in the planning grid.
+             - **currency**: Displays values as a currency. Values must not contain thousand separators, currency codes, or currency symbols.
+             - **decimal**: Displays values with decimals.
           format: enum
       description: A plan item is a metric in your plan. The available plan items depend on the planning model.
     PlanParameterDefinitionDTO:

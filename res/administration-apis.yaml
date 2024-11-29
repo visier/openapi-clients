@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1607
+  version: 22222222.99201.1614
 paths:
   /v1/admin/capabilities:
     get:
@@ -843,12 +843,6 @@ paths:
 
          **Note:** Administrating tenants only.
       operationId: Profiles_GetAnalyticProfiles
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -877,11 +871,6 @@ paths:
           in: path
           description: The ID of the profile to retrieve details for.
           required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -916,11 +905,6 @@ paths:
           in: path
           description: The ID of the profile to assign.
           required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       requestBody:
@@ -1185,11 +1169,6 @@ paths:
           description: If `true`, the response returns information about the data version and modules.
           schema:
             type: boolean
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -1217,12 +1196,6 @@ paths:
 
          Contact Visier Support to determine the list of modules allocated to you.
       operationId: TenantsV1_AddTenant
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -1260,11 +1233,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -1296,11 +1264,6 @@ paths:
           in: path
           description: The ID of the tenant to update.
           required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       requestBody:
@@ -1345,11 +1308,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -1380,11 +1338,6 @@ paths:
             The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the analytic tenant code.
           required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -1418,11 +1371,6 @@ paths:
             The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the analytic tenant code.
           required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -1973,11 +1921,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -2138,11 +2081,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -2171,12 +2109,6 @@ paths:
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: ConsolidatedAnalytics_CreateTenant
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -2222,11 +2154,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -2258,11 +2185,6 @@ paths:
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
           required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       responses:
@@ -2298,11 +2220,6 @@ paths:
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
           required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       requestBody:
@@ -2343,11 +2260,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -2384,11 +2296,6 @@ paths:
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
           required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
       requestBody:
@@ -2442,11 +2349,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       responses:
         "200":
           description: OK
@@ -2490,11 +2392,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -2541,11 +2438,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -2592,11 +2484,6 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
       requestBody:
         content:
           application/json:

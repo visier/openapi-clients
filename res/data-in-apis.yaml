@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1607
+  version: 22222222.99201.1614
 paths:
   /v1/api/pgpkey:
     get:
@@ -1891,9 +1891,10 @@ paths:
       description: |-
         Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.
         The data file must contain the following columns:
-        - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.
-        - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `segmentId`.
-        - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value.
+          - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.
+          - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.
+          - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value.
+
         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: PlanDataLoad_PlanDataUpload
       parameters:
@@ -1903,7 +1904,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: sceanrioId
+        - name: scenarioId
           in: path
           description: The unique identifier of the plan scenario to load data into.
           required: true
@@ -1964,7 +1965,7 @@ paths:
       tags:
         - PlanningDataLoad
       summary: Add or remove plan rows
-      description: "Send a file to Visier to modify a plan's rows. The file must be in CSV format and contain the following columns:\n- Add/Remove: In the column, use the value \"Add\" to add the specified row to the plan or \"Remove\" to remove the specified row from the plan.\n- A column for each dimension path or `planSegmentLevels` ID. \n  - If adding rows, use one column per part of the path. For example, to add a new organization under Product, use 3 columns: Organization_Hierarchy.Level_1, Organization_Hierarchy.Level_2, Organization_Hierarchy.Level_3 with 3 segment member values: [Organization_Hierarchy].[Bluesphere], [Organization_Hierarchy].[Product], New Organization. \n    - If the segment member does not exist, write its display name.\n    - If the segment member exists, use its `planSegmentLevelMembers` ID. For example, if your plan is segmented by Organization Hierarchy and Location and you want to add a location under your new organization, you would use the columns  Organization_Hierarchy.Level_1, Organization_Hierarchy.Level_2, Organization_Hierarchy.Level_3, Location.Location_1 with the following values: [Organization_Hierarchy].[Bluesphere], [Organization_Hierarchy].[Product], New Organization, [Location].[North America].[United States].\n  - If removing rows, use one column per plan segment level `segmentId`, where the values are the plan segment levels `id`. To get the IDs, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Send a file to Visier to modify a plan's rows. The file must be in CSV format and contain the following columns:\n- `Add/Remove`: In the column, use the value \"Add\" to add the specified row to the plan or \"Remove\" to remove the specified row from the plan.\n- A column for each dimension path or `planSegmentLevels` ID. \n  - If adding rows, use one column per part of the path. For example, to add a new organization under Product, use 3 columns: Organization_Hierarchy.Level_1, Organization_Hierarchy.Level_2, Organization_Hierarchy.Level_3 with 3 segment member values: [Organization_Hierarchy].[Bluesphere], [Organization_Hierarchy].[Product], New Organization. \n    - If the segment member does not exist, write its display name.\n    - If the segment member exists, use its `planSegmentLevelMembers` ID. For example, if your plan is segmented by Organization Hierarchy and Location and you want to add a location under your new organization, you would use the columns  Organization_Hierarchy.Level_1, Organization_Hierarchy.Level_2, Organization_Hierarchy.Level_3, Location.Location_1 with the following values: [Organization_Hierarchy].[Bluesphere], [Organization_Hierarchy].[Product], New Organization, [Location].[North America].[United States].\n  - If removing rows, use one column per plan segment level `segmentId`, where the values are the plan segment levels `id`. To get the IDs, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: PlanDataLoad_PlanRowDataLoad
       parameters:
         - name: planId
@@ -4027,7 +4028,7 @@ components:
       properties:
         planItem:
           type: string
-          description: The id of the plan item.
+          description: The ID of the plan item.
         changes:
           type: array
           description: The collection of changes made for the plan item.
