@@ -1,0 +1,41 @@
+name: Generate API Reference Documentation
+
+on:
+  push:
+    paths:
+      - 'res/**'
+  workflow_dispatch:
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: pip install pyyaml
+
+    - name: Run Python script to combine YAMLs
+      run: |
+        mkdir -p output
+        python ./scripts/combine-yamls.py
+
+    - name: Install Redocly CLI
+      run: npm install -g @redocly/cli
+
+    - name: Generate API documentation with Redocly
+      run: |
+        redocly build-docs scripts/master_api_combined.yaml --template templates/redoc-template.html --output output/redoc-static.html
+
+    - name: Upload Generated HTML as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: redoc-static
+        path: output/redoc-static.html
