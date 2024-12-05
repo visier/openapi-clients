@@ -4,13 +4,13 @@ import os
 
 # Paths to the API spec files to combine
 file_paths = {
-    "authentication": "../res/authentication-apis.yaml",
-    "data_in": "../res/data-in-apis.yaml",
-    "data_out": "../res/data-out-apis.yaml",
-    "administration": "../res/administration-apis.yaml",
-    "analytic_model": "../res/analytic-model-apis.yaml",
-    "skills_intelligence": "../res/skills-intelligence-engine.yaml",
-    "compensation_benchmarks": "../res/compensation-benchmarks.yaml"
+    "authentication": "../../res/authentication-apis.yaml",
+    "data_in": "../../res/data-in-apis.yaml",
+    "data_out": "../../res/data-out-apis.yaml",
+    "administration": "../../res/administration-apis.yaml",
+    "analytic_model": "../../res/analytic-model-apis.yaml",
+    "skills_intelligence": "../../res/skills-intelligence-engine.yaml",
+    "compensation_benchmarks": "../../res/compensation-benchmarks.yaml"
 }
 
 # List of tags to exclude from the final OpenAPI spec
