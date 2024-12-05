@@ -25,9 +25,10 @@ jobs:
       run: pip install pyyaml
 
     - name: Run Python script to combine YAMLs
+      working-directory: redocly  # Run script in the redocly folder
       run: |
         mkdir -p output
-        python ./redocly/scripts/combine-yamls.py
+        python ./scripts/combine-yamls.py
 
     - name: Get current date
       id: date
@@ -37,11 +38,12 @@ jobs:
       run: npm install -g @redocly/cli
 
     - name: Generate API documentation with Redocly
+      working-directory: redocly  # Run Redocly CLI in the redocly folder
       run: |
-        redocly build-docs redocly/scripts/master_api_combined.yaml --template redocly/templates/redoc-template.html --output output/redoc-static.html
+        redocly build-docs scripts/master_api_combined.yaml --template templates/redoc-template.html --output output/redoc-static.html
 
     - name: Upload Generated HTML as Artifact
       uses: actions/upload-artifact@v3
       with:
         name: redoc-static-${{ steps.date.outputs.date }}
-        path: output/redoc-static.html
+        path: redocly/output/redoc-static.html
