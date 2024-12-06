@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1614
+  version: 22222222.99201.1622
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2246,6 +2246,20 @@ components:
           items:
             $ref: '#/components/schemas/AnalyticObjectFilterDTO'
           description: A list of analytic object filters indicating the analytic object and dimensions used for the selection concept.
+    PlanDataLoadErrorDTO:
+      type: object
+      properties:
+        row:
+          type: integer
+          description: The row in the file that caused the error.
+          format: int32
+        rci:
+          type: string
+          description: An error code that can be provided to Visier Support to help investigate your issue.
+        errorMessage:
+          type: string
+          description: Information regarding the error and any actions that you could take to load the data correctly.
+      description: An error encountered while loading plan data.
     PlanInfoDTO:
       type: object
       properties:
@@ -2407,6 +2421,11 @@ components:
           $ref: '#/components/schemas/PlanInfoDTO'
         schema:
           $ref: '#/components/schemas/PlanSchemaDTO'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanDataLoadErrorDTO'
+          description: The errors that occurred while loading the data.
       description: Details about the plan, including its schema.
     PlanningConceptFilterContextDTO:
       type: object
