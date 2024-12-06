@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1614
+  version: 22222222.99201.1622
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -434,6 +434,9 @@ components:
           type: string
         client_id:
           description: The ID of the pre-registered client application.
+          type: string
+        client_secret:
+          description: The secret of the pre-registered client application.
           type: string
         redirect_uri:
           description: The optional URI to redirect to after authorization.
