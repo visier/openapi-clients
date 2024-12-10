@@ -40,7 +40,7 @@ jobs:
     - name: Generate API documentation with Redocly
       working-directory: redocly  # Run Redocly CLI in the redocly folder
       run: |
-        redocly build-docs scripts/master_api_combined.yaml --template templates/redoc-template.html --output output/redoc-static.html
+        redocly build-docs ./master_api_combined.yaml --template templates/redoc-template.html --output output/redoc-static.html
 
     - name: Remove HTML comments
       # Run the Python script to remove comments and extra whitespace so Madcap Flare displays it nicely.
