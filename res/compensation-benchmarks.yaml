@@ -1,0 +1,1477 @@
+openapi: "3.0.1"
+info:
+  title: Compensation Benchmarks API
+  license:
+    name: Apache License, Version 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: "1.0"
+  
+tags:
+- name: Benchmarks
+  description: |
+    Get benchmark values.
+- name: Dimensions
+  description: |
+    Discover dimensions and members.
+    
+    A dimension organizes unique values of an attribute into a list or a hierarchical structure of members. 
+    The structure can be navigated to discover the members, and the members can be used to look up benchmark values.
+
+paths:
+  /v1/compensation-benchmarks/base-salary:
+    get:
+      summary: Get base salary benchmark value
+      tags: [Benchmarks]
+      operationId: GetSalaryBenchmark
+      description: |
+        Retrieve the base salary benchmark value.
+      parameters:
+      - name: job
+        in: query
+        required: true
+        schema:
+          type: string
+        description: |
+          The job member ID.
+      - name: industry
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The industry member ID. If the ID is not provided, the response returns the benchmark value across all industries.
+      - name: naicsCode
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The North American Industry Classification System (NAICS) code. 
+          
+          If the NAICS code is not provided, the response returns the benchmark value across all industries.
+          If both `naicsCode` and `industry` are provided, the response returns the benchmark value for the `industry` parameter. The entered `naicsCode` will not be applied.
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The location member ID. If the ID is not provided, the response returns the benchmark value across all locations.
+      - name: companySize
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The company size member ID. If the ID is not provided, the response returns the benchmark value across all company sizes.
+      - name: careerLevel
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The career level member ID. If the ID is not provided, the response returns the benchmark value across all career levels.
+      responses:
+        "200":
+          description: |
+            The requested base salary benchmark value.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BenchmarkValue"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing parameters, invalid parameters, or there is no benchmark value available.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-salary-arn}"
+      security:
+      - api_key: []
+  /v1/compensation-benchmarks/base-salaries:
+    post:
+      summary: Get salary benchmark values in bulk
+      tags: [ Benchmarks ]
+      operationId: "GetSalaryBenchmarksInBulk"
+      description: |
+        Retrieve multiple base salary benchmark values in a single request.
+      requestBody:
+        description: |
+          A batch request takes a JSON object consisting of an array of your requests. You can batch up to 1000 individual requests in one API call.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SalaryBenchmarkInputs"
+        required: true
+      responses:
+        "200":
+          description: |
+            The bulk request was completed. Review the responses individually to see which actions were successful. 
+            If you receive a 400 status code for an individual response, it indicates missing parameters, invalid members, or no benchmark values were found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalaryBenchmarksBatchProcessingOutputs"
+        "400":
+          description: |
+            The API request failed due to invalid JSON input, empty input or it exceeded the bulk size limit of 1000 individual requests.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-batch-benchmarks-arn}"
+      security:
+        - api_key: [ ]
+  /v1/compensation-benchmarks/jobs:
+    get:
+      summary: Get jobs
+      tags: [Dimensions]
+      operationId: GetJobs
+      description: |
+        Retrieve a list of all the jobs in Visier's ontology.
+      parameters:
+      - name: hierarchy
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The ID of the job hierarchy to navigate.
+
+          If not provided, Visier's default job hierarchy is used. In the default hierarchy, jobs are organized into three levels with domain and subdomain groupings.
+      - name: parent
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The ID of the parent member.
+          
+          If the ID is provided, the response returns the immediate children of the parent member.
+          
+          To get the top-level members, use the value `root`.
+
+          Member availability and the parent-child relationship depends on the selected hierarchy. Please refer to the `hierarchy` parameter.
+      - name: term
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The input search term. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. 
+          Your search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.
+
+          The minimum length is 3 characters and the maximum length is 100 characters.
+
+          ***The search term must be URL encoded.***
+      - name: naicsCode
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The North American Industry Classification System (NAICS) code.
+
+          If `naicsCode` is provided, `term` is required. The most relevant job members associated with the naicsCode are returned first.
+      - name: hasBenchmarkValue
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: |
+          Filter members based on the availability of benchmark values. 
+          If `true`, members with benchmark values are returned. 
+          If `false`, members without benchmark values are returned. 
+          If no value is specified, all members are returned.
+      - name: semanticOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: |
+          If `true`, only semantic search will be used to find matches. Ensure the parameter `lexicalOnly` is set to `false`.
+          Default is `false`. By default, both semantic and lexical search are used to find matches.
+      - name: lexicalOnly
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: |
+          If `true`, only lexical search will be used to find matches. Ensure the parameter `semanticOnly` is set to `false`. 
+          Default is `false`. By default, both semantic and lexical search are used to find matches.
+      responses:
+        "200":
+          description: |
+            List of job members.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DimensionMember"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-salary-arn}"
+      security:
+      - api_key: []
+  /v1/compensation-benchmarks/jobs/standardize:
+    post:
+      summary: Standardize custom job titles in bulk
+      tags: [ Dimensions ]
+      operationId: "StandardizeJobsInBulk"
+      description: |
+        Find the top standardized job matches for any custom job title and optional NAICS code in bulk.
+      requestBody:
+        description: |
+          The custom job titles that you want to retrieve standardized jobs for, the optional NAICS code to retrieve industry specific jobs, and the optional number of top matches to retrieve.
+          
+          By default, both semantic and lexical search are used to find matches. If you want to use a specific search method, set one of the parameters `semanticOnly` or `lexicalOnly` to `true`. Default for `semanticOnly` and `lexicalOnly` are `false`.
+          
+          The minimum custom job title length is 3 characters and the maximum length is 100 characters. You can submit up to 30 custom job titles per request.
+          
+          The default number of top matches returned is 5.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobStandardizationInput"
+        required: true
+      responses:
+        "200":
+          description: |
+            The top standardized job matches for each custom job title.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobStandardizationOutput"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-batch-dimension-members-arn}"
+      security:
+        - api_key: [ ]
+  /v1/compensation-benchmarks/jobs/hierarchies:
+    get:
+      summary: Get job hierarchies
+      tags: [Dimensions]
+      operationId: GetJobHierarchies
+      description: |
+        Retrieve a list of all hierarchies used to organize jobs.
+      parameters:
+      - name: naicsCode
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The North American Industry Classification System (NAICS) code.
+
+          If provided, the response returns the hierarchies associated with the code.
+      responses:
+        "200":
+          description: |
+            List of hierarchies.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Hierarchy"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-occupation-hierarchies-arn}"
+      security:
+      - api_key: []
+  /v1/compensation-benchmarks/jobs/search:
+    post:
+      summary: Search jobs by IDs
+      tags: [ Dimensions ]
+      operationId: "SearchJobs"
+      description: |
+        Retrieve a matching job for each specified job ID.
+      requestBody:
+        description: |
+          The job IDs that you want to retrieve a job match.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobSearchInput"
+        required: true
+      responses:
+        "200":
+          description: |
+            The request was completed. Review the responses individually to see which actions were successful. 
+            If you receive a 400 status code for an individual input, it indicates an invalid job ID or no job was found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobSearchOutput"
+        "400":
+          description: |
+            The API request failed due to invalid JSON input, empty input or it exceeded the size limit of 1000 IDs.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-search-jobs-arn}"
+      security:
+        - api_key: [ ]
+  /v1/compensation-benchmarks/jobs/feedback:
+    post:
+      summary: Send feedback to help improve the quality of the job match results
+      tags: [ Dimensions ]
+      operationId: "SubmitJobsFeedback"
+      description: |
+        This API allows you to submit feedback on the quality of the job match results returned by the Get jobs endpoint. 
+        
+        You must include the search term (job title you entered) in the request body. You can include the optional `naicsCode` if it was used as part of the search in the Get jobs endpoint.
+        
+        You can also submit additional comments by providing values for `additionalComments`, along with `term` and `naicsCode`.
+        
+        **Note:**
+        
+        For `term`, the minimum is 3 characters and the maximum is 100 characters.
+        
+        For `additionalComments`, the maximum is 150 characters.
+
+      requestBody:
+        description: |
+          The feedback you want to submit for.
+          
+          Ensure to include the mandatory fields: search term (`term`).
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobFeedbackInput"
+        required: true
+      responses:
+        "204":
+          description: |
+            Your feedback has been submitted successfully.
+        "400":
+          description: |
+            Your feedback could not be submitted. Ensure the required fields `term` is not included in the request body.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-submit-match-feedback-arn}"
+        type: "aws_proxy"
+      security:
+      - api_key: [ ]
+  /v1/compensation-benchmarks/industries:
+    get:
+      summary: Get industries
+      tags: [Dimensions]
+      operationId: GetIndustries
+      description: |
+        Retrieve a list of all available industries.
+      parameters:
+      - name: parent
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The ID of the parent member.
+          
+          If the ID is provided, the response returns the immediate children of the parent member.
+
+          To get the top-level members, use the value `root`.
+      - name: naicsCode
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The North American Industry Classification System (NAICS) code.
+
+          If provided, the response returns the best matching member associated with the code.
+      - name: hasBenchmarkValue
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: |
+          Filter members based on the availability of benchmark values. 
+          If `true`, members with benchmark values are returned. 
+          If `false`, members without benchmark values are returned. 
+          If no value is specified, all members are returned.
+      responses:
+        "200":
+          description: |
+            List of industry members.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DimensionMember"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-dimension-members-arn}"
+      security:
+      - api_key: []
+  /v1/compensation-benchmarks/locations:
+    get:
+      summary: Get locations
+      tags: [Dimensions]
+      operationId: GetLocations
+      description: |
+        Retrieve a list of all available locations.
+      parameters:
+      - name: parent
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The ID of the parent member.
+          
+          If the ID is provided, the response returns the immediate children of the parent member.
+
+          To get the top-level member, use the value `root`.
+      - name: countryCode
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The **ISO 3166-1** country code to look up. Returns location members that match the country code.
+          
+          Currently, the only supported country code is `US`.
+      - name: postalCode
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          Postal code to look up. If `postalCode` is provided, `countryCode` is required. Returns location members that match both the country code and postal code.
+      - name: hasBenchmarkValue
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: |
+          Filter members based on the availability of benchmark values. 
+          If `true`, members with benchmark values are returned. 
+          If `false`, members without benchmark values are returned. 
+          If no value is specified, all members are returned.
+      responses:
+        "200":
+          description: |
+            List of location members.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DimensionMember"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-dimension-members-arn}"
+      security:
+      - api_key: []
+  /v1/compensation-benchmarks/locations/search:
+    post:
+      summary: Get location members in bulk
+      tags: [ Dimensions ]
+      operationId: "SearchLocationsInBulk"
+      description: |
+        Retrieve location members in bulk by country code and postal code.
+      requestBody:
+        description: |
+          A list of requests that contain a combination of country and postal codes to look up. Returns location members that match both codes.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LocationSearchInput"
+        required: true
+      responses:
+        "200":
+          description: |
+            The request was completed. Review the responses individually to see which actions were successful. 
+            If you receive a 400 status code for an individual input, it indicates an invalid look up code or no location was found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocationSearchOutput"
+        "400":
+          description: |
+            The API request failed due to invalid JSON input, empty input, missing mandatory fields, or it exceeded the bulk size limit of 1000 individual requests.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-batch-dimension-members-arn}"
+      security:
+        - api_key: [ ]
+  /v1/compensation-benchmarks/company-sizes:
+    get:
+      summary: Get company sizes
+      tags: [Dimensions]
+      operationId: GetCompanySizes
+      description: |
+        Retrieve a list of all available company sizes.
+      parameters:
+      - name: headcount
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: |
+          The number of employees.
+
+          If provided, the response returns the members with the same headcount.
+      - name: hasBenchmarkValue
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: |
+          Filter members based on the availability of benchmark values. 
+          If `true`, members with benchmark values are returned. 
+          If `false`, members without benchmark values are returned. 
+          If no value is specified, all members are returned.
+      responses:
+        "200":
+          description: |
+            List of company size members.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DimensionMember"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-dimension-members-arn}"
+      security:
+      - api_key: []
+  /v1/compensation-benchmarks/career-levels:
+    get:
+      summary: Get career levels
+      tags: [Dimensions]
+      operationId: GetCareerLevels
+      description: |
+        Retrieve a list of all available career levels.
+      parameters:
+      - name: job
+        in: query
+        required: false
+        schema:
+          type: string
+        description: |
+          The job member ID.
+
+          If provided, the response returns the members for the job.
+      - name: hasBenchmarkValue
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: |
+          Filter members based on the availability of benchmark values. 
+          If `true`, members with benchmark values are returned. 
+          If `false`, members without benchmark values are returned. 
+          If no value is specified, all members are returned.
+      responses:
+        "200":
+          description: |
+            List of career level members.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DimensionMember"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-dimension-members-arn}"
+      security:
+      - api_key: []
+  /v1/compensation-benchmarks/info:
+    get:
+      summary: Get benchmark metadata
+      tags: [Benchmarks]
+      operationId: GetInfo
+      description: |
+        Retrieve metadata that summarizes the benchmark dataset and API such as the release date.
+      responses:
+        "200":
+          description: |
+            Metadata that summarizes the benchmark dataset and API such as the release date.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BenchmarkInfo"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-info-arn}"
+      security:
+        - api_key: []
+
+components:
+  securitySchemes:
+    api_key:
+      type: "apiKey"
+      in: "header"
+      name: "x-api-key"
+      x-amazon-apigateway-api-key-source : "HEADER"
+  schemas:
+    BenchmarkValue:
+      title: BenchmarkValue
+      description: |
+        The compensation benchmark value.
+      type: object
+      properties:
+        percentile10:
+          type: integer
+          description: |
+            The 10th percentile base pay.
+        percentile25:
+          type: integer
+          description: |
+            The 25th percentile base pay.
+        percentile50:
+          type: integer
+          description: |
+            The 50th percentile base pay.
+        percentile75:
+          type: integer
+          description: |
+            The 75th percentile base pay.
+        percentile90:
+          type: integer
+          description: |
+            The 90th percentile base pay.
+        alignedRangeMin:
+          type: integer
+          description: |
+            The lower bound of salaries that are aligned with the market.
+        alignedRangeMax:
+          type: integer
+          description: |
+            The upper bound of salaries that are aligned with the market.
+        referenceDate:
+          type: string
+          description: |
+            The date that benchmark values are calculated for.
+        releaseDate:
+          type: string
+          description: |
+            The date that benchmark values are released.
+        industryId:
+          type: string
+          description: |
+            The industry member ID for the returned benchmarks.
+      required:
+      - percentile10
+      - percentile25
+      - percentile50
+      - percentile75
+      - percentile90
+      - alignedRangeMin
+      - alignedRangeMax
+      - referenceDate
+      - releaseDate
+      - industryId
+    BenchmarkInfo:
+      title: BenchmarkInfo
+      description: |
+        Metadata that summarizes the benchmark dataset and API such as the release date.
+      type: object
+      properties:
+        referenceDate:
+          type: string
+          description: |
+            The date that benchmark values are calculated for.
+        releaseDate:
+          type: string
+          description: |
+            The date that benchmark values are released.
+        apiReleaseDate:
+          type: string
+          description: |
+            The date that API changes are released.
+      required:
+      - referenceDate
+      - releaseDate
+      - apiReleaseDate
+    DimensionMember:
+      title: DimensionMember
+      description: |
+        An element of a dimension that can be organized hierarchically.
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the member.
+        name:
+          type: string
+          description: Name of the member.
+        description:
+          type: string
+          description: Description of the member.
+        hasBenchmarkValue:
+          type: boolean
+          description: |
+            True if this member has available benchmark values.
+            False if this member has no available benchmark values.
+        hasChildren:
+          type: boolean
+          description: |
+            True if this member has children.
+            False if this member has no children. For example, a leaf member.
+        status:
+          type: string
+          description: Status of the member. If status is `archived`, the dimension member does not have a benchmark value.
+          enum:
+            - active
+            - archived
+        displayId:
+          type: string
+          description: A user-friendly identifier of the member. This field will be excluded from the response if there is no displayId for the member.
+        shortDescriptionSections:
+          type: array
+          items:
+            type: object
+            title: DescriptionEntry
+            description: A short description of the member in structured format.
+            properties:
+              label:
+                type: string
+                description: |
+                  A word or phrase that describes a section of the member description. 
+                  This field will be excluded from the response if the member description does not have sections.
+              text:
+                type: string
+                description: |
+                  The body text for a section of the member description.
+                  This field will be excluded from the response if the member description does not have sections.
+        jobDomain:
+          type: string
+          description: Domain of a job member. This field will be excluded from the response if there is no domain for the member.
+        jobSubdomain:
+          type: string
+          description: Subdomain of a job member. This field will be excluded from the response if there is no subdomain for the member.
+        typicalTitles:
+          type: array
+          items:
+            type: string
+            description: Similar job titles for a job member. This field will be excluded from the response of there is no typicalTitles for the member.
+      required:
+      - id
+      - name
+      - description
+      - hasBenchmarkValue
+      - hasChildren
+      - status
+    Hierarchy:
+      title: Hierarchy
+      description: |
+        Information describing a hierarchy, which is used to organize members of a dimension.
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the hierarchy.
+        name:
+          type: string
+          description: Name of the hierarchy.
+        description:
+          type: string
+          description: Description of the hierarchy.
+      required:
+      - id
+      - name
+      - hasChildren
+    LocationSearchInput:
+      description: |
+        A list of location query parameters for bulk operation. The maximum batch size is 1000.
+      type: object
+      properties:
+        searchInputs:
+          type: array
+          items:
+            title: LocationSearchInput
+            type: object
+            properties:
+              uuid:
+                type: string
+                description: |
+                  A unique identifier of the individual requests.
+              countryCode:
+                type: string
+                description: |
+                  The **ISO 3166-1** country code to look up. Returns location members that match the country code.
+                  Currently, the only supported country code is `US`.
+              postalCode:
+                type: string
+                description: |
+                  The postal code to look up. Returns location members that match both the country code and postal code.
+            required:
+              - uuid
+              - countryCode
+              - postalCode
+        hasBenchmarkValue:
+          type: boolean
+          description: |
+            Filter members based on the availability of benchmark values. 
+            If `true`, members with benchmark values are returned. 
+            If `false`, members without benchmark values are returned. 
+            If no value is specified, all members are returned.
+      required:
+        - searchInputs
+    LocationSearchOutput:
+      type: object
+      properties:
+        successes:
+          type: array
+          description: |
+            The locations retrieved for successful inputs.
+          items:
+            title: LocationSearchSuccessfulOutput
+            type: object
+            properties:
+              uuid:
+                type: string
+                description: |
+                  A unique identifier of the individual requests.
+              results:
+                type: array
+                description: |
+                  A list of matching location members.
+                items:
+                  $ref: "#/components/schemas/DimensionMember"
+            required:
+              - uuid
+              - results
+        failures:
+          type: array
+          description: |
+            Error description for failed inputs.
+          items:
+            title: LocationSearchFailureOutput
+            type: object
+            properties:
+              uuid:
+                type: string
+                description: |
+                  A unique identifier of the individual requests.
+              httpStatus:
+                type: string
+                description: |
+                  A three-digit code that indicates the outcome of a request.
+              message:
+                type: string
+                description: |
+                  The details of the error.
+              rci:
+                type: string
+                description: |
+                  A root cause identifier that allows Visier to determine the source of the problem.
+              errorCode:
+                type: string
+                description: |
+                  A brief identifier of the type of error.
+            required:
+              - uuid
+              - httpStatus
+              - message
+              - rci
+              - errorCode
+      required:
+        - successes
+        - failures
+    JobSearchInput:
+      description: |
+        A list of job IDs to search jobs. The maximum number of job IDs is 1000.
+      type: object
+      properties:
+        jobIDs:
+          type: array
+          items:
+            type: "string"
+      required:
+      - jobIDs
+    JobSearchOutput:
+      type: object
+      properties:
+        successes:
+          type: array
+          description: |
+            The jobs retrieved for successful inputs.
+          items:
+            $ref: "#/components/schemas/DimensionMember"
+        failures:
+          type: array
+          description: |
+            Error description for failed inputs.
+          items:
+            title: JobSearchFailureOutput
+            type: object
+            properties:
+              httpStatus:
+                type: string
+                description: |
+                  A three-digit code that indicates the outcome of a request.
+              message:
+                type: string
+                description: |
+                  The details of the error.
+              rci:
+                type: string
+                description: |
+                  A root cause identifier that allows Visier to determine the source of the problem.
+              errorCode:
+                type: string
+                description: |
+                  A brief identifier of the type of error.
+            required:
+            - httpStatus
+            - message
+            - rci
+            - errorCode
+      required:
+      - successes
+      - failures
+    SalaryBenchmarkInputs:
+      description: |
+        A list of salary query parameters for bulk operation. The maximum batch size is 1000.
+      type: "array"
+      items:
+        title: SalaryBenchmarkInput
+        type: object
+        properties:
+          uuid:
+            type: "string"
+            description: |
+              A unique identifier of the individual requests.
+          job:
+            type: "string"
+            description: |
+              The job member ID.
+          industry:
+            type: string
+            description: |
+              The industry member ID. If the ID is not provided, the response returns the benchmark value across all industries.
+          naicsCode:
+            type: string
+            description: |
+              The North American Industry Classification System (NAICS) code.
+
+              If the NAICS code is not provided, the response returns the benchmark value across all industries.
+              If both `naicsCode` and `industry` are provided, the response returns the benchmark value for the `industry` parameter. The entered `naicsCode` will not be applied.
+          location:
+            type: string
+            description: |
+              The location member ID. If the ID is not provided, the response returns the benchmark value across all locations.
+          companySize:
+            type: string
+            description: |
+              The company size member ID. If the ID is not provided, the response returns the benchmark value across all company sizes.
+          careerLevel:
+            type: string
+            description: |
+              The career level member ID. If the ID is not provided, the response returns the benchmark value across all career levels.
+        required:
+          - uuid
+          - job
+    SalaryBenchmarksBatchProcessingOutputs:
+      description: |
+        All operations in the bulk request were completed.
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalaryBenchmarksBatchProcessingSuccessfulOutput'
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalaryBenchmarksBatchProcessingFailureOutput'
+    SalaryBenchmarksBatchProcessingSuccessfulOutput:
+      description: |
+        The compensation benchmark values for individual requests within a bulk request.
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: |
+            A unique identifier of the individual requests.
+        percentile10:
+          type: integer
+          description: |
+            The 10th percentile base pay.
+        percentile25:
+          type: integer
+          description: |
+            The 25th percentile base pay.
+        percentile50:
+          type: integer
+          description: |
+            The 50th percentile base pay.
+        percentile75:
+          type: integer
+          description: |
+            The 75th percentile base pay.
+        percentile90:
+          type: integer
+          description: |
+            The 90th percentile base pay.
+        alignedRangeMin:
+          type: integer
+          description: |
+            The lower bound of salaries that are aligned with the market.
+        alignedRangeMax:
+          type: integer
+          description: |
+            The upper bound of salaries that are aligned with the market.
+        referenceDate:
+          type: string
+          description: |
+            The date that benchmark values are calculated for.
+        releaseDate:
+          type: string
+          description: |
+            The date that benchmark values are released.
+        industryId:
+          type: string
+          description: |
+            The industry member ID for the returned benchmarks.
+      required:
+        - uuid
+        - percentile10
+        - percentile25
+        - percentile50
+        - percentile75
+        - percentile90
+        - alignedRangeMin
+        - alignedRangeMax
+        - referenceDate
+        - releaseDate
+        - industryId
+    SalaryBenchmarksBatchProcessingFailureOutput:
+      title: SalaryBenchmarksBatchProcessingFailureOutput
+      description: |
+        Error description for individual requests within a bulk request.
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: |
+            A unique identifier of the individual requests.
+        httpStatus:
+          type: string
+          description: |
+            A three-digit code that indicates the outcome of a request.
+        message:
+          type: string
+          description: |
+            The details of the error.
+        rci:
+          type: string
+          description: |
+            A root cause identifier that allows Visier to determine the source of the problem.
+        errorCode:
+          type: string
+          description: |
+            A brief identifier of the type of error.
+      required:
+        - uuid
+        - httpStatus
+        - message
+        - rci
+        - errorCode
+    JobFeedbackInput:
+      title: JobFeedbackInput
+      description: |
+        The data structure used to submit negative feedback for the job match results returned by the Get jobs endpoint.
+      type: object
+      properties:
+        term:
+          type: string
+          description: |
+            The search term (job title) you entered when using the Get jobs endpoint. You're providing feedback on the quality of the search results for this term. This field is required.
+            The minimum is 3 characters and the maximum is 100 characters.
+        naicsCode:
+          type: string
+          description: If provided, the naicsCode entered when using the Get jobs endpoint. You're providing feedback on the quality of the results for the search term and code.
+        additionalComments:
+          type: string
+          description: |
+            Additional written feedback about the job match results returned by the Get jobs endpoint. 
+            The maximum is 150 characters.
+      required:
+      - term
+    JobStandardizationInput:
+      description: |
+        The custom job titles to standardize.
+      type: "object"
+      properties:
+        terms:
+          type: "array"
+          description: |
+            A list of input search terms. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. 
+            Your search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.
+
+            The maximum number of search terms is 30.
+
+            For the individual search term, the minimum length is 3 characters and the maximum length is 100 characters.
+          items:
+            type: "string"
+        naicsCode:
+          type: "string"
+          description: |
+            The North American Industry Classification System (NAICS) code.
+
+            If `naicsCode` is provided, the most relevant job titles associated with the naicsCode are returned first.
+        numMatches:
+          type: "integer"
+          description: |
+            The number of top matches to retrieve.
+          default: 5
+        semanticOnly:
+          type: "boolean"
+          description: |
+            If `true`, only semantic search will be used to find matches. Ensure the parameter `lexicalOnly` is set to `false`.
+            Default is `false`. By default, both semantic and lexical search are used to find matches.
+          default: False
+        lexicalOnly:
+          type: "boolean"
+          description: |
+            If `true`, only lexical search will be used to find matches. Ensure the parameter `semanticOnly` is set to `false`.
+            Default is `false`. By default, both semantic and lexical search are used to find matches.
+          default: False
+      required:
+        - "terms"
+    JobStandardizationOutput:
+      type: "array"
+      items:
+        title: OutputEntry
+        type: object
+        properties:
+          job:
+            type: "string"
+            description: |
+              The custom job title input.
+          matches:
+            type: array
+            description: |
+              The top standardized job matches.
+            items:
+              $ref: "#/components/schemas/DimensionMember"
+        required:
+          - job
+          - matches
+    ApiError:
+      title: ApiError
+      description: |
+        Description of an API error.
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: |
+            A brief identifier of the type of error.
+        message:
+          type: string
+          description: |
+            The details of the error.
+        rci:
+          type: string
+          description: |
+            A root cause identifier that allows Visier to determine the source of the problem.
+      required:
+      - errorCode
+      - message
+      - rci
+
+x-amazon-apigateway-gateway-responses:
+  # We don't have auth between Alpine front door and this API GW,
+  # so, missing auth token means we are simply requesting for a resource that does not exist.
+  MISSING_AUTHENTICATION_TOKEN:
+    statusCode: 404 
+    responseParameters: {}
+    responseTemplates:
+      application/json: "{\"errorCode\":\"USER_INPUT_ERROR\",\"message\":\"Resource not found\",\"rci\":\"RCI9000001\"}"
+  # 4XX error would indicate that Alpine front door is passing something wrong to this API GW.
+  # While this is a user error (where user = Alpine front door), from the end user's perspective, it is a server error.
+  DEFAULT_4XX:
+    statusCode: 500
+    responseParameters: {}
+    responseTemplates:
+      application/json: "{\"errorCode\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Internal server error\",\"rci\":\"RCI9000002\"}"
+  DEFAULT_5XX:
+    statusCode: 500 
+    responseParameters: {}
+    responseTemplates:
+      application/json: "{\"errorCode\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Internal server error\",\"rci\":\"RCI9000003\"}"
