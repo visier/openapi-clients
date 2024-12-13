@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1622
+  version: 22222222.99201.1627
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -323,7 +323,7 @@ components:
           description: |-
             The type of subnet access granted to the user. Possible values are:
              * `Unknown`: Could not determine subnet access details.
-             * `All': No subnet restrictions.
+             * `All`: No subnet restrictions.
              * `Restricted`: Access is only granted to requests originating from the specified `subnets`.
              * `None`: Access is denied. Only applicable to the Data Export API.
           format: enum
