@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1622
+  version: 22222222.99201.1627
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1334,6 +1334,43 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
   /v1/data/model/properties:
+    post:
+      tags:
+        - DataModel
+      summary: Create properties
+      description: Create new properties. Administrating tenant users can specify the tenant in which to add these properties.
+      operationId: DataModel_CreateProperties
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PropertiesChangeDefinitionsDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectsBulkChangeResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
     patch:
       tags:
         - DataModel
@@ -1642,6 +1679,15 @@ components:
           items:
             $ref: '#/components/schemas/AnalyticObjectDTO'
       description: A collection of analytic objects
+    CalculatedPropertyTypeDTO:
+      type: object
+      properties:
+        dataType:
+          type: string
+          description: The data type of the property, such as Categorical, HourDuration, or Ratio.
+        formula:
+          type: string
+          description: The formula used to calculate the property's value, written in Visier Formula Language.
     CalculationConceptConfigurationDTO:
       type: object
       properties:
@@ -2681,6 +2727,23 @@ components:
         description:
           type: string
           description: A short description of the property. Descriptions provide in-context help for your users while working in Visier.
+        explanation:
+          type: string
+          description: Explanation of the property. This field is used to provide additional information about the property.
+        designerNotes:
+          type: string
+          description: Notes for the designer. This field is used to provide additional information about the property.
+        type:
+          allOf:
+            - $ref: '#/components/schemas/PropertyTypeDTO'
+          description: The type of the property.
+        tags:
+          allOf:
+            - $ref: '#/components/schemas/TagsDTO'
+          description: The tags associated with the property.
+        includeWithVee:
+          type: boolean
+          description: If 'true', the property is included with Vee.
     PropertyChangeDefinitionsByTenantDTO:
       type: object
       properties:
@@ -2741,6 +2804,17 @@ components:
             The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.
              If the path has multiple objects, each object is separated by a period.
       description: The name and qualifying path of a property to query.
+    PropertyTypeDTO:
+      type: object
+      properties:
+        simple:
+          allOf:
+            - $ref: '#/components/schemas/SimplePropertyTypeDTO'
+          description: The simple property type, which provides a single value directly from the data.
+        calculated:
+          allOf:
+            - $ref: '#/components/schemas/CalculatedPropertyTypeDTO'
+          description: The calculated property type, which derives its value using a formula.
     ScenarioInfoDTO:
       type: object
       properties:
@@ -2818,6 +2892,12 @@ components:
           items:
             $ref: '#/components/schemas/SelectionConceptDTO'
       description: A collection of selection concepts
+    SimplePropertyTypeDTO:
+      type: object
+      properties:
+        dataType:
+          type: string
+          description: The data type of the property, such as Categorical, HourDuration, or Ratio.
     TagMapElementDTO:
       type: object
       properties:
@@ -2828,6 +2908,15 @@ components:
           type: string
           description: The localized display name of the tag.
       description: Tag identifier and display name pair.
+    TagsDTO:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+          description: The tag ids.
+      description: Wrapper to distinguish between an empty list and a null/unset list.
     ValidityRangeDTO:
       type: object
       properties:

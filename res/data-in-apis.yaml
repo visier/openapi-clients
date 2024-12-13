@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1622
+  version: 22222222.99201.1627
 paths:
   /v1/api/pgpkey:
     get:
@@ -1914,9 +1914,9 @@ paths:
           in: path
           description: |-
             Sets the plan values to rollup, distribute, or neither. Valid values:
-              - **ROLLUP**: Roll up children data values to parent data values. If the data provides a parent value and its child value, this method prioritizes the loaded value for the child and and overwrites the parent.
-              - **DISTRIBUTE**: Distribute parent data values to their children. If the value of the child conflicts with the calculated distribution, this method overrides the loaded child value.
-              - **NONE**: The loaded values are neither rolled up or distributed. This is the default.
+              - **ROLLUP**: Roll up loaded data values to parent and ancestor rows. If the data provides a parent value and its child value, this method prioritizes the loaded value for the child and overwrites the parent.
+              - **DISTRIBUTE**: Distribute loaded data values to their children and descendent rows. If the data provides a parent value and its child value, this method prioritizes the parent values and overrides the loaded child value.
+              - **NONE**: The loaded values are not rolled up or distributed. This is the default.
           required: false
           schema:
             type: string
@@ -1933,7 +1933,7 @@ paths:
           description: |-
             Sets how to validate the data being loaded into Visier. Valid values:
               - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.
-              - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the plan.
+              - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.
               - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default.
           required: false
           schema:
@@ -1965,7 +1965,14 @@ paths:
       tags:
         - PlanningDataLoad
       summary: Add or remove plan rows
-      description: "Send a file to Visier to modify a plan's rows. The file must be in CSV format and contain the following columns:\n- `Add/Remove`: In the column, use the value \"Add\" to add the specified row to the plan or \"Remove\" to remove the specified row from the plan.\n- A column for each dimension path or `planSegmentLevels` ID. \n  - If adding rows, use one column per part of the path. For example, to add a new organization under Product, use 3 columns: Organization_Hierarchy.Level_1, Organization_Hierarchy.Level_2, Organization_Hierarchy.Level_3 with 3 segment member values: [Organization_Hierarchy].[Bluesphere], [Organization_Hierarchy].[Product], New Organization. \n    - If the segment member does not exist, write its display name.\n    - If the segment member exists, use its `planSegmentLevelMembers` ID. For example, if your plan is segmented by Organization Hierarchy and Location and you want to add a location under your new organization, you would use the columns  Organization_Hierarchy.Level_1, Organization_Hierarchy.Level_2, Organization_Hierarchy.Level_3, Location.Location_1 with the following values: [Organization_Hierarchy].[Bluesphere], [Organization_Hierarchy].[Product], New Organization, [Location].[North America].[United States].\n  - If removing rows, use one column per plan segment level `segmentId`, where the values are the plan segment levels `id`. To get the IDs, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: |-
+        Send a file to Visier to modify a plan's rows. The file must be in CSV format and contain the following columns:
+        - `Add/Remove`: In the column, use the value "Add" to add the specified row to the plan or "Remove" to remove the specified row from the plan.
+        - A column for each plan segment level using the IDs from `planSegmentLevels`.
+          - To add a row, use the corresponding segment member ID from `planSegmentLevelMembers`. If the member doesn't exist in the schema, provide a display name. The response returns its assigned segment member ID.
+          - To remove a row, use the corresponding segmentId as the column name and the segment member ID from `planSegmentLevelMembers` as the row value.
+
+        <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: PlanDataLoad_PlanRowDataLoad
       parameters:
         - name: planId
@@ -1979,7 +1986,7 @@ paths:
           description: |-
             Sets how to validate the data being loaded into Visier. Valid values:
               - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.
-              - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the plan.
+              - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.
               - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default.
           required: false
           schema:

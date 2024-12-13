@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1622
+  version: 22222222.99201.1627
 paths:
   /v1/admin/capabilities:
     get:
@@ -6499,8 +6499,6 @@ tags:
   - name: UserGroupsV2
     description: |-
       Manage user groups in Visier, such as creating, updating, and deleting user groups in bulk.
-      <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: UsersV1
     description: |-
       Manage users within an organization, such as assigning permissions to users and retrieving user permission assignments and application logs.
