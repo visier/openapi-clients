@@ -1,0 +1,53 @@
+theme:
+  openapi:
+    hideHostname: true
+    disableSearch: true
+    showObjectSchemaExamples: true
+    schemaDefinitionsTagName: 'Schemas'
+    pathInMiddlePanel: true
+    theme:
+      components:
+        httpBadges: 
+          color: '#000000'
+          borderRadius: '16px'
+      colors:
+        http:
+          get: '#dbf1d1'
+          put: '#dcd1f0'
+          delete: '#ffdada'
+          post: '#cceefd'
+          patch: '#fff4d5'
+        text:
+          light: '#000000'
+        primary:
+          main: '#45c2cc'
+        responses:
+          success: 
+            color: '#4CBB17'
+          error:
+            color: '#FF4444'
+      layout:
+        showDarkRightPanel: false
+      sidebar:
+        backgroundColor: '#f5fcfd'
+        activeTextColor: '#1b7a7f'
+        spacing:
+          unit: 0
+          paddingVertical: '0px'
+          paddingHorizontal: '0px'
+          offsetTop: '0px'
+          offsetNesting: '0px'
+          offsetLeft: '0px'
+        width: '20%'
+      rightPanel: 
+        backgroundColor: '#ffffff'
+        textColor: '#f1f5f9'
+      codeBlock: 
+        backgroundColor: '#334155'
+      typography:
+        fontFamily: 'inherit'
+        headings:
+          fontFamily: 'inherit'
+        code: 
+          color: '#000000'
+          wrap: true

@@ -1,0 +1,67 @@
+name: Generate API Documentation
+
+on:
+  push:
+    branches:
+      - 'main'   # This will only trigger the workflow on the main branch
+    paths:
+      - 'res/**' # This will only trigger on changes to the /res/ folder
+  workflow_dispatch:
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install pyyaml
+        pip install pytest
+
+    - name: Run tests
+      working-directory: redocly
+      run: pytest ./scripts/combine_yamls_test.py
+
+    - name: Run Python script to combine YAMLs
+      working-directory: redocly  # Run script in the redocly folder
+      run: |
+        mkdir -p output
+        python ./scripts/combine_yamls.py
+
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M-%S')"
+
+    - name: Install Redocly CLI
+      run: npm install -g @redocly/cli
+
+    - name: Generate API documentation with Redocly
+      working-directory: redocly  # Run Redocly CLI in the redocly folder
+      run: |
+        redocly build-docs ./master_api_combined.yaml --template templates/redoc-template.html --output output/redoc-static.html
+
+    - name: Remove HTML comments
+      # Run the Python script to remove comments and extra whitespace so Madcap Flare displays it nicely.
+      working-directory: redocly
+      run: python ./scripts/remove_comments.py
+
+    - name: Create tar.gz of HTML file
+      run: |
+        tar -czf redoc-static-${{ steps.date.outputs.date }}.tar.gz -C redocly/output redoc-static.html
+
+    - name: Create release
+      id: create-release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: api-ref-${{ github.ref_name }}  # Custom tag for the release
+        name: "API Documentation - ${{ github.ref_name }}"  # Custom release name
+        artifacts: redoc-static-${{ steps.date.outputs.date }}.tar.gz  # Use the tar.gz archive
+        omitBody: true
