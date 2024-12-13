@@ -11,6 +11,8 @@ on:
 jobs:
   generate-docs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Add permissions for writing content (creating releases)
 
     steps:
     - name: Checkout repository
