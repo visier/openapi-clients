@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1627
+  version: 22222222.99201.1641
 paths:
   /v1/admin/capabilities:
     get:
@@ -2503,6 +2503,100 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1alpha/admin/email-domains:
+    get:
+      tags:
+        - EmailDomains
+      summary: Retrieve a list of allowed email domains
+      description: |-
+        Retrieve the full list of allowed email domains.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: EmailDomains_ListAllowedEmailDomains
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailDomainsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    put:
+      tags:
+        - EmailDomains
+      summary: Add domains to the list of allowed domains
+      description: |-
+        Add email address domains to the allowed domains list.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: EmailDomains_AddAllowedEmailDomains
+      parameters:
+        - name: confirmNotAllowedDomain
+          in: query
+          description: If `true`, you cannot sign in using credentials, such as username and password. You can only log in with single sign-on (SSO). To avoid this, add your current email address's domain to allowed domains list.
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailDomainsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    delete:
+      tags:
+        - EmailDomains
+      summary: Remove domains from the list of allowed domains
+      description: |-
+        Delete email address domains from the allowed domains list.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: EmailDomains_DeleteAllowedEmailDomains
+      parameters:
+        - name: confirmNotAllowedDomain
+          in: query
+          description: If `true`, you cannot sign in using credentials, such as username and password. You can only log in with single sign-on (SSO). To avoid this, add your current email address's domain to allowed domains list.
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailDomainsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1beta/admin/production-versions:
     get:
       tags:
@@ -4466,6 +4560,17 @@ components:
           items:
             type: string
           description: The unique identifiers.
+    EmailDomainsDTO:
+      type: object
+      properties:
+        domains:
+          type: array
+          items:
+            type: string
+          description: The list of allowed email address domains.
+        confirmNotAllowedDomain:
+          type: boolean
+          description: If `true`, you cannot sign in using credentials, such as username and password. You can only log in with single sign-on (SSO). To avoid this, add your current email address's domain to allowed domains list.
     ErrorDTO:
       type: object
       properties:
@@ -5513,6 +5618,11 @@ components:
         vanityUrlName:
           type: string
           description: The name of the administrating tenant used in Visier URLs.
+        allowedOAuthIdpUrlDomains:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings that represent the URLs, or domains, which can be used as values for the idp_url parameter
     TenantManagementAPIGetResponseDTO:
       type: object
       properties:
@@ -5585,6 +5695,11 @@ components:
         defaultCurrency:
           type: string
           description: The default currency to show in the application for the tenant.
+        allowedOAuthIdpUrlDomains:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter.
     TenantManagementAPIListResponseDTO:
       type: object
       properties:
@@ -5658,9 +5773,9 @@ components:
           description: |-
             The unique ID of the analysis to display for this tenant when a user logs in. This is optional. Causes the API request to take longer because it must publish a project to production.
 
-             Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/8a4c1d4f-eb61-4da0-9e5b-55bef757c30e
+             Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/`8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`.
 
-             The `homeAnalysisID` is 8a4c1d4f-eb61-4da0-9e5b-55bef757c30e. Alternatively, retrieve the ID by copying the `contentId` found by following the `Embed a visualization` documentation.
+             The `homeAnalysisID` is `8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`. Alternatively, retrieve the ID by copying the `Analysis ID` or `contentId` found by following the `Embed a Visualization` documentation.
         homeAnalysisByUserGroup:
           type: array
           items:
@@ -5686,6 +5801,11 @@ components:
         defaultCurrency:
           type: string
           description: The default currency to show in the application for the tenant.
+        allowedOAuthIdpUrlDomains:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter. This is optional.
     TenantManagementAPIUpdateResponseDTO:
       type: object
       properties:
@@ -5728,10 +5848,10 @@ components:
           description: |-
             The unique ID of the analysis to display for this tenant when a user logs in. This is optional.
 
-             Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/8a4c1d4f-eb61-4da0-9e5b-55bef757c30e.
-             The `homeAnalysisID` is 8a4c1d4f-eb61-4da0-9e5b-55bef757c30e.
+             Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/`8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`.
+             The `homeAnalysisID` is `8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`.
 
-             Alternatively, retrieve the ID by copying the `contentId` found by following the `Embed a visualization` documentation.
+             Alternatively, retrieve the ID by copying the `Analysis ID` or `contentId` found by following the `Embed a Visualization` documentation.
         homeAnalysisByUserGroup:
           type: array
           items:
@@ -5749,6 +5869,11 @@ components:
         defaultCurrency:
           type: string
           description: The default currency to show in the application for the tenant.
+        allowedOAuthIdpUrlDomains:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter. This is optional.
     TenantModuleDTO:
       type: object
       properties:
@@ -5834,6 +5959,13 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the issuers for the SSO providers that can authenticate this tenant.
+        allowedOAuthIdpUrlDomains:
+          type: array
+          items:
+            type: string
+          description: |-
+            A comma-separated list of strings that represent the URLs, or domains, which can be used as values for the idp_url
+             OAuth parameter.
     TenantStatusAPIDTO:
       type: object
       properties:
@@ -6524,6 +6656,16 @@ tags:
       Manage your consolidated analytics (CA) tenants in Visier, such as retrieving the details of CA tenants, creating CA tenants, adding or deleting source tenants from CA tenants, and excluding sources from CA tenants.
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+  - name: Sources
+    description: |-
+      Export and import sources in Visier.
+      <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: SystemStatus
     description: |-
       Check the health and status of Visier's platform and services.
+  - name: EmailDomains
+    description: |-
+      Manage the list of user email address domains that are allowed in your tenant.
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
