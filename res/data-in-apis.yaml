@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1627
+  version: 22222222.99201.1641
 paths:
   /v1/api/pgpkey:
     get:
@@ -4146,6 +4146,9 @@ tags:
   - name: PlanningDataLoad
     description: |-
       Send data directly to your plan's scenario and optionally add or remove rows from your plan.
+  - name: DataUpload
+    description: |-
+      Send data files to Visier. After we receive the data, Visier starts a receiving job and a processing job to process the data.
 security:
   - ApiKeyAuth: []
     BearerAuth: []
