@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1641
+  version: 22222222.99201.1656
 paths:
   /v1/admin/capabilities:
     get:
@@ -1209,6 +1209,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TenantProvisionAPIDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/admin/tenants/batch:
+    post:
+      tags:
+        - TenantsV1
+      summary: Add analytic tenants
+      description: |-
+        Prior to processing and loading an analytic tenant's data files, you must provision, or create, that tenant.
+         A provisioned analytic tenant is automatically enabled. If the tenant's data is loaded after provisioning, that
+         data is immediately accessible by their users.
+
+         Create one or more analytic tenants and identify the applications assigned to the tenants. The maximum number of tenants to create in one request is 200.
+
+         Contact Visier Support to determine the list of modules allocated to you.
+      operationId: TenantsV1_AddTenants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchTenantProvisionAPIDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchTenantProvisionAPIDTO'
         default:
           description: Default error response
           content:
@@ -4222,6 +4255,14 @@ components:
             $ref: '#/components/schemas/AssignRevokePermissionByTenantDTO'
           description: A list of objects representing the users that were assigned permissions, organized by the tenants the users belong to.
       description: The results of the permission assignment or removal.
+    BatchTenantProvisionAPIDTO:
+      type: object
+      properties:
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/TenantProvisionAPIDTO'
+          description: An array of tenants to create. The maximum number of tenants to create in one request is 200.
     BulkDataAccessSetResponseDTO:
       type: object
       properties:
