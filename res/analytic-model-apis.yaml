@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1641
+  version: 22222222.99201.1656
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1371,6 +1371,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+    delete:
+      tags:
+        - DataModel
+      summary: Delete properties
+      description: |-
+        Delete existing properties. Administrating tenant users can specify the tenant in which to delete the properties.
+         In each API request, delete up to 10 properties per tenant with a maximum of 500 tenants.
+      operationId: DataModel_DeleteProperties
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PropertiesDeleteDefinitionsDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyBulkDeleteResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
     patch:
       tags:
         - DataModel
@@ -1413,7 +1452,11 @@ paths:
       tags:
         - DataModel
       summary: Retrieve a list of plans
-      description: "Retrieve all the plans you have access to. The response returns plan information you can use to call the Planning Data Load API.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: |-
+        Retrieve all the plans you have access to. The response returns plan information you can use to call the Planning Data Load API.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: DataModel_PlanDataLoadlList
       parameters:
         - name: displayName
@@ -1510,7 +1553,11 @@ paths:
       tags:
         - DataModel
       summary: Retrieve a plan's details
-      description: "Retrieve the details of a specific plan. The response returns plan information you can use to call the Planning Data Load API.\n  \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: |-
+        Retrieve the details of a specific plan. The response returns plan information you can use to call the Planning Data Load API.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: DataModel_PlanInfoWithSchema
       parameters:
         - name: id
@@ -1807,6 +1854,19 @@ components:
         A collection of currency exchange rates.
          Note: Currencies may have different exchange rates in different time intervals, depending what rate data is stored in Visier.
          For example, USD:CAD can be 1.2 between January 1 - March 1, while USD:EUR can be 0.92 between January 1 - February 1, but 0.88 between February  1 - March 1.
+    DependentDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the dependent object.
+        displayName:
+          type: string
+          description: The display name of the dependent object.
+        objectType:
+          type: string
+          description: The type of dependent object, such as a property or parameter.
+      description: Details about a dependent object related to the property to delete.
     DimensionChangeDefinitionDTO:
       type: object
       properties:
@@ -2712,6 +2772,35 @@ components:
           items:
             $ref: '#/components/schemas/PropertyDTO'
       description: A collection of properties.
+    PropertiesDeleteDefinitionsDTO:
+      type: object
+      properties:
+        deleteDerivedProperties:
+          type: boolean
+          description: If `true`, deletes derived properties along with the properties to delete. Default is `false`.
+        ignorePropertyReferences:
+          type: boolean
+          description: If `true`, ignores properties that reference the properties to delete. Default is `false`.
+        propertiesByTenant:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDeleteDefinitionsByTenantDTO'
+          description: The properties to delete for each tenant.
+      description: Property deletion options.
+    PropertyBulkDeleteResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDeleteSuccessDTO'
+          description: Properties that were successfully deleted.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDeleteFailureDTO'
+          description: Properties that were not successfully deleted.
+      description: Results of a bulk delete operation.
     PropertyChangeDefinitionDTO:
       type: object
       properties:
@@ -2792,6 +2881,79 @@ components:
           type: string
           description: The localized explanation of the property.
       description: Properties are qualities of an analytic object.
+    PropertyDeleteDefinitionsByTenantDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The code of the tenant to delete properties from. Default is the current tenant.
+        projectId:
+          type: string
+          description: The project in which to delete properties. If omitted and the ProjectID request header is not defined, the change is published to production immediately.
+        propertyIds:
+          type: array
+          items:
+            type: string
+          description: The IDs of the properties to delete.
+      description: The properties to delete for a specific tenant.
+    PropertyDeleteFailureDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the property.
+        displayName:
+          type: string
+          description: The display name of the property.
+        message:
+          type: string
+          description: An error message describing the cause of the failure.
+        rci:
+          type: string
+          description: The root cause identifier to provide to Visier Technical Support if you require further troubleshooting.
+        tenantCode:
+          type: string
+          description: The tenant in which the property wasn't deleted.
+        projectId:
+          type: string
+          description: The project in which the property wasn't deleted.
+        derivedDependentsToDelete:
+          type: array
+          items:
+            $ref: '#/components/schemas/DependentDTO'
+          description: The derived dependents that would have been deleted if the deletion was successful.
+        referenceDependentsToIgnore:
+          type: array
+          items:
+            $ref: '#/components/schemas/DependentDTO'
+          description: Dependents that reference this property and could be affected.
+      description: Details about a failed property deletion.
+    PropertyDeleteSuccessDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the property.
+        displayName:
+          type: string
+          description: The display name of the property.
+        tenantCode:
+          type: string
+          description: The tenant in which the property was deleted.
+        projectId:
+          type: string
+          description: The project in which the property was deleted.
+        derivedDependentsDeleted:
+          type: array
+          items:
+            $ref: '#/components/schemas/DependentDTO'
+          description: The derived dependents that were deleted along with the property.
+        referenceDependentsIgnored:
+          type: array
+          items:
+            $ref: '#/components/schemas/DependentDTO'
+          description: Dependents that reference the property and were ignored during deletion.
+      description: Details about a successful property deletion.
     PropertyReferenceDTO:
       type: object
       properties:
