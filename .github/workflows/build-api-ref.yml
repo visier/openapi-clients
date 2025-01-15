@@ -5,7 +5,7 @@ on:
     branches:
       - main
     types:
-      - closed'  # Trigger after a PR into main is closed
+      - closed  # Trigger after a PR into main is closed
     paths:
       - 'res/**' # This will only trigger on changes to the /res/ folder
   workflow_dispatch:

@@ -41,6 +41,46 @@ def process_descriptions(content):
         for item in content:
             process_descriptions(item)
 
+def add_missing_tags(collected_data):
+    # Define missing tags and their group mappings
+    # Current have a PR open in Bitbucket to add these missing tags, until it is merged in I will keep this
+    # in here until the YAMLs are properly updated. 
+    missing_tags = {
+        "DataUpload": {
+            "description": "Send data files to Visier. After we receive the data, Visier starts a receiving job and a processing job to process the data.",
+            "x-displayName": "Data Upload",
+            "group": "data_in"
+        },
+        "SourceFilesDownload": {
+            "description": "Download a tenants source files. <br/>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>",
+            "x-displayName": "Source Files Download",
+            "group": "data_out"
+        },
+        "Sources": {
+            "description": "Export and import sources in Visier. <br/>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>",
+            "x-displayName": "Sources",
+            "group": "administration"
+        }
+    }
+
+    for tag_name, tag_info in missing_tags.items():
+        if tag_name not in collected_data["tags"]:
+            # Add the missing tag
+            collected_data["tags"][tag_name] = {
+                "name": tag_name,
+                "description": tag_info["description"],
+                "x-displayName": tag_info["x-displayName"]
+            }
+
+            # Transform the group name and add the tag to its group
+            group_name_transformed = transform_tag_group_name(tag_info["group"])
+            if group_name_transformed not in collected_data["x-tagGroups"]:
+                collected_data["x-tagGroups"][group_name_transformed] = {"name": group_name_transformed, "tags": []}
+            if tag_name not in collected_data["x-tagGroups"][group_name_transformed]["tags"]:
+                collected_data["x-tagGroups"][group_name_transformed]["tags"].append(tag_name)
+
+    return collected_data
+
 def collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS):
     collected_data = {
         "paths": {},
@@ -86,6 +126,10 @@ def collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS):
 
             if original_tag_name not in collected_data["x-tagGroups"][group_name_transformed]["tags"]:
                 collected_data["x-tagGroups"][group_name_transformed]["tags"].append(original_tag_name)
+
+
+    # Add missing tags using the efficient function
+    collected_data = add_missing_tags(collected_data)
 
     return collected_data
 
