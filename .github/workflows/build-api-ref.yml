@@ -1,9 +1,11 @@
 name: Generate API Documentation
 
 on:
-  push:
+  pull_request:
     branches:
-      - 'main'   # This will only trigger the workflow on the main branch
+      - main
+    types:
+      - closed'  # Trigger after a PR into main is closed
     paths:
       - 'res/**' # This will only trigger on changes to the /res/ folder
   workflow_dispatch:
