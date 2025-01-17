@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1656
+  version: 22222222.99201.1673
 paths:
   /v1/api/pgpkey:
     get:
@@ -918,7 +918,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StartExtractionRequest'
+              $ref: '#/components/schemas/ExtractDataAndLoadDTO'
         required: true
       responses:
         "200":
@@ -2655,71 +2655,78 @@ components:
           type: array
           items:
             type: string
-          description: The unique IDs of the tenants to run an extraction job for.
+          description: A list of analytic tenants to dispatch extraction jobs for. One extraction job is dispatched per tenant. Only valid for requests from an administrating tenant.
         allTenants:
           type: boolean
-          description: If "true", runs an extraction job for all tenants and ignores the tenants field.
+          description: If `true`, one extraction job is dispatched for each accessible analytic tenant. Only valid for requests from an administrating tenant.
         overrideLastExtractionTimestamp:
           type: string
           description: An epoch timestamp in milliseconds from which to retrieve data. This overrides the last extraction date to retrieve more data.
         publishDataLoadArtifacts:
           type: boolean
-          description: If "true", publishes the project to production.
+          description: If `true`, the generated data load artifacts are published to production immediately.
         runProcessingJob:
           type: boolean
-          description: If "true", runs a processing job to generate a data version after the extraction job succeeds.
+          description: If `true`, a processing job is spawned after a dispatched extraction job runs successfully.
         dataCategoryId:
           type: string
-          description: The unique ID of the data category in which to generate objects.
+          description: The unique identifier of the data category on which to trigger the extraction job. Default is the tenant's primary data category.
         disableArtifactGeneration:
           type: boolean
-          description: If "true", doesn't generate objects after the extraction jobs succeeds.
+          description: If `true`, the job does not generate data load artifacts. If unspecified, the default is `false`.
         connectorIds:
           type: array
           items:
             type: string
-          description: The unique IDs of the connectors to run extraction jobs for.
+          description: The unique identifiers of the connectors to run extraction jobs.
         lastExtractionTimeOffsetWeeks:
           type: integer
-          description: The number of weeks from which to retrieve data. This overrides the last extraction date to retrieve more data.
+          description: The number of weeks in the past to retrieve data. This overrides the last extraction date to retrieve more data.
           format: int32
         monthsToExtract:
           type: integer
-          description: The number of months to retrieve snapshot data from.
+          description: The number of months to retrieve snapshot data.
           format: int32
         extractToTimeOverride:
           type: string
           description: An epoch timestamp in milliseconds for the end time up to which to retrieve data.
         batchSizeOverride:
           type: integer
-          description: The maximum amount of IDs the job can retrieve in each batch.
+          description: The maximum number of subjects the job can retrieve in each batch.
           format: int32
         sqlBatchSize:
           type: integer
-          description: The maximum amount of SQL table records the job can retrieve in each batch.
+          description: The maximum number of SQL table records the job can retrieve in each batch.
           format: int32
         forceUpdateExistingArtifacts:
           type: boolean
-          description: If "true" and `disableArtifactGeneration` is "false", updates extractor artifacts, which may overwrite the artifacts' manual overrides. Ignored if `disableArtifactGeneration` is "true".
+          description: If `true` and `disableArtifactGeneration` is `false`, updates extractor artifacts, which may overwrite the artifacts' manual overrides. Ignored if `disableArtifactGeneration` is `true`.
         excludedTenants:
           type: array
           items:
             type: string
-          description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true".
+          description: The unique identifiers of the tenants to exclude from the extraction job. Only valid if `allTenants` is `true`. Only valid for requests from an administrating tenant.
         spillDebugInfoPartitionsDTO:
           enum:
             - spillNone
             - spillStagesAndRecords
             - spillAll
           type: string
-          description: The partitioning of debugging info to be generated, if any
+          description: |-
+            The partitioning of debugging info to be generated, if any. Valid values are:
+             - `spillNone`: No debugging info is generated.
+             - `spillStagesAndRecords`: Debugging info is generated for stages and records.
+             - `spillAll`: Debugging info is generated for all partitions.
           format: enum
         spillDebugInfoDetailLevelDTO:
           enum:
             - fileAndLine
             - mappingName
           type: string
-          description: The detail level of the debugging info to be generated
+          description: |-
+            The detail level of the debugging info to be generated. Valid values are:
+             - `fileAndLine`: Debugging info is generated for file and line.
+             - `mappingName`: Debugging info is generated for mapping name.
           format: enum
     ExtractionJob:
       type: object
@@ -3618,71 +3625,6 @@ components:
           type: string
         database:
           type: string
-    StartExtractionModel:
-      type: object
-      properties:
-        tenants:
-          type: array
-          items:
-            type: string
-          description: A list of analytic tenants to dispatch extraction jobs for. One extraction job is dispatched per tenant. Only valid for requests from an administrating tenant.
-        allTenants:
-          type: boolean
-          description: If `true`, one extraction job is dispatched for each accessible analytic tenant. Only valid for requests from an administrating tenant.
-        overrideLastExtractionTimestamp:
-          type: string
-          description: The time from which to extract data.
-        publishDataLoadArtifacts:
-          type: boolean
-          description: If `true`, the generated data load artifacts are published to production immediately.
-        runProcessingJob:
-          type: boolean
-          description: If `true`, a processing job is spawned after a dispatched extraction job runs successfully.
-        dataCategoryId:
-          type: string
-          description: The unique identifier of the data category on which to trigger the extraction job. Default is the tenant's primary data category.
-        disableArtifactGeneration:
-          type: boolean
-          description: If `true`, the job does not generate data load artifacts. If unspecified, the default is `false`.
-        connectorIds:
-          type: array
-          items:
-            type: string
-          description: The unique identifiers of the connectors to run extraction jobs.
-        lastExtractionTimeOffsetWeeks:
-          type: integer
-          description: The number of weeks in the past to retrieve data. This overrides the last extraction date to retrieve more data.
-          format: int32
-        monthsToExtract:
-          type: integer
-          description: The number of months to retrieve snapshot data.
-          format: int32
-        extractToTimeOverride:
-          type: string
-          description: An epoch timestamp in milliseconds for the end time up to which to retrieve data.
-        batchSizeOverride:
-          type: integer
-          description: The maximum number of subjects the job can retrieve in each batch.
-          format: int32
-        sqlBatchSize:
-          type: integer
-          description: The maximum amount of SQL table records the job can retrieve in each batch.
-          format: int32
-        forceUpdateExistingArtifacts:
-          type: boolean
-          description: If `true` and `disableArtifactGeneration` is `false`, updates extractor artifacts, which may overwrite the artifacts' manual overrides. Ignored if `disableArtifactGeneration` is `true`.
-        excludedTenants:
-          type: array
-          items:
-            type: string
-          description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true". Only valid for requests from an administrating tenant.
-    StartExtractionRequest:
-      type: object
-      properties:
-        model:
-          allOf:
-            - $ref: '#/components/schemas/StartExtractionModel'
-          description: A form body key that contains a collection of key-value pairs.
     StartExtractionResponse:
       type: object
       properties:

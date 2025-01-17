@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1656
+  version: 22222222.99201.1673
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1334,6 +1334,47 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
   /v1/data/model/properties:
+    put:
+      tags:
+        - DataModel
+      summary: Replace properties
+      description: |-
+        Update existing properties by replacing their entire definition. The definition in your API call replaces the property's prior definition. You must provide the entire definition in the PUT call. If you omit values from the update request, those values are removed from the property. We recommend that you retrieve a property's details before you update the property with new values. This operation does not create new properties if they do not exist.
+         In each API request, update up to 10 properties per tenant with a maximum of 500 tenants.
+         To specify the tenant in which to update a property, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each property in the request body.
+         To specify the project in which to update properties, provide a project UUID in the `ProjectID` request header or `projectId` for each property in the request body.
+      operationId: DataModel_PutProperties
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PropertiesChangeDefinitionsDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectsBulkChangeResponseDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
     post:
       tags:
         - DataModel
