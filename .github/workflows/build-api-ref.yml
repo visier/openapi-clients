@@ -40,10 +40,6 @@ jobs:
         mkdir -p output
         python ./scripts/combine_yamls.py
 
-    - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M-%S')"
-
     - name: Install Redocly CLI
       run: npm install -g @redocly/cli
 
@@ -59,13 +55,13 @@ jobs:
 
     - name: Create tar.gz of HTML file
       run: |
-        tar -czf redoc-static-${{ steps.date.outputs.date }}.tar.gz -C redocly/output redoc-static.html
+        tar -czf redoc-static-${{ github.head_ref || github.ref_name }}.tar.gz -C redocly/output redoc-static.html
 
     - name: Create release
       id: create-release
       uses: ncipollo/release-action@v1
       with:
-        tag: api-ref-${{ github.head_ref || github.ref_name }}  # Custom tag for the release
-        name: "API Documentation - ${{ github.ref_name }}"  # Custom release name
-        artifacts: redoc-static-${{ steps.date.outputs.date }}.tar.gz  # Use the tar.gz archive
+        tag: api-ref-${{ github.head_ref || github.ref_name }}
+        name: "API Documentation - ${{ github.head_ref || github.ref_name }}"
+        artifacts: redoc-static-${{ github.head_ref || github.ref_name }}.tar.gz
         omitBody: true
