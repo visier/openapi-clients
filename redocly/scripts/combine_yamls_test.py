@@ -5,7 +5,6 @@ from combine_yamls import (
     replace_br_tags,
     escape_ampersands,
     process_descriptions,
-    add_missing_tags,
     collect_openapi_components,
     merge_openapi_components,
 )
@@ -63,15 +62,6 @@ def test_process_descriptions():
     process_descriptions(data)
     assert data["paths"]["/some/path"]["get"]["description"] == "Some description with <br/> tags"
     assert data["tags"][0]["description"] == "Some tag description with &amp; unescaped"
-
-
-def test_add_missing_tags():
-    data = {
-        "tags": {},
-        "x-tagGroups": {},
-    }
-    data = add_missing_tags(data)
-    assert data["tags"]["DataUpload"]
 
 
 def test_collect_openapi_components():
