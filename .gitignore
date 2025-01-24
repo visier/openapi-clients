@@ -2,6 +2,8 @@
 /.venv
 /.idea
 /specs_preprocessed
+.DS_Store
+__pycache__/
 
 # Generated SDKs
 /sdks/python/generated
