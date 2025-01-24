@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1673
+  version: 22222222.99201.1687
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1717,6 +1717,11 @@ components:
              * `MDX`: Emits member name paths where each element is enclosed in square brackets, `[]`. Multidimensional expression (MDX) display mode automatically encloses time members in square brackets and puts them in `COMPACT` format.
                For example, Location member `North America.United States.California` becomes `[North America].[United States].[California]` in MDX display mode.
                For example, Time instant member `2019-06-01T00:00:00.000Z - [0]` becomes `[2019-06-01T00:00:00.000Z]` in MDX display mode.
+             * `COMPACT_DISPLAY`: Emit the members' display names after compacting. This applies primarily to time members for event-based metrics. Compact display is required when
+               running multi-metric queries containing both event-based and subject-based metrics. Multi-metric queries with `DISPLAY` mode are changed
+               automatically to `COMPACT_DISPLAY`.
+               For example, Time interval member `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]` becomes `Jun 30, 2022` in `COMPACT_DISPLAY` mode.
+               The exact format of the compacted time member display name depends on the the user's locale.
           format: enum
       description: A QueryExecutionOptions provides additional instructions to perform a query.
     QueryFilterDTO:

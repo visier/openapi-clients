@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1673
+  version: 22222222.99201.1687
 paths:
   /v1/api/pgpkey:
     get:
@@ -2644,10 +2644,11 @@ components:
     ExcludeDataUploadsRequest:
       type: object
       properties:
-        model:
-          allOf:
-            - $ref: '#/components/schemas/UploadToExcludeModel'
-          description: A form body key that contains a collection of key-value pairs.
+        uploads:
+          type: array
+          items:
+            $ref: '#/components/schemas/UploadToExclude'
+          description: A list of objects representing the data uploads to exclude for a particular analytic tenant.
     ExtractDataAndLoadDTO:
       type: object
       properties:
@@ -2938,10 +2939,11 @@ components:
     IncludeDataUploadsRequest:
       type: object
       properties:
-        model:
-          allOf:
-            - $ref: '#/components/schemas/UploadToIncludeModel'
-          description: A form body key that contains a collection of key-value pairs.
+        uploads:
+          type: array
+          items:
+            $ref: '#/components/schemas/UploadToInclude'
+          description: A list of objects representing the data uploads to include for a particular analytic tenant.
     InternalS3AuthParamsDTO:
       type: object
       properties:
@@ -3830,14 +3832,6 @@ components:
           items:
             type: string
           description: A comma-separated list of strings representing the object name of each source to exclude. If `uploadTimes` is omitted, excludes files for the given sources for all `uploadTimes`.
-    UploadToExcludeModel:
-      type: object
-      properties:
-        uploads:
-          type: array
-          items:
-            $ref: '#/components/schemas/UploadToExclude'
-          description: A list of objects representing the data uploads to exclude for a particular analytic tenant.
     UploadToInclude:
       type: object
       properties:
@@ -3863,14 +3857,6 @@ components:
           items:
             type: string
           description: A comma-separated list of strings representing the object name of each source to include. If `uploadTimes` is omitted, includes files for the given sources for all `uploadTimes`.
-    UploadToIncludeModel:
-      type: object
-      properties:
-        uploads:
-          type: array
-          items:
-            $ref: '#/components/schemas/UploadToInclude'
-          description: A list of objects representing the data uploads to include for a particular analytic tenant.
     WillowAuthParamsDTO:
       type: object
       properties:
@@ -4000,6 +3986,21 @@ components:
         newValue:
           type: integer
           description: The new value loaded into the plan from the data load.
+    PlanSegmentLevelMemberDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the dimension member.
+        displayName:
+          type: string
+          description: The display name of the dimension member.
+        isCustom:
+          type: boolean
+          description: If `true`, this is a custom member created for use in the plan and all its subplans.
+        parentId:
+          type: string
+          description: The unique identifier of the dimension member's parent.
     PlanRowDataLoadResponseDTO:
       type: object
       properties:
@@ -4017,9 +4018,14 @@ components:
           description: The number of rows that could have been removed from the plan.
         errors:
           type: array
-          description: A collection of errors encountered during the data load process.
+          description: The errors that occurred while loading the data.
           items:
             $ref: '#/components/schemas/PlanDataLoadErrorDTO'
+        customMembers:
+          type: array
+          description: The custom members and their corresponding IDs in the plan.
+          items:
+            $ref: '#/components/schemas/PlanSegmentLevelMemberDTO'
     Status:
       type: object
       properties:
