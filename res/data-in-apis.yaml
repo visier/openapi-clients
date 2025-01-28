@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1687
+  version: 22222222.99201.1694
 paths:
   /v1/api/pgpkey:
     get:
@@ -2729,6 +2729,19 @@ components:
              - `fileAndLine`: Debugging info is generated for file and line.
              - `mappingName`: Debugging info is generated for mapping name.
           format: enum
+        lastExtractionTimeOffsetMonths:
+          type: integer
+          description: The number of months to offset the last extraction time. This overrides the last extraction date backward to retrieve more data.
+          format: int32
+        lastExtractionTimeOffsetMode:
+          type: string
+          description: The mode used to offset the last extraction time (weeks vs months)
+        offsetWeekOption:
+          type: string
+          description: The week options used to offset the last extraction time (first of day / last of day)
+        offsetMonthOption:
+          type: string
+          description: The month options used to offset the last extraction time (first of month / last of month)
     ExtractionJob:
       type: object
       properties:
