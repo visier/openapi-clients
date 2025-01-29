@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1694
+  version: 22222222.99201.1697
 paths:
   /v1/api/pgpkey:
     get:
@@ -3994,10 +3994,12 @@ components:
           type: string
           description: The display name of the time period.
         oldValue:
-          type: integer
+          type: number
+          format: double
           description: The value that was replaced.
         newValue:
-          type: integer
+          type: number
+          format: double
           description: The new value loaded into the plan from the data load.
     PlanSegmentLevelMemberDTO:
       type: object
