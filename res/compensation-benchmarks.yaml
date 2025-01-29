@@ -1001,10 +1001,10 @@ components:
           description: A user-friendly identifier of the member. This field will be excluded from the response if there is no displayId for the member.
         shortDescriptionSections:
           type: array
+          description: A short description of the member in structured format.
           items:
             type: object
             title: DescriptionEntry
-            description: A short description of the member in structured format.
             properties:
               label:
                 type: string
@@ -1024,9 +1024,18 @@ components:
           description: Subdomain of a job member. This field will be excluded from the response if there is no subdomain for the member.
         typicalTitles:
           type: array
+          description: Similar job titles for a job member. This field will be excluded from the response if there are no similar job titles.
           items:
             type: string
-            description: Similar job titles for a job member. This field will be excluded from the response of there is no typicalTitles for the member.
+        naicsId:
+          type: string
+          description: The North American Industry Classification System (NAICS) code that matches the provided naicsCode, using NAICS version 2022.
+        naicsName:
+          type: string
+          description: The name of the North American Industry Classification System (NAICS) category that matches the provided naicsCode, using NAICS version 2022.
+        naicsDescription:
+          type: string
+          description: The description of the North American Industry Classification System (NAICS) category that matches the provided naicsCode, using NAICS version 2022.
       required:
       - id
       - name
