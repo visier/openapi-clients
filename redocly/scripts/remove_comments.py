@@ -1,8 +1,8 @@
 import re
 
 # Define the path to the input and output HTML files
-input_file_path = './output/redoc-static.html'
-output_file_path = './output/redoc-static.html'
+input_file_path = './output/api-reference.htm'
+output_file_path = './output/api-reference.htm'
 
 # Read the HTML content from the input file
 with open(input_file_path, 'r', encoding='utf-8') as file:
