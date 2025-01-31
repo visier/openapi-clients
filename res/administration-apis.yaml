@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1697
+  version: 22222222.99201.1701
 paths:
   /v1/admin/capabilities:
     get:
@@ -3135,6 +3135,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: mask
+          in: query
+          description: A list of fields to include in the response, separated by commas. E.g., "displayName,purchasedModules"
+          schema:
+            type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -3215,6 +3220,11 @@ paths:
           in: path
           description: The ID of the tenant to retrieve.
           required: true
+          schema:
+            type: string
+        - name: mask
+          in: query
+          description: A list of fields to include in the response, separated by commas. E.g., "displayName,purchasedModules"
           schema:
             type: string
         - name: TargetTenantID
@@ -6097,7 +6107,7 @@ components:
         profiles:
           allOf:
             - $ref: '#/components/schemas/AllProfileAssignedForLocalTenantDTO'
-          description: A list of objects representing the list of available profiles.
+          description: A list of objects representing the list of available profiles. Not returned if the user has no profiles.
         permissions:
           allOf:
             - $ref: '#/components/schemas/AllPermissionsAssignedForLocalTenantDTO'

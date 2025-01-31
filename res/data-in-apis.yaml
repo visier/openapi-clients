@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1697
+  version: 22222222.99201.1701
 paths:
   /v1/api/pgpkey:
     get:
@@ -1911,7 +1911,7 @@ paths:
           schema:
             type: string
         - name: calculation
-          in: path
+          in: query
           description: |-
             Sets the plan values to rollup, distribute, or neither. Valid values:
               - **ROLLUP**: Roll up loaded data values to parent and ancestor rows. If the data provides a parent value and its child value, this method prioritizes the loaded value for the child and overwrites the parent.
@@ -1921,7 +1921,7 @@ paths:
           schema:
             type: string
         - name: currency
-          in: path
+          in: query
           description: |-
             The 3-digit ISO 4217 currency code of the data.
             If undefined, default is the plan's consolidation currency. If the currency is different from the plan's consolidation currency, the values are converted to the consolidation currency using the conversion rates loaded for the plan's baseline period.
@@ -1929,7 +1929,7 @@ paths:
           schema:
             type: string
         - name: method
-          in: path
+          in: query
           description: |-
             Sets how to validate the data being loaded into Visier. Valid values:
               - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.
@@ -1982,7 +1982,7 @@ paths:
           schema:
             type: string
         - name: method
-          in: path
+          in: query
           description: |-
             Sets how to validate the data being loaded into Visier. Valid values:
               - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.
