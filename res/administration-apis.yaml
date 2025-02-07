@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1701
+  version: 22222222.99201.1725
 paths:
   /v1/admin/capabilities:
     get:
@@ -239,6 +239,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -275,6 +280,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -324,6 +334,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -442,6 +457,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -483,6 +503,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -530,6 +555,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -620,6 +650,11 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -662,6 +697,11 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -724,6 +764,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -792,6 +837,11 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -1561,7 +1611,9 @@ paths:
         This API allows you to assign users to specific user groups.
 
          To assign users to user groups in a project for the administrating tenant, provide a project UUID in the `ProjectID` request header.
-         Administrating tenants can assign users to user groups in analytic tenants by providing a tenant code and project ID in the request body.
+         Administrating tenants can assign users to user groups in multiple analytic tenants by providing a tenant code and project ID in the request body.
+
+         We recommend that administrating tenants set the analytic tenant in which to execute the API call using the `TargetTenantID` request header.
       operationId: UsersV1_AddUsersToUserGroup
       parameters:
         - name: ProjectID
@@ -1575,6 +1627,11 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -1602,7 +1659,9 @@ paths:
         This API allows you to remove users from specific user groups.
 
          To remove users from user groups in a project for the administrating tenant, provide a project UUID in the `ProjectID` request header.
-         Administrating tenants can remove users to user groups in analytic tenants by providing a tenant code and project ID in the request body.
+         Administrating tenants can remove users to user groups in multiple analytic tenants by providing a tenant code and project ID in the request body.
+
+         We recommend that administrating tenants set the analytic tenant in which to execute the API call using the `TargetTenantID` request header.
       operationId: UsersV1_RemoveUsersFromUserGroup
       parameters:
         - name: ProjectID
@@ -1616,6 +1675,11 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -3389,6 +3453,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -3414,6 +3483,17 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -3454,6 +3534,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -3494,6 +3579,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -3530,6 +3620,17 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -3588,6 +3689,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -3628,6 +3734,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -6561,7 +6672,7 @@ components:
           type: array
           items:
             type: string
-          description: A list of strings representing unique user IDs to assign to or remove from the user group.
+          description: A list of strings representing unique user IDs to assign to or remove from the user group. The maximum number of `userIds` per user group is 100.
     UsersToUserGroupsRequestDTO:
       type: object
       properties:
