@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1725
+  version: 22222222.99201.1739
 paths:
   /v1/admin/capabilities:
     get:
@@ -2694,6 +2694,86 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1alpha/admin/encryption-keys:
+    get:
+      tags:
+        - EncryptionKeys
+      summary: Retrieve a list of all encryption keys
+      description: |-
+        Retrieve a list of all encryption keys. The response returns information about each key, including the key name, algorithm, user who generated the key, the generation date, and expiration date.
+
+         <br>**Note:** <em>These APIs are in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: EncryptionKeys_ListAllEncryptionKeysMetadata
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantEncryptionKeyDetailsDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    post:
+      tags:
+        - EncryptionKeys
+      summary: Generate an encryption key
+      description: "Create an encryption key using a specific algorithm. The algorithm must be one of `HmacSHA224`, `HmacSHA256`, `HmacSHA384`, or `HmacSHA512`.\n \n In the request body, set the algorithm, give the key a display name and, optionally, set the UTC expiration date for the key pair in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years.\n \n The maximum number of encryption keys per tenant is 5.\n\n <br>**Note:** <em>These APIs are in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: EncryptionKeys_GenerateEncryptionKeys
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateKeyRequestDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantEncryptionKeyDTO'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/admin/encryption-keys/{keyName}:
+    delete:
+      tags:
+        - EncryptionKeys
+      summary: Delete an encryption key
+      description: |-
+        Delete a specific encryption key.
+
+         <br>**Note:** <em>These APIs are in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: EncryptionKeys_DeleteEncryptionKeys
+      parameters:
+        - name: keyName
+          in: path
+          description: The encryption key's display name. The name may only contain alphanumeric or dash (-) characters and must be between 3 and 36 characters long.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyName'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1beta/admin/production-versions:
     get:
       tags:
@@ -4808,6 +4888,19 @@ components:
         message:
           type: string
           description: The details about the error.
+    GenerateKeyRequestDTO:
+      type: object
+      properties:
+        keyName:
+          type: string
+          description: The encryption key's display name. The name may only contain alphanumeric or dash (-) characters and must be between 6 and 36 characters long.
+        expiryDate:
+          type: string
+          description: The UTC expiration date of the key in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years.
+        algorithm:
+          type: string
+          description: The hash-based message authentication code and cryptographic hash function associated with the encryption key. Must be one of `HmacSHA224`, `HmacSHA256`, `HmacSHA384`, or `HmacSHA512`.
+      description: The settings to define for an encryption key.
     GetCapabilitiesAPIResponseDTO:
       type: object
       properties:
@@ -4933,6 +5026,12 @@ components:
           description: |-
             The optional object name of a binding (strong) reference to the target analytic object. If not specified, uses the first binding reference from the source
             to the target analytic object.
+    KeyName:
+      type: object
+      properties:
+        keyName:
+          type: string
+          description: The encryption key's display name. The name may only contain alphanumeric or dash (-) characters and must be between 3 and 36 characters long.
     LastLoginDTO:
       type: object
       properties:
@@ -5785,6 +5884,36 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, which can be used as values for the idp_url parameter
+    TenantEncryptionKeyDTO:
+      type: object
+      properties:
+        detail:
+          allOf:
+            - $ref: '#/components/schemas/TenantEncryptionKeyDetailsDTO'
+          description: Information about an encryption key.
+        key:
+          type: string
+          description: The encryption key value.
+      description: The details of an encryption key.
+    TenantEncryptionKeyDetailsDTO:
+      type: object
+      properties:
+        keyName:
+          type: string
+          description: The encryption key's display name. The name may only contain alphanumeric or dash (-) characters and must be between 6 and 36 characters long.
+        algorithm:
+          type: string
+          description: The hash-based message authentication code and cryptographic hash function associated with the encryption key.
+        generatedBy:
+          type: string
+          description: The user who generated the key.
+        dateGenerated:
+          type: string
+          description: The UTC date that the key was generated in milliseconds since the Unix epoch.
+        expiryDate:
+          type: string
+          description: The UTC expiration date of the key in milliseconds since the Unix epoch.
+      description: Information about who generated an encryption key, its key name, algorithm, generation date, and expiration date.
     TenantManagementAPIGetResponseDTO:
       type: object
       properties:
@@ -6829,5 +6958,10 @@ tags:
   - name: EmailDomains
     description: |-
       Manage the list of user email address domains that are allowed in your tenant.
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+  - name: EncryptionKeys
+    description: |-
+      Manage the encryption keys in your Visier tenant. Administrating tenants can specify the tenant in which to manage keys using the `TargetTenantID` header. For PGP keys, see `/v1/api/pgpkey`.
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
