@@ -9,8 +9,8 @@ FILE_PATHS = {
     "data_out": "../res/data-out-apis.yaml",
     "administration": "../res/administration-apis.yaml",
     "analytic_model": "../res/analytic-model-apis.yaml",
-    "skills_intelligence": "../res/skills-intelligence-engine.yaml",
-    "compensation_benchmarks": "../res/compensation-benchmarks.yaml"
+    "compensation_benchmarks": "../res/compensation-benchmarks.yaml",
+    "skills_intelligence": "../res/skills-intelligence-engine.yaml"
     }
 
 EXCLUDED_TAGS = {}
