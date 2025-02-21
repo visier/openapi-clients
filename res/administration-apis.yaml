@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1739
+  version: 22222222.99201.1744
 paths:
   /v1/admin/capabilities:
     get:
@@ -20,8 +20,6 @@ paths:
          You can use the returned capabilities in other API calls when creating or updating permissions to assign the capability to the permission.
 
          To specify the project in which to retrieve the permission capabilities, provide a project UUID in the `ProjectID` request header.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: Permissions_GetCapabilities
       parameters:
         - name: tenantCode
@@ -62,8 +60,6 @@ paths:
         Retrieve the details of a specific capability.
 
          To specify the project in which to retrieve the permission capability, provide a project UUID in the `ProjectID` request header.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: Permissions_GetCapability
       parameters:
         - name: capabilityId
@@ -111,8 +107,6 @@ paths:
          You can use the returned content packages in other API calls when creating or updating permissions to add the content package to the permission.
 
          To specify the project in which to retrieve the available content packages, provide a project UUID in the `ProjectID` request header.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: Permissions_GetContentPackages
       parameters:
         - name: tenantCode
@@ -160,8 +154,6 @@ paths:
         Retrieve the details of a specific content package.
 
          To specify the project in which to retrieve a content package, provide a project UUID in the `ProjectID` request header.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: Permissions_GetContentPackage
       parameters:
         - name: contentPackageId
@@ -204,7 +196,13 @@ paths:
       tags:
         - Permissions
       summary: Retrieve a list of all data access sets
-      description: "Retrieve a list of all shareable data access sets. Data access sets define the level of access that users have to properties and property values for the analytic object in a permission. Data access sets also grant access to properties of subjects that are referenced by the analytic object in the permission.\n You can assign data access sets to a permission when creating or updating permissions.\n\n To specify the project in which to retrieve the shareable data access sets, provide a project UUID in the `ProjectID` request header.\n\n **Note:** \n * If the number of valid data access sets exceeds the default limit of 100, the response status code is 206. To retrieve more than 100 data access sets, set `limit` to a higher number.\n * This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM)."
+      description: |-
+        Retrieve a list of all shareable data access sets. Data access sets define the level of access that users have to properties and property values for the analytic object in a permission. Data access sets also grant access to properties of subjects that are referenced by the analytic object in the permission.
+         You can assign data access sets to a permission when creating or updating permissions.
+
+         To specify the project in which to retrieve the shareable data access sets, provide a project UUID in the `ProjectID` request header.
+
+         **Note:** If the number of valid data access sets exceeds the default limit of 100, the response status code is 206. To retrieve more than 100 data access sets, set `limit` to a higher number.
       operationId: Permissions_GetDataAccessSets
       parameters:
         - name: analyticObjectId
@@ -265,8 +263,6 @@ paths:
         Create shareable data access sets. Shareable data access sets let you reuse common data access configurations in multiple permissions.
 
          To specify the project in which to create shareable data access sets, provide a project UUID in the `ProjectID` request header.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: Permissions_CreateDataAccessSets
       parameters:
         - name: TargetTenantID
@@ -313,8 +309,6 @@ paths:
         Retrieve the details of a specific shareable data access set. You must know the ID of the data access set to retrieve its details. To retrieve data access set IDs, see `GET v1/admin/data-access-sets`.
 
          To specify the project in which to retrieve the shareable data access set, provide a project UUID in the `ProjectID` request header.
-
-         **Note:** This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).
       operationId: Permissions_GetDataAccessSet
       parameters:
         - name: dataAccessSetId
@@ -363,8 +357,6 @@ paths:
          permissions' data security profiles.
 
          To specify the project in which to retrieve the available data security objects, provide a project UUID in the `ProjectID` request header.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: Permissions_GetDataSecurityObjects
       parameters:
         - name: id
@@ -422,8 +414,6 @@ paths:
         Retrieve the full list of user permissions in your tenant.
 
          To specify the project in which to retrieve permissions, provide a project UUID in the `ProjectID` request header.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: Permissions_GetPermissions
       parameters:
         - name: tenantCode
@@ -483,8 +473,6 @@ paths:
         Update existing permissions.
 
          To specify the project in which to update permissions, provide a project UUID in the `ProjectID` request header.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: Permissions_UpdatePermissions
       parameters:
         - name: tenantCode
@@ -535,8 +523,6 @@ paths:
         Create new permissions. Administrating tenant users can specify the tenant in which to add these permissions.
 
          To specify the project in which to create permissions, provide a project UUID in the `ProjectID` request header.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: Permissions_CreatePermissions
       parameters:
         - name: tenantCode
@@ -587,8 +573,6 @@ paths:
         Delete existing permissions.
 
          To specify the project in which to delete permissions, provide a project UUID in the `ProjectID` request header.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: Permissions_DeletePermissions
       parameters:
         - name: tenantCode
@@ -730,8 +714,6 @@ paths:
         Retrieve the details for a specified permission.
 
          To specify the project in which to retrieve the permission, provide a project UUID in the `ProjectID` request header.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       operationId: Permissions_GetPermission
       parameters:
         - name: permissionId
@@ -3843,10 +3825,7 @@ paths:
       tags:
         - UsersV2
       summary: Update users
-      description: |-
-        Update an existing user's information, such as their display name or if the user is enabled in Visier.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+      description: Update an existing user's information, such as their display name or if the user is enabled in Visier.
       operationId: UsersV2_UpdateUsers
       parameters:
         - name: tenantCode
@@ -3882,10 +3861,7 @@ paths:
       tags:
         - UsersV2
       summary: Add users
-      description: |-
-        Create new users. Administrating tenant users can specify the tenant in which to add these users.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+      description: Create new users. Administrating tenant users can specify the tenant in which to add these users.
       operationId: UsersV2_AddUsers
       parameters:
         - name: tenantCode
@@ -3921,10 +3897,7 @@ paths:
       tags:
         - UsersV2
       summary: Delete users
-      description: |-
-        Delete an existing user. Administrating tenant users can specify the tenant from which to delete a user.
-
-         <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+      description: Delete an existing user. Administrating tenant users can specify the tenant from which to delete a user.
       operationId: UsersV2_DeleteUsers
       parameters:
         - name: tenantCode
@@ -6918,7 +6891,6 @@ tags:
     description: |-
       Manage users in bulk, such as creating, updating, and deleting many users.
       <br>**Tip:** Visier recommends that administrating tenant users focus primarily on managing users at the administrating tenant level. These users likely belong directly to your organization, such as customer support, customer value managers, account executives, and customer success. These users work with clients to manage their day-to-day solution needs.
-      <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
   - name: UserGroupsV2
     description: |-
       Manage user groups in Visier, such as creating, updating, and deleting user groups in bulk.
@@ -6932,7 +6904,6 @@ tags:
   - name: Permissions
     description: |-
       Manage permissions in Visier, such as retrieving the details of a permission, content package, or data access set, creating new permissions and data access sets, and updating or deleting permissions. To assign permissions to users, see Users V1.
-      <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
   - name: TenantsV2
     description: |-
       Create analytic tenants, deprovision tenants, retrieve tenant information, and update tenant information. Tenants V2 improves upon Tenants V1 in the following ways:
