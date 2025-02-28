@@ -92,7 +92,7 @@ def test_merge_openapi_components():
         "x-tagGroups": {"Test Group": {"name": "Test Group", "tags": ["SomeTag"]}},
     }
     merged_data = merge_openapi_components(collected_data)
-    assert merged_data["openapi"] == "3.0.0"
+    assert merged_data["openapi"] == "3.0.3"
     assert merged_data["paths"] == collected_data["paths"]
     assert merged_data["components"]["schemas"] == collected_data["schemas"]
     assert merged_data["components"]["securitySchemes"] == collected_data["securitySchemes"]
