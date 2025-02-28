@@ -236,6 +236,13 @@ paths:
         description: |
           If `true`, only lexical search will be used to find matches. Ensure the parameter `semanticOnly` is set to `false`. 
           Default is `false`. By default, both semantic and lexical search are used to find matches.
+      - name: typicalTitlesSearch
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: |
+          If `true`, similar job titles for a job member are included in the lexical search for matches. Ensure the parameters 'lexicalOnly' is set to 'true' and 'semanticOnly' is set to 'false'. Default is `false`.
       responses:
         "200":
           description: |
@@ -396,6 +403,8 @@ paths:
       requestBody:
         description: |
           The job IDs that you want to retrieve a job match.
+          
+          Include the mandatory `jobIds` field.
         content:
           application/json:
             schema:
@@ -1161,12 +1170,12 @@ components:
         - successes
         - failures
     JobSearchInput:
-      description: |
-        A list of job IDs to search jobs. The maximum number of job IDs is 1000.
       type: object
       properties:
         jobIDs:
           type: array
+          description: |
+            A list of job IDs to search jobs. The maximum number of job IDs is 1000.
           items:
             type: "string"
       required:
@@ -1419,6 +1428,11 @@ components:
           description: |
             If `true`, only lexical search will be used to find matches. Ensure the parameter `semanticOnly` is set to `false`.
             Default is `false`. By default, both semantic and lexical search are used to find matches.
+          default: False
+        typicalTitlesSearch:
+          type: boolean
+          description: |
+            If `true`, similar job titles for a job member are included in the lexical search for matches. Ensure the parameters 'lexicalOnly' is set to 'true' and 'semanticOnly' is set to 'false'.
           default: False
       required:
         - "terms"
