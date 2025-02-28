@@ -9,8 +9,8 @@ FILE_PATHS = {
     "data_out": "../res/data-out-apis.yaml",
     "administration": "../res/administration-apis.yaml",
     "analytic_model": "../res/analytic-model-apis.yaml",
-    "compensation_benchmarks": "../res/compensation-benchmarks.yaml",
-    "skills_intelligence": "../res/skills-intelligence-engine.yaml"
+    "skills_intelligence": "../res/skills-intelligence-engine.yaml",
+    "compensation_benchmarks": "../res/compensation-benchmarks.yaml"
     }
 
 EXCLUDED_TAGS = {}
@@ -97,7 +97,7 @@ def merge_openapi_components(collected_data):
     }
 
     openapi_merged = {
-        "openapi": "3.0.0",
+        "openapi": "3.0.3",
         "info": {
             "title": "API Reference",
             "description": "Detailed API reference documentation for Visier APIs. Includes all endpoints, headers, path parameters, query parameters, request body schema, response schema, JSON request samples, and JSON response samples."
