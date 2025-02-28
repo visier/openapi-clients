@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1744
+  version: 22222222.99201.1760
 paths:
   /v1/admin/capabilities:
     get:
@@ -3276,7 +3276,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/MaskMessage'
-        required: true
       responses:
         "200":
           description: OK
@@ -3358,12 +3357,6 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MaskMessage'
-        required: true
       responses:
         "200":
           description: OK
@@ -3377,6 +3370,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaskMessage'
     put:
       tags:
         - TenantsV2
@@ -3397,6 +3395,7 @@ paths:
       parameters:
         - name: tenantId
           in: path
+          description: The ID of the tenant to update.
           required: true
           schema:
             type: string
@@ -5998,7 +5997,7 @@ components:
         industryCode:
           type: integer
           description: |-
-            The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 000000.
+            The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 0.
 
              For 2-digit codes, add trailing zeros at the end to reach 6 digits, such as 620000. Required if creating new tenants.
           format: uint32
@@ -6201,7 +6200,7 @@ components:
         industryCode:
           type: integer
           description: |-
-            The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 000000.
+            The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 0.
 
              For 2-digit codes, add trailing zeros at the end to reach 6 digits, such as 620000.
           format: uint32
@@ -6254,7 +6253,7 @@ components:
         industryCode:
           type: integer
           description: |-
-            The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 000000.
+            The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 0.
 
              For 2-digit codes, add trailing zeros at the end to reach 6 digits, such as 620000.
           format: int32
