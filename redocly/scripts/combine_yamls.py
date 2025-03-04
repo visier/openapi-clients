@@ -9,8 +9,8 @@ FILE_PATHS = {
     "data_out": "../res/data-out-apis.yaml",
     "administration": "../res/administration-apis.yaml",
     "analytic_model": "../res/analytic-model-apis.yaml",
+    "compensation_benchmarks": "../res/compensation-benchmarks.yaml",
     "skills_intelligence": "../res/skills-intelligence-engine.yaml",
-    "compensation_benchmarks": "../res/compensation-benchmarks.yaml"
     }
 
 EXCLUDED_TAGS = {}
@@ -65,10 +65,10 @@ def collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS):
 
         components = parsed_content.get('components', {})
         schemas = components.get('schemas', {})
-        collected_data["schemas"].update(schemas)
+        collected_data["schemas"][group_name] = schemas
 
         security_schemes = components.get('securitySchemes', {})
-        collected_data["securitySchemes"].update(security_schemes)
+        collected_data["securitySchemes"][group_name] = security_schemes
 
         tags = parsed_content.get('tags', [])
         for tag in tags:
@@ -89,12 +89,41 @@ def collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS):
 
     return collected_data
 
+
+def merge_elements(collected_data: dict, element_name: str) -> dict:
+    """
+    Merge and flag issues in the particular key in collected_data
+    :param collected_data: A dictionary of the elements from each file that contributes to the combined OAS3, separated by "group" - created in collect_openapi_components()
+    :return: Dictionary with combined element
+    """
+    elements_by_name_and_group = {}
+    for group, elements in collected_data[element_name].items():
+        for element, content in elements.items():
+            elements_by_name_and_group[element] = elements_by_name_and_group.get(element, {})
+            elements_by_name_and_group[element][group] = content
+
+    merged_elements = {}
+    problematic_elements = {}
+    for element, content in elements_by_name_and_group.items():
+
+        # Determine distinct contents
+        values = list(content.values())
+        matches = [z[0] == z[1] for z in zip(values, values[1:])]
+
+        if all(matches):
+            merged_elements[element] = values[0]
+        else:
+            msg = [f" * {group}: {c}" for group, c in content.items()]
+            problematic_elements[element] = "\n".join(msg)
+
+    if problematic_elements:
+        msg = [f"{element}:\n{contents}" for element, contents in problematic_elements.items()]
+        raise ValueError(f"{len(msg)} conflicting {element_name} entries:\n" + "\n".join(msg))
+
+    return merged_elements
+
+
 def merge_openapi_components(collected_data):
-    # Checking for no conflicts
-    symbol_table = {
-        "schemas": set(),
-        "securitySchemes": set()
-    }
 
     openapi_merged = {
         "openapi": "3.0.3",
@@ -104,29 +133,13 @@ def merge_openapi_components(collected_data):
         },
         "paths": collected_data["paths"],
         "components": {
-            "schemas": {},
-            "securitySchemes": {}
+            "schemas": merge_elements(collected_data, "schemas"),
+            "securitySchemes": merge_elements(collected_data, "securitySchemes"),
         },
         "security": [],
         "tags": [],
         "x-tagGroups": []
     }
-
-    # Add schemas and check for conflicts
-    for schema_name, schema_content in collected_data["schemas"].items():
-        print(schema_name)
-        print(schema_content)
-        if schema_name in symbol_table["schemas"]:
-            raise ValueError(f"Conflicting schema name detected: {schema_name}")
-        symbol_table["schemas"].add(schema_name)
-        openapi_merged["components"]["schemas"][schema_name] = schema_content
-
-    # Add security schemes and check for conflicts
-    for scheme_name, scheme_content in collected_data["securitySchemes"].items():
-        if scheme_name in symbol_table["securitySchemes"]:
-            raise ValueError(f"Conflicting security scheme name detected: {scheme_name}")
-        symbol_table["securitySchemes"].add(scheme_name)
-        openapi_merged["components"]["securitySchemes"][scheme_name] = scheme_content
 
     openapi_merged["tags"].extend(collected_data["tags"].values())
     openapi_merged["x-tagGroups"].extend(collected_data["x-tagGroups"].values())
