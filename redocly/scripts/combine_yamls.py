@@ -146,11 +146,13 @@ def merge_openapi_components(collected_data):
 
     return openapi_merged
 
-collected_data = collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS)
-openapi_combined = merge_openapi_components(collected_data)
 
-merged_yaml_path = 'master_api_combined.yaml'
-with open(merged_yaml_path, 'w') as yaml_file:
-    yaml.dump(openapi_combined, yaml_file, sort_keys=False)
+if __name__ == '__main__':
+    collected_data = collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS)
+    openapi_combined = merge_openapi_components(collected_data)
 
-print(f"Merged OpenAPI YAML saved to {merged_yaml_path}")
+    merged_yaml_path = 'master_api_combined.yaml'
+    with open(merged_yaml_path, 'w') as yaml_file:
+        yaml.dump(openapi_combined, yaml_file, sort_keys=False)
+
+    print(f"Merged OpenAPI YAML saved to {merged_yaml_path}")

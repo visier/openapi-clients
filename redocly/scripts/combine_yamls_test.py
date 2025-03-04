@@ -69,13 +69,15 @@ def test_collect_openapi_components():
     with open("temp_test.yaml", "w") as f:
         f.write(SAMPLE_YAML_CONTENT)
 
-    file_paths = {"test_group": "temp_test.yaml"}
+    group_name = "test_group"
+
+    file_paths = {group_name: "temp_test.yaml"}
     excluded_tags = {}
     collected_data = collect_openapi_components(file_paths, excluded_tags)
 
     assert "/some/path" in collected_data["paths"]
-    assert "SomeSchema" in collected_data["schemas"]
-    assert "SomeSecurityScheme" in collected_data["securitySchemes"]
+    assert "SomeSchema" in collected_data["schemas"][group_name]
+    assert "SomeSecurityScheme" in collected_data["securitySchemes"][group_name]
     assert "SomeTag" in collected_data["tags"]
 
     # Clean up the temporary file
@@ -86,15 +88,25 @@ def test_collect_openapi_components():
 def test_merge_openapi_components():
     collected_data = {
         "paths": {"/some/path": {"get": {"summary": "Some summary"}}},
-        "schemas": {"SomeSchema": {"type": "object"}},
-        "securitySchemes": {"SomeSecurityScheme": {"type": "apiKey"}},
+        "schemas": {"test_group": {"SomeSchema": {"type": "object"}}},
+        "securitySchemes": {"test_group": {"SomeSecurityScheme": {"type": "apiKey"}}},
         "tags": {"SomeTag": {"name": "SomeTag"}},
         "x-tagGroups": {"Test Group": {"name": "Test Group", "tags": ["SomeTag"]}},
     }
     merged_data = merge_openapi_components(collected_data)
     assert merged_data["openapi"] == "3.0.3"
     assert merged_data["paths"] == collected_data["paths"]
-    assert merged_data["components"]["schemas"] == collected_data["schemas"]
-    assert merged_data["components"]["securitySchemes"] == collected_data["securitySchemes"]
+    assert merged_data["components"]["schemas"] == collected_data["schemas"]["test_group"]
+    assert merged_data["components"]["securitySchemes"] == collected_data["securitySchemes"]["test_group"]
     assert merged_data["tags"] == list(collected_data["tags"].values())
     assert merged_data["x-tagGroups"] == list(collected_data["x-tagGroups"].values())
+
+
+if __name__ == '__main__':
+    test_transform_tag_name()
+    test_transform_tag_group_name()
+    test_replace_br_tags()
+    test_escape_ampersands()
+    test_process_descriptions()
+    test_collect_openapi_components()
+    test_merge_openapi_components()
