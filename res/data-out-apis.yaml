@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1760
+  version: 22222222.99201.1772
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1575,6 +1575,12 @@ components:
           description: |-
             The ID of an existing analytic object in your Visier solution.
              An analytic object source cannot have filters or time handling.
+        textConcept:
+          type: string
+          description: |-
+            The ID of an existing text concept in your Visier solution.
+             A concept that defines the text properties of an analytic object and includes filters to enforce aggregate thresholds.
+             <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       description: A ListQuerySource defines the source data to query in a list query.
     ListResponse:
       type: object
@@ -2673,6 +2679,9 @@ components:
         categoryId:
           type: string
           description: The unique identifier of the question category.
+        isAssignedToUser:
+          type: boolean
+          description: If `true`, the sample question is assigned to at least one of the user's user groups.
     VeeSampleQuestionLibraryDTO:
       type: object
       properties:
