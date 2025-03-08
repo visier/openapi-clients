@@ -78,7 +78,9 @@ def collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS):
         collected_data["securitySchemes"][group_name] = security_schemes
 
         tags = parsed_content.get('tags', [])
+        tag_groups = parsed_content.get('x-tagGroups', [])
         for tag in tags:
+
             if group_name in EXCLUDED_TAGS and tag['name'] in EXCLUDED_TAGS[group_name]:
                 continue
 
@@ -87,7 +89,7 @@ def collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS):
             tag['x-displayName'] = display_name
             collected_data["tags"][original_tag_name] = tag
 
-            group_name_transformed = transform_tag_group_name(group_name)
+            group_name_transformed = [tg['name'] for tg in tag_groups if original_tag_name in tg['tags']][0] if tag_groups else transform_tag_group_name(group_name)
             if group_name_transformed not in collected_data["x-tagGroups"]:
                 collected_data["x-tagGroups"][group_name_transformed] = {"name": group_name_transformed, "tags": []}
 
