@@ -3,15 +3,22 @@ import re
 import os
 
 # Paths to the API spec files to combine
-FILE_PATHS = {
+DA_FILE_PATHS = {
+    "skills_intelligence": "../res/skills-intelligence-engine.yaml",
+    "compensation_benchmarks": "../res/compensation-benchmarks.yaml",
+}
+LEGACY_FILE_PATHS = {
     "authentication": "../res/authentication-apis.yaml",
     "data_in": "../res/data-in-apis.yaml",
     "data_out": "../res/data-out-apis.yaml",
     "administration": "../res/administration-apis.yaml",
     "analytic_model": "../res/analytic-model-apis.yaml",
-    "skills_intelligence": "../res/skills-intelligence-engine.yaml",
-    "compensation_benchmarks": "../res/compensation-benchmarks.yaml"
-    }
+    **DA_FILE_PATHS
+}
+FILE_PATHS = {
+    "everything": "../res/everything.yaml",
+    **DA_FILE_PATHS
+}
 
 EXCLUDED_TAGS = {}
 
@@ -148,11 +155,17 @@ def merge_openapi_components(collected_data):
 
 
 if __name__ == '__main__':
-    collected_data = collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS)
-    openapi_combined = merge_openapi_components(collected_data)
 
-    merged_yaml_path = 'master_api_combined.yaml'
-    with open(merged_yaml_path, 'w') as yaml_file:
-        yaml.dump(openapi_combined, yaml_file, sort_keys=False)
+    combine_sets = {
+        'master_api_combined.yaml': FILE_PATHS,
+        'master_api_combined_legacy.yaml': LEGACY_FILE_PATHS,
+    }
 
-    print(f"Merged OpenAPI YAML saved to {merged_yaml_path}")
+    for merged_yaml_path, file_paths in combine_sets.items():
+        collected_data = collect_openapi_components(file_paths, EXCLUDED_TAGS)
+        openapi_combined = merge_openapi_components(collected_data)
+
+        with open(merged_yaml_path, 'w') as yaml_file:
+            yaml.dump(openapi_combined, yaml_file, sort_keys=False)
+
+        print(f"Merged OpenAPI YAML saved to {merged_yaml_path}")
