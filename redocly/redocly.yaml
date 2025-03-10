@@ -49,7 +49,7 @@ theme:
         fontSize: 'inherit'
         headings:
           fontFamily: 'inherit'
-          fontSize: 'inherit'
         code: 
           color: '#000000'
+          fontSize: 'inherit'
           wrap: true
