@@ -46,8 +46,10 @@ theme:
         backgroundColor: '#334155'
       typography:
         fontFamily: 'inherit'
+        fontSize: 'inherit'
         headings:
           fontFamily: 'inherit'
         code: 
           color: '#000000'
+          fontSize: 'inherit'
           wrap: true
