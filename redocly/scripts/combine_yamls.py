@@ -16,7 +16,7 @@ LEGACY_FILE_PATHS = {
     **DA_FILE_PATHS
 }
 FILE_PATHS = {
-    "everything": "../res/everything.yaml",
+    "visier-apis": "../res/visier-apis.yaml",
     **DA_FILE_PATHS
 }
 
