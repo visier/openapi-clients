@@ -1,6 +1,7 @@
-import yaml
-import re
+import difflib
 import os
+import re
+import yaml
 
 # Paths to the API spec files to combine
 DA_FILE_PATHS = {
@@ -99,6 +100,21 @@ def collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS):
     return collected_data
 
 
+def show_differences(element_name, left, right) -> str:
+    left_name, left_content = left
+    right_name, right_content = right
+    left_content = str(yaml.dump(left_content))
+    right_content = str(yaml.dump(right_content))
+
+    diff = difflib.unified_diff(left_content.splitlines(),
+                                right_content.splitlines(),
+                                fromfile=f"{left_name}/{element_name}",
+                                tofile=f"{right_name}/{element_name}",
+                                lineterm=""
+                               )
+    return "\n".join(diff)
+
+
 def merge_elements(collected_data: dict, element_name: str) -> dict:
     """
     Merge and flag issues in the particular key in collected_data
@@ -115,18 +131,22 @@ def merge_elements(collected_data: dict, element_name: str) -> dict:
     problematic_elements = {}
     for element, content in elements_by_name_and_group.items():
 
+        # Convert content into ordered list of tuples so we can enumerate them for comparison purposes
+        content_list = [(k, v) for k, v in content.items()]
+
         # Determine distinct contents
-        values = list(content.values())
+        values = [v for _, v in content_list]
         matches = [z[0] == z[1] for z in zip(values, values[1:])]
 
         if all(matches):
             merged_elements[element] = values[0]
         else:
-            msg = [f" * {group}: {c}" for group, c in content.items()]
+            diff_indices = [(i, i+1) for i, match in enumerate(matches) if match is False]
+            msg = [show_differences(element, content_list[x], content_list[y]) for x,y in diff_indices]
             problematic_elements[element] = "\n".join(msg)
 
     if problematic_elements:
-        msg = [f"{element}:\n{contents}" for element, contents in problematic_elements.items()]
+        msg = [contents for contents in problematic_elements.values()]
         raise ValueError(f"{len(msg)} conflicting {element_name} entries:\n" + "\n".join(msg))
 
     return merged_elements
