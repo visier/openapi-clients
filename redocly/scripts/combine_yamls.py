@@ -147,7 +147,7 @@ def merge_elements(collected_data: dict, element_name: str) -> dict:
 
     if problematic_elements:
         msg = [contents for contents in problematic_elements.values()]
-        raise ValueError(f"{len(msg)} conflicting {element_name} entries:\n" + "\n".join(msg))
+        raise ValueError(f"{len(msg)} conflicting {element_name} entries:\n" + "\n===\n".join(msg))
 
     return merged_elements
 
