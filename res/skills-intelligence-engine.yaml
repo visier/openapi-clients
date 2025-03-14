@@ -208,7 +208,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/JobStandardizationInputSkills"
+              $ref: "#/components/schemas/JobStandardizationInput"
         required: true
       responses:
         "200":
@@ -217,7 +217,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/JobStandardizationOutputSkills"
+                $ref: "#/components/schemas/JobStandardizationOutput"
         "400":
           description: |
             The API request failed given the parameters provided, such as missing or invalid parameters.
@@ -880,7 +880,7 @@ components:
           - id
           - name
           - description
-    JobStandardizationInputSkills:
+    JobStandardizationInput:
       description: |
         The custom job titles to standardize.
       type: "object"
@@ -897,7 +897,7 @@ components:
             If `naicsCode` is provided, the most relevant job titles associated with the naicsCode are returned first.
       required:
         - "jobs"
-    JobStandardizationOutputSkills:
+    JobStandardizationOutput:
       type: "array"
       items:
         title: OutputEntry
