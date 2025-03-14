@@ -1,17 +1,14 @@
-import yaml
-import re
+import difflib
 import os
+import re
+import yaml
 
 # Paths to the API spec files to combine
 FILE_PATHS = {
-    "authentication": "../res/authentication-apis.yaml",
-    "data_in": "../res/data-in-apis.yaml",
-    "data_out": "../res/data-out-apis.yaml",
-    "administration": "../res/administration-apis.yaml",
-    "analytic_model": "../res/analytic-model-apis.yaml",
+    "visier-apis": "../res/visier-apis.yaml",
     "skills_intelligence": "../res/skills-intelligence-engine.yaml",
-    "compensation_benchmarks": "../res/compensation-benchmarks.yaml"
-    }
+    "compensation_benchmarks": "../res/compensation-benchmarks.yaml",
+}
 
 EXCLUDED_TAGS = {}
 
@@ -65,13 +62,15 @@ def collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS):
 
         components = parsed_content.get('components', {})
         schemas = components.get('schemas', {})
-        collected_data["schemas"].update(schemas)
+        collected_data["schemas"][group_name] = schemas
 
         security_schemes = components.get('securitySchemes', {})
-        collected_data["securitySchemes"].update(security_schemes)
+        collected_data["securitySchemes"][group_name] = security_schemes
 
         tags = parsed_content.get('tags', [])
+        tag_groups = parsed_content.get('x-tagGroups', [])
         for tag in tags:
+
             if group_name in EXCLUDED_TAGS and tag['name'] in EXCLUDED_TAGS[group_name]:
                 continue
 
@@ -80,7 +79,7 @@ def collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS):
             tag['x-displayName'] = display_name
             collected_data["tags"][original_tag_name] = tag
 
-            group_name_transformed = transform_tag_group_name(group_name)
+            group_name_transformed = [tg['name'] for tg in tag_groups if original_tag_name in tg['tags']][0] if tag_groups else transform_tag_group_name(group_name)
             if group_name_transformed not in collected_data["x-tagGroups"]:
                 collected_data["x-tagGroups"][group_name_transformed] = {"name": group_name_transformed, "tags": []}
 
@@ -89,12 +88,60 @@ def collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS):
 
     return collected_data
 
+
+def show_differences(element_name, left, right) -> str:
+    left_name, left_content = left
+    right_name, right_content = right
+    left_content = str(yaml.dump(left_content))
+    right_content = str(yaml.dump(right_content))
+
+    diff = difflib.unified_diff(left_content.splitlines(),
+                                right_content.splitlines(),
+                                fromfile=f"{left_name}/{element_name}",
+                                tofile=f"{right_name}/{element_name}",
+                                lineterm=""
+                               )
+    return "\n".join(diff)
+
+
+def merge_elements(collected_data: dict, element_name: str) -> dict:
+    """
+    Merge and flag issues in the particular key in collected_data
+    :param collected_data: A dictionary of the elements from each file that contributes to the combined OAS3, separated by "group" - created in collect_openapi_components()
+    :return: Dictionary with combined element
+    """
+    elements_by_name_and_group = {}
+    for group, elements in collected_data[element_name].items():
+        for element, content in elements.items():
+            elements_by_name_and_group[element] = elements_by_name_and_group.get(element, {})
+            elements_by_name_and_group[element][group] = content
+
+    merged_elements = {}
+    problematic_elements = {}
+    for element, content in elements_by_name_and_group.items():
+
+        # Convert content into ordered list of tuples so we can enumerate them for comparison purposes
+        content_list = [(k, v) for k, v in content.items()]
+
+        # Determine distinct contents
+        values = [v for _, v in content_list]
+        matches = [z[0] == z[1] for z in zip(values, values[1:])]
+
+        if all(matches):
+            merged_elements[element] = values[0]
+        else:
+            diff_indices = [(i, i+1) for i, match in enumerate(matches) if match is False]
+            msg = [show_differences(element, content_list[x], content_list[y]) for x,y in diff_indices]
+            problematic_elements[element] = "\n".join(msg)
+
+    if problematic_elements:
+        msg = [contents for contents in problematic_elements.values()]
+        raise ValueError(f"{len(msg)} conflicting {element_name} entries:\n" + "\n===\n".join(msg))
+
+    return merged_elements
+
+
 def merge_openapi_components(collected_data):
-    # Checking for no conflicts
-    symbol_table = {
-        "schemas": set(),
-        "securitySchemes": set()
-    }
 
     openapi_merged = {
         "openapi": "3.0.3",
@@ -104,40 +151,27 @@ def merge_openapi_components(collected_data):
         },
         "paths": collected_data["paths"],
         "components": {
-            "schemas": {},
-            "securitySchemes": {}
+            "schemas": merge_elements(collected_data, "schemas"),
+            "securitySchemes": merge_elements(collected_data, "securitySchemes"),
         },
         "security": [],
         "tags": [],
         "x-tagGroups": []
     }
 
-    # Add schemas and check for conflicts
-    for schema_name, schema_content in collected_data["schemas"].items():
-        print(schema_name)
-        print(schema_content)
-        if schema_name in symbol_table["schemas"]:
-            raise ValueError(f"Conflicting schema name detected: {schema_name}")
-        symbol_table["schemas"].add(schema_name)
-        openapi_merged["components"]["schemas"][schema_name] = schema_content
-
-    # Add security schemes and check for conflicts
-    for scheme_name, scheme_content in collected_data["securitySchemes"].items():
-        if scheme_name in symbol_table["securitySchemes"]:
-            raise ValueError(f"Conflicting security scheme name detected: {scheme_name}")
-        symbol_table["securitySchemes"].add(scheme_name)
-        openapi_merged["components"]["securitySchemes"][scheme_name] = scheme_content
-
     openapi_merged["tags"].extend(collected_data["tags"].values())
     openapi_merged["x-tagGroups"].extend(collected_data["x-tagGroups"].values())
 
     return openapi_merged
 
-collected_data = collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS)
-openapi_combined = merge_openapi_components(collected_data)
 
-merged_yaml_path = 'master_api_combined.yaml'
-with open(merged_yaml_path, 'w') as yaml_file:
-    yaml.dump(openapi_combined, yaml_file, sort_keys=False)
+if __name__ == '__main__':
+    merged_yaml_path = 'master_api_combined.yaml'
 
-print(f"Merged OpenAPI YAML saved to {merged_yaml_path}")
+    collected_data = collect_openapi_components(FILE_PATHS, EXCLUDED_TAGS)
+    openapi_combined = merge_openapi_components(collected_data)
+
+    with open(merged_yaml_path, 'w') as yaml_file:
+        yaml.dump(openapi_combined, yaml_file, sort_keys=False)
+
+    print(f"Merged OpenAPI YAML saved to {merged_yaml_path}")
