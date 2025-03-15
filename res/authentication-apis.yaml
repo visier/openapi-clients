@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1772
+  version: 22222222.99201.1793
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -24,18 +24,18 @@ paths:
           schema:
             type: boolean
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OAuth2UserInfoDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/authentication.OAuth2UserInfoDTO'
   /v1/admin/visierSecureToken:
     post:
       tags:
@@ -165,7 +165,92 @@ paths:
                 $ref: "#/components/schemas/TokenResponse"
 components:
   schemas:
-    CapabilityGroupDTO:
+    authentication.OAuth2UserInfoDTO:
+      type: object
+      properties:
+        subject:
+          type: string
+          description: The user's display name.
+        name:
+          type: string
+          description: The user's Common Name.
+        email:
+          type: string
+          description: The user's email address.
+        visier:user_id:
+          type: string
+          description: The user's unique ID.
+        visier:capabilities:
+          allOf:
+            - $ref: '#/components/schemas/servicing.transfers.ServicingCapabilityProtoEnumAccessLookupDTO'
+          description: The user's profile capabilities.
+        visier:subnets:
+          allOf:
+            - $ref: '#/components/schemas/authentication.OAuth2UserSubnetInfoDTO'
+          description: Subnet restrictions controlling the IP addresses from which users can access the tenant.
+        visier:export_subnets:
+          allOf:
+            - $ref: '#/components/schemas/authentication.OAuth2UserSubnetInfoDTO'
+          description: Subnet restrictions controlling the IP addresses from which data and metadata requests can be made.
+        visier:tenant_details:
+          allOf:
+            - $ref: '#/components/schemas/authentication.OAuth2UserTenantDetailsDTO'
+          description: Detailed information about the analytic tenant. Included in the response if `includeTenantDetail` is `true`.
+      description: Response from OAuth 2 `userinfo` endpoint.
+    authentication.OAuth2UserSubnetInfoDTO:
+      type: object
+      properties:
+        accessType:
+          enum:
+            - Unknown
+            - All
+            - Restricted
+            - None
+          type: string
+          description: |-
+            The type of subnet access granted to the user. Possible values are:
+             * `Unknown`: Could not determine subnet access details.
+             * `All`: No subnet restrictions.
+             * `Restricted`: Access is only granted to requests originating from the specified `subnets`.
+             * `None`: Access is denied. Only applicable to the Data Export API.
+          format: enum
+        subnets:
+          type: array
+          items:
+            type: string
+          description: 'The list of trusted IP addresses from which access is granted if accessType is `Restricted`. Must be in Classless Inter-Domain Routing (CIDR) format: `xxx.xxx.xxx.xxx/xx`.'
+      description: Subnet access details.
+    authentication.OAuth2UserTenantDetailDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant's unique ID.
+        displayName:
+          type: string
+          description: The tenant's display name.
+        properties:
+          allOf:
+            - $ref: '#/components/schemas/authentication.OAuth2UserTenantPropertiesDTO'
+          description: The tenant's properties.
+      description: Tenant detail information.
+    authentication.OAuth2UserTenantDetailsDTO:
+      type: object
+      properties:
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/authentication.OAuth2UserTenantDetailDTO'
+          description: The details of all accessible analytic tenants.
+      description: The details of all accessible analytic tenants
+    authentication.OAuth2UserTenantPropertiesDTO:
+      type: object
+      properties:
+        vanityUrlName:
+          type: string
+          description: The tenant's vanity name.
+      description: Detailed information about the tenant.
+    servicing.transfers.CapabilityGroupDTO:
       type: object
       properties:
         group:
@@ -270,106 +355,13 @@ components:
             - Embedded
           type: string
           format: enum
-    GoogleProtobufAny:
-      type: object
-      properties:
-        '@type':
-          type: string
-          description: The type of the serialized message.
-      additionalProperties: true
-      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-    OAuth2UserInfoDTO:
-      type: object
-      properties:
-        subject:
-          type: string
-          description: The user's display name.
-        name:
-          type: string
-          description: The user's Common Name.
-        email:
-          type: string
-          description: The user's email address.
-        visier:user_id:
-          type: string
-          description: The user's unique ID.
-        visier:capabilities:
-          allOf:
-            - $ref: '#/components/schemas/ServicingCapabilityProtoEnumAccessLookupDTO'
-          description: The user's profile capabilities.
-        visier:subnets:
-          allOf:
-            - $ref: '#/components/schemas/OAuth2UserSubnetInfoDTO'
-          description: Subnet restrictions controlling the IP addresses from which users can access the tenant.
-        visier:export_subnets:
-          allOf:
-            - $ref: '#/components/schemas/OAuth2UserSubnetInfoDTO'
-          description: Subnet restrictions controlling the IP addresses from which data and metadata requests can be made.
-        visier:tenant_details:
-          allOf:
-            - $ref: '#/components/schemas/OAuth2UserTenantDetailsDTO'
-          description: Detailed information about the analytic tenant. Included in the response if `includeTenantDetail` is `true`.
-      description: Response from OAuth 2 `userinfo` endpoint.
-    OAuth2UserSubnetInfoDTO:
-      type: object
-      properties:
-        accessType:
-          enum:
-            - Unknown
-            - All
-            - Restricted
-            - None
-          type: string
-          description: |-
-            The type of subnet access granted to the user. Possible values are:
-             * `Unknown`: Could not determine subnet access details.
-             * `All`: No subnet restrictions.
-             * `Restricted`: Access is only granted to requests originating from the specified `subnets`.
-             * `None`: Access is denied. Only applicable to the Data Export API.
-          format: enum
-        subnets:
-          type: array
-          items:
-            type: string
-          description: 'The list of trusted IP addresses from which access is granted if accessType is `Restricted`. Must be in Classless Inter-Domain Routing (CIDR) format: `xxx.xxx.xxx.xxx/xx`.'
-      description: Subnet access details.
-    OAuth2UserTenantDetailDTO:
-      type: object
-      properties:
-        tenantCode:
-          type: string
-          description: The tenant's unique ID.
-        displayName:
-          type: string
-          description: The tenant's display name.
-        properties:
-          allOf:
-            - $ref: '#/components/schemas/OAuth2UserTenantPropertiesDTO'
-          description: The tenant's properties.
-      description: Tenant detail information.
-    OAuth2UserTenantDetailsDTO:
-      type: object
-      properties:
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/OAuth2UserTenantDetailDTO'
-          description: The details of all accessible analytic tenants.
-      description: The details of all accessible analytic tenants
-    OAuth2UserTenantPropertiesDTO:
-      type: object
-      properties:
-        vanityUrlName:
-          type: string
-          description: The tenant's vanity name.
-      description: Detailed information about the tenant.
-    ServicingCapabilityProtoEnumAccessLookupDTO:
+    servicing.transfers.ServicingCapabilityProtoEnumAccessLookupDTO:
       type: object
       properties:
         capabilityGroups:
           type: array
           items:
-            $ref: '#/components/schemas/CapabilityGroupDTO'
+            $ref: '#/components/schemas/servicing.transfers.CapabilityGroupDTO'
     GenerateImpersonationTokenRequest:
       description: The details of the user to impersonate.
       type: object
@@ -387,22 +379,14 @@ components:
           type: string
           description: The password that corresponds to the user making the request.
       description: Your username and password credentials to request an authentication token.
-    Status:
+    GoogleProtobufAny:
       type: object
       properties:
-        code:
-          type: integer
-          description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
-          format: int32
-        message:
+        "@type":
           type: string
-          description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
-        details:
-          type: array
-          items:
-            $ref: "#/components/schemas/GoogleProtobufAny"
-          description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
-      description: "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors)."
+          description: The type of the serialized message.
+      additionalProperties: true
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
     TokenResponse:
       type: object
       properties:
@@ -455,9 +439,66 @@ components:
           type: string
       description: |-
         Token request body definition.
+    Status:
+      type: object
+      properties:
+        localizedMessage:
+          type: string
+          description: Localized error message describing the root cause of the error.
+        code:
+          type: string
+          description: Error classification.
+        message:
+          type: string
+          description: Not used.
+        rci:
+          type: string
+          description: Optional root cause identifier.
+        userError:
+          type: boolean
+          description: Indicates whether the error is a user error.
+      description: The response structure for errors.
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      name: VisierASIDToken
+      in: cookie
+    ApiKeyAuth:
+      type: apiKey
+      name: apikey
+      in: header
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /v1/auth/oauth2/authorize
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+        password:
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
 tags:
   - name: BasicAuthentication
     description: |-
       Request an authentication token through basic authentication. With basic authentication, use your username and password to request a secure token. The response returns an ASID token that you can use in your API calls.
   - name: OAuth2
     description: "Request an authentication token through OAuth 2.0 with Open ID Connect (OIDC). With OAuth 2.0 with OIDC, use an OAuth 2.0 grant to request an authentication token. \nThe response returns a JSON Web Token (JWT) that you can use in your API calls."
+security:
+  - ApiKeyAuth: []
+    BearerAuth: []
+  - ApiKeyAuth: []
+    CookieAuth: []
+  - ApiKeyAuth: []
+    OAuth2Auth: []
+x-tagGroups:
+  - name: Authentication
+    tags:
+      - BasicAuthentication
+      - OAuth2

@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1772
+  version: 22222222.99201.1793
 paths:
   /v1/data/query/aggregate:
     post:
@@ -30,27 +30,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AggregationQueryExecutionDTO'
+              $ref: '#/components/schemas/dataservices.query.transfers.AggregationQueryExecutionDTO'
         required: true
       responses:
-        "200":
-          description: Aggregate query response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CellSetDTO'
-            application/jsonlines:
-              schema:
-                type: string
-            text/csv:
-              schema:
-                type: string
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: Aggregate query response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.query.transfers.CellSetDTO'
+            application/jsonlines:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
   /v1/data/query/list:
     post:
       tags:
@@ -71,27 +71,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ListQueryExecutionDTO'
+              $ref: '#/components/schemas/dataservices.query.transfers.ListQueryExecutionDTO'
         required: true
       responses:
-        "200":
-          description: List query response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListResponse'
-            application/jsonlines:
-              schema:
-                type: string
-            text/csv:
-              schema:
-                type: string
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: List query response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_out.ListResponse'
+            application/jsonlines:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
   /v1/data/query/snapshot:
     post:
       tags:
@@ -134,27 +134,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SnapshotQueryExecutionDTO'
+              $ref: '#/components/schemas/dataservices.query.transfers.SnapshotQueryExecutionDTO'
         required: true
       responses:
-        "200":
-          description: List query response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListResponse'
-            application/jsonlines:
-              schema:
-                type: string
-            text/csv:
-              schema:
-                type: string
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: List query response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_out.ListResponse'
+            application/jsonlines:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
   /v1/data/query/sql:
     post:
       tags:
@@ -196,7 +196,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SqlLikeQueryExecutionDTO'
+              $ref: '#/components/schemas/dataservices.query.transfers.SqlLikeQueryExecutionDTO'
         required: true
       responses:
         default:
@@ -212,7 +212,7 @@ paths:
               schema:
                 oneOf:
                   - $ref: '#/components/schemas/TableResponseDTO'
-                  - $ref: '#/components/schemas/CellSetDTO'
+                  - $ref: '#/components/schemas/dataservices.query.transfers.CellSetDTO'
             application/jsonlines:
               schema:
                 type: string
@@ -238,18 +238,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VeeStatusDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/systemstatus.publicapi.transfers.VeeStatusDTO'
   /v1alpha/data/data-version-exports/data-versions:
     get:
       tags:
@@ -268,18 +268,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DataVersionExportDataVersionsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.transfers.DataVersionExportDataVersionsDTO'
   /v1alpha/data/data-version-exports/exports:
     get:
       tags:
@@ -299,18 +299,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DataVersionExportsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.transfers.DataVersionExportsDTO'
   /v1alpha/data/data-version-exports/exports/{exportUuid}:
     get:
       tags:
@@ -336,18 +336,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DataVersionExportDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.transfers.DataVersionExportDTO'
   /v1alpha/data/data-version-exports/jobs:
     post:
       tags:
@@ -371,21 +371,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DataVersionExportScheduleJobRequestDTO'
+              $ref: '#/components/schemas/designer.transfers.DataVersionExportScheduleJobRequestDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DataVersionExportScheduleJobResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.transfers.DataVersionExportScheduleJobResponseDTO'
   /v1alpha/data/data-version-exports/jobs/{jobUuid}:
     get:
       tags:
@@ -410,18 +410,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DataVersionExportJobStatusDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.transfers.DataVersionExportJobStatusDTO'
   /v1alpha/op/data/source-files:
     get:
       tags:
@@ -447,25 +447,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DownloadSourceFilesDTO'
+              $ref: '#/components/schemas/designer.transfers.DownloadSourceFilesDTO'
         required: true
       responses:
-        "200":
-          description: File contents
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DownloadSourceFilesResponseDTO'
-            application/zip:
-              schema:
-                type: string
-                format: binary
         default:
           description: Default error response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DownloadSourceFilesResponseDTO'
+                $ref: '#/components/schemas/designer.transfers.DownloadSourceFilesResponseDTO'
+        "200":
+          description: File contents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.transfers.DownloadSourceFilesResponseDTO'
+            application/zip:
+              schema:
+                type: string
+                format: binary
   /v1alpha/reporting/reports:
     get:
       tags:
@@ -496,18 +496,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReportListResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.transfers.ReportListResponseDTO'
     post:
       tags:
         - Reporting
@@ -528,21 +528,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReportCreateRequestDTO'
+              $ref: '#/components/schemas/analysis.common.transfers.ReportCreateRequestDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReportDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.transfers.ReportDTO'
   /v1alpha/reporting/reports/{reportId}:
     get:
       tags:
@@ -567,18 +567,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReportDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.transfers.ReportDTO'
     post:
       tags:
         - Reporting
@@ -602,18 +602,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReportDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.transfers.ReportDTO'
     delete:
       tags:
         - Reporting
@@ -637,18 +637,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReportDeleteSuccessDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.transfers.ReportDeleteSuccessDTO'
   /v1alpha/search/simple/document-headers:
     get:
       tags:
@@ -685,18 +685,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SimpleDocumentHeaderSearchResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.publicapi.transfers.SimpleDocumentHeaderSearchResponseDTO'
   /v1alpha/vee/feedback:
     post:
       tags:
@@ -721,21 +721,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VeeFeedbackDTO'
+              $ref: '#/components/schemas/analysis.common.transfers.VeeFeedbackDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VeeStatusCodeDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.transfers.VeeStatusCodeDTO'
   /v1alpha/vee/question:
     post:
       tags:
@@ -759,21 +759,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VeeQuestionDTO'
+              $ref: '#/components/schemas/analysis.common.transfers.VeeQuestionDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VeeResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.transfers.VeeResponseDTO'
   /v1alpha/vee/sample-questions:
     get:
       tags:
@@ -793,18 +793,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VeeSampleQuestionLibraryDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.transfers.VeeSampleQuestionLibraryDTO'
   /v1alpha/data/data-version-exports/exports/{exportUuid}/files/{fileId}:
     get:
       tags:
@@ -888,54 +888,465 @@ paths:
                 $ref: '#/components/schemas/Status'
 components:
   schemas:
-    AggregationQueryDTO:
+    google.protobuf.Any:
+      type: object
+      properties:
+        '@type':
+          type: string
+          description: The type of the serialized message.
+      additionalProperties: true
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+    analysis.common.transfers.ReportCreateRequestDTO:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The localized title of the report.
+        description:
+          type: string
+          description: The localized description of the report.
+      description: The request to create a new report.
+    analysis.common.transfers.ReportDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the report.
+        title:
+          type: string
+          description: The localized title of the report.
+        description:
+          type: string
+          description: The localized description of the report.
+        updatedTime:
+          type: string
+          description: The time in epoch milliseconds when the report was last updated.
+        isPublishedReport:
+          type: boolean
+          description: If `true`, the report is published through a project.
+        owner:
+          type: string
+          description: The owner of the report.
+        isOwnedByUser:
+          type: boolean
+          description: If `true`, you are the owner of the report.
+        allowedActions:
+          type: array
+          items:
+            enum:
+              - duplicate
+              - delete
+              - edit
+              - download
+              - share
+            type: string
+            format: enum
+          description: |-
+            The actions that you can perform on the report.
+
+             Valid values are:
+             - `duplicate`: The user can make their own copy of this report.
+             - `delete`: The user can delete this report.
+             - `edit`: The user can edit this report directly.
+             - `download`: The user can download this report as a CSV.
+             - `share`: The user can share this report with other users or user groups.
+        link:
+          type: string
+          description: The link to the report.
+      description: The information of a single report.
+    analysis.common.transfers.ReportDeleteSuccessDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the deleted report.
+      description: The report that was successfully deleted.
+    analysis.common.transfers.ReportListResponseDTO:
+      type: object
+      properties:
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.transfers.ReportDTO'
+          description: A list of reports.
+      description: The information of all the reports you have access to in your tenant.
+    analysis.common.transfers.VeeClarificationDTO:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Returned if Vee needs more context to answer your question.
+        questions:
+          type: array
+          items:
+            type: string
+          description: Some related questions that could be helpful.
+        metrics:
+          type: array
+          items:
+            type: string
+          description: Suggested metrics to look at, that are similar or related to your question.
+        dimensions:
+          type: array
+          items:
+            type: string
+          description: Suggested dimensions to look at, that are similar or related to your question.
+        filters:
+          type: array
+          items:
+            type: string
+          description: Suggested filters that could be a better fit for the data.
+        attributes:
+          type: array
+          items:
+            type: string
+          description: Suggested attributes to look at, that are similar or related to your question.
+    analysis.common.transfers.VeeConversationStateDTO:
+      type: object
+      properties:
+        questionState:
+          type: array
+          items:
+            type: string
+          description: The unique identifier of the conversation with Vee.
+    analysis.common.transfers.VeeCorrectionsDTO:
+      type: object
+      properties:
+        warning:
+          type: array
+          items:
+            enum:
+              - VEE_NO_WARNING
+              - VEE_WARNING_RESPONSE_NOT_FOUND
+              - VEE_WARNING_RESPONSE_LOW_CONFIDENCE
+              - VEE_WARNING_RESPONSE_FOUND_CLOSE_MATCH
+              - VEE_WARNING_NO_ACCESS
+              - VEE_WARNING_TIME_SELECTION_ADJUSTED
+              - VEE_WARNING_FILTER_DROPPED
+            type: string
+            format: enum
+          description: A list of warnings from Vee that accompanies an unsure answer; for example, Vee might return a close match warning if Vee finds multiple employees named Adam that relate to your question.
+        clarifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.transfers.VeeClarificationDTO'
+          description: A list of clarifying questions if Vee needs more context to answer your question; for example, if asking about someone named Adam, Vee might clarify which Adam by asking for Adam's email address.
+    analysis.common.transfers.VeeDataDTO:
+      type: object
+      properties:
+        dataJson:
+          type: string
+          description: A JSON string of fields and numerical values representing the data contributing to Vee's answer. For example, the number of employees per gender in Vee's answer.
+        context:
+          type: string
+          description: The filter applied to the visualization generated by Vee. For example, a time filter of April 2024.
+    analysis.common.transfers.VeeFeedbackDTO:
+      type: object
+      properties:
+        response:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.transfers.VeeResponseDTO'
+          description: Your feedback about Vee's answer. Include the response object from the `/question` call that you want to provide feedback about.
+        isApproved:
+          type: boolean
+          description: If `true`, Vee answered the question correctly. If `false`, Vee's answer was incorrect or lacked details.
+        description:
+          type: string
+          description: A description of how Vee should have answered the question or how Vee can improve the answer; for example, "Expected Headcount metric, but Vee returned Average Headcount".
+      description: The request body fields to submit Vee feedback.
+    analysis.common.transfers.VeeOptionsDTO:
+      type: object
+      properties:
+        includeVisual:
+          type: boolean
+          description: If `true`, returns a base64 string-encoded PNG of a rendered visualization with Vee's answer. Default is `false`.
+        visualOptions:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.transfers.VeeVisualOptionsDTO'
+          description: Specify how to render the visualization.
+        includeData:
+          type: boolean
+          description: If `true`, returns additional data relevant to the question, including `dataJson` (visualization data) and `context` (filters applied to the visualization). Default is `false`.
+        dataFormat:
+          enum:
+            - json
+          type: string
+          description: 'The format to return visualization data in. Valid values: `json`.'
+          format: enum
+        includeRewordedQuestion:
+          type: boolean
+          description: If `true`, returns Vee's plain language interpretation of the original question. For example, if you asked "what is the headcount by gender in each org?", Vee might reword the question as "What is the gender breakdown of our workforce by organization this month?". Default is `false`.
+    analysis.common.transfers.VeeQuestionDTO:
+      type: object
+      properties:
+        question:
+          type: string
+          description: The question to ask Vee. If asking a follow-up question or continuing a conversation with Vee, specify the `conversationState` object from the question's response.
+        conversationState:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.transfers.VeeConversationStateDTO'
+          description: The unique identifier of the conversation with Vee. If empty, starts a new conversation with Vee. If asking a follow-up question or continuing a conversation with Vee, specify the `conversationState` object from the question's response. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.
+        options:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.transfers.VeeOptionsDTO'
+          description: Options to specify how Vee should respond to a question.
+        maxViewDetailsMembers:
+          type: integer
+          description: maxViewDetailsMembers to specify the maximum of view details members
+          format: uint32
+      description: The request body fields to ask Vee a question.
+    analysis.common.transfers.VeeResponseDTO:
+      type: object
+      properties:
+        conversationState:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.transfers.VeeConversationStateDTO'
+          description: The current conversation's details. To ask a follow-up question or continue the conversation with Vee, include the `conversationState` from the response in your next `/question` call. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.
+        statusCode:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.transfers.VeeStatusCodeDTO'
+          description: A status code indicating whether or not Vee successfully answered the question.
+        narrative:
+          type: string
+          description: Vee's answer to the question.
+        chartUrl:
+          type: string
+          description: A URL to view the visualization in Visier.
+        schema:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.transfers.VeeResponseSchemaDTO'
+          description: The metrics, dimensions, and concepts that contribute to Vee's answer.
+        corrections:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.transfers.VeeCorrectionsDTO'
+          description: A list of corrections and clarifications if the question was ambiguous or Vee was unsure in the answer.
+        data:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.transfers.VeeDataDTO'
+          description: Returned if `includeData` is `true`. Provides additional data relevant to the question, such as the visualization data and any filters applied to the visualization.
+        visual:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.transfers.VeeVisualDTO'
+          description: A base64 string-encoded PNG of a visualization generated by Vee to answer a question. For example, Vee can return a Breakdown visualization if asked about the headcount in each organization.
+        rewordedQuestion:
+          type: string
+          description: Vee's plain language interpretation of the original question. For example, if you asked "what is the headcount by gender in each org?", Vee might reword the question as "What is the gender breakdown of our workforce by organization this month?".
+      description: The response after asking Vee a question.
+    analysis.common.transfers.VeeResponseSchemaDTO:
+      type: object
+      properties:
+        metrics:
+          type: array
+          items:
+            type: string
+          description: A list of the metrics that contribute to Vee's answer.
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.transfers.VeeResponseSchemaReferenceDTO'
+          description: A list of the dimensions that contribute to Vee's answer.
+        concepts:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.transfers.VeeResponseSchemaReferenceDTO'
+          description: A list of the concepts that contribute to Vee's answer.
+    analysis.common.transfers.VeeResponseSchemaReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of an attribute in the visualization; for example, Gender.
+        paths:
+          type: array
+          items:
+            type: string
+          description: The hierarchy path of an attribute in the visualization; for example, Employee.Gender.
+    analysis.common.transfers.VeeSampleQuestionDTO:
+      type: object
+      properties:
+        question:
+          type: string
+          description: A question in plain language.
+        questionId:
+          type: string
+          description: The unique identifier of the sample question.
+        categoryId:
+          type: string
+          description: The unique identifier of the question category.
+        isAssignedToUser:
+          type: boolean
+          description: If `true`, the sample question is assigned to at least one of the user's user groups.
+    analysis.common.transfers.VeeSampleQuestionLibraryDTO:
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.transfers.VeeSampleQuestionDTO'
+          description: A list of sample questions to help your users start using Vee.
+      description: A list of sample questions to ask Vee.
+    analysis.common.transfers.VeeStatusCodeDTO:
+      type: object
+      properties:
+        statusCode:
+          enum:
+            - UNDEFINED
+            - VEE_API_SUCCESS
+            - VEE_API_WARNING
+            - VEE_API_ERROR
+          type: string
+          description: A status code indicating whether or not Vee successfully answered the question.
+          format: enum
+        statusMsg:
+          type: string
+          description: Additional information about whether or not Vee successfully answered the question.
+    analysis.common.transfers.VeeVisualDTO:
+      type: object
+      properties:
+        image:
+          type: string
+          description: A PNG visualization encoded in a base64 string.
+        title:
+          type: string
+          description: The visualization title.
+        context:
+          type: string
+          description: Any filters applied to the visualization. For example, a time filter of April 2024.
+    analysis.common.transfers.VeeVisualOptionsDTO:
+      type: object
+      properties:
+        width:
+          type: integer
+          description: The pixel width of the rendered visualization. Default is 600. Valid values are between 160 and 1600.
+          format: uint32
+        height:
+          type: integer
+          description: The pixel height of the rendered visualization. Default is 338. Valid values are between 90 and 900.
+          format: uint32
+    data_out.ListResponse:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/google.protobuf.Any'
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/google.protobuf.Any'
+    dataservices.common.DimensionMemberReferenceDTO:
+      type: object
+      properties:
+        path:
+          type: array
+          items:
+            type: string
+          description: |-
+            A list of strings representing the members within a dimension path. For example, a dimension for Location
+             may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
+      description: The members of a dimension.
+    dataservices.common.MemberValuesDTO:
+      type: object
+      properties:
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
+          description: The unique IDs of members to include when evaluating the metric.
+        excluded:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
+          description: The unique IDs of members to exclude when evaluating the metric.
+      description: |-
+        Member filter values are discrete member references in a dimension filter. You can define
+         included and excluded members simultaneously. This is typically done with filtering applied on
+         dimensions with multiple levels. For example, a Location parameter may include “South
+         America” and exclude “Brazil” which results in the metric being evaluated for all South American
+         countries except Brazil.
+    dataservices.datamodel.transfers.DimensionReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The ID of the dimension. See `Dimensions` to get the ID.
+        qualifyingPath:
+          type: string
+          description: |-
+            The qualifying path to the dimension in Visier, such as the analytic object or event the dimension is
+             associated with. If the path has multiple objects, each object is separated by a period.
+      description: The name and qualifying path of a dimension to query.
+    dataservices.datamodel.transfers.PropertyReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The ID of the property. See `Properties` to get the ID.
+        qualifyingPath:
+          type: string
+          description: |-
+            The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.
+             If the path has multiple objects, each object is separated by a period.
+      description: The name and qualifying path of a property to query.
+    dataservices.datamodel.transfers.SelectionConceptReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The ID of the selection concept. See `SelectionConcepts` to get the ID.
+        qualifyingPath:
+          type: string
+          description: |-
+            The qualifying path to the selection concept in Visier, such as the analytic object or event the selection
+             concept is associated with. If the path has multiple objects, each object is separated by a period.
+      description: The name and qualifying path of a selection concept to query.
+    dataservices.query.transfers.AggregationQueryDTO:
       type: object
       properties:
         source:
           allOf:
-            - $ref: '#/components/schemas/AggregationQuerySourceDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.AggregationQuerySourceDTO'
           description: The source data, such as a metric or formula, to query.
         filters:
           type: array
           items:
-            $ref: '#/components/schemas/QueryFilterDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.QueryFilterDTO'
           description: |-
             The objects by which to filter the query, such as dimensions or concepts.
              A filter defines the population to retrieve data from. Omit `filters` if no filtering is required.
         axes:
           type: array
           items:
-            $ref: '#/components/schemas/QueryAxisDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.QueryAxisDTO'
           description: |-
             The objects by which to group the query. An axis defines the groups that the data belongs to.
              Omit `axes` if no grouping is required.
         timeIntervals:
           allOf:
-            - $ref: '#/components/schemas/QueryTimeIntervalsDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryTimeIntervalsDTO'
           description: The time intervals to query.
         parameterValues:
           type: array
           items:
-            $ref: '#/components/schemas/QueryParameterValueDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.QueryParameterValueDTO'
           description: The values associated with parameters, if defined.
       description: |-
         An AggregationQuery defines the data to query in an aggregation query and returns a `cell set` calculated from
          the selected data points.
-    AggregationQueryExecutionDTO:
+    dataservices.query.transfers.AggregationQueryExecutionDTO:
       type: object
       properties:
         query:
           allOf:
-            - $ref: '#/components/schemas/AggregationQueryDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.AggregationQueryDTO'
           description: |-
             The data to perform an aggregation on, such as a metric or formula. The query must include a time interval,
              and may optionally include filters and axes.
         options:
           allOf:
-            - $ref: '#/components/schemas/QueryExecutionOptionsDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryExecutionOptionsDTO'
           description: Additional instructions for your query, such as a calendar type or conversion information.
       description: An AggregationQueryExecution provides instructions to perform your aggregation query.
-    AggregationQuerySourceDTO:
+    dataservices.query.transfers.AggregationQuerySourceDTO:
       type: object
       properties:
         formula:
@@ -948,7 +1359,7 @@ components:
           description: The ID of an existing metric in your Visier solution. See `Metrics` to get the ID.
         metrics:
           allOf:
-            - $ref: '#/components/schemas/AggregationQuerySourceMetricsDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.AggregationQuerySourceMetricsDTO'
           description: |-
             The IDs of metrics to aggregate. All metrics in the query must reference the same analytic object.
              For example, you cannot query Headcount and Applicant Count because one uses the Employee subject and
@@ -956,7 +1367,7 @@ components:
              reference the Employee subject. Only available when the Accept header is text/csv. For more information,
              see `Aggregate`.
       description: An AggregationQuerySource defines the source data to query in an aggregation query.
-    AggregationQuerySourceMetricDTO:
+    dataservices.query.transfers.AggregationQuerySourceMetricDTO:
       type: object
       properties:
         columnName:
@@ -1022,20 +1433,20 @@ components:
                  * `applicantCount`: Applicant.Requisition.Recruiter.Direct_Manager
                  * `requisitionCount`: Requisition.Recruiter.Direct_Manager
       description: The column definition for a single metric within a `metrics` query.
-    AggregationQuerySourceMetricsDTO:
+    dataservices.query.transfers.AggregationQuerySourceMetricsDTO:
       type: object
       properties:
         columns:
           type: array
           items:
-            $ref: '#/components/schemas/AggregationQuerySourceMetricDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.AggregationQuerySourceMetricDTO'
           description: An array of metric columns.
       description: |-
         The IDs and column names of multiple metrics.
 
          **Note:**
          Only available when the `Accept` header is text/csv. For more information, see `Aggregate`
-    AggregationTypeParameterValueDTO:
+    dataservices.query.transfers.AggregationTypeParameterValueDTO:
       type: object
       properties:
         parameterId:
@@ -1045,7 +1456,7 @@ components:
           type: string
           description: The unique ID of the aggregation option.
       description: The value for an aggregation parameter.
-    CellDTO:
+    dataservices.query.transfers.CellDTO:
       type: object
       properties:
         value:
@@ -1063,12 +1474,12 @@ components:
         distribution:
           type: array
           items:
-            $ref: '#/components/schemas/CellDistributionBinDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.CellDistributionBinDTO'
           description: |-
             The optional distribution of this cell.
              This will be populated if distribution calculation is requested, and supported by the query.
       description: An individual value in a cell set.
-    CellDistributionBinDTO:
+    dataservices.query.transfers.CellDistributionBinDTO:
       type: object
       properties:
         value:
@@ -1078,7 +1489,7 @@ components:
       description: |-
         A cell distribution bin.
          Each bin has a metric value (of the bin) and the number of observations contributing to the bin.
-    CellDistributionOptionsDTO:
+    dataservices.query.transfers.CellDistributionOptionsDTO:
       type: object
       properties:
         binCount:
@@ -1088,20 +1499,20 @@ components:
       description: |-
         Cell distribution options for queries.
          Include with aggregation queries to enable distribution calculation per cell.
-    CellSetAxisDTO:
+    dataservices.query.transfers.CellSetAxisDTO:
       type: object
       properties:
         dimension:
           allOf:
-            - $ref: '#/components/schemas/DimensionReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionReferenceDTO'
           description: The dimension associated with the axis.
         positions:
           type: array
           items:
-            $ref: '#/components/schemas/CellSetAxisPositionDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.CellSetAxisPositionDTO'
           description: A list of paths that represent the data's positions along the axis.
       description: The axis of a cell set associated with a dimension.
-    CellSetAxisPositionDTO:
+    dataservices.query.transfers.CellSetAxisPositionDTO:
       type: object
       properties:
         path:
@@ -1120,39 +1531,39 @@ components:
             type: string
           description: Optional display name path of the member.
       description: The position along the axis of a cell set.
-    CellSetDTO:
+    dataservices.query.transfers.CellSetDTO:
       type: object
       properties:
         cells:
           type: array
           items:
-            $ref: '#/components/schemas/CellDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.CellDTO'
           description: The set of cells that represent the result of your query.
         axes:
           type: array
           items:
-            $ref: '#/components/schemas/CellSetAxisDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.CellSetAxisDTO'
           description: The set of axes for the cell set that represent the objects the data is grouped by.
         lineage:
           allOf:
-            - $ref: '#/components/schemas/LineageDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.LineageDTO'
           description: Lineage information for this cell set. This can be omitted if the cell has no lineage or the user did not request lineage information.
       description: |-
         The set of cells returned from executing an aggregation query.
          A CellSet represents a structured, multidimensional array of values.
-    CohortFilterDTO:
+    dataservices.query.transfers.CohortFilterDTO:
       type: object
       properties:
         keyGroup:
           allOf:
-            - $ref: '#/components/schemas/KeyGroupFilterDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.KeyGroupFilterDTO'
           description: A key group is a collection of filters that define the shape of the analysis population.
         exclude:
           type: boolean
           description: If true, the population is defined by those excluded by the filters. Default is false.
         timeInterval:
           allOf:
-            - $ref: '#/components/schemas/QueryTimeIntervalDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryTimeIntervalDTO'
           description: The time at which to apply the key group, such as a specific day or period of months.
       description: |-
         Use a cohort filter to define a population as it existed during a specific time period.
@@ -1161,230 +1572,7 @@ components:
          time at which the key group should be applied.
          Cohorts are typically used to follow populations and understand changes to the population over time,
          such as promotion and resignation rates.
-    DataVersionExportColumnDTO:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The column's name.
-        dataType:
-          type: string
-          description: The column's data type. Possible data types are string, integer, number, date, Boolean.
-        allowsNull:
-          type: boolean
-          description: If `true`, the column allows null values.
-        isPrimaryKeyComponent:
-          type: boolean
-          description: If `true`, the column is part of the primary key.
-    DataVersionExportDTO:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: The unique identifier of the data version export. Must be a valid UUID.
-        timestamp:
-          type: string
-          description: The date that the data version export was generated, in milliseconds since 1970-01-01T00:00:00Z.
-        dataVersionNumber:
-          type: string
-          description: The data version number for which the export was generated.
-        baseDataVersionNumber:
-          type: string
-          description: The baseline data version number for which the export was generated. If specified, the export is a delta of the differences between `dateVersionNumber` and `baseDataVersionNumber`. If empty, a full export is generated for `dataVersionNumber`.
-        tables:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataVersionExportTableDTO'
-          description: Information about the tables in the export.
-        newTables:
-          type: array
-          items:
-            type: string
-          description: Tables that exist in `dataVersionNumber` but did not exist in `baseDataVersionNumber`.
-        deletedTables:
-          type: array
-          items:
-            type: string
-          description: Tables that do not exist in `dataVersionNumber` but did exist in `baseDataVersionNumber`.
-    DataVersionExportDataVersionSummaryDTO:
-      type: object
-      properties:
-        dataVersion:
-          type: string
-          description: The data version number.
-        dataCategory:
-          type: string
-          description: The data category that the data version belongs to. If empty, the data version belongs to the default data category.
-        created:
-          type: string
-          description: The date that the data version was generated, in milliseconds since 1970-01-01T00:00:00Z.
-    DataVersionExportDataVersionsDTO:
-      type: object
-      properties:
-        dataVersions:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataVersionExportDataVersionSummaryDTO'
-          description: All the available data versions for the tenant's primary data category.
-    DataVersionExportFileDTO:
-      type: object
-      properties:
-        columns:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataVersionExportColumnDTO'
-          description: Information about a table's columns.
-        files:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataVersionExportPartFileDTO'
-          description: Information about a table's files in the export.
-    DataVersionExportJobStatusDTO:
-      type: object
-      properties:
-        jobUuid:
-          type: string
-          description: The unique identifier of the data version export job.
-        completed:
-          type: boolean
-          description: If `true`, the job completed successfully.
-        failed:
-          type: boolean
-          description: If `true`, the job failed.
-        exportUuid:
-          type: string
-          description: The unique identifier of the data version export generated by the job. If empty, the job hasn't completed successfully.
-    DataVersionExportPartFileDTO:
-      type: object
-      properties:
-        fileId:
-          type: integer
-          description: The unique integer identifier of the file in the data version export.
-          format: int32
-        filename:
-          type: string
-          description: The file's name.
-    DataVersionExportScheduleJobRequestDTO:
-      type: object
-      properties:
-        dataVersionNumber:
-          type: string
-          description: The data version number to generate an export for.
-        baseDataVersionNumber:
-          type: string
-          description: |-
-            Optional. The baseline data version number to use to generate a delta export.
-             Delta exports contain the differences between `baseDataVersionNumber` and
-             `dataVersionNumber`, such as anything updated, added, or removed in `dataVersionNumber`.
-             If `baseDataVersionNumber` is not provided, a full export generates for `dataVersionNumber`.
-    DataVersionExportScheduleJobResponseDTO:
-      type: object
-      properties:
-        jobUuid:
-          type: string
-          description: The unique identifier of the scheduled data version export job.
-    DataVersionExportTableDTO:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of a table in the data version export; for example, Employee or Applicant.
-        commonColumns:
-          allOf:
-            - $ref: '#/components/schemas/DataVersionExportFileDTO'
-          description: Information about the columns and files that are in both `dataVersionNumber` and `baseDataVersionNumber`. Always empty for full exports where `baseDataVersionNumber` is not specified.
-        newColumns:
-          allOf:
-            - $ref: '#/components/schemas/DataVersionExportFileDTO'
-          description: |-
-            Information about new columns and files in the data version.
-             If full export, lists all columns. If delta export, lists columns that exist in `dataVersionNumber` but not in `baseDataVersionNumber`.
-        deletedColumns:
-          type: array
-          items:
-            type: string
-          description: Information about columns that do not exist in `dataVersionNumber` but did exist in `baseDataVersionNumber`.
-    DataVersionExportsDTO:
-      type: object
-      properties:
-        dataVersionExports:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataVersionExportDTO'
-          description: Information about data version exports.
-    DimensionMemberReferenceDTO:
-      type: object
-      properties:
-        path:
-          type: array
-          items:
-            type: string
-          description: |-
-            A list of strings representing the members within a dimension path. For example, a dimension for Location
-             may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
-      description: The members of a dimension.
-    DimensionReferenceDTO:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The ID of the dimension. See `Dimensions` to get the ID.
-        qualifyingPath:
-          type: string
-          description: |-
-            The qualifying path to the dimension in Visier, such as the analytic object or event the dimension is
-             associated with. If the path has multiple objects, each object is separated by a period.
-      description: The name and qualifying path of a dimension to query.
-    DocumentSearchLinkDTO:
-      type: object
-      properties:
-        href:
-          type: string
-          description: The URL pointing to the specific document.
-        verb:
-          type: string
-          description: The verb to use when formulating the web request. This is commonly `GET`.
-      description: Defines the attributes of a web request to reference documents in the search results.
-    DownloadSourceFilesDTO:
-      type: object
-      properties:
-        downloadAll:
-          type: boolean
-          description: If `true`, downloads all uploaded files for all sources. Default is `false`.
-        sources:
-          type: array
-          items:
-            type: string
-          description: A comma-separated list of strings representing the object name of each source to download.
-        sourceIds:
-          type: array
-          items:
-            type: string
-          description: A comma-separated list of strings representing the unique identifier of each source to download.
-        minTimestamp:
-          type: string
-          description: The earliest upload time to download files from in ISO-8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files from the earliest available time.
-        maxTimestamp:
-          type: string
-          description: The latest upload time to download files up to in ISO-8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files up to the latest available time.
-    DownloadSourceFilesResponseDTO:
-      type: object
-      properties:
-        status:
-          type: string
-          description: The download request status, such as `Error`.
-        messages:
-          type: string
-          description: A description of the request status.
-    GoogleProtobufAny:
-      type: object
-      properties:
-        '@type':
-          type: string
-          description: The type of the serialized message.
-      additionalProperties: true
-      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-    InternalQueryExecutionOptionsDTO:
+    dataservices.query.transfers.InternalQueryExecutionOptionsDTO:
       type: object
       properties:
         sparseHandlingMode:
@@ -1407,15 +1595,15 @@ components:
              Example: If the timestamps are originally [`2019-05-01T00:00:00.000Z/2019-06-01T00:00:00.000Z`, `2019-04-01T00:00:00.000Z/2019-05-01T00:00:00.000Z`],
              then `alignTimeAxisPeriodEnd` turns the timestamps into [`2019-05-01T00:00:00.000Z/2019-05-31T23:59:59.999Z`, `2019-04-01T00:00:00.000Z/2019-04-30T23:59:59.999Z`].
       description: Internal options - not to be documented or used by external parties
-    KeyGroupFilterDTO:
+    dataservices.query.transfers.KeyGroupFilterDTO:
       type: object
       properties:
         filters:
           type: array
           items:
-            $ref: '#/components/schemas/KeyGroupFilterItemDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.KeyGroupFilterItemDTO'
       description: A collection of related filters that define a key group.
-    KeyGroupFilterItemDTO:
+    dataservices.query.transfers.KeyGroupFilterItemDTO:
       type: object
       properties:
         formula:
@@ -1423,62 +1611,62 @@ components:
           description: A filter expressed as a formula.
         selectionConcept:
           allOf:
-            - $ref: '#/components/schemas/SelectionConceptReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.SelectionConceptReferenceDTO'
           description: A filter that uses an existing selection concept in Visier.
         memberSet:
           allOf:
-            - $ref: '#/components/schemas/MemberFilterDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.MemberFilterDTO'
           description: A filter that includes or excludes dimension members.
       description: An individual filter in a key group.
-    LineageDTO:
+    dataservices.query.transfers.LineageDTO:
       type: object
       properties:
         cellSets:
           type: array
           items:
-            $ref: '#/components/schemas/CellSetDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.CellSetDTO'
           description: The cell sets that constitute this lineage.
         op:
           type: string
           description: The operation used to combine the cell sets of this lineage.
       description: Lineage information for a given cell set. This describes how a cell set is created from other cell sets.
-    ListQueryExecutionDTO:
+    dataservices.query.transfers.ListQueryExecutionDTO:
       type: object
       properties:
         source:
           allOf:
-            - $ref: '#/components/schemas/ListQuerySourceDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.ListQuerySourceDTO'
           description: The source data that you want to query.
         columns:
           type: array
           items:
-            $ref: '#/components/schemas/PropertyColumnDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.PropertyColumnDTO'
           description: The columns to include in the result. This must contain at least one column.
         sortOptions:
           type: array
           items:
-            $ref: '#/components/schemas/SortOptionDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.SortOptionDTO'
           description: The index and direction to sort a column in the `columns` array.
         filters:
           type: array
           items:
-            $ref: '#/components/schemas/QueryFilterDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.QueryFilterDTO'
           description: The filters of this query. Omit `filters` if no filtering is required.
         timeInterval:
           allOf:
-            - $ref: '#/components/schemas/QueryTimeIntervalDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryTimeIntervalDTO'
           description: The time that the data is valid, such as a specific day or period of months.
         parameterValues:
           type: array
           items:
-            $ref: '#/components/schemas/QueryParameterValueDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.QueryParameterValueDTO'
           description: The parameter values for either member or numeric parameters.
         options:
           allOf:
-            - $ref: '#/components/schemas/ListQueryExecutionOptionsDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.ListQueryExecutionOptionsDTO'
           description: Additional instructions for your query, such as a calendar type or conversion information.
       description: A ListQueryExecution provides instructions to perform a list query.
-    ListQueryExecutionOptionsDTO:
+    dataservices.query.transfers.ListQueryExecutionOptionsDTO:
       type: object
       properties:
         limit:
@@ -1561,7 +1749,7 @@ components:
              * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format.
           format: enum
       description: A ListQueryExecutionOptions provides additional instructions to perform a list query.
-    ListQuerySourceDTO:
+    dataservices.query.transfers.ListQuerySourceDTO:
       type: object
       properties:
         formula:
@@ -1582,31 +1770,22 @@ components:
              A concept that defines the text properties of an analytic object and includes filters to enforce aggregate thresholds.
              <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       description: A ListQuerySource defines the source data to query in a list query.
-    ListResponse:
-      type: object
-      properties:
-        header:
-          $ref: '#/components/schemas/GoogleProtobufAny'
-        rows:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleProtobufAny'
-    MemberFilterDTO:
+    dataservices.query.transfers.MemberFilterDTO:
       type: object
       properties:
         dimension:
           allOf:
-            - $ref: '#/components/schemas/DimensionReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionReferenceDTO'
           description: The dimension in which the members belong.
         values:
           allOf:
-            - $ref: '#/components/schemas/MemberValuesDTO'
+            - $ref: '#/components/schemas/dataservices.common.MemberValuesDTO'
           description: The dimension members to filter by.
       description: |-
         Member filters are dimension member values to filter by in your query. The member filters are
          defined within the filters section of a query definition. You can filter by dimension members in
          aggregate and list queries.
-    MemberParameterValueDTO:
+    dataservices.query.transfers.MemberParameterValueDTO:
       type: object
       properties:
         parameterId:
@@ -1622,31 +1801,12 @@ components:
           description: The analytic object reference path from the metric to the dimension.
         values:
           allOf:
-            - $ref: '#/components/schemas/MemberValuesDTO'
+            - $ref: '#/components/schemas/dataservices.common.MemberValuesDTO'
           description: The included and excluded member references in a dimension filter.
       description: |-
         The member value of a parameter, including the parameter ID, dimension that the parameter is based on,
          and the included and excluded members for the parameter.
-    MemberValuesDTO:
-      type: object
-      properties:
-        included:
-          type: array
-          items:
-            $ref: '#/components/schemas/DimensionMemberReferenceDTO'
-          description: The unique IDs of members to include when evaluating the metric.
-        excluded:
-          type: array
-          items:
-            $ref: '#/components/schemas/DimensionMemberReferenceDTO'
-          description: The unique IDs of members to exclude when evaluating the metric.
-      description: |-
-        Member filter values are discrete member references in a dimension filter. You can define
-         included and excluded members simultaneously. This is typically done with filtering applied on
-         dimensions with multiple levels. For example, a Location parameter may include “South
-         America” and exclude “Brazil” which results in the metric being evaluated for all South American
-         countries except Brazil.
-    NumericParameterValueDTO:
+    dataservices.query.transfers.NumericParameterValueDTO:
       type: object
       properties:
         parameterId:
@@ -1657,7 +1817,7 @@ components:
           description: The numeric value of the parameter.
           format: double
       description: The value of a numeric parameter, including the parameter ID and the numeric value passed into the parameter.
-    PlanParameterValueDTO:
+    dataservices.query.transfers.PlanParameterValueDTO:
       type: object
       properties:
         parameterId:
@@ -1673,7 +1833,7 @@ components:
           type: string
           description: The unique ID of the snapshot the parameter is based on.
       description: The value for a parameter on a planning metric, including the parameter ID and the plan the parameter is based on.
-    PropertyColumnDTO:
+    dataservices.query.transfers.PropertyColumnDTO:
       type: object
       properties:
         columnName:
@@ -1683,22 +1843,10 @@ components:
              If not specified, the name of the property is used, or a generic column name if the property is unnamed.
         columnDefinition:
           allOf:
-            - $ref: '#/components/schemas/QueryPropertyDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryPropertyDTO'
           description: The definition of the property to query on.
       description: A named, result column of a list query.
-    PropertyReferenceDTO:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The ID of the property. See `Properties` to get the ID.
-        qualifyingPath:
-          type: string
-          description: |-
-            The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.
-             If the path has multiple objects, each object is separated by a period.
-      description: The name and qualifying path of a property to query.
-    QueryAxisDTO:
+    dataservices.query.transfers.QueryAxisDTO:
       type: object
       properties:
         formula:
@@ -1706,44 +1854,44 @@ components:
           description: An axis expressed as a formula.
         selectionConcept:
           allOf:
-            - $ref: '#/components/schemas/SelectionConceptReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.SelectionConceptReferenceDTO'
           description: |-
             An axis that uses an existing selection concept in Visier.
              The resulting axis consists of 3 positions: True, False, and Unknown.
         dimensionMemberSelection:
           allOf:
-            - $ref: '#/components/schemas/QueryDimensionMemberSelectionDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryDimensionMemberSelectionDTO'
           description: An axis that uses existing dimension members in Visier.
         memberMapSelection:
           allOf:
-            - $ref: '#/components/schemas/QueryMemberMapSelectionDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryMemberMapSelectionDTO'
           description: An axis that uses an existing member map in Visier.
         numericRanges:
           allOf:
-            - $ref: '#/components/schemas/QueryNumericRangesDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryNumericRangesDTO'
           description: An axis that uses an existing range dimension in Visier and defines the ranges to query.
         dimensionLevelSelection:
           allOf:
-            - $ref: '#/components/schemas/QueryDimensionLevelSelectionDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryDimensionLevelSelectionDTO'
           description: An axis that uses levels of existing dimensions in Visier.
         dimensionLeafMemberSelection:
           allOf:
-            - $ref: '#/components/schemas/QueryDimensionLeafSelectionDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryDimensionLeafSelectionDTO'
           description: An axis comprised of all non-data leaf members of an existing dimension in Visier.
         dimensionDataMemberSelection:
           allOf:
-            - $ref: '#/components/schemas/QueryDimensionDataMemberSelectionDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryDimensionDataMemberSelectionDTO'
           description: An axis comprised of all leaf, including data, members of an existing dimension in Visier.
         dimensionLevelWithUncategorizedValueSelection:
           allOf:
-            - $ref: '#/components/schemas/QueryDimensionLevelSelectionDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryDimensionLevelSelectionDTO'
           description: An axis that uses existing dimension levels in Visier, including uncategorized levels.
         tableAxisOptions:
           allOf:
-            - $ref: '#/components/schemas/QueryAxisOptionsDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryAxisOptionsDTO'
           description: Additional transformations to perform on this axis. Only available when the Accept header is a table format, such as text/csv or application/jsonlines.
       description: An axis of a query used to group data points.
-    QueryAxisOptionsDTO:
+    dataservices.query.transfers.QueryAxisOptionsDTO:
       type: object
       properties:
         memberDisplayMode:
@@ -1768,35 +1916,35 @@ components:
       description: |-
         QueryAxisOptions allows you to customize an axis in the query, such as changing the display mode for its cell set values or providing a custom column name.
          Only available when the Accept header is a table format, such as text/csv or application/jsonlines.
-    QueryDimensionDataMemberSelectionDTO:
+    dataservices.query.transfers.QueryDimensionDataMemberSelectionDTO:
       type: object
       properties:
         dimension:
           allOf:
-            - $ref: '#/components/schemas/DimensionReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionReferenceDTO'
           description: A dimension and its qualifying path to query.
       description: |-
         A QueryDimensionLeafSelection allows you to define a member set consisting exclusively
          of leaf-level, including data, members for the given dimension. Leaf members are those members that have
          no descendents. A member may be a leaf member regardless of the level it is positioned at.
-    QueryDimensionLeafSelectionDTO:
+    dataservices.query.transfers.QueryDimensionLeafSelectionDTO:
       type: object
       properties:
         dimension:
           allOf:
-            - $ref: '#/components/schemas/DimensionReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionReferenceDTO'
           description: A dimension and its qualifying path to query.
       description: |-
         A QueryDimensionLeafSelection allows you to define a member set consisting exclusively
          of leaf-level members for the given dimension. Leaf members are those members that have
          no descendents. A member may be a leaf member regardless of the level it is positioned at.
          This member selection option, excludes data members.
-    QueryDimensionLevelPropertyDTO:
+    dataservices.query.transfers.QueryDimensionLevelPropertyDTO:
       type: object
       properties:
         dimension:
           allOf:
-            - $ref: '#/components/schemas/DimensionReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionReferenceDTO'
           description: A dimension and its qualifying path to query.
         memberValueMode:
           enum:
@@ -1819,12 +1967,12 @@ components:
           description: The level depth.
           format: int32
       description: A QueryDimensionLevelPropertyDTO defines an existing dimension level and its dimension to query.
-    QueryDimensionLevelSelectionDTO:
+    dataservices.query.transfers.QueryDimensionLevelSelectionDTO:
       type: object
       properties:
         dimension:
           allOf:
-            - $ref: '#/components/schemas/DimensionReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionReferenceDTO'
           description: A dimension and its qualifying path to query.
         levelIds:
           type: array
@@ -1834,24 +1982,24 @@ components:
       description: |-
         A QueryDimensionLevelSelection allows you to select a dimension level and its members without
          explicitly listing each member. To see the correct notation for levels, see `Dimension`.
-    QueryDimensionMemberSelectionDTO:
+    dataservices.query.transfers.QueryDimensionMemberSelectionDTO:
       type: object
       properties:
         dimension:
           allOf:
-            - $ref: '#/components/schemas/DimensionReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionReferenceDTO'
           description: A dimension and its qualifying path to query.
         members:
           type: array
           items:
-            $ref: '#/components/schemas/DimensionMemberReferenceDTO'
+            $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
           description: A collection of dimension members to select in the query. This must contain at least one member.
       description: A QueryDimensionMemberSelection defines dimension members to select in the query.
-    QueryEffectiveDatePropertyDTO:
+    dataservices.query.transfers.QueryEffectiveDatePropertyDTO:
       type: object
       properties: {}
       description: A special property that yields the effective date for the record
-    QueryExecutionOptionsDTO:
+    dataservices.query.transfers.QueryExecutionOptionsDTO:
       type: object
       properties:
         calendarType:
@@ -1900,7 +2048,7 @@ components:
           description: Show or hide null or N/A values in the result. Default is SHOW.
           format: enum
         cellDistributionOptions:
-          $ref: '#/components/schemas/CellDistributionOptionsDTO'
+          $ref: '#/components/schemas/dataservices.query.transfers.CellDistributionOptionsDTO'
         axisVisibility:
           enum:
             - SIMPLE
@@ -1914,7 +2062,7 @@ components:
             Retrieve sparse cell sets. Sparse results only retrieve non-zero and non-null cells. Whether a result is truly sparse
              or not is determined by the Visier server.
         internal:
-          $ref: '#/components/schemas/InternalQueryExecutionOptionsDTO'
+          $ref: '#/components/schemas/dataservices.query.transfers.InternalQueryExecutionOptionsDTO'
         enableDescendingSpace:
           type: boolean
           description: If true, filter non-time axis member sets to only include members that are in aggregate positions or whose previous position is a leaf
@@ -1962,7 +2110,7 @@ components:
           description: "If `axes` is defined, use `axesOverallValueMode` to specify the type of overall values to return across the axes. Valid values:\n\n * `NONE`: Returns the metric's values for the selected axes and doesn't return overall values. This is the default.\n * `AGGREGATE`: Returns the metric's overall values for the selected axes members.\n * `OVERALL`: Returns the metric's overall values for all axes members.\n\n **Note**: `AGGREGATE` is not supported for lookup overlays because the overall values of selected members cannot be calculated directly from the data.\n\n Example: Let's say you want to know the Headcount of the locations Canada and US and the genders Male and Female. \n\n When `axesOverallValueMode` is `NONE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n \n When `axesOverallValueMode` is `AGGREGATE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 400 (Overall, Overall)\n * 200 (Overall, Male)\n * 200 (Overall, Female)\n * 200 (Canada, Overall)\n * 200 (US, Overall)\n\n When `axesOverallValueMode` is `OVERALL`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 800 (Overall, Overall)\n * 400 (Overall, Male)\n * 400 (Overall, Female)\n * 400 (Canada, Overall)\n * 400 (US, Overall)\n \n In this example, `OVERALL` returns higher overall values than `AGGREGATE` because `AGGREGATE` returns the overall values for the selected locations (Canada, US) and genders (Male, Female), whereas `OVERALL` returns the overall values across all locations and genders in the data."
           format: enum
       description: A QueryExecutionOptions provides additional instructions to perform a query.
-    QueryFilterDTO:
+    dataservices.query.transfers.QueryFilterDTO:
       type: object
       properties:
         formula:
@@ -1970,34 +2118,34 @@ components:
           description: A filter expressed as a formula.
         selectionConcept:
           allOf:
-            - $ref: '#/components/schemas/SelectionConceptReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.SelectionConceptReferenceDTO'
           description: A filter that uses an existing selection concept in Visier.
         memberSet:
           allOf:
-            - $ref: '#/components/schemas/MemberFilterDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.MemberFilterDTO'
           description: A filter that includes or excludes dimension members.
         cohort:
           allOf:
-            - $ref: '#/components/schemas/CohortFilterDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.CohortFilterDTO'
           description: A filter that identifies a population at a specific time.
       description: A QueryFilter selects specific data points within a population.
-    QueryMemberMapPropertyDTO:
+    dataservices.query.transfers.QueryMemberMapPropertyDTO:
       type: object
       properties:
         memberMap:
           allOf:
-            - $ref: '#/components/schemas/DimensionReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionReferenceDTO'
           description: A member map and its qualifying path to query.
         targetDimensionName:
           type: string
           description: The name of the member map's dimension that you want to query. The member selection is based on this dimension.
       description: A QueryMemberMapProperty defines an existing member map and its dimension to query.
-    QueryMemberMapSelectionDTO:
+    dataservices.query.transfers.QueryMemberMapSelectionDTO:
       type: object
       properties:
         memberMap:
           allOf:
-            - $ref: '#/components/schemas/DimensionReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionReferenceDTO'
           description: A member map and its qualifying path to query.
         targetDimensionName:
           type: string
@@ -2005,19 +2153,19 @@ components:
         members:
           type: array
           items:
-            $ref: '#/components/schemas/DimensionMemberReferenceDTO'
+            $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
           description: A collection of the selected dimension members from the `targetDimension`. This must contain at least one member.
       description: |-
         A QueryMemberMapSelection groups data in a query by dimension members in a member map.
          This allows grouping by a dimension that isn't typically valid on the analytic object being
          queried by selecting a valid member map on the analytic object.
          Note: This is unique to the data query API and cannot be reproduced in Visier's interface.
-    QueryNumericRangesDTO:
+    dataservices.query.transfers.QueryNumericRangesDTO:
       type: object
       properties:
         property:
           allOf:
-            - $ref: '#/components/schemas/QueryPropertyDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryPropertyDTO'
           description: The name and qualifying path of a numeric property. Non-numeric properties are not accepted.
         ranges:
           type: string
@@ -2032,27 +2180,27 @@ components:
           type: boolean
           description: If `true`, a member is included that represents all members on the axis. Default is false.
       description: A QueryNumericRanges groups data into specified ranges based on a property value.
-    QueryParameterValueDTO:
+    dataservices.query.transfers.QueryParameterValueDTO:
       type: object
       properties:
         memberValue:
           allOf:
-            - $ref: '#/components/schemas/MemberParameterValueDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.MemberParameterValueDTO'
           description: A value for a member parameter.
         numericValue:
           allOf:
-            - $ref: '#/components/schemas/NumericParameterValueDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.NumericParameterValueDTO'
           description: A value for a numeric parameter.
         planValue:
           allOf:
-            - $ref: '#/components/schemas/PlanParameterValueDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.PlanParameterValueDTO'
           description: A value for a plan parameter.
         aggregationTypeValue:
           allOf:
-            - $ref: '#/components/schemas/AggregationTypeParameterValueDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.AggregationTypeParameterValueDTO'
           description: A value for an aggregation parameter.
       description: An object that contains parameter values for either member or numeric parameters.
-    QueryPropertyDTO:
+    dataservices.query.transfers.QueryPropertyDTO:
       type: object
       properties:
         formula:
@@ -2060,32 +2208,32 @@ components:
           description: A formula-based property.
         property:
           allOf:
-            - $ref: '#/components/schemas/PropertyReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.PropertyReferenceDTO'
           description: A property reference.
         selectionConcept:
           allOf:
-            - $ref: '#/components/schemas/SelectionConceptReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.SelectionConceptReferenceDTO'
           description: A selection concept-based property that returns true or false.
         dimension:
           allOf:
-            - $ref: '#/components/schemas/DimensionReferenceDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionReferenceDTO'
           description: A dimension-based property that returns the full name path of the dimension member that the data point is mapped to.
         memberMapProperty:
           allOf:
-            - $ref: '#/components/schemas/QueryMemberMapPropertyDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryMemberMapPropertyDTO'
           description: A member map-based property that uses an existing member map in Visier.
         effectiveDateProperty:
           allOf:
-            - $ref: '#/components/schemas/QueryEffectiveDatePropertyDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryEffectiveDatePropertyDTO'
           description: A property that yields the effective date for the record
         dimensionLevelSelection:
           allOf:
-            - $ref: '#/components/schemas/QueryDimensionLevelPropertyDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryDimensionLevelPropertyDTO'
           description: A dimension-based property that returns the member values of the dimension level.
       description: |-
         A QueryProperty defines a property of a data point returned from a query.
          This is not the same as a `property` in Visier's data mode.
-    QueryTimeIntervalDTO:
+    dataservices.query.transfers.QueryTimeIntervalDTO:
       type: object
       properties:
         fromInstant:
@@ -2131,12 +2279,12 @@ components:
           format: enum
         shift:
           allOf:
-            - $ref: '#/components/schemas/TimeShiftDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.TimeShiftDTO'
           description: The amount of time to shift the time interval by, such as backward by one year. Default is none.
       description: |-
         A QueryTimeInterval defines the time interval to query, including the "from" time, period type,
          period count, time direction, and shift to apply
-    QueryTimeIntervalsDTO:
+    dataservices.query.transfers.QueryTimeIntervalsDTO:
       type: object
       properties:
         fromInstant:
@@ -2186,7 +2334,7 @@ components:
           format: enum
         shift:
           allOf:
-            - $ref: '#/components/schemas/TimeShiftDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.TimeShiftDTO'
           description: The amount of time to shift the time interval by, such as backward by one year.
         trailingPeriodType:
           enum:
@@ -2210,155 +2358,42 @@ components:
       description: |-
         A QueryTimeIntervals defines a series of time intervals to query, including the "from" time, period type, period count,
          number of intervals, time direction, and shift to apply to each time interval.
-    ReportCreateRequestDTO:
-      type: object
-      properties:
-        title:
-          type: string
-          description: The localized title of the report.
-        description:
-          type: string
-          description: The localized description of the report.
-      description: The request to create a new report.
-    ReportDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique ID of the report.
-        title:
-          type: string
-          description: The localized title of the report.
-        description:
-          type: string
-          description: The localized description of the report.
-        updatedTime:
-          type: string
-          description: The time in epoch milliseconds when the report was last updated.
-        isPublishedReport:
-          type: boolean
-          description: If `true`, the report is published through a project.
-        owner:
-          type: string
-          description: The owner of the report.
-        isOwnedByUser:
-          type: boolean
-          description: If `true`, you are the owner of the report.
-        allowedActions:
-          type: array
-          items:
-            enum:
-              - duplicate
-              - delete
-              - edit
-              - download
-              - share
-            type: string
-            format: enum
-          description: |-
-            The actions that you can perform on the report.
-
-             Valid values are:
-             - `duplicate`: The user can make their own copy of this report.
-             - `delete`: The user can delete this report.
-             - `edit`: The user can edit this report directly.
-             - `download`: The user can download this report as a CSV.
-             - `share`: The user can share this report with other users or user groups.
-        link:
-          type: string
-          description: The link to the report.
-      description: The information of a single report.
-    ReportDeleteSuccessDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique ID of the deleted report.
-      description: The report that was successfully deleted.
-    ReportListResponseDTO:
-      type: object
-      properties:
-        reports:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReportDTO'
-          description: A list of reports.
-      description: The information of all the reports you have access to in your tenant.
-    SelectionConceptReferenceDTO:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The ID of the selection concept. See `SelectionConcepts` to get the ID.
-        qualifyingPath:
-          type: string
-          description: |-
-            The qualifying path to the selection concept in Visier, such as the analytic object or event the selection
-             concept is associated with. If the path has multiple objects, each object is separated by a period.
-      description: The name and qualifying path of a selection concept to query.
-    SimpleDocumentHeaderSearchResponseDTO:
-      type: object
-      properties:
-        documentHeaders:
-          type: array
-          items:
-            $ref: '#/components/schemas/SimpleDocumentHeaderSearchResultDTO'
-          description: The ordered collection of document header search results. The results are sorted according to their relevance in a descending order.
-      description: The response body structure for Simple document header search operations.
-    SimpleDocumentHeaderSearchResultDTO:
-      type: object
-      properties:
-        displayName:
-          type: string
-          description: The display name of the element in the search result.
-        description:
-          type: string
-          description: The `Web Template Framework` representation of the search result element. This commonly displayed alongside the result by search portals.
-        relevance:
-          type: number
-          description: The relevance of the search result and a number between `0` and `100`.
-          format: double
-        viewLink:
-          allOf:
-            - $ref: '#/components/schemas/DocumentSearchLinkDTO'
-          description: Use the `viewLink` to build a web request to view this document.
-      description: Structure of a single document header search using the Simple search operation.
-    SnapshotQueryExecutionDTO:
+    dataservices.query.transfers.SnapshotQueryExecutionDTO:
       type: object
       properties:
         source:
           allOf:
-            - $ref: '#/components/schemas/ListQuerySourceDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.ListQuerySourceDTO'
           description: The source data that you want to query.
         columns:
           type: array
           items:
-            $ref: '#/components/schemas/PropertyColumnDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.PropertyColumnDTO'
           description: The columns to include in the result. This must contain at least one column.
         sortOptions:
           type: array
           items:
-            $ref: '#/components/schemas/SortOptionDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.SortOptionDTO'
           description: The index and direction to sort a column in the `columns` array.
         filters:
           type: array
           items:
-            $ref: '#/components/schemas/QueryFilterDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.QueryFilterDTO'
           description: The filters of this query. Omit `filters` if no filtering is required.
         timeIntervals:
           allOf:
-            - $ref: '#/components/schemas/QueryTimeIntervalsDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryTimeIntervalsDTO'
           description: The time intervals to query.
         parameterValues:
           type: array
           items:
-            $ref: '#/components/schemas/QueryParameterValueDTO'
+            $ref: '#/components/schemas/dataservices.query.transfers.QueryParameterValueDTO'
           description: The parameter values for either member or numeric parameters.
         options:
           allOf:
-            - $ref: '#/components/schemas/SnapshotQueryExecutionOptionsDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.SnapshotQueryExecutionOptionsDTO'
           description: Additional instructions for your query, such as a calendar type or conversion information.
-    SnapshotQueryExecutionOptionsDTO:
+    dataservices.query.transfers.SnapshotQueryExecutionOptionsDTO:
       type: object
       properties:
         limit:
@@ -2422,7 +2457,7 @@ components:
              * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format.
           format: enum
       description: A SnapshotQueryExecutionOptions provides additional instructions to perform a snapshot query.
-    SortOptionDTO:
+    dataservices.query.transfers.SortOptionDTO:
       type: object
       properties:
         columnIndex:
@@ -2437,7 +2472,7 @@ components:
           description: The sort direction.
           format: enum
       description: Sort option for a column of a list query.
-    SqlLikeQueryExecutionDTO:
+    dataservices.query.transfers.SqlLikeQueryExecutionDTO:
       type: object
       properties:
         query:
@@ -2445,12 +2480,12 @@ components:
           description: The SQL-like query string
         options:
           allOf:
-            - $ref: '#/components/schemas/QueryExecutionOptionsDTO'
+            - $ref: '#/components/schemas/dataservices.query.transfers.QueryExecutionOptionsDTO'
           description: Optional options that currently that cannot be expressed in SQL-like
       description: |-
         *
          Request body for SQL-like query executions
-    TimeShiftDTO:
+    dataservices.query.transfers.TimeShiftDTO:
       type: object
       properties:
         periodType:
@@ -2475,266 +2510,231 @@ components:
           description: The direction to extend. Default is BACKWARD.
           format: enum
       description: The amount of time to shift the time interval by, such as backward by one year.
-    VeeClarificationDTO:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Returned if Vee needs more context to answer your question.
-        questions:
-          type: array
-          items:
-            type: string
-          description: Some related questions that could be helpful.
-        metrics:
-          type: array
-          items:
-            type: string
-          description: Suggested metrics to look at, that are similar or related to your question.
-        dimensions:
-          type: array
-          items:
-            type: string
-          description: Suggested dimensions to look at, that are similar or related to your question.
-        filters:
-          type: array
-          items:
-            type: string
-          description: Suggested filters that could be a better fit for the data.
-        attributes:
-          type: array
-          items:
-            type: string
-          description: Suggested attributes to look at, that are similar or related to your question.
-    VeeConversationStateDTO:
-      type: object
-      properties:
-        questionState:
-          type: array
-          items:
-            type: string
-          description: The unique identifier of the conversation with Vee.
-    VeeCorrectionsDTO:
-      type: object
-      properties:
-        warning:
-          type: array
-          items:
-            enum:
-              - VEE_NO_WARNING
-              - VEE_WARNING_RESPONSE_NOT_FOUND
-              - VEE_WARNING_RESPONSE_LOW_CONFIDENCE
-              - VEE_WARNING_RESPONSE_FOUND_CLOSE_MATCH
-              - VEE_WARNING_NO_ACCESS
-              - VEE_WARNING_TIME_SELECTION_ADJUSTED
-              - VEE_WARNING_FILTER_DROPPED
-            type: string
-            format: enum
-          description: A list of warnings from Vee that accompanies an unsure answer; for example, Vee might return a close match warning if Vee finds multiple employees named Adam that relate to your question.
-        clarifications:
-          type: array
-          items:
-            $ref: '#/components/schemas/VeeClarificationDTO'
-          description: A list of clarifying questions if Vee needs more context to answer your question; for example, if asking about someone named Adam, Vee might clarify which Adam by asking for Adam's email address.
-    VeeDataDTO:
-      type: object
-      properties:
-        dataJson:
-          type: string
-          description: A JSON string of fields and numerical values representing the data contributing to Vee's answer. For example, the number of employees per gender in Vee's answer.
-        context:
-          type: string
-          description: The filter applied to the visualization generated by Vee. For example, a time filter of April 2024.
-    VeeFeedbackDTO:
-      type: object
-      properties:
-        response:
-          allOf:
-            - $ref: '#/components/schemas/VeeResponseDTO'
-          description: Your feedback about Vee's answer. Include the response object from the `/question` call that you want to provide feedback about.
-        isApproved:
-          type: boolean
-          description: If `true`, Vee answered the question correctly. If `false`, Vee's answer was incorrect or lacked details.
-        description:
-          type: string
-          description: A description of how Vee should have answered the question or how Vee can improve the answer; for example, "Expected Headcount metric, but Vee returned Average Headcount".
-      description: The request body fields to submit Vee feedback.
-    VeeOptionsDTO:
-      type: object
-      properties:
-        includeVisual:
-          type: boolean
-          description: If `true`, returns a base64 string-encoded PNG of a rendered visualization with Vee's answer. Default is `false`.
-        visualOptions:
-          allOf:
-            - $ref: '#/components/schemas/VeeVisualOptionsDTO'
-          description: Specify how to render the visualization.
-        includeData:
-          type: boolean
-          description: If `true`, returns additional data relevant to the question, including `dataJson` (visualization data) and `context` (filters applied to the visualization). Default is `false`.
-        dataFormat:
-          enum:
-            - json
-          type: string
-          description: 'The format to return visualization data in. Valid values: `json`.'
-          format: enum
-        includeRewordedQuestion:
-          type: boolean
-          description: If `true`, returns Vee's plain language interpretation of the original question. For example, if you asked "what is the headcount by gender in each org?", Vee might reword the question as "What is the gender breakdown of our workforce by organization this month?". Default is `false`.
-    VeeQuestionDTO:
-      type: object
-      properties:
-        question:
-          type: string
-          description: The question to ask Vee. If asking a follow-up question or continuing a conversation with Vee, specify the `conversationState` object from the question's response.
-        conversationState:
-          allOf:
-            - $ref: '#/components/schemas/VeeConversationStateDTO'
-          description: The unique identifier of the conversation with Vee. If empty, starts a new conversation with Vee. If asking a follow-up question or continuing a conversation with Vee, specify the `conversationState` object from the question's response. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.
-        options:
-          allOf:
-            - $ref: '#/components/schemas/VeeOptionsDTO'
-          description: Options to specify how Vee should respond to a question.
-        maxViewDetailsMembers:
-          type: integer
-          description: maxViewDetailsMembers to specify the maximum of view details members
-          format: uint32
-      description: The request body fields to ask Vee a question.
-    VeeResponseDTO:
-      type: object
-      properties:
-        conversationState:
-          allOf:
-            - $ref: '#/components/schemas/VeeConversationStateDTO'
-          description: The current conversation's details. To ask a follow-up question or continue the conversation with Vee, include the `conversationState` from the response in your next `/question` call. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.
-        statusCode:
-          allOf:
-            - $ref: '#/components/schemas/VeeStatusCodeDTO'
-          description: A status code indicating whether or not Vee successfully answered the question.
-        narrative:
-          type: string
-          description: Vee's answer to the question.
-        chartUrl:
-          type: string
-          description: A URL to view the visualization in Visier.
-        schema:
-          allOf:
-            - $ref: '#/components/schemas/VeeResponseSchemaDTO'
-          description: The metrics, dimensions, and concepts that contribute to Vee's answer.
-        corrections:
-          type: array
-          items:
-            $ref: '#/components/schemas/VeeCorrectionsDTO'
-          description: A list of corrections and clarifications if the question was ambiguous or Vee was unsure in the answer.
-        data:
-          allOf:
-            - $ref: '#/components/schemas/VeeDataDTO'
-          description: Returned if `includeData` is `true`. Provides additional data relevant to the question, such as the visualization data and any filters applied to the visualization.
-        visual:
-          allOf:
-            - $ref: '#/components/schemas/VeeVisualDTO'
-          description: A base64 string-encoded PNG of a visualization generated by Vee to answer a question. For example, Vee can return a Breakdown visualization if asked about the headcount in each organization.
-        rewordedQuestion:
-          type: string
-          description: Vee's plain language interpretation of the original question. For example, if you asked "what is the headcount by gender in each org?", Vee might reword the question as "What is the gender breakdown of our workforce by organization this month?".
-      description: The response after asking Vee a question.
-    VeeResponseSchemaDTO:
-      type: object
-      properties:
-        metrics:
-          type: array
-          items:
-            type: string
-          description: A list of the metrics that contribute to Vee's answer.
-        dimensions:
-          type: array
-          items:
-            $ref: '#/components/schemas/VeeResponseSchemaReferenceDTO'
-          description: A list of the dimensions that contribute to Vee's answer.
-        concepts:
-          type: array
-          items:
-            $ref: '#/components/schemas/VeeResponseSchemaReferenceDTO'
-          description: A list of the concepts that contribute to Vee's answer.
-    VeeResponseSchemaReferenceDTO:
+    designer.transfers.DataVersionExportColumnDTO:
       type: object
       properties:
         name:
           type: string
-          description: The name of an attribute in the visualization; for example, Gender.
-        paths:
+          description: The column's name.
+        dataType:
+          type: string
+          description: The column's data type. Possible data types are string, integer, number, date, Boolean.
+        allowsNull:
+          type: boolean
+          description: If `true`, the column allows null values.
+        isPrimaryKeyComponent:
+          type: boolean
+          description: If `true`, the column is part of the primary key.
+    designer.transfers.DataVersionExportDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The unique identifier of the data version export. Must be a valid UUID.
+        timestamp:
+          type: string
+          description: The date that the data version export was generated, in milliseconds since 1970-01-01T00:00:00Z.
+        dataVersionNumber:
+          type: string
+          description: The data version number for which the export was generated.
+        baseDataVersionNumber:
+          type: string
+          description: The baseline data version number for which the export was generated. If specified, the export is a delta of the differences between `dateVersionNumber` and `baseDataVersionNumber`. If empty, a full export is generated for `dataVersionNumber`.
+        tables:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.transfers.DataVersionExportTableDTO'
+          description: Information about the tables in the export.
+        newTables:
           type: array
           items:
             type: string
-          description: The hierarchy path of an attribute in the visualization; for example, Employee.Gender.
-    VeeSampleQuestionDTO:
-      type: object
-      properties:
-        question:
-          type: string
-          description: A question in plain language.
-        questionId:
-          type: string
-          description: The unique identifier of the sample question.
-        categoryId:
-          type: string
-          description: The unique identifier of the question category.
-        isAssignedToUser:
-          type: boolean
-          description: If `true`, the sample question is assigned to at least one of the user's user groups.
-    VeeSampleQuestionLibraryDTO:
-      type: object
-      properties:
-        questions:
+          description: Tables that exist in `dataVersionNumber` but did not exist in `baseDataVersionNumber`.
+        deletedTables:
           type: array
           items:
-            $ref: '#/components/schemas/VeeSampleQuestionDTO'
-          description: A list of sample questions to help your users start using Vee.
-      description: A list of sample questions to ask Vee.
-    VeeStatusCodeDTO:
+            type: string
+          description: Tables that do not exist in `dataVersionNumber` but did exist in `baseDataVersionNumber`.
+    designer.transfers.DataVersionExportDataVersionSummaryDTO:
       type: object
       properties:
-        statusCode:
-          enum:
-            - UNDEFINED
-            - VEE_API_SUCCESS
-            - VEE_API_WARNING
-            - VEE_API_ERROR
+        dataVersion:
           type: string
-          description: A status code indicating whether or not Vee successfully answered the question.
-          format: enum
-        statusMsg:
+          description: The data version number.
+        dataCategory:
           type: string
-          description: Additional information about whether or not Vee successfully answered the question.
-    VeeStatusDTO:
+          description: The data category that the data version belongs to. If empty, the data version belongs to the default data category.
+        created:
+          type: string
+          description: The date that the data version was generated, in milliseconds since 1970-01-01T00:00:00Z.
+    designer.transfers.DataVersionExportDataVersionsDTO:
+      type: object
+      properties:
+        dataVersions:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.transfers.DataVersionExportDataVersionSummaryDTO'
+          description: All the available data versions for the tenant's primary data category.
+    designer.transfers.DataVersionExportFileDTO:
+      type: object
+      properties:
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.transfers.DataVersionExportColumnDTO'
+          description: Information about a table's columns.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.transfers.DataVersionExportPartFileDTO'
+          description: Information about a table's files in the export.
+    designer.transfers.DataVersionExportJobStatusDTO:
+      type: object
+      properties:
+        jobUuid:
+          type: string
+          description: The unique identifier of the data version export job.
+        completed:
+          type: boolean
+          description: If `true`, the job completed successfully.
+        failed:
+          type: boolean
+          description: If `true`, the job failed.
+        exportUuid:
+          type: string
+          description: The unique identifier of the data version export generated by the job. If empty, the job hasn't completed successfully.
+    designer.transfers.DataVersionExportPartFileDTO:
+      type: object
+      properties:
+        fileId:
+          type: integer
+          description: The unique integer identifier of the file in the data version export.
+          format: int32
+        filename:
+          type: string
+          description: The file's name.
+    designer.transfers.DataVersionExportScheduleJobRequestDTO:
+      type: object
+      properties:
+        dataVersionNumber:
+          type: string
+          description: The data version number to generate an export for.
+        baseDataVersionNumber:
+          type: string
+          description: |-
+            Optional. The baseline data version number to use to generate a delta export.
+             Delta exports contain the differences between `baseDataVersionNumber` and
+             `dataVersionNumber`, such as anything updated, added, or removed in `dataVersionNumber`.
+             If `baseDataVersionNumber` is not provided, a full export generates for `dataVersionNumber`.
+    designer.transfers.DataVersionExportScheduleJobResponseDTO:
+      type: object
+      properties:
+        jobUuid:
+          type: string
+          description: The unique identifier of the scheduled data version export job.
+    designer.transfers.DataVersionExportTableDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of a table in the data version export; for example, Employee or Applicant.
+        commonColumns:
+          allOf:
+            - $ref: '#/components/schemas/designer.transfers.DataVersionExportFileDTO'
+          description: Information about the columns and files that are in both `dataVersionNumber` and `baseDataVersionNumber`. Always empty for full exports where `baseDataVersionNumber` is not specified.
+        newColumns:
+          allOf:
+            - $ref: '#/components/schemas/designer.transfers.DataVersionExportFileDTO'
+          description: |-
+            Information about new columns and files in the data version.
+             If full export, lists all columns. If delta export, lists columns that exist in `dataVersionNumber` but not in `baseDataVersionNumber`.
+        deletedColumns:
+          type: array
+          items:
+            type: string
+          description: Information about columns that do not exist in `dataVersionNumber` but did exist in `baseDataVersionNumber`.
+    designer.transfers.DataVersionExportsDTO:
+      type: object
+      properties:
+        dataVersionExports:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.transfers.DataVersionExportDTO'
+          description: Information about data version exports.
+    designer.transfers.DownloadSourceFilesDTO:
+      type: object
+      properties:
+        downloadAll:
+          type: boolean
+          description: If `true`, downloads all uploaded files for all sources. Default is `false`.
+        sources:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings representing the object name of each source to download.
+        sourceIds:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings representing the unique identifier of each source to download.
+        minTimestamp:
+          type: string
+          description: The earliest upload time to download files from in ISO-8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files from the earliest available time.
+        maxTimestamp:
+          type: string
+          description: The latest upload time to download files up to in ISO-8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files up to the latest available time.
+    designer.transfers.DownloadSourceFilesResponseDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          description: The download request status, such as `Error`.
+        messages:
+          type: string
+          description: A description of the request status.
+    servicing.publicapi.transfers.DocumentSearchLinkDTO:
+      type: object
+      properties:
+        href:
+          type: string
+          description: The URL pointing to the specific document.
+        verb:
+          type: string
+          description: The verb to use when formulating the web request. This is commonly `GET`.
+      description: Defines the attributes of a web request to reference documents in the search results.
+    servicing.publicapi.transfers.SimpleDocumentHeaderSearchResponseDTO:
+      type: object
+      properties:
+        documentHeaders:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.publicapi.transfers.SimpleDocumentHeaderSearchResultDTO'
+          description: The ordered collection of document header search results. The results are sorted according to their relevance in a descending order.
+      description: The response body structure for Simple document header search operations.
+    servicing.publicapi.transfers.SimpleDocumentHeaderSearchResultDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The display name of the element in the search result.
+        description:
+          type: string
+          description: The `Web Template Framework` representation of the search result element. This commonly displayed alongside the result by search portals.
+        relevance:
+          type: number
+          description: The relevance of the search result and a number between `0` and `100`.
+          format: double
+        viewLink:
+          allOf:
+            - $ref: '#/components/schemas/servicing.publicapi.transfers.DocumentSearchLinkDTO'
+          description: Use the `viewLink` to build a web request to view this document.
+      description: Structure of a single document header search using the Simple search operation.
+    systemstatus.publicapi.transfers.VeeStatusDTO:
       type: object
       properties:
         overall:
           type: string
           description: The overall status of Vee.
-    VeeVisualDTO:
-      type: object
-      properties:
-        image:
-          type: string
-          description: A PNG visualization encoded in a base64 string.
-        title:
-          type: string
-          description: The visualization title.
-        context:
-          type: string
-          description: Any filters applied to the visualization. For example, a time filter of April 2024.
-    VeeVisualOptionsDTO:
-      type: object
-      properties:
-        width:
-          type: integer
-          description: The pixel width of the rendered visualization. Default is 600. Valid values are between 160 and 1600.
-          format: uint32
-        height:
-          type: integer
-          description: The pixel height of the rendered visualization. Default is 338. Valid values are between 90 and 900.
-          format: uint32
     DvExportStatus:
       type: object
       properties:
@@ -2772,15 +2772,21 @@ components:
     Status:
       type: object
       properties:
-        errorCode:
+        localizedMessage:
+          type: string
+          description: Localized error message describing the root cause of the error.
+        code:
           type: string
           description: Error classification.
         message:
           type: string
-          description: Error message describing the root cause of the error.
+          description: Not used.
         rci:
           type: string
           description: Optional root cause identifier.
+        userError:
+          type: boolean
+          description: Indicates whether the error is a user error.
       description: The response structure for errors.
   securitySchemes:
     CookieAuth:
@@ -2845,3 +2851,13 @@ security:
     CookieAuth: []
   - ApiKeyAuth: []
     OAuth2Auth: []
+# x-tagGroups is for Redocly use to effectively let us categorize our different tags
+x-tagGroups:
+  - name: Data Out
+    tags:
+      - DataQuery
+      - DataVersionExport
+      - Vee
+      - Search
+      - SourceFilesDownload
+      - Reporting

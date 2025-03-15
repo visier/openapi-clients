@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1772
+  version: 22222222.99201.1793
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -24,18 +24,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CalculationConceptListDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.api.transfers.CalculationConceptListDTO'
   /v1/admin/calculation-concepts/{conceptId}:
     get:
       tags:
@@ -56,18 +56,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CalculationConceptDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.api.transfers.CalculationConceptDTO'
   /v1/admin/calculation-concepts/{conceptId}/configure:
     put:
       tags:
@@ -96,21 +96,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CalculationConceptConfigurationMapDTO'
+              $ref: '#/components/schemas/designer.api.transfers.CalculationConceptConfigurationMapDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConceptConfigurationResultDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.api.transfers.ConceptConfigurationResultDTO'
   /v1/admin/selection-concepts:
     get:
       tags:
@@ -125,18 +125,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SelectionConceptListDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.api.transfers.SelectionConceptListDTO'
   /v1/admin/selection-concepts/{conceptId}:
     get:
       tags:
@@ -157,18 +157,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SelectionConceptDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.api.transfers.SelectionConceptDTO'
   /v1/admin/selection-concepts/{conceptId}/configure:
     put:
       tags:
@@ -197,21 +197,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SelectionConceptConfigurationMapDTO'
+              $ref: '#/components/schemas/designer.api.transfers.SelectionConceptConfigurationMapDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConceptConfigurationResultDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.api.transfers.ConceptConfigurationResultDTO'
   /v1/data/model/analytic-objects:
     get:
       tags:
@@ -238,18 +238,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AnalyticObjectsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.AnalyticObjectsDTO'
   /v1/data/model/analytic-objects/{id}:
     get:
       tags:
@@ -270,18 +270,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AnalyticObjectDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.AnalyticObjectDTO'
   /v1/data/model/analytic-objects/{id}/metrics:
     get:
       tags:
@@ -302,18 +302,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MetricsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.MetricsDTO'
   /v1/data/model/analytic-objects/{objectId}/dimensions:
     get:
       tags:
@@ -341,18 +341,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DimensionsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionsDTO'
   /v1/data/model/analytic-objects/{objectId}/dimensions/{dimensionId}/mappings/validate:
     post:
       tags:
@@ -382,21 +382,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DimensionMappingValidationExecutionDTO'
+              $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionMappingValidationExecutionDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DimensionMappingValidationDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionMappingValidationDTO'
   /v1/data/model/analytic-objects/{objectId}/dimensions/{dimensionId}/members:
     get:
       tags:
@@ -490,18 +490,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MembersDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.MembersDTO'
   /v1/data/model/analytic-objects/{objectId}/dimensions/{dimensionId}/members/{id}:
     get:
       tags:
@@ -538,18 +538,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MembersDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.MembersDTO'
   /v1/data/model/analytic-objects/{objectId}/dimensions/{id}:
     get:
       tags:
@@ -576,18 +576,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DimensionDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionDTO'
   /v1/data/model/analytic-objects/{objectId}/properties:
     get:
       tags:
@@ -615,18 +615,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PropertiesDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.PropertiesDTO'
   /v1/data/model/analytic-objects/{objectId}/properties/{id}:
     get:
       tags:
@@ -655,18 +655,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PropertyDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.PropertyDTO'
   /v1/data/model/analytic-objects/{objectId}/selection-concepts:
     get:
       tags:
@@ -694,18 +694,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SelectionConceptsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.SelectionConceptsDTO'
   /v1/data/model/analytic-objects/{objectId}/selection-concepts/{id}:
     get:
       tags:
@@ -732,18 +732,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SelectionConceptDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.SelectionConceptDTO'
   /v1/data/model/currencies:
     get:
       tags:
@@ -758,18 +758,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CurrenciesDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.CurrenciesDTO'
   /v1/data/model/currencies/{id}:
     get:
       tags:
@@ -790,18 +790,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CurrencyDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.CurrencyDTO'
   /v1/data/model/currencies/{id}/rates:
     get:
       tags:
@@ -839,18 +839,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CurrencyRatesDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.CurrencyRatesDTO'
   /v1/data/model/currencies/{id}/rates/{toId}:
     get:
       tags:
@@ -894,18 +894,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CurrencyRatesDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.CurrencyRatesDTO'
   /v1/data/model/dimensions:
     patch:
       tags:
@@ -931,21 +931,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DimensionsChangeDefinitionsDTO'
+              $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.DimensionsChangeDefinitionsDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectsBulkChangeResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.ObjectsBulkChangeResponseDTO'
   /v1/data/model/metrics:
     get:
       tags:
@@ -972,18 +972,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MetricsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.MetricsDTO'
   /v1/data/model/metrics/{id}:
     get:
       tags:
@@ -1004,18 +1004,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MetricDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.MetricDTO'
   /v1/data/model/metrics/{metricId}/dimensions:
     get:
       tags:
@@ -1043,18 +1043,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DimensionsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionsDTO'
   /v1/data/model/metrics/{metricId}/selection-concepts:
     get:
       tags:
@@ -1082,18 +1082,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SelectionConceptsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.SelectionConceptsDTO'
   /v1/data/model/plan-models:
     get:
       tags:
@@ -1115,18 +1115,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlanningModelsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.PlanningModelsDTO'
   /v1/data/model/plan-models/{id}:
     get:
       tags:
@@ -1147,18 +1147,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlanningModelDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.PlanningModelDTO'
   /v1/data/model/plan-models/{id}/metrics:
     get:
       tags:
@@ -1179,18 +1179,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MetricsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.MetricsDTO'
   /v1/data/model/plan-models/{modelId}/plans:
     get:
       tags:
@@ -1218,18 +1218,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlanningPlansDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.PlanningPlansDTO'
   /v1/data/model/plan-models/{modelId}/plans/{id}:
     get:
       tags:
@@ -1256,18 +1256,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlanningPlanDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.PlanningPlanDTO'
   /v1/data/model/predictions:
     get:
       tags:
@@ -1289,18 +1289,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PredictionsDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.PredictionsDTO'
   /v1/data/model/predictions/{id}:
     get:
       tags:
@@ -1321,18 +1321,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PredictionDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.datamodel.transfers.PredictionDTO'
   /v1/data/model/properties:
     put:
       tags:
@@ -1360,21 +1360,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PropertiesChangeDefinitionsDTO'
+              $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.PropertiesChangeDefinitionsDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectsBulkChangeResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.ObjectsBulkChangeResponseDTO'
     post:
       tags:
         - DataModel
@@ -1397,21 +1397,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PropertiesChangeDefinitionsDTO'
+              $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.PropertiesChangeDefinitionsDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectsBulkChangeResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.ObjectsBulkChangeResponseDTO'
     delete:
       tags:
         - DataModel
@@ -1436,21 +1436,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PropertiesDeleteDefinitionsDTO'
+              $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.PropertiesDeleteDefinitionsDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PropertyBulkDeleteResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.PropertyBulkDeleteResponseDTO'
     patch:
       tags:
         - DataModel
@@ -1473,21 +1473,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PropertiesChangeDefinitionsDTO'
+              $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.PropertiesChangeDefinitionsDTO'
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectsBulkChangeResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.ObjectsBulkChangeResponseDTO'
   /v1alpha/planning/model/plans:
     get:
       tags:
@@ -1577,18 +1577,18 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetPlanListResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.transfers.GetPlanListResponseDTO'
   /v1alpha/planning/model/plans/{id}:
     get:
       tags:
@@ -1623,21 +1623,51 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlanWithSchemaDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.transfers.PlanWithSchemaDTO'
 components:
   schemas:
-    AggregationTypeOptionDTO:
+    dataservices.common.DimensionMemberReferenceDTO:
+      type: object
+      properties:
+        path:
+          type: array
+          items:
+            type: string
+          description: |-
+            A list of strings representing the members within a dimension path. For example, a dimension for Location
+             may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
+      description: The members of a dimension.
+    dataservices.common.MemberValuesDTO:
+      type: object
+      properties:
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
+          description: The unique IDs of members to include when evaluating the metric.
+        excluded:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
+          description: The unique IDs of members to exclude when evaluating the metric.
+      description: |-
+        Member filter values are discrete member references in a dimension filter. You can define
+         included and excluded members simultaneously. This is typically done with filtering applied on
+         dimensions with multiple levels. For example, a Location parameter may include “South
+         America” and exclude “Brazil” which results in the metric being evaluated for all South American
+         countries except Brazil.
+    dataservices.datamodel.transfers.AggregationTypeOptionDTO:
       type: object
       properties:
         id:
@@ -1656,7 +1686,7 @@ components:
           type: boolean
           description: '`true` if the parameter option is the default one and `false` otherwise.'
       description: The definition of an aggregation option.
-    AggregationTypeParameterDTO:
+    dataservices.datamodel.transfers.AggregationTypeParameterDTO:
       type: object
       properties:
         id:
@@ -1671,12 +1701,12 @@ components:
         parameterOptions:
           type: array
           items:
-            $ref: '#/components/schemas/AggregationTypeOptionDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.AggregationTypeOptionDTO'
           description: The options defined for the parameter.
       description: |-
         The definition of an aggregation parameter. These parameters resolve metrics that use aggregation parameters.
          For example, Visier Benchmarks metrics often use aggregation parameters to enable callers to aggregate metric values according to their average or different percentiles.
-    AnalyticObjectDTO:
+    dataservices.datamodel.transfers.AnalyticObjectDTO:
       type: object
       properties:
         id:
@@ -1732,109 +1762,36 @@ components:
         objectReferences:
           type: array
           items:
-            $ref: '#/components/schemas/ObjectReferenceDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.ObjectReferenceDTO'
           description: |-
             A list of references from this analytic object to other analytic objects.
              Note: If there are no references, this field is omitted.
         populationConfiguration:
           allOf:
-            - $ref: '#/components/schemas/PopulationConfigurationDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.PopulationConfigurationDTO'
           description: |-
             A set of property and dimension references configured by Visier or an administrator to tell the platform what
              properties and dimensions to use when doing population insight calculations. These are the distinguishing
              properties, change history properties, and grouping dimensions to use in AI insights. This field is optional and
              is only available for subjects.
       description: Analytic objects are the various items that users can analyze in Visier. Analytic objects include subjects, events, and overlays.
-    AnalyticObjectFilterDTO:
-      type: object
-      properties:
-        analyticObjectUuid:
-          type: string
-          description: The UUID of the analytic object used in the selection concept.
-        symbolName:
-          type: string
-          description: The symbol name of the analytic object.
-        dimensions:
-          type: array
-          items:
-            $ref: '#/components/schemas/DimensionFilterDTO'
-          description: A list of dimensions included in the concept.
-    AnalyticObjectsDTO:
+    dataservices.datamodel.transfers.AnalyticObjectsDTO:
       type: object
       properties:
         analyticObjects:
           type: array
           items:
-            $ref: '#/components/schemas/AnalyticObjectDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.AnalyticObjectDTO'
       description: A collection of analytic objects
-    CalculatedPropertyTypeDTO:
-      type: object
-      properties:
-        dataType:
-          type: string
-          description: The data type of the property, such as Categorical, HourDuration, or Ratio.
-        formula:
-          type: string
-          description: The formula used to calculate the property's value, written in Visier Formula Language.
-    CalculationConceptConfigurationDTO:
-      type: object
-      properties:
-        perspectives:
-          type: array
-          items:
-            $ref: '#/components/schemas/PerspectiveConfigurationDTO'
-          description: A list of objects representing the perspectives in the calculation concept.
-    CalculationConceptConfigurationMapDTO:
-      type: object
-      properties:
-        perspectivesToMap:
-          type: array
-          items:
-            $ref: '#/components/schemas/PerspectiveConfigurationDTO'
-          description: A list of objects representing the list of perspectives in the calculation concept.
-      description: The configuration to apply to the concept.
-    CalculationConceptDTO:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: The unique identifier associated with the calculation concept.
-        name:
-          type: string
-          description: The display name of the calculation concept.
-        configuration:
-          allOf:
-            - $ref: '#/components/schemas/CalculationConceptConfigurationDTO'
-          description: A list of objects representing the configuration for the calculation concept.
-    CalculationConceptListDTO:
-      type: object
-      properties:
-        concepts:
-          type: array
-          items:
-            $ref: '#/components/schemas/CalculationConceptDTO'
-          description: A list of objects representing calculation concepts.
-    ConceptConfigurationResultDTO:
-      type: object
-      properties:
-        conceptId:
-          type: string
-          description: The unique identifier of the configured concept.
-        projectId:
-          type: string
-          description: The unique identifier of the system-generated project.
-        message:
-          type: string
-          description: A meaningful message about the API result.
-    CurrenciesDTO:
+    dataservices.datamodel.transfers.CurrenciesDTO:
       type: object
       properties:
         currencies:
           type: array
           items:
-            $ref: '#/components/schemas/CurrencyDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.CurrencyDTO'
       description: A collection of currencies.
-    CurrencyDTO:
+    dataservices.datamodel.transfers.CurrencyDTO:
       type: object
       properties:
         currencyCode:
@@ -1854,7 +1811,7 @@ components:
              If **symbol** contains only non-alphabetic characters, **shortSymbol** is the same as **symbol**.
              For example, if **symbol** is CA$, **shortSymbol** is $. If **symbol** is $, then **shortSymbol** is $.
       description: Information about a currency type.
-    CurrencyRateDTO:
+    dataservices.datamodel.transfers.CurrencyRateDTO:
       type: object
       properties:
         fromCurrencyCode:
@@ -1884,60 +1841,18 @@ components:
             The latest time instant to retrieve exchange rates from.
              **Note:** Format is the number of milliseconds since Jan 1, 1970 12:00 AM UTC.
       description: Information about a currency exchange rate.
-    CurrencyRatesDTO:
+    dataservices.datamodel.transfers.CurrencyRatesDTO:
       type: object
       properties:
         currencyRates:
           type: array
           items:
-            $ref: '#/components/schemas/CurrencyRateDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.CurrencyRateDTO'
       description: |-
         A collection of currency exchange rates.
          Note: Currencies may have different exchange rates in different time intervals, depending what rate data is stored in Visier.
          For example, USD:CAD can be 1.2 between January 1 - March 1, while USD:EUR can be 0.92 between January 1 - February 1, but 0.88 between February  1 - March 1.
-    DependentDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the dependent object.
-        displayName:
-          type: string
-          description: The display name of the dependent object.
-        objectType:
-          type: string
-          description: The type of dependent object, such as a property or parameter.
-      description: Details about a dependent object related to the property to delete.
-    DimensionChangeDefinitionDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The symbol name of the dimension; for example, `Career_Level` or `Employee.Vaccination_Status`
-        displayName:
-          type: string
-          description: The user-friendly name for the dimension.
-        shortDisplayName:
-          type: string
-          description: A shortened version of the display name. If the dimension is visible in the solution experience, this name is displayed in visualization titles.
-        description:
-          type: string
-          description: A short description of the dimension. Descriptions provide in-context help for your users while working in Visier.
-    DimensionChangeDefinitionsByTenantDTO:
-      type: object
-      properties:
-        tenantCode:
-          type: string
-          description: The tenant code of the tenant in which to update dimensions.
-        projectId:
-          type: string
-          description: To make changes in a project, specify a project ID.
-        dimensions:
-          type: array
-          items:
-            $ref: '#/components/schemas/DimensionChangeDefinitionDTO'
-          description: The list of dimensions to update.
-    DimensionDTO:
+    dataservices.datamodel.transfers.DimensionDTO:
       type: object
       properties:
         id:
@@ -1954,7 +1869,7 @@ components:
         levels:
           type: array
           items:
-            $ref: '#/components/schemas/LevelDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.LevelDTO'
           description: 'The levels defined for the dimension. Note: For parent-child dimensions, a level name is generated by Visier.'
         unknownMember:
           type: array
@@ -1971,30 +1886,13 @@ components:
         tags:
           type: array
           items:
-            $ref: '#/components/schemas/TagMapElementDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.TagMapElementDTO'
           description: The optional collection of tags defined for this element.
         explanation:
           type: string
           description: The localized explanation of the dimension.
       description: A dimension organizes unique values of an attribute into a list or a hierarchical structure for use as a filter or group-by in your solution.
-    DimensionFilterDTO:
-      type: object
-      properties:
-        dimensionId:
-          type: string
-          description: The UUID of the dimension.
-        symbolName:
-          type: string
-          description: The symbol name of the dimension.
-        dimensionMembers:
-          type: array
-          items:
-            $ref: '#/components/schemas/DimensionMemberDTO'
-          description: |-
-            A list of dimension members to map to the perspective node.
-
-             Note: If this array is empty, all dimension members will be removed for the node.
-    DimensionMappingValidationDTO:
+    dataservices.datamodel.transfers.DimensionMappingValidationDTO:
       type: object
       properties:
         dimensionMapId:
@@ -2004,12 +1902,12 @@ components:
         unmappedMembers:
           type: array
           items:
-            $ref: '#/components/schemas/DimensionMemberReferenceDTO'
+            $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
         failures:
           type: array
           items:
             type: string
-    DimensionMappingValidationExecutionDTO:
+    dataservices.datamodel.transfers.DimensionMappingValidationExecutionDTO:
       type: object
       properties:
         memberMapId:
@@ -2019,28 +1917,7 @@ components:
           type: string
           description: the analytic object associated with the dimension map
       description: Instruction to execute a mapping validation query
-    DimensionMemberDTO:
-      type: object
-      properties:
-        dimensionMember:
-          type: array
-          items:
-            type: string
-          description: |-
-            A list of strings representing the dimension members. Dimension members in a hierarchical dimension
-             will have an array with multiple strings.
-    DimensionMemberReferenceDTO:
-      type: object
-      properties:
-        path:
-          type: array
-          items:
-            type: string
-          description: |-
-            A list of strings representing the members within a dimension path. For example, a dimension for Location
-             may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
-      description: The members of a dimension.
-    DimensionReferenceDTO:
+    dataservices.datamodel.transfers.DimensionReferenceDTO:
       type: object
       properties:
         name:
@@ -2052,44 +1929,15 @@ components:
             The qualifying path to the dimension in Visier, such as the analytic object or event the dimension is
              associated with. If the path has multiple objects, each object is separated by a period.
       description: The name and qualifying path of a dimension to query.
-    DimensionsChangeDefinitionsDTO:
-      type: object
-      properties:
-        dimensionsByTenant:
-          type: array
-          items:
-            $ref: '#/components/schemas/DimensionChangeDefinitionsByTenantDTO'
-          description: The dimension updates to make in each tenant.
-    DimensionsDTO:
+    dataservices.datamodel.transfers.DimensionsDTO:
       type: object
       properties:
         dimensions:
           type: array
           items:
-            $ref: '#/components/schemas/DimensionDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionDTO'
       description: A collection of dimensions.
-    GetPlanListResponseDTO:
-      type: object
-      properties:
-        plans:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlanInfoDTO'
-          description: A list of plans accessible to the user.
-        page:
-          type: integer
-          description: The current page number of results that the user is viewing.
-          format: int32
-      description: A collection of plans.
-    GoogleProtobufAny:
-      type: object
-      properties:
-        '@type':
-          type: string
-          description: The type of the serialized message.
-      additionalProperties: true
-      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-    LevelDTO:
+    dataservices.datamodel.transfers.LevelDTO:
       type: object
       properties:
         id:
@@ -2103,7 +1951,7 @@ components:
           description: The level depth of the dimension.
           format: int32
       description: Levels are the hierarchical structure of members within a dimension.
-    MemberDTO:
+    dataservices.datamodel.transfers.MemberDTO:
       type: object
       properties:
         fullName:
@@ -2124,7 +1972,7 @@ components:
         validityRanges:
           type: array
           items:
-            $ref: '#/components/schemas/ValidityRangeDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.ValidityRangeDTO'
           description: The validity ranges that exist for this member.
         displayNamePath:
           type: array
@@ -2134,7 +1982,7 @@ components:
       description: |-
         A member is an element of a dimension. Dimension members are organized hierarchically. For example, Argentina is
          a member of the Location dimension at the Country level of the hierarchy Region > Country > Province > City.
-    MemberParameterDefinitionDTO:
+    dataservices.datamodel.transfers.MemberParameterDefinitionDTO:
       type: object
       properties:
         id:
@@ -2156,37 +2004,18 @@ components:
           description: The analytic object reference path from the metric to the dimension.
         default:
           allOf:
-            - $ref: '#/components/schemas/MemberValuesDTO'
+            - $ref: '#/components/schemas/dataservices.common.MemberValuesDTO'
           description: The default value if the end user does not select a member at run time.
       description: The definition of a filter parameter. These elements are returned as part of the definition for metrics that include parameters in their definition.
-    MemberValuesDTO:
-      type: object
-      properties:
-        included:
-          type: array
-          items:
-            $ref: '#/components/schemas/DimensionMemberReferenceDTO'
-          description: The unique IDs of members to include when evaluating the metric.
-        excluded:
-          type: array
-          items:
-            $ref: '#/components/schemas/DimensionMemberReferenceDTO'
-          description: The unique IDs of members to exclude when evaluating the metric.
-      description: |-
-        Member filter values are discrete member references in a dimension filter. You can define
-         included and excluded members simultaneously. This is typically done with filtering applied on
-         dimensions with multiple levels. For example, a Location parameter may include “South
-         America” and exclude “Brazil” which results in the metric being evaluated for all South American
-         countries except Brazil.
-    MembersDTO:
+    dataservices.datamodel.transfers.MembersDTO:
       type: object
       properties:
         members:
           type: array
           items:
-            $ref: '#/components/schemas/MemberDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.MemberDTO'
       description: A collection of members.
-    MetricDTO:
+    dataservices.datamodel.transfers.MetricDTO:
       type: object
       properties:
         id:
@@ -2218,7 +2047,7 @@ components:
         parameters:
           type: array
           items:
-            $ref: '#/components/schemas/ParameterDefinitionDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.ParameterDefinitionDTO'
           description: The collection of parameters defined for the metric.
         category:
           enum:
@@ -2232,15 +2061,15 @@ components:
           type: boolean
           description: // `true` if this metric is set to be visible in your solution.
       description: A metric is a calculation based on one or more attribute values of analytic objects.
-    MetricsDTO:
+    dataservices.datamodel.transfers.MetricsDTO:
       type: object
       properties:
         metrics:
           type: array
           items:
-            $ref: '#/components/schemas/MetricDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.MetricDTO'
       description: A collection of metrics.
-    NumericParameterDefinitionDTO:
+    dataservices.datamodel.transfers.NumericParameterDefinitionDTO:
       type: object
       properties:
         id:
@@ -2265,43 +2094,7 @@ components:
           description: The default value if the end user does not select a member at run time.
           format: double
       description: The definition of a numeric parameter. These elements are returned as part of the query definition for metric parameter values.
-    ObjectChangeFailureDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The symbol name of the object that was not successfully changed.
-        displayName:
-          type: string
-          description: The display name of the object.
-        message:
-          type: string
-          description: An error message describing the cause of the failure.
-        rci:
-          type: string
-          description: The root cause identifier to provide to Visier Technical Support if you require further troubleshooting.
-        tenantCode:
-          type: string
-          description: The tenant that the object was not successfully changed in.
-        projectId:
-          type: string
-          description: The project that the object was not successfully changed in.
-    ObjectChangeSuccessDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The symbol name of the object that was successfully changed.
-        displayName:
-          type: string
-          description: The display name of the object.
-        tenantCode:
-          type: string
-          description: The tenant that the object was changed in.
-        projectId:
-          type: string
-          description: The project that the object was changed in.
-    ObjectReferenceDTO:
+    dataservices.datamodel.transfers.ObjectReferenceDTO:
       type: object
       properties:
         id:
@@ -2332,131 +2125,27 @@ components:
       description: |-
         A link between one analytic object and another. An ObjectReference allows you to discover the relationships between
          analytic objects. In some queries, you may need to provide a qualifyingPath, which is built from ObjectReference information.
-    ObjectsBulkChangeResponseDTO:
-      type: object
-      properties:
-        successes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectChangeSuccessDTO'
-          description: The objects that were successfully changed.
-        failures:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectChangeFailureDTO'
-          description: The objects that were not successfully changed.
-    ParameterDefinitionDTO:
+    dataservices.datamodel.transfers.ParameterDefinitionDTO:
       type: object
       properties:
         memberParameter:
           allOf:
-            - $ref: '#/components/schemas/MemberParameterDefinitionDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.MemberParameterDefinitionDTO'
           description: A filter parameter that can be set with dimension members for the end user to select.
         numericParameter:
           allOf:
-            - $ref: '#/components/schemas/NumericParameterDefinitionDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.NumericParameterDefinitionDTO'
           description: A parameter with a numeric data type. A numeric parameter can be set with an optional default value and value range.
         planParameter:
           allOf:
-            - $ref: '#/components/schemas/PlanParameterDefinitionDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.PlanParameterDefinitionDTO'
           description: A parameter on a planning metric. Plan parameters resolve planning model metrics to a specific plan and scenario or snapshot.
         aggregationTypeParameter:
           allOf:
-            - $ref: '#/components/schemas/AggregationTypeParameterDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.AggregationTypeParameterDTO'
           description: An aggregation parameter. Such parameters enable control over how applicable metrics aggregate their results.
       description: Parameters generalize object definitions so that end users can provide values at query run time.
-    PerspectiveConfigurationDTO:
-      type: object
-      properties:
-        perspectiveId:
-          type: string
-          description: The UUID of the perspective.
-        perspectiveName:
-          type: string
-          description: The display name of the perspective.
-        perspectiveNodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/PerspectiveNodeDTO'
-          description: A list of nodes in the perspective.
-    PerspectiveNodeDTO:
-      type: object
-      properties:
-        selectionConceptUuid:
-          type: string
-          description: The UUID of the node's selection concept. Perspective nodes are generated as selection concepts to enable filtering.
-        symbolName:
-          type: string
-          description: The symbol name of the selection concept. For example, "isExitActualSystemTermination".
-        analyticObjectFilters:
-          type: array
-          items:
-            $ref: '#/components/schemas/AnalyticObjectFilterDTO'
-          description: A list of analytic object filters indicating the analytic object and dimensions used for the selection concept.
-    PlanDataLoadErrorDTO:
-      type: object
-      properties:
-        row:
-          type: integer
-          description: The row in the file that caused the error.
-          format: int32
-        rci:
-          type: string
-          description: An error code that can be provided to Visier Support to help investigate your issue.
-        errorMessage:
-          type: string
-          description: Information regarding the error and any actions that you could take to load the data correctly.
-      description: An error encountered while loading plan data.
-    PlanInfoDTO:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: The UUID of the plan.
-        displayName:
-          type: string
-          description: The display name of the plan.
-        modelId:
-          type: string
-          description: The unique identifier of the planning model that the plan is using.
-        scenarios:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScenarioInfoDTO'
-          description: Information about the plan's scenarios.
-        parentPlanUuid:
-          type: string
-          description: If the plan is a subplan, the response returns its parent plan's UUID. Not returned for main plans.
-        currencyCode:
-          type: string
-          description: The 3-digit ISO 4217 currency code of the plan's data.
-      description: Information about a plan and its scenarios.
-    PlanItemDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the plan item.
-        displayName:
-          type: string
-          description: The display name of the plan item.
-        dataType:
-          enum:
-            - unknown
-            - number
-            - currency
-            - decimal
-            - rate
-          type: string
-          description: |-
-            The data type of the plan item. The data types are:
-             - **rate**: Converts values into a percentage in the planning grid. The provided value is multiplied by 100 to get the display value. For example, a provided value of 0.5 is displayed as 50% in the grid.
-             - **number**: Displays values as whole numbers. Decimal values are rounded to a whole number when displayed in the planning grid.
-             - **currency**: Displays values as a currency. Values must not contain thousand separators, currency codes, or currency symbols.
-             - **decimal**: Displays values with decimals.
-          format: enum
-      description: A plan item is a metric in your plan. The available plan items depend on the planning model.
-    PlanParameterDefinitionDTO:
+    dataservices.datamodel.transfers.PlanParameterDefinitionDTO:
       type: object
       properties:
         id:
@@ -2474,114 +2163,14 @@ components:
       description: |-
         The definition of a plan parameter. These parameters resolve planning model metrics to a specific plan and scenario
          or snapshot values at query runtime.
-    PlanSchemaDTO:
-      type: object
-      properties:
-        planItems:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlanItemDTO'
-          description: A collection of editable plan items in a plan.
-        timePeriods:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlanTimePeriodDTO'
-          description: The editable time periods in a plan. These time periods are the columns in the planning grid.
-        planSegmentLevels:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlanSegmentLevelDTO'
-          description: The dimensions that the plan is segmented by.
-        planSegmentLevelMembers:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlanSegmentLevelMemberListDTO'
-          description: |-
-            A collection of members grouped by their dimension and level.
-             The combination of these member IDs points to a specific row in the plan.
-      description: Information about a plan's schema.
-    PlanSegmentLevelDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The symbol name of the dimension appended with its level ID.
-        displayName:
-          type: string
-          description: The display name of the dimension level.
-        order:
-          type: integer
-          description: The number that describes the segment's position in the plan's overall structure.
-          format: int32
-        segmentId:
-          type: string
-          description: The symbol name of the dimension.
-        segmentDisplayName:
-          type: string
-          description: The display name of the dimension.
-      description: A dimension and dimension level that segments the plan.
-    PlanSegmentLevelMemberDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the dimension member.
-        displayName:
-          type: string
-          description: The display name of the dimension member.
-        isCustom:
-          type: boolean
-          description: If `true`, this is a custom member created for use in the plan and all its subplans.
-        parentId:
-          type: string
-          description: The unique identifier of the dimension member's parent.
-      description: A member in the dimension.
-    PlanSegmentLevelMemberListDTO:
-      type: object
-      properties:
-        segmentLevelId:
-          type: string
-          description: The unique identifier of the dimension and dimension level.
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlanSegmentLevelMemberDTO'
-          description: The dimension members.
-        segmentId:
-          type: string
-          description: The unique identifier of the dimension.
-      description: A collection of dimension members.
-    PlanTimePeriodDTO:
-      type: object
-      properties:
-        date:
-          type: string
-          description: The date of the time period. The format is YYYY-MM-DD.
-        displayName:
-          type: string
-          description: The display name of the time period; for example, March 2024.
-      description: A time period in the plan.
-    PlanWithSchemaDTO:
-      type: object
-      properties:
-        plan:
-          $ref: '#/components/schemas/PlanInfoDTO'
-        schema:
-          $ref: '#/components/schemas/PlanSchemaDTO'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlanDataLoadErrorDTO'
-          description: The errors that occurred while loading the data.
-      description: Details about the plan, including its schema.
-    PlanningConceptFilterContextDTO:
+    dataservices.datamodel.transfers.PlanningConceptFilterContextDTO:
       type: object
       properties:
         name:
           type: string
           description: The object name of the selection concept.
       description: A plan context defined using a selection concept.
-    PlanningHierarchyFilterContextDTO:
+    dataservices.datamodel.transfers.PlanningHierarchyFilterContextDTO:
       type: object
       properties:
         hierarchyName:
@@ -2598,7 +2187,7 @@ components:
             type: string
           description: The unique IDs of excluded dimension members.
       description: A plan context defined using hierarchy members
-    PlanningModelDTO:
+    dataservices.datamodel.transfers.PlanningModelDTO:
       type: object
       properties:
         id:
@@ -2613,27 +2202,27 @@ components:
           type: string
           description: The localized description of the planning model.
       description: The basic information about the planning model. A planning model captures the planning intent, plan items, and the relationship between them.
-    PlanningModelsDTO:
+    dataservices.datamodel.transfers.PlanningModelsDTO:
       type: object
       properties:
         models:
           type: array
           items:
-            $ref: '#/components/schemas/PlanningModelDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.PlanningModelDTO'
       description: A collection of planning modules.
-    PlanningPlanContextDTO:
+    dataservices.datamodel.transfers.PlanningPlanContextDTO:
       type: object
       properties:
         hierarchyFilterContext:
           allOf:
-            - $ref: '#/components/schemas/PlanningHierarchyFilterContextDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.PlanningHierarchyFilterContextDTO'
           description: A plan context defined using hierarchy members.
         conceptFilterContext:
           allOf:
-            - $ref: '#/components/schemas/PlanningConceptFilterContextDTO'
+            - $ref: '#/components/schemas/dataservices.datamodel.transfers.PlanningConceptFilterContextDTO'
           description: A plan context defined using a selection concept.
       description: The filter context for a plan. Plan contexts are defined using a set of hierarchy members or a concept.
-    PlanningPlanDTO:
+    dataservices.datamodel.transfers.PlanningPlanDTO:
       type: object
       properties:
         id:
@@ -2650,7 +2239,7 @@ components:
         defaultContexts:
           type: array
           items:
-            $ref: '#/components/schemas/PlanningPlanContextDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.PlanningPlanContextDTO'
           description: The contexts defined for the plan.
         planDimensionIds:
           type: array
@@ -2660,45 +2249,45 @@ components:
         scenarios:
           type: array
           items:
-            $ref: '#/components/schemas/ScenarioOrSnapshotDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.ScenarioOrSnapshotDTO'
           description: The available scenarios for the plan.
         snapshots:
           type: array
           items:
-            $ref: '#/components/schemas/ScenarioOrSnapshotDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.ScenarioOrSnapshotDTO'
           description: The available snapshots for the plan.
       description: The definition of a plan. Plans are defined on planning models, and each plan may define multiple scenarios or snapshots.
-    PlanningPlansDTO:
+    dataservices.datamodel.transfers.PlanningPlansDTO:
       type: object
       properties:
         plans:
           type: array
           items:
-            $ref: '#/components/schemas/PlanningPlanDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.PlanningPlanDTO'
       description: A collection of plan definitions.
-    PopulationConfigurationDTO:
+    dataservices.datamodel.transfers.PopulationConfigurationDTO:
       type: object
       properties:
         distinguishingProperties:
           type: array
           items:
-            $ref: '#/components/schemas/PropertyReferenceDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.PropertyReferenceDTO'
           description: Properties that are used by default to compare subject members.
         changeHistoryProperties:
           type: array
           items:
-            $ref: '#/components/schemas/PropertyReferenceDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.PropertyReferenceDTO'
           description: Properties that are used by default to compare subject members over time.
         groupingDimensions:
           type: array
           items:
-            $ref: '#/components/schemas/DimensionReferenceDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.DimensionReferenceDTO'
           description: Dimensions to use for grouping and clustering the population.
       description: |-
         A set of property and dimension references configured by Visier or an administrator to tell the platform what
          properties and dimensions to use when doing population insight calculations. These are the distinguishing properties,
          change history properties, and grouping dimensions to use in AI insights.
-    PredictionDTO:
+    dataservices.datamodel.transfers.PredictionDTO:
       type: object
       properties:
         id:
@@ -2789,106 +2378,23 @@ components:
           type: boolean
           description: If `true`, this prediction applies to more than one tenant. If "false", the prediction only applies to the current tenant.
       description: A prediction is a forecast of future events with advanced machine learning models.
-    PredictionsDTO:
+    dataservices.datamodel.transfers.PredictionsDTO:
       type: object
       properties:
         predictions:
           type: array
           items:
-            $ref: '#/components/schemas/PredictionDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.PredictionDTO'
       description: A collection of predictions.
-    PropertiesChangeDefinitionsDTO:
-      type: object
-      properties:
-        propertiesByTenant:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyChangeDefinitionsByTenantDTO'
-          description: The property updates to make in each tenant.
-    PropertiesDTO:
+    dataservices.datamodel.transfers.PropertiesDTO:
       type: object
       properties:
         properties:
           type: array
           items:
-            $ref: '#/components/schemas/PropertyDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.PropertyDTO'
       description: A collection of properties.
-    PropertiesDeleteDefinitionsDTO:
-      type: object
-      properties:
-        deleteDerivedProperties:
-          type: boolean
-          description: If `true`, deletes derived properties along with the properties to delete. Default is `false`.
-        ignorePropertyReferences:
-          type: boolean
-          description: If `true`, ignores properties that reference the properties to delete. Default is `false`.
-        propertiesByTenant:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyDeleteDefinitionsByTenantDTO'
-          description: The properties to delete for each tenant.
-      description: Property deletion options.
-    PropertyBulkDeleteResponseDTO:
-      type: object
-      properties:
-        successes:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyDeleteSuccessDTO'
-          description: Properties that were successfully deleted.
-        failures:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyDeleteFailureDTO'
-          description: Properties that were not successfully deleted.
-      description: Results of a bulk delete operation.
-    PropertyChangeDefinitionDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The symbol name of the property; for example, Employee.Birth_Date
-        displayName:
-          type: string
-          description: The user-friendly name for the property.
-        shortDisplayName:
-          type: string
-          description: A shortened version of the display name. If the property is visible in the solution experience, this name is displayed in visualization titles.
-        description:
-          type: string
-          description: A short description of the property. Descriptions provide in-context help for your users while working in Visier.
-        explanation:
-          type: string
-          description: Explanation of the property. This field is used to provide additional information about the property.
-        designerNotes:
-          type: string
-          description: Notes for the designer. This field is used to provide additional information about the property.
-        type:
-          allOf:
-            - $ref: '#/components/schemas/PropertyTypeDTO'
-          description: The type of the property.
-        tags:
-          allOf:
-            - $ref: '#/components/schemas/TagsDTO'
-          description: The tags associated with the property.
-        includeWithVee:
-          type: boolean
-          description: If 'true', the property is included with Vee.
-    PropertyChangeDefinitionsByTenantDTO:
-      type: object
-      properties:
-        tenantCode:
-          type: string
-          description: The tenant code of the tenant in which to update properties.
-        projectId:
-          type: string
-          description: To make changes in a project, specify a project ID.
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyChangeDefinitionDTO'
-          description: The list of properties to update.
-    PropertyDTO:
+    dataservices.datamodel.transfers.PropertyDTO:
       type: object
       properties:
         id:
@@ -2911,18 +2417,642 @@ components:
         parameters:
           type: array
           items:
-            $ref: '#/components/schemas/ParameterDefinitionDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.ParameterDefinitionDTO'
           description: The collection of parameters defined for the property.
         tags:
           type: array
           items:
-            $ref: '#/components/schemas/TagMapElementDTO'
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.TagMapElementDTO'
           description: The optional collection of tags defined for this element.
         explanation:
           type: string
           description: The localized explanation of the property.
       description: Properties are qualities of an analytic object.
-    PropertyDeleteDefinitionsByTenantDTO:
+    dataservices.datamodel.transfers.PropertyReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The ID of the property. See `Properties` to get the ID.
+        qualifyingPath:
+          type: string
+          description: |-
+            The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.
+             If the path has multiple objects, each object is separated by a period.
+      description: The name and qualifying path of a property to query.
+    dataservices.datamodel.transfers.ScenarioOrSnapshotDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The identifier of the scenario or snapshot.
+        displayName:
+          type: string
+          description: The scenario or snapshot display name.
+      description: The unique identifier and display name for plan scenarios and snapshots.
+    dataservices.datamodel.transfers.SelectionConceptDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            The unique ID of the selection concept
+             Note: See `SelectionConcepts` to get the ID.
+        displayName:
+          type: string
+          description: The localized display name of the selection concept.
+        description:
+          type: string
+          description: The localized description of the selection concept.
+        visibleInApp:
+          type: boolean
+          description: '`true` if this selection concept is set to be visible in your solution.'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.TagMapElementDTO'
+          description: The optional collection of tags defined for this element.
+        explanation:
+          type: string
+          description: The localized explanation of the selection concept.
+      description: Selection concepts select a population of subject members of a given subject or event.
+    dataservices.datamodel.transfers.SelectionConceptsDTO:
+      type: object
+      properties:
+        selectionConcepts:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.datamodel.transfers.SelectionConceptDTO'
+      description: A collection of selection concepts
+    dataservices.datamodel.transfers.TagMapElementDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the tag.
+        displayName:
+          type: string
+          description: The localized display name of the tag.
+      description: Tag identifier and display name pair.
+    dataservices.datamodel.transfers.ValidityRangeDTO:
+      type: object
+      properties:
+        start:
+          type: string
+          description: |-
+            The date from which data becomes available.
+             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+        end:
+          type: string
+          description: |-
+            The date from which data is no longer available.
+             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+      description: |-
+        A pair of values that represent the time interval to which the data is valid.
+         The validity range is defined in Unix epoch format and UTC timezone.
+         Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
+         limitation in representing large numbers.
+    designer.api.transfers.AnalyticObjectFilterDTO:
+      type: object
+      properties:
+        analyticObjectUuid:
+          type: string
+          description: The UUID of the analytic object used in the selection concept.
+        symbolName:
+          type: string
+          description: The symbol name of the analytic object.
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.api.transfers.DimensionFilterDTO'
+          description: A list of dimensions included in the concept.
+    designer.api.transfers.CalculationConceptConfigurationDTO:
+      type: object
+      properties:
+        perspectives:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.api.transfers.PerspectiveConfigurationDTO'
+          description: A list of objects representing the perspectives in the calculation concept.
+    designer.api.transfers.CalculationConceptConfigurationMapDTO:
+      type: object
+      properties:
+        perspectivesToMap:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.api.transfers.PerspectiveConfigurationDTO'
+          description: A list of objects representing the list of perspectives in the calculation concept.
+      description: The configuration to apply to the concept.
+    designer.api.transfers.CalculationConceptDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The unique identifier associated with the calculation concept.
+        name:
+          type: string
+          description: The display name of the calculation concept.
+        configuration:
+          allOf:
+            - $ref: '#/components/schemas/designer.api.transfers.CalculationConceptConfigurationDTO'
+          description: A list of objects representing the configuration for the calculation concept.
+    designer.api.transfers.CalculationConceptListDTO:
+      type: object
+      properties:
+        concepts:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.api.transfers.CalculationConceptDTO'
+          description: A list of objects representing calculation concepts.
+    designer.api.transfers.ConceptConfigurationResultDTO:
+      type: object
+      properties:
+        conceptId:
+          type: string
+          description: The unique identifier of the configured concept.
+        projectId:
+          type: string
+          description: The unique identifier of the system-generated project.
+        message:
+          type: string
+          description: A meaningful message about the API result.
+    designer.api.transfers.DimensionFilterDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The UUID of the dimension.
+        symbolName:
+          type: string
+          description: The symbol name of the dimension.
+        dimensionMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.api.transfers.DimensionMemberDTO'
+          description: |-
+            A list of dimension members to map to the perspective node.
+
+             Note: If this array is empty, all dimension members will be removed for the node.
+    designer.api.transfers.DimensionMemberDTO:
+      type: object
+      properties:
+        dimensionMember:
+          type: array
+          items:
+            type: string
+          description: |-
+            A list of strings representing the dimension members. Dimension members in a hierarchical dimension
+             will have an array with multiple strings.
+    designer.api.transfers.PerspectiveConfigurationDTO:
+      type: object
+      properties:
+        perspectiveId:
+          type: string
+          description: The UUID of the perspective.
+        perspectiveName:
+          type: string
+          description: The display name of the perspective.
+        perspectiveNodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.api.transfers.PerspectiveNodeDTO'
+          description: A list of nodes in the perspective.
+    designer.api.transfers.PerspectiveNodeDTO:
+      type: object
+      properties:
+        selectionConceptUuid:
+          type: string
+          description: The UUID of the node's selection concept. Perspective nodes are generated as selection concepts to enable filtering.
+        symbolName:
+          type: string
+          description: The symbol name of the selection concept. For example, "isExitActualSystemTermination".
+        analyticObjectFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.api.transfers.AnalyticObjectFilterDTO'
+          description: A list of analytic object filters indicating the analytic object and dimensions used for the selection concept.
+    designer.api.transfers.SelectionConceptConfigurationDTO:
+      type: object
+      properties:
+        analyticObjectFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.api.transfers.AnalyticObjectFilterDTO'
+          description: A list of analytic object filters indicating the analytic object and dimension used for this selection concept.
+    designer.api.transfers.SelectionConceptConfigurationMapDTO:
+      type: object
+      properties:
+        analyticObjectFiltersToMap:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.api.transfers.AnalyticObjectFilterDTO'
+          description: |-
+            A list of analytic object filters indicating the analytic object and dimension members used
+             for the selection concept.
+
+             Note: If this array is empty, all filters will be removed for the concept.
+    designer.api.transfers.SelectionConceptDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The unique identifier associated with the selection concept.
+        name:
+          type: string
+          description: The display name of the selection concept.
+        configuration:
+          allOf:
+            - $ref: '#/components/schemas/designer.api.transfers.SelectionConceptConfigurationDTO'
+          description: A list of objects representing the configuration for the selection concept.
+    designer.api.transfers.SelectionConceptListDTO:
+      type: object
+      properties:
+        concepts:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.api.transfers.SelectionConceptDTO'
+          description: A list of objects representing selection concepts.
+    planning.transfers.GetPlanListResponseDTO:
+      type: object
+      properties:
+        plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.transfers.PlanInfoDTO'
+          description: A list of plans accessible to the user.
+        page:
+          type: integer
+          description: The current page number of results that the user is viewing.
+          format: int32
+      description: A collection of plans.
+    planning.transfers.PlanDataLoadErrorDTO:
+      type: object
+      properties:
+        row:
+          type: integer
+          description: The row in the file that caused the error.
+          format: int32
+        rci:
+          type: string
+          description: An error code that can be provided to Visier Support to help investigate your issue.
+        errorMessage:
+          type: string
+          description: Information regarding the error and any actions that you could take to load the data correctly.
+      description: An error encountered while loading plan data.
+    planning.transfers.PlanInfoDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The UUID of the plan.
+        displayName:
+          type: string
+          description: The display name of the plan.
+        modelId:
+          type: string
+          description: The unique identifier of the planning model that the plan is using.
+        scenarios:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.transfers.ScenarioInfoDTO'
+          description: Information about the plan's scenarios.
+        parentPlanUuid:
+          type: string
+          description: If the plan is a subplan, the response returns its parent plan's UUID. Not returned for main plans.
+        currencyCode:
+          type: string
+          description: The 3-digit ISO 4217 currency code of the plan's data.
+      description: Information about a plan and its scenarios.
+    planning.transfers.PlanItemDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the plan item.
+        displayName:
+          type: string
+          description: The display name of the plan item.
+        dataType:
+          enum:
+            - unknown
+            - number
+            - currency
+            - decimal
+            - rate
+          type: string
+          description: |-
+            The data type of the plan item. The data types are:
+             - **rate**: Converts values into a percentage in the planning grid. The provided value is multiplied by 100 to get the display value. For example, a provided value of 0.5 is displayed as 50% in the grid.
+             - **number**: Displays values as whole numbers. Decimal values are rounded to a whole number when displayed in the planning grid.
+             - **currency**: Displays values as a currency. Values must not contain thousand separators, currency codes, or currency symbols.
+             - **decimal**: Displays values with decimals.
+          format: enum
+      description: A plan item is a metric in your plan. The available plan items depend on the planning model.
+    planning.transfers.PlanSchemaDTO:
+      type: object
+      properties:
+        planItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.transfers.PlanItemDTO'
+          description: A collection of editable plan items in a plan.
+        timePeriods:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.transfers.PlanTimePeriodDTO'
+          description: The editable time periods in a plan. These time periods are the columns in the planning grid.
+        planSegmentLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.transfers.PlanSegmentLevelDTO'
+          description: The dimensions that the plan is segmented by.
+        planSegmentLevelMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.transfers.PlanSegmentLevelMemberListDTO'
+          description: |-
+            A collection of members grouped by their dimension and level.
+             The combination of these member IDs points to a specific row in the plan.
+      description: Information about a plan's schema.
+    planning.transfers.PlanSegmentLevelDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the dimension appended with its level ID.
+        displayName:
+          type: string
+          description: The display name of the dimension level.
+        order:
+          type: integer
+          description: The number that describes the segment's position in the plan's overall structure.
+          format: int32
+        segmentId:
+          type: string
+          description: The symbol name of the dimension.
+        segmentDisplayName:
+          type: string
+          description: The display name of the dimension.
+      description: A dimension and dimension level that segments the plan.
+    planning.transfers.PlanSegmentLevelMemberDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the dimension member.
+        displayName:
+          type: string
+          description: The display name of the dimension member.
+        isCustom:
+          type: boolean
+          description: If `true`, this is a custom member created for use in the plan and all its subplans.
+        parentId:
+          type: string
+          description: The unique identifier of the dimension member's parent.
+      description: A member in the dimension.
+    planning.transfers.PlanSegmentLevelMemberListDTO:
+      type: object
+      properties:
+        segmentLevelId:
+          type: string
+          description: The unique identifier of the dimension and dimension level.
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.transfers.PlanSegmentLevelMemberDTO'
+          description: The dimension members.
+        segmentId:
+          type: string
+          description: The unique identifier of the dimension.
+      description: A collection of dimension members.
+    planning.transfers.PlanTimePeriodDTO:
+      type: object
+      properties:
+        date:
+          type: string
+          description: The date of the time period. The format is YYYY-MM-DD.
+        displayName:
+          type: string
+          description: The display name of the time period; for example, March 2024.
+      description: A time period in the plan.
+    planning.transfers.PlanWithSchemaDTO:
+      type: object
+      properties:
+        plan:
+          $ref: '#/components/schemas/planning.transfers.PlanInfoDTO'
+        schema:
+          $ref: '#/components/schemas/planning.transfers.PlanSchemaDTO'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.transfers.PlanDataLoadErrorDTO'
+          description: The errors that occurred while loading the data.
+      description: Details about the plan, including its schema.
+    planning.transfers.ScenarioInfoDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The UUID of the scenario.
+        displayName:
+          type: string
+          description: The full display name of the scenario.
+        versionedScenarioId:
+          type: string
+          description: If the scenario belongs to a managed plan, the response returns the scenario's user-readable symbol name.
+      description: Information about a plan's scenario.
+    servicing.publicapi.objectconfiguration.CalculatedPropertyTypeDTO:
+      type: object
+      properties:
+        dataType:
+          type: string
+          description: The data type of the property, such as Categorical, HourDuration, or Ratio.
+        formula:
+          type: string
+          description: The formula used to calculate the property's value, written in Visier Formula Language.
+    servicing.publicapi.objectconfiguration.DependentDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the dependent object.
+        displayName:
+          type: string
+          description: The display name of the dependent object.
+        objectType:
+          type: string
+          description: The type of dependent object, such as a property or parameter.
+      description: Details about a dependent object related to the property to delete.
+    servicing.publicapi.objectconfiguration.DimensionChangeDefinitionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the dimension; for example, `Career_Level` or `Employee.Vaccination_Status`
+        displayName:
+          type: string
+          description: The user-friendly name for the dimension.
+        shortDisplayName:
+          type: string
+          description: A shortened version of the display name. If the dimension is visible in the solution experience, this name is displayed in visualization titles.
+        description:
+          type: string
+          description: A short description of the dimension. Descriptions provide in-context help for your users while working in Visier.
+    servicing.publicapi.objectconfiguration.DimensionChangeDefinitionsByTenantDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the tenant in which to update dimensions.
+        projectId:
+          type: string
+          description: To make changes in a project, specify a project ID.
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.DimensionChangeDefinitionDTO'
+          description: The list of dimensions to update.
+    servicing.publicapi.objectconfiguration.DimensionsChangeDefinitionsDTO:
+      type: object
+      properties:
+        dimensionsByTenant:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.DimensionChangeDefinitionsByTenantDTO'
+          description: The dimension updates to make in each tenant.
+    servicing.publicapi.objectconfiguration.ObjectChangeFailureDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the object that was not successfully changed.
+        displayName:
+          type: string
+          description: The display name of the object.
+        message:
+          type: string
+          description: An error message describing the cause of the failure.
+        rci:
+          type: string
+          description: The root cause identifier to provide to Visier Technical Support if you require further troubleshooting.
+        tenantCode:
+          type: string
+          description: The tenant that the object was not successfully changed in.
+        projectId:
+          type: string
+          description: The project that the object was not successfully changed in.
+    servicing.publicapi.objectconfiguration.ObjectChangeSuccessDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the object that was successfully changed.
+        displayName:
+          type: string
+          description: The display name of the object.
+        tenantCode:
+          type: string
+          description: The tenant that the object was changed in.
+        projectId:
+          type: string
+          description: The project that the object was changed in.
+    servicing.publicapi.objectconfiguration.ObjectsBulkChangeResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.ObjectChangeSuccessDTO'
+          description: The objects that were successfully changed.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.ObjectChangeFailureDTO'
+          description: The objects that were not successfully changed.
+    servicing.publicapi.objectconfiguration.PropertiesChangeDefinitionsDTO:
+      type: object
+      properties:
+        propertiesByTenant:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.PropertyChangeDefinitionsByTenantDTO'
+          description: The property updates to make in each tenant.
+    servicing.publicapi.objectconfiguration.PropertiesDeleteDefinitionsDTO:
+      type: object
+      properties:
+        deleteDerivedProperties:
+          type: boolean
+          description: If `true`, deletes derived properties along with the properties to delete. Default is `false`.
+        ignorePropertyReferences:
+          type: boolean
+          description: If `true`, ignores properties that reference the properties to delete. Default is `false`.
+        propertiesByTenant:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.PropertyDeleteDefinitionsByTenantDTO'
+          description: The properties to delete for each tenant.
+      description: Property deletion options.
+    servicing.publicapi.objectconfiguration.PropertyBulkDeleteResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.PropertyDeleteSuccessDTO'
+          description: Properties that were successfully deleted.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.PropertyDeleteFailureDTO'
+          description: Properties that were not successfully deleted.
+      description: Results of a bulk delete operation.
+    servicing.publicapi.objectconfiguration.PropertyChangeDefinitionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The symbol name of the property; for example, Employee.Birth_Date
+        displayName:
+          type: string
+          description: The user-friendly name for the property.
+        shortDisplayName:
+          type: string
+          description: A shortened version of the display name. If the property is visible in the solution experience, this name is displayed in visualization titles.
+        description:
+          type: string
+          description: A short description of the property. Descriptions provide in-context help for your users while working in Visier.
+        explanation:
+          type: string
+          description: Explanation of the property. This field is used to provide additional information about the property.
+        designerNotes:
+          type: string
+          description: Notes for the designer. This field is used to provide additional information about the property.
+        type:
+          allOf:
+            - $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.PropertyTypeDTO'
+          description: The type of the property.
+        tags:
+          allOf:
+            - $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.TagsDTO'
+          description: The tags associated with the property.
+        includeWithVee:
+          type: boolean
+          description: If 'true', the property is included with Vee.
+    servicing.publicapi.objectconfiguration.PropertyChangeDefinitionsByTenantDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the tenant in which to update properties.
+        projectId:
+          type: string
+          description: To make changes in a project, specify a project ID.
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.PropertyChangeDefinitionDTO'
+          description: The list of properties to update.
+    servicing.publicapi.objectconfiguration.PropertyDeleteDefinitionsByTenantDTO:
       type: object
       properties:
         tenantCode:
@@ -2937,7 +3067,7 @@ components:
             type: string
           description: The IDs of the properties to delete.
       description: The properties to delete for a specific tenant.
-    PropertyDeleteFailureDTO:
+    servicing.publicapi.objectconfiguration.PropertyDeleteFailureDTO:
       type: object
       properties:
         id:
@@ -2961,15 +3091,15 @@ components:
         derivedDependentsToDelete:
           type: array
           items:
-            $ref: '#/components/schemas/DependentDTO'
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.DependentDTO'
           description: The derived dependents that would have been deleted if the deletion was successful.
         referenceDependentsToIgnore:
           type: array
           items:
-            $ref: '#/components/schemas/DependentDTO'
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.DependentDTO'
           description: Dependents that reference this property and could be affected.
       description: Details about a failed property deletion.
-    PropertyDeleteSuccessDTO:
+    servicing.publicapi.objectconfiguration.PropertyDeleteSuccessDTO:
       type: object
       properties:
         id:
@@ -2987,131 +3117,32 @@ components:
         derivedDependentsDeleted:
           type: array
           items:
-            $ref: '#/components/schemas/DependentDTO'
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.DependentDTO'
           description: The derived dependents that were deleted along with the property.
         referenceDependentsIgnored:
           type: array
           items:
-            $ref: '#/components/schemas/DependentDTO'
+            $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.DependentDTO'
           description: Dependents that reference the property and were ignored during deletion.
       description: Details about a successful property deletion.
-    PropertyReferenceDTO:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The ID of the property. See `Properties` to get the ID.
-        qualifyingPath:
-          type: string
-          description: |-
-            The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.
-             If the path has multiple objects, each object is separated by a period.
-      description: The name and qualifying path of a property to query.
-    PropertyTypeDTO:
+    servicing.publicapi.objectconfiguration.PropertyTypeDTO:
       type: object
       properties:
         simple:
           allOf:
-            - $ref: '#/components/schemas/SimplePropertyTypeDTO'
+            - $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.SimplePropertyTypeDTO'
           description: The simple property type, which provides a single value directly from the data.
         calculated:
           allOf:
-            - $ref: '#/components/schemas/CalculatedPropertyTypeDTO'
+            - $ref: '#/components/schemas/servicing.publicapi.objectconfiguration.CalculatedPropertyTypeDTO'
           description: The calculated property type, which derives its value using a formula.
-    ScenarioInfoDTO:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: The UUID of the scenario.
-        displayName:
-          type: string
-          description: The full display name of the scenario.
-        versionedScenarioId:
-          type: string
-          description: If the scenario belongs to a managed plan, the response returns the scenario's user-readable symbol name.
-      description: Information about a plan's scenario.
-    ScenarioOrSnapshotDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The identifier of the scenario or snapshot.
-        displayName:
-          type: string
-          description: The scenario or snapshot display name.
-      description: The unique identifier and display name for plan scenarios and snapshots.
-    SelectionConceptConfigurationMapDTO:
-      type: object
-      properties:
-        analyticObjectFiltersToMap:
-          type: array
-          items:
-            $ref: '#/components/schemas/AnalyticObjectFilterDTO'
-          description: |-
-            A list of analytic object filters indicating the analytic object and dimension members used
-             for the selection concept.
-
-             Note: If this array is empty, all filters will be removed for the concept.
-    SelectionConceptDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: |-
-            The unique ID of the selection concept
-             Note: See `SelectionConcepts` to get the ID.
-        displayName:
-          type: string
-          description: The localized display name of the selection concept.
-        description:
-          type: string
-          description: The localized description of the selection concept.
-        visibleInApp:
-          type: boolean
-          description: '`true` if this selection concept is set to be visible in your solution.'
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/TagMapElementDTO'
-          description: The optional collection of tags defined for this element.
-        explanation:
-          type: string
-          description: The localized explanation of the selection concept.
-      description: Selection concepts select a population of subject members of a given subject or event.
-    SelectionConceptListDTO:
-      type: object
-      properties:
-        concepts:
-          type: array
-          items:
-            $ref: '#/components/schemas/SelectionConceptDTO'
-          description: A list of objects representing selection concepts.
-    SelectionConceptsDTO:
-      type: object
-      properties:
-        selectionConcepts:
-          type: array
-          items:
-            $ref: '#/components/schemas/SelectionConceptDTO'
-      description: A collection of selection concepts
-    SimplePropertyTypeDTO:
+    servicing.publicapi.objectconfiguration.SimplePropertyTypeDTO:
       type: object
       properties:
         dataType:
           type: string
           description: The data type of the property, such as Categorical, HourDuration, or Ratio.
-    TagMapElementDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique ID of the tag.
-        displayName:
-          type: string
-          description: The localized display name of the tag.
-      description: Tag identifier and display name pair.
-    TagsDTO:
+    servicing.publicapi.objectconfiguration.TagsDTO:
       type: object
       properties:
         ids:
@@ -3120,36 +3151,24 @@ components:
             type: string
           description: The tag ids.
       description: Wrapper to distinguish between an empty list and a null/unset list.
-    ValidityRangeDTO:
-      type: object
-      properties:
-        start:
-          type: string
-          description: |-
-            The date from which data becomes available.
-             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
-        end:
-          type: string
-          description: |-
-            The date from which data is no longer available.
-             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
-      description: |-
-        A pair of values that represent the time interval to which the data is valid.
-         The validity range is defined in Unix epoch format and UTC timezone.
-         Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
-         limitation in representing large numbers.
     Status:
       type: object
       properties:
-        errorCode:
+        localizedMessage:
+          type: string
+          description: Localized error message describing the root cause of the error.
+        code:
           type: string
           description: Error classification.
         message:
           type: string
-          description: Error message describing the root cause of the error.
+          description: Not used.
         rci:
           type: string
           description: Optional root cause identifier.
+        userError:
+          type: boolean
+          description: Indicates whether the error is a user error.
       description: The response structure for errors.
   securitySchemes:
     CookieAuth:
@@ -3199,3 +3218,9 @@ security:
     CookieAuth: []
   - ApiKeyAuth: []
     OAuth2Auth: []
+# x-tagGroups is for Redocly use to effectively let us categorize our different tags
+x-tagGroups:
+  - name: Analytic Model
+    tags:
+      - DataModel
+      - ObjectConfiguration
