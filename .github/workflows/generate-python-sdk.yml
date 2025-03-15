@@ -109,7 +109,7 @@ jobs:
           git push origin ${{ inputs.python_sdk_branch }}
 
       - name: Run tests
-        if: false # Disable tests because they are generated incorrectly with new version of openapi specifications
+        if: false # TODO enable tests after fixing issue with `.` in schema names.
         shell: bash
         run: |
           chmod +x ${{ github.workspace }}/sdk-blueprints/python/run-tests.sh
