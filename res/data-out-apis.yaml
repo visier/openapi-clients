@@ -1,0 +1,2863 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+  title: Visier Data Out APIs
+  description: Visier APIs for getting data out of Visier, such as aggregate data and data version information.
+  license:
+    name: Apache License, Version 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: 22222222.99201.1798
+paths:
+  /v1/data/query/aggregate:
+    post:
+      tags:
+        - DataQuery
+      summary: Query aggregate data
+      description: |-
+        To retrieve aggregated values from your data in Visier, you can perform an aggregation. Usually, an aggregation
+         retrieves values over a period of time, such as multiple months. You can also group and filter your data in an
+         aggregation query to retrieve detailed information.
+      operationId: DataQuery_Aggregate
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dataservices.query.AggregationQueryExecutionDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: Aggregate query response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.query.CellSetDTO'
+            application/jsonlines:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+  /v1/data/query/list:
+    post:
+      tags:
+        - DataQuery
+      summary: Query a list of details
+      description: |-
+        To retrieve a list of values for specific objects, you can perform a list query. A list query provides information
+         about values for selected data points, and is not an aggregated value. In Visier's interface, a list query is
+         comparable to View Details for a specific data point in a visualization.
+      operationId: DataQuery_List
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dataservices.query.ListQueryExecutionDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: List query response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_out.ListResponse'
+            application/jsonlines:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+  /v1/data/query/snapshot:
+    post:
+      tags:
+        - DataQuery
+      summary: Query a series of detailed snapshots
+      description: |-
+        To retrieve a collection of `list` query-style snapshots taken at the defined intervals, execute a `snapshot` query.
+         Each snapshot in the result is associated with a timestamp, or the "effective date" at which date snapshot data was valid.
+         This API allows you to request a detailed time series from Visier.
+
+         Structurally, a `snapshot` query is similar to a `list` query, but has the following differences:
+         * The `snapshot` query may contain a column, `effectiveDateProperty`, that specifies the time for each snapshot. To include the `effectiveDateProperty` column, add the following object to the columns array:
+            ```json
+            {
+                "columnName": "Snapshot_Date",
+                "columnDefinition": {
+                    "effectiveDateProperty": {}
+                }
+            }
+            ```
+         * The `snapshot` query uses `timeIntervals` (like an `aggregate` query) instead of `timeInterval` (like a `list` query) because the `snapshot` query
+            must specify the number of snapshots to generate. To specify the number of snapshots to generate, use the `intervalCount` property in the `timeIntervals` object, as shown next.
+            ```json
+            {
+                "timeIntervals": {
+                "fromDateTime": "2022-01-01",
+                "intervalPeriodType": "MONTH",
+                "intervalPeriodCount": 6,
+                "intervalCount": 4
+            }
+            ```
+      operationId: Query_Snapshot
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dataservices.query.SnapshotQueryExecutionDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: List query response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_out.ListResponse'
+            application/jsonlines:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+  /v1/data/query/sql:
+    post:
+      tags:
+        - DataQuery
+      summary: Query aggregate or list data using SQL-like syntax
+      description: |-
+        To retrieve a list of values for specific objects or aggregate values from metrics, you can write queries using SQL-like syntax.
+         The response format matches the query type whether aggregate or list. If requested, aggregate query results may be flattened into tabular format.
+
+         A SQL-like query is an aggregate if it contains at least one metric. Aggregate queries must specify a time interval divided into periods; for example:
+         ```sql
+         SELECT
+           employeeCount() AS "Employee Count",
+           level(Gender, "Gender") AS Gender
+         FROM
+           Employee
+         WHERE
+          Visier_Time IN periods(date("2023-01-01"), 4, period(3, Month));
+         ```
+
+         A SQL-like query is a list if it does not contain any metrics. List queries define time intervals as simple intervals; for example:
+         ```sql
+         SELECT
+           EmployeeID AS "Employee ID",
+           level(Gender, "Gender") AS Gender
+         FROM
+           Employee
+         WHERE
+          Visier_Time BETWEEN date("2022-01-01") AND date("2023-01-01");
+         ```
+      operationId: DataQuery_SqlLike
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dataservices.query.SqlLikeQueryExecutionDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: List query response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/TableResponseDTO'
+                  - $ref: '#/components/schemas/dataservices.query.CellSetDTO'
+            application/jsonlines:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+  /v1/vee/status:
+    get:
+      tags:
+        - Vee
+      summary: Check the overall current status of Vee
+      description: |-
+        Check the current overall status of Vee.
+
+         The overall status is one of:
+         * `UP` :  Vee is operational.
+         * `DOWN`: Vee is not operational.
+      operationId: Vee_VeeStatus
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/systemstatus.VeeStatusDTO'
+  /v1alpha/data/data-version-exports/data-versions:
+    get:
+      tags:
+        - DataVersionExport
+      summary: Retrieve a list of all data versions
+      description: |-
+        Retrieve a list of all data versions in the tenant.
+
+         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: DataVersionExport_GetAvailableDataVersions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DvExportStatus'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.DataVersionExportDataVersionsDTO'
+  /v1alpha/data/data-version-exports/exports:
+    get:
+      tags:
+        - DataVersionExport
+      summary: Retrieve the details of all data version exports
+      description: |-
+        Retrieve the information for all available data version exports.
+         **Note:** Data version exports are available for 14 days after export job completes.
+
+         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: DataVersionExport_GetAvailableExports
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DvExportStatus'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.DataVersionExportsDTO'
+  /v1alpha/data/data-version-exports/exports/{exportUuid}:
+    get:
+      tags:
+        - DataVersionExport
+      summary: Retrieve the details of a data version export
+      description: |-
+        Retrieve information for a specific data version export.
+         **Note:** Data version exports are available for 14 days after export job completes.
+
+         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: DataVersionExport_GetExport
+      parameters:
+        - name: exportUuid
+          in: path
+          description: The unique identifier of the data version export.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DvExportStatus'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.DataVersionExportDTO'
+  /v1alpha/data/data-version-exports/jobs:
+    post:
+      tags:
+        - DataVersionExport
+      summary: Schedule a data version export job
+      description: |-
+        Schedule a data version export job. The job schedules immediately and will begin when resources are available. The response returns a `jobUuid` that you can use to check the export job status.
+
+         **Note:** There is a limit of 10 export jobs per tenant per day.
+
+         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: DataVersionExport_ScheduleExportJob
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.DataVersionExportScheduleJobRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DvExportStatus'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.DataVersionExportScheduleJobResponseDTO'
+  /v1alpha/data/data-version-exports/jobs/{jobUuid}:
+    get:
+      tags:
+        - DataVersionExport
+      summary: Retrieve a data version export job's status
+      description: |-
+        Retrieve the status of a data version export job. After the job completes successfully, this endpoint returns an `exportUuid` that you can use to retrieve the export information and download export files.
+
+         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: DataVersionExport_GetExportJobStatus
+      parameters:
+        - name: jobUuid
+          in: path
+          description: The unique identifier of the data version export job.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DvExportStatus'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.DataVersionExportJobStatusDTO'
+  /v1alpha/op/data/source-files:
+    get:
+      tags:
+        - SourceFilesDownload
+      summary: Download source files
+      description: |-
+        Download a tenant's source files. You can download all included source files or specify a list of sources to download. Use object names or unique identifiers to specify the list of sources. Excluded source files will not be downloaded.
+
+         If `minTimestamp` and `maxTimestamp` are defined, downloads the source files uploaded within the specified time range for all sources or the specified sources.
+
+         Administrating tenants can specify the tenant from which to download sources using the `TargetTenantID` header.
+
+         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: SourceFilesDownload_DownloadSourceFiles
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.DownloadSourceFilesDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.DownloadSourceFilesResponseDTO'
+        "200":
+          description: File contents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.DownloadSourceFilesResponseDTO'
+            application/zip:
+              schema:
+                type: string
+                format: binary
+  /v1alpha/reporting/reports:
+    get:
+      tags:
+        - Reporting
+      summary: Retrieve a list of reports
+      description: |-
+        Retrieve a list of reports. The response returns information such as the unique ID, title, description, owner, and the allowed actions you can take on the report.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Reporting_GetReports
+      parameters:
+        - name: limit
+          in: query
+          description: Optionally, specify the number of reports to return. If omitted, the request uses the default value of 100.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: Optionally, specify the zero-based index of the report to start fetching from. If omitted, the request uses the default value of 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.ReportListResponseDTO'
+    post:
+      tags:
+        - Reporting
+      summary: Create a report
+      description: |-
+        Create a new report with a title and description. To edit other contents of the report, such as columns and group bys, navigate to the Reports room in Visier.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Reporting_CreateReport
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/analysis.common.ReportCreateRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.ReportDTO'
+  /v1alpha/reporting/reports/{reportId}:
+    get:
+      tags:
+        - Reporting
+      summary: Retrieve a report's details
+      description: |-
+        Retrieve the details of a specific report. The response returns information such as title, description, owner, and the allowed actions you can take on the report. You must know the ID of the report to retrieve its details. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Reporting_GetReport
+      parameters:
+        - name: reportId
+          in: path
+          description: The unique identifier of the report you want to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.ReportDTO'
+    post:
+      tags:
+        - Reporting
+      summary: Duplicate a report
+      description: |-
+        Make a copy of an existing report. You must know the ID of the report to copy it. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Reporting_DuplicateReport
+      parameters:
+        - name: reportId
+          in: path
+          description: The unique identifier of the report you want to duplicate.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.ReportDTO'
+    delete:
+      tags:
+        - Reporting
+      summary: Delete a report
+      description: |-
+        Delete a report in the tenant. You must know the ID of the report to delete it. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Reporting_DeleteReport
+      parameters:
+        - name: reportId
+          in: path
+          description: The unique identifier of the report you want to delete.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.ReportDeleteSuccessDTO'
+  /v1alpha/search/simple/document-headers:
+    get:
+      tags:
+        - Search
+      summary: Perform a simple search for Visier document headers
+      description: |-
+        Perform a simple search for Visier document headers, such as analysis titles. Simple search doesn't support keywords, Boolean expressions, or any other advanced search features.
+         Example: `GET /v1alpha/search/simple/document-headers?q=My+Query&limit=10` returns the first 10 document headers that best match the query string `My Query`.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Search_SimpleSearchDocumentHeaders
+      parameters:
+        - name: q
+          in: query
+          description: The search query string.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The maximum number of results to return. Defaults to 100.
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: The index to start retrieving results from, also known as offset. Defaults to 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SimpleDocumentHeaderSearchResponseDTO'
+  /v1alpha/vee/feedback:
+    post:
+      tags:
+        - Vee
+      summary: Submit Vee feedback
+      description: |-
+        Give Vee feedback for a previous answer. To submit feedback, include:
+         * The response object from the `/question` response.
+         * A rating of Vee's answer. If `isApproved` is `true`, Vee answered the question correctly. If `isApproved` is `false`, Vee's answer was incorrect or lacked details.
+         * A description of how Vee should have answered the question or how Vee can improve the answer, such as "Expected Headcount metric, but Vee returned Average Headcount".
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Vee_VeeFeedback
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/analysis.common.VeeFeedbackDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.VeeStatusCodeDTO'
+  /v1alpha/vee/question:
+    post:
+      tags:
+        - Vee
+      summary: Ask Vee a question
+      description: |-
+        Use plain language to ask Vee a people question. Use body parameters to specify how Vee should respond, such as returning a visualization, data, or rewording the question.
+
+         The response always returns a `conversationState` object containing a unique ID for the conversation. To ask a follow-up question or continue the conversation with Vee, include the `conversationState` from the response in your next `/question` call. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Vee_VeeQuestionRequest
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/analysis.common.VeeQuestionDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.VeeResponseDTO'
+  /v1alpha/vee/sample-questions:
+    get:
+      tags:
+        - Vee
+      summary: Retrieve a list of sample questions to ask Vee
+      description: |-
+        Get a list of sample questions to help you start using Vee. The response returns a list of questions that you can ask Vee, such as "What is the turnover rate?".
+         You may occasionally encounter a sample question that can't be answered due to data availability or your data access
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Vee_VeeSampleQuestions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.VeeSampleQuestionLibraryDTO'
+  /v1alpha/data/data-version-exports/exports/{exportUuid}/files/{fileId}:
+    get:
+      tags:
+        - DataVersionExport
+      summary: Download a file from a data version export
+      description: |-
+        This API allows you to download a file from a data version export.
+        Data version export files are in CSV format, compressed with gzip.
+      operationId: DataVersionExportV1Alpha_DownloadFile
+      parameters:
+        - name: exportUuid
+          in: path
+          description: The unique identifier of the data version export.
+          required: true
+          schema:
+            type: string
+        - name: fileId
+          in: path
+          description: The unique integer identifier of the file within the data version export.
+          required: true
+          schema:
+            type: integer
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: File contents
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DvExportStatus'
+  /v1alpha/reporting/report-data/{reportId}:
+    get:
+      tags:
+        - Reporting
+      summary: Download a report
+      description: |-
+        Download a report as a CSV file. The returned CSV file contains the data in the report. You must know the ID of the report to download it. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Reporting_DownloadReport
+      parameters:
+        - name: reportId
+          in: path
+          description: The unique identifier of the report you want to download.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Report data response
+          content:
+            text/csv:
+              schema:
+                type: string
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+components:
+  schemas:
+    google.protobuf.Any:
+      type: object
+      properties:
+        '@type':
+          type: string
+          description: The type of the serialized message.
+      additionalProperties: true
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+    analysis.common.ReportCreateRequestDTO:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The localized title of the report.
+        description:
+          type: string
+          description: The localized description of the report.
+      description: The request to create a new report.
+    analysis.common.ReportDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the report.
+        title:
+          type: string
+          description: The localized title of the report.
+        description:
+          type: string
+          description: The localized description of the report.
+        updatedTime:
+          type: string
+          description: The time in epoch milliseconds when the report was last updated.
+        isPublishedReport:
+          type: boolean
+          description: If `true`, the report is published through a project.
+        owner:
+          type: string
+          description: The owner of the report.
+        isOwnedByUser:
+          type: boolean
+          description: If `true`, you are the owner of the report.
+        allowedActions:
+          type: array
+          items:
+            enum:
+              - duplicate
+              - delete
+              - edit
+              - download
+              - share
+            type: string
+            format: enum
+          description: |-
+            The actions that you can perform on the report.
+
+             Valid values are:
+             - `duplicate`: The user can make their own copy of this report.
+             - `delete`: The user can delete this report.
+             - `edit`: The user can edit this report directly.
+             - `download`: The user can download this report as a CSV.
+             - `share`: The user can share this report with other users or user groups.
+        link:
+          type: string
+          description: The link to the report.
+      description: The information of a single report.
+    analysis.common.ReportDeleteSuccessDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the deleted report.
+      description: The report that was successfully deleted.
+    analysis.common.ReportListResponseDTO:
+      type: object
+      properties:
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.ReportDTO'
+          description: A list of reports.
+      description: The information of all the reports you have access to in your tenant.
+    analysis.common.VeeClarificationDTO:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Returned if Vee needs more context to answer your question.
+        questions:
+          type: array
+          items:
+            type: string
+          description: Some related questions that could be helpful.
+        metrics:
+          type: array
+          items:
+            type: string
+          description: Suggested metrics to look at, that are similar or related to your question.
+        dimensions:
+          type: array
+          items:
+            type: string
+          description: Suggested dimensions to look at, that are similar or related to your question.
+        filters:
+          type: array
+          items:
+            type: string
+          description: Suggested filters that could be a better fit for the data.
+        attributes:
+          type: array
+          items:
+            type: string
+          description: Suggested attributes to look at, that are similar or related to your question.
+    analysis.common.VeeConversationStateDTO:
+      type: object
+      properties:
+        questionState:
+          type: array
+          items:
+            type: string
+          description: The unique identifier of the conversation with Vee.
+    analysis.common.VeeCorrectionsDTO:
+      type: object
+      properties:
+        warning:
+          type: array
+          items:
+            enum:
+              - VEE_NO_WARNING
+              - VEE_WARNING_RESPONSE_NOT_FOUND
+              - VEE_WARNING_RESPONSE_LOW_CONFIDENCE
+              - VEE_WARNING_RESPONSE_FOUND_CLOSE_MATCH
+              - VEE_WARNING_NO_ACCESS
+              - VEE_WARNING_TIME_SELECTION_ADJUSTED
+              - VEE_WARNING_FILTER_DROPPED
+            type: string
+            format: enum
+          description: A list of warnings from Vee that accompanies an unsure answer; for example, Vee might return a close match warning if Vee finds multiple employees named Adam that relate to your question.
+        clarifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.VeeClarificationDTO'
+          description: A list of clarifying questions if Vee needs more context to answer your question; for example, if asking about someone named Adam, Vee might clarify which Adam by asking for Adam's email address.
+    analysis.common.VeeDataDTO:
+      type: object
+      properties:
+        dataJson:
+          type: string
+          description: A JSON string of fields and numerical values representing the data contributing to Vee's answer. For example, the number of employees per gender in Vee's answer.
+        context:
+          type: string
+          description: The filter applied to the visualization generated by Vee. For example, a time filter of April 2024.
+    analysis.common.VeeFeedbackDTO:
+      type: object
+      properties:
+        response:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeResponseDTO'
+          description: Your feedback about Vee's answer. Include the response object from the `/question` call that you want to provide feedback about.
+        isApproved:
+          type: boolean
+          description: If `true`, Vee answered the question correctly. If `false`, Vee's answer was incorrect or lacked details.
+        description:
+          type: string
+          description: A description of how Vee should have answered the question or how Vee can improve the answer; for example, "Expected Headcount metric, but Vee returned Average Headcount".
+      description: The request body fields to submit Vee feedback.
+    analysis.common.VeeOptionsDTO:
+      type: object
+      properties:
+        includeVisual:
+          type: boolean
+          description: If `true`, returns a base64 string-encoded PNG of a rendered visualization with Vee's answer. Default is `false`.
+        visualOptions:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeVisualOptionsDTO'
+          description: Specify how to render the visualization.
+        includeData:
+          type: boolean
+          description: If `true`, returns additional data relevant to the question, including `dataJson` (visualization data) and `context` (filters applied to the visualization). Default is `false`.
+        dataFormat:
+          enum:
+            - json
+          type: string
+          description: 'The format to return visualization data in. Valid values: `json`.'
+          format: enum
+        includeRewordedQuestion:
+          type: boolean
+          description: If `true`, returns Vee's plain language interpretation of the original question. For example, if you asked "what is the headcount by gender in each org?", Vee might reword the question as "What is the gender breakdown of our workforce by organization this month?". Default is `false`.
+    analysis.common.VeeQuestionDTO:
+      type: object
+      properties:
+        question:
+          type: string
+          description: The question to ask Vee. If asking a follow-up question or continuing a conversation with Vee, specify the `conversationState` object from the question's response.
+        conversationState:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeConversationStateDTO'
+          description: The unique identifier of the conversation with Vee. If empty, starts a new conversation with Vee. If asking a follow-up question or continuing a conversation with Vee, specify the `conversationState` object from the question's response. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.
+        options:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeOptionsDTO'
+          description: Options to specify how Vee should respond to a question.
+        maxViewDetailsMembers:
+          type: integer
+          description: maxViewDetailsMembers to specify the maximum of view details members
+          format: uint32
+      description: The request body fields to ask Vee a question.
+    analysis.common.VeeResponseDTO:
+      type: object
+      properties:
+        conversationState:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeConversationStateDTO'
+          description: The current conversation's details. To ask a follow-up question or continue the conversation with Vee, include the `conversationState` from the response in your next `/question` call. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.
+        statusCode:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeStatusCodeDTO'
+          description: A status code indicating whether or not Vee successfully answered the question.
+        narrative:
+          type: string
+          description: Vee's answer to the question.
+        chartUrl:
+          type: string
+          description: A URL to view the visualization in Visier.
+        schema:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeResponseSchemaDTO'
+          description: The metrics, dimensions, and concepts that contribute to Vee's answer.
+        corrections:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.VeeCorrectionsDTO'
+          description: A list of corrections and clarifications if the question was ambiguous or Vee was unsure in the answer.
+        data:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeDataDTO'
+          description: Returned if `includeData` is `true`. Provides additional data relevant to the question, such as the visualization data and any filters applied to the visualization.
+        visual:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeVisualDTO'
+          description: A base64 string-encoded PNG of a visualization generated by Vee to answer a question. For example, Vee can return a Breakdown visualization if asked about the headcount in each organization.
+        rewordedQuestion:
+          type: string
+          description: Vee's plain language interpretation of the original question. For example, if you asked "what is the headcount by gender in each org?", Vee might reword the question as "What is the gender breakdown of our workforce by organization this month?".
+      description: The response after asking Vee a question.
+    analysis.common.VeeResponseSchemaDTO:
+      type: object
+      properties:
+        metrics:
+          type: array
+          items:
+            type: string
+          description: A list of the metrics that contribute to Vee's answer.
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.VeeResponseSchemaReferenceDTO'
+          description: A list of the dimensions that contribute to Vee's answer.
+        concepts:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.VeeResponseSchemaReferenceDTO'
+          description: A list of the concepts that contribute to Vee's answer.
+    analysis.common.VeeResponseSchemaReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of an attribute in the visualization; for example, Gender.
+        paths:
+          type: array
+          items:
+            type: string
+          description: The hierarchy path of an attribute in the visualization; for example, Employee.Gender.
+    analysis.common.VeeSampleQuestionDTO:
+      type: object
+      properties:
+        question:
+          type: string
+          description: A question in plain language.
+        questionId:
+          type: string
+          description: The unique identifier of the sample question.
+        categoryId:
+          type: string
+          description: The unique identifier of the question category.
+        isAssignedToUser:
+          type: boolean
+          description: If `true`, the sample question is assigned to at least one of the user's user groups.
+    analysis.common.VeeSampleQuestionLibraryDTO:
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.VeeSampleQuestionDTO'
+          description: A list of sample questions to help your users start using Vee.
+      description: A list of sample questions to ask Vee.
+    analysis.common.VeeStatusCodeDTO:
+      type: object
+      properties:
+        statusCode:
+          enum:
+            - UNDEFINED
+            - VEE_API_SUCCESS
+            - VEE_API_WARNING
+            - VEE_API_ERROR
+          type: string
+          description: A status code indicating whether or not Vee successfully answered the question.
+          format: enum
+        statusMsg:
+          type: string
+          description: Additional information about whether or not Vee successfully answered the question.
+    analysis.common.VeeVisualDTO:
+      type: object
+      properties:
+        image:
+          type: string
+          description: A PNG visualization encoded in a base64 string.
+        title:
+          type: string
+          description: The visualization title.
+        context:
+          type: string
+          description: Any filters applied to the visualization. For example, a time filter of April 2024.
+    analysis.common.VeeVisualOptionsDTO:
+      type: object
+      properties:
+        width:
+          type: integer
+          description: The pixel width of the rendered visualization. Default is 600. Valid values are between 160 and 1600.
+          format: uint32
+        height:
+          type: integer
+          description: The pixel height of the rendered visualization. Default is 338. Valid values are between 90 and 900.
+          format: uint32
+    data_out.ListResponse:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/google.protobuf.Any'
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/google.protobuf.Any'
+    dataservices.common.DimensionMemberReferenceDTO:
+      type: object
+      properties:
+        path:
+          type: array
+          items:
+            type: string
+          description: |-
+            A list of strings representing the members within a dimension path. For example, a dimension for Location
+             may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
+      description: The members of a dimension.
+    dataservices.common.MemberValuesDTO:
+      type: object
+      properties:
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
+          description: The unique IDs of members to include when evaluating the metric.
+        excluded:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
+          description: The unique IDs of members to exclude when evaluating the metric.
+      description: |-
+        Member filter values are discrete member references in a dimension filter. You can define
+         included and excluded members simultaneously. This is typically done with filtering applied on
+         dimensions with multiple levels. For example, a Location parameter may include “South
+         America” and exclude “Brazil” which results in the metric being evaluated for all South American
+         countries except Brazil.
+    dataservices.datamodel.DimensionReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The ID of the dimension. See `Dimensions` to get the ID.
+        qualifyingPath:
+          type: string
+          description: |-
+            The qualifying path to the dimension in Visier, such as the analytic object or event the dimension is
+             associated with. If the path has multiple objects, each object is separated by a period.
+      description: The name and qualifying path of a dimension to query.
+    dataservices.datamodel.PropertyReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The ID of the property. See `Properties` to get the ID.
+        qualifyingPath:
+          type: string
+          description: |-
+            The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.
+             If the path has multiple objects, each object is separated by a period.
+      description: The name and qualifying path of a property to query.
+    dataservices.datamodel.SelectionConceptReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The ID of the selection concept. See `SelectionConcepts` to get the ID.
+        qualifyingPath:
+          type: string
+          description: |-
+            The qualifying path to the selection concept in Visier, such as the analytic object or event the selection
+             concept is associated with. If the path has multiple objects, each object is separated by a period.
+      description: The name and qualifying path of a selection concept to query.
+    dataservices.query.AggregationQueryDTO:
+      type: object
+      properties:
+        source:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.AggregationQuerySourceDTO'
+          description: The source data, such as a metric or formula, to query.
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.QueryFilterDTO'
+          description: |-
+            The objects by which to filter the query, such as dimensions or concepts.
+             A filter defines the population to retrieve data from. Omit `filters` if no filtering is required.
+        axes:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.QueryAxisDTO'
+          description: |-
+            The objects by which to group the query. An axis defines the groups that the data belongs to.
+             Omit `axes` if no grouping is required.
+        timeIntervals:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryTimeIntervalsDTO'
+          description: The time intervals to query.
+        parameterValues:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.QueryParameterValueDTO'
+          description: The values associated with parameters, if defined.
+      description: |-
+        An AggregationQuery defines the data to query in an aggregation query and returns a `cell set` calculated from
+         the selected data points.
+    dataservices.query.AggregationQueryExecutionDTO:
+      type: object
+      properties:
+        query:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.AggregationQueryDTO'
+          description: |-
+            The data to perform an aggregation on, such as a metric or formula. The query must include a time interval,
+             and may optionally include filters and axes.
+        options:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryExecutionOptionsDTO'
+          description: Additional instructions for your query, such as a calendar type or conversion information.
+      description: An AggregationQueryExecution provides instructions to perform your aggregation query.
+    dataservices.query.AggregationQuerySourceDTO:
+      type: object
+      properties:
+        formula:
+          type: string
+          description: |-
+            An ad-hoc metric formula. The response returns the results of the aggregate.
+             See the formula dictionary in Visier to find functions and objects you can use in a formula.
+        metric:
+          type: string
+          description: The ID of an existing metric in your Visier solution. See `Metrics` to get the ID.
+        metrics:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.AggregationQuerySourceMetricsDTO'
+          description: |-
+            The IDs of metrics to aggregate. All metrics in the query must reference the same analytic object.
+             For example, you cannot query Headcount and Applicant Count because one uses the Employee subject and
+             the other uses the Applicant subject. You can query Headcount and Employee Count for Women because both
+             reference the Employee subject. Only available when the Accept header is text/csv. For more information,
+             see `Aggregate`.
+      description: An AggregationQuerySource defines the source data to query in an aggregation query.
+    dataservices.query.AggregationQuerySourceMetricDTO:
+      type: object
+      properties:
+        columnName:
+          type: string
+          description: The column name in the CSV file. Default is to use id as the column name.
+        id:
+          type: string
+          description: |-
+            The unique ID of the metric. Note: See `Metrics` to get the ID.
+             If columnName is omitted, id is the column name in the CSV file.
+        formula:
+          type: string
+          description: |-
+            An ad-hoc metric formula. The response returns the results of the aggregate.
+             See the formula dictionary in Visier to find functions and objects you can use in a formula.
+        qualifyingPath:
+          type: string
+          description: |-
+            The base qualifying path to prefix the axes and filters' qualifying paths with.
+             You must specify the qualifying path on a metric if the convergent analytic object of the metric doesn't match the
+             starting object in the qualifying paths of the axes and filters.
+
+             For example, consider a multi-metric query that contains metrics that count the number of applicants and requisitions,
+             grouped by the country of the recruiter's direct manager. The following sample shows how to use qualifyingPath to specify
+             the object reference traversal path from each metric's convergent analytic object to the start of the path for the axes.
+             In this example, there is only one convergent analytic object.
+             ```
+             "source": {
+                 "metrics": {
+                    "columns": [
+                        {
+                            "id": "employeeCount"
+                        },
+                        {
+                            "id": "applicantCount",
+                            "qualifyingPath": "Applicant.Requisition.Recruiter"
+                        },
+                        {
+                            "id": "requisitionCount",
+                            "qualifyingPath": "Requisition.Recruiter"
+                        }
+                    ]
+                }
+             },
+             "axes": [
+                {
+                    "dimensionLevelSelection": {
+                        "dimension": {
+                            "name": "Location",
+                            "qualifyingPath": "Employee.Direct_Manager"
+                        },
+                        "levelIds": [
+                            "Location_1"
+                        ]
+                    }
+                }
+             ]
+             ```
+             **Note:**
+             * `employeeCount` doesn't need a `qualifyingPath` because it's already convergent with the start of the axis path.
+             * The metrics' qualifying paths must provide the reference name that resolves to the first object of the axis' qualifying path as their last path segment. In this case, Recruiter is a named reference pointing to Employee. The final qualifying paths for the metrics are:
+                 * `employeeCount`: Employee.Direct_Manager
+                 * `applicantCount`: Applicant.Requisition.Recruiter.Direct_Manager
+                 * `requisitionCount`: Requisition.Recruiter.Direct_Manager
+      description: The column definition for a single metric within a `metrics` query.
+    dataservices.query.AggregationQuerySourceMetricsDTO:
+      type: object
+      properties:
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.AggregationQuerySourceMetricDTO'
+          description: An array of metric columns.
+      description: |-
+        The IDs and column names of multiple metrics.
+
+         **Note:**
+         Only available when the `Accept` header is text/csv. For more information, see `Aggregate`
+    dataservices.query.AggregationTypeParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique ID of the aggregation parameter.
+        aggregationOptionId:
+          type: string
+          description: The unique ID of the aggregation option.
+      description: The value for an aggregation parameter.
+    dataservices.query.CellDTO:
+      type: object
+      properties:
+        value:
+          type: string
+          description: The value of the cell.
+        support:
+          type: string
+          description: The number of data points contributing to this cell.
+        coordinates:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: A list of integers representing the coordinates of this cell, identifying its position along each axis.
+        distribution:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.CellDistributionBinDTO'
+          description: |-
+            The optional distribution of this cell.
+             This will be populated if distribution calculation is requested, and supported by the query.
+      description: An individual value in a cell set.
+    dataservices.query.CellDistributionBinDTO:
+      type: object
+      properties:
+        value:
+          type: string
+        support:
+          type: string
+      description: |-
+        A cell distribution bin.
+         Each bin has a metric value (of the bin) and the number of observations contributing to the bin.
+    dataservices.query.CellDistributionOptionsDTO:
+      type: object
+      properties:
+        binCount:
+          type: integer
+          description: The number of bins to return, minimum of 2, and a maximum of 100.
+          format: int32
+      description: |-
+        Cell distribution options for queries.
+         Include with aggregation queries to enable distribution calculation per cell.
+    dataservices.query.CellSetAxisDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
+          description: The dimension associated with the axis.
+        positions:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.CellSetAxisPositionDTO'
+          description: A list of paths that represent the data's positions along the axis.
+      description: The axis of a cell set associated with a dimension.
+    dataservices.query.CellSetAxisPositionDTO:
+      type: object
+      properties:
+        path:
+          type: array
+          items:
+            type: string
+          description: |-
+            A list of strings representing the members within a dimension path. For example,
+             a dimension for Location may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
+        displayName:
+          type: string
+          description: The display name of the position. This is optional and is omitted if unavailable or not requested.
+        displayNamePath:
+          type: array
+          items:
+            type: string
+          description: Optional display name path of the member.
+      description: The position along the axis of a cell set.
+    dataservices.query.CellSetDTO:
+      type: object
+      properties:
+        cells:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.CellDTO'
+          description: The set of cells that represent the result of your query.
+        axes:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.CellSetAxisDTO'
+          description: The set of axes for the cell set that represent the objects the data is grouped by.
+        lineage:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.LineageDTO'
+          description: Lineage information for this cell set. This can be omitted if the cell has no lineage or the user did not request lineage information.
+      description: |-
+        The set of cells returned from executing an aggregation query.
+         A CellSet represents a structured, multidimensional array of values.
+    dataservices.query.CohortFilterDTO:
+      type: object
+      properties:
+        keyGroup:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.KeyGroupFilterDTO'
+          description: A key group is a collection of filters that define the shape of the analysis population.
+        exclude:
+          type: boolean
+          description: If true, the population is defined by those excluded by the filters. Default is false.
+        timeInterval:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryTimeIntervalDTO'
+          description: The time at which to apply the key group, such as a specific day or period of months.
+      description: |-
+        Use a cohort filter to define a population as it existed during a specific time period.
+         Cohort filters allow you to define a population in terms of a collection of filters, known as a key group.
+         The cohort's defined time interval is independent of the query's time. The cohort's time interval is the
+         time at which the key group should be applied.
+         Cohorts are typically used to follow populations and understand changes to the population over time,
+         such as promotion and resignation rates.
+    dataservices.query.InternalQueryExecutionOptionsDTO:
+      type: object
+      properties:
+        sparseHandlingMode:
+          enum:
+            - ALLOW
+            - DISALLOW
+            - FORCE
+          type: string
+          format: enum
+        alignTimeAxisToPeriodEnd:
+          type: boolean
+          description: |-
+            If true, shifts the time axis members back by one millisecond.
+             Shifting the time axis members back by one millisecond makes them valid at the end of the period instead of at the start of the next period.
+             This aligns the returned data timestamps with the timestamps in the Visier application.
+
+             Example: If the timestamps are originally [`2019-06-01T00:00:00.000Z`, `2019-05-01T00:00:00.000Z`],
+             then `alignTimeAxisPeriodEnd` turns the timestamps into [`2019-05-31T23:59:59.999Z`, `2019-04-30T23:59:59.999Z`].
+
+             Example: If the timestamps are originally [`2019-05-01T00:00:00.000Z/2019-06-01T00:00:00.000Z`, `2019-04-01T00:00:00.000Z/2019-05-01T00:00:00.000Z`],
+             then `alignTimeAxisPeriodEnd` turns the timestamps into [`2019-05-01T00:00:00.000Z/2019-05-31T23:59:59.999Z`, `2019-04-01T00:00:00.000Z/2019-04-30T23:59:59.999Z`].
+      description: Internal options - not to be documented or used by external parties
+    dataservices.query.KeyGroupFilterDTO:
+      type: object
+      properties:
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.KeyGroupFilterItemDTO'
+      description: A collection of related filters that define a key group.
+    dataservices.query.KeyGroupFilterItemDTO:
+      type: object
+      properties:
+        formula:
+          type: string
+          description: A filter expressed as a formula.
+        selectionConcept:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.SelectionConceptReferenceDTO'
+          description: A filter that uses an existing selection concept in Visier.
+        memberSet:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.MemberFilterDTO'
+          description: A filter that includes or excludes dimension members.
+      description: An individual filter in a key group.
+    dataservices.query.LineageDTO:
+      type: object
+      properties:
+        cellSets:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.CellSetDTO'
+          description: The cell sets that constitute this lineage.
+        op:
+          type: string
+          description: The operation used to combine the cell sets of this lineage.
+      description: Lineage information for a given cell set. This describes how a cell set is created from other cell sets.
+    dataservices.query.ListQueryExecutionDTO:
+      type: object
+      properties:
+        source:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.ListQuerySourceDTO'
+          description: The source data that you want to query.
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.PropertyColumnDTO'
+          description: The columns to include in the result. This must contain at least one column.
+        sortOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.SortOptionDTO'
+          description: The index and direction to sort a column in the `columns` array.
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.QueryFilterDTO'
+          description: The filters of this query. Omit `filters` if no filtering is required.
+        timeInterval:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryTimeIntervalDTO'
+          description: The time that the data is valid, such as a specific day or period of months.
+        parameterValues:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.QueryParameterValueDTO'
+          description: The parameter values for either member or numeric parameters.
+        options:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.ListQueryExecutionOptionsDTO'
+          description: Additional instructions for your query, such as a calendar type or conversion information.
+      description: A ListQueryExecution provides instructions to perform a list query.
+    dataservices.query.ListQueryExecutionOptionsDTO:
+      type: object
+      properties:
+        limit:
+          type: integer
+          description: |-
+            The maximum number of entries to return. Default is to return all entries. If `page` is defined but
+             limit is not defined, limit will be set to a default value of 1000.
+          format: int32
+        queryMode:
+          enum:
+            - DEFAULT
+            - FILL
+            - FAIL
+          type: string
+          description: Determines how the query should handle column definitions that the query is unable to resolve. Default is DEFAULT.
+          format: enum
+        omitHeader:
+          type: boolean
+          description: |-
+            Option to omit the header from the result.
+             If true, queryMode must be either FILL or FAIL.
+             Default is false.
+        calendarType:
+          enum:
+            - TENANT_CALENDAR
+            - GREGORIAN_CALENDAR
+          type: string
+          description: |-
+            The calendar type to use. This will be used for all time calculations unless explicitly overridden in
+             the calculation itself. Default is TENANT_CALENDAR.
+          format: enum
+        currencyConversionMode:
+          enum:
+            - TENANT_CURRENCY_CONVERSION
+            - VISIER_CURRENCY_CONVERSION
+          type: string
+          description: |-
+            The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly
+             overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION.
+          format: enum
+        currencyConversionDate:
+          type: string
+          description: The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.
+        page:
+          type: integer
+          description: |-
+            A page defines a subset of the overall result set. The number of rows per page is equal to limit
+             with the exception of the last page in the result set which may contain fewer rows. `Page` is an index
+             that begins at 0. The index to start retrieving results is calculated by multiplying `page` by `limit`.
+          format: int32
+        multipleTables:
+          type: boolean
+          description: |-
+            Option to return multiple table files as zipped archive for derived metrics.
+             Default is false. If false, one table is returned for the drill-through metric.
+        currencyConversionCode:
+          type: string
+          description: |-
+            The optional target currency for all currency conversions.
+             If not specified, the tenant default currency will be used.
+        recordMode:
+          enum:
+            - NORMAL
+            - CHANGES
+          type: string
+          description: |-
+            Influences the type of records used to build the result set, such as whether to return
+             one record per entity that is valid in the provided time range or each change record
+             falls in the time frame.
+          format: enum
+        dateTimeDisplayMode:
+          enum:
+            - EPOCH
+            - DATETIME
+          type: string
+          description: |-
+            Control how date-time values are displayed in the result set.
+             Supported values:
+             * `EPOCH`: The number of elapsed milliseconds since January 1, 1970 in UTC timezone. This is the default.
+             * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format.
+          format: enum
+      description: A ListQueryExecutionOptions provides additional instructions to perform a list query.
+    dataservices.query.ListQuerySourceDTO:
+      type: object
+      properties:
+        formula:
+          type: string
+          description: An ad-hoc metric formula. The response returns the individual data points that make up the aggregate.
+        metric:
+          type: string
+          description: The ID of an existing metric in your Visier solution.
+        analyticObject:
+          type: string
+          description: |-
+            The ID of an existing analytic object in your Visier solution.
+             An analytic object source cannot have filters or time handling.
+        textConcept:
+          type: string
+          description: |-
+            The ID of an existing text concept in your Visier solution.
+             A concept that defines the text properties of an analytic object and includes filters to enforce aggregate thresholds.
+             <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+      description: A ListQuerySource defines the source data to query in a list query.
+    dataservices.query.MemberFilterDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
+          description: The dimension in which the members belong.
+        values:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.common.MemberValuesDTO'
+          description: The dimension members to filter by.
+      description: |-
+        Member filters are dimension member values to filter by in your query. The member filters are
+         defined within the filters section of a query definition. You can filter by dimension members in
+         aggregate and list queries.
+    dataservices.query.MemberParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique ID of the member parameter qualified by the object.
+        dimensionId:
+          type: string
+          description: The unique ID of the dimension on which the parameter is based.
+        referencePath:
+          type: array
+          items:
+            type: string
+          description: The analytic object reference path from the metric to the dimension.
+        values:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.common.MemberValuesDTO'
+          description: The included and excluded member references in a dimension filter.
+      description: |-
+        The member value of a parameter, including the parameter ID, dimension that the parameter is based on,
+         and the included and excluded members for the parameter.
+    dataservices.query.NumericParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique ID of the numeric parameter qualified by the object.
+        value:
+          type: number
+          description: The numeric value of the parameter.
+          format: double
+      description: The value of a numeric parameter, including the parameter ID and the numeric value passed into the parameter.
+    dataservices.query.PlanParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique ID of the plan parameter qualified by the object.
+        planId:
+          type: string
+          description: The unique ID of the plan the parameter is based on.
+        scenarioId:
+          type: string
+          description: The unique ID of the scenario the parameter is based on.
+        snapshotId:
+          type: string
+          description: The unique ID of the snapshot the parameter is based on.
+      description: The value for a parameter on a planning metric, including the parameter ID and the plan the parameter is based on.
+    dataservices.query.PropertyColumnDTO:
+      type: object
+      properties:
+        columnName:
+          type: string
+          description: |-
+            The name of the column. This is optional.
+             If not specified, the name of the property is used, or a generic column name if the property is unnamed.
+        columnDefinition:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryPropertyDTO'
+          description: The definition of the property to query on.
+      description: A named, result column of a list query.
+    dataservices.query.QueryAxisDTO:
+      type: object
+      properties:
+        formula:
+          type: string
+          description: An axis expressed as a formula.
+        selectionConcept:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.SelectionConceptReferenceDTO'
+          description: |-
+            An axis that uses an existing selection concept in Visier.
+             The resulting axis consists of 3 positions: True, False, and Unknown.
+        dimensionMemberSelection:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryDimensionMemberSelectionDTO'
+          description: An axis that uses existing dimension members in Visier.
+        memberMapSelection:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryMemberMapSelectionDTO'
+          description: An axis that uses an existing member map in Visier.
+        numericRanges:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryNumericRangesDTO'
+          description: An axis that uses an existing range dimension in Visier and defines the ranges to query.
+        dimensionLevelSelection:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryDimensionLevelSelectionDTO'
+          description: An axis that uses levels of existing dimensions in Visier.
+        dimensionLeafMemberSelection:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryDimensionLeafSelectionDTO'
+          description: An axis comprised of all non-data leaf members of an existing dimension in Visier.
+        dimensionDataMemberSelection:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryDimensionDataMemberSelectionDTO'
+          description: An axis comprised of all leaf, including data, members of an existing dimension in Visier.
+        dimensionLevelWithUncategorizedValueSelection:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryDimensionLevelSelectionDTO'
+          description: An axis that uses existing dimension levels in Visier, including uncategorized levels.
+        tableAxisOptions:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryAxisOptionsDTO'
+          description: Additional transformations to perform on this axis. Only available when the Accept header is a table format, such as text/csv or application/jsonlines.
+      description: An axis of a query used to group data points.
+    dataservices.query.QueryAxisOptionsDTO:
+      type: object
+      properties:
+        memberDisplayMode:
+          enum:
+            - UNCHANGED
+            - DEFAULT
+            - COMPACT
+            - DISPLAY
+            - MDX
+          type: string
+          description: |-
+            Options to override the display mode for the axis. This overrides the query-level `memberDisplayMode` options value in the query.
+             Only available for non-time axes. Use the QueryAxisMemberDisplayMode `memberDisplayMode` to apply different display modes to different axes.
+             For example, let's say your query has the `memberDisplayMode` as `DISPLAY` but you want to fetch the object name for a specific dimension.
+             With QueryAxisMemberDisplayMode `memberDisplayMode`, you can override that dimension's `memberDisplayMode` to `DEFAULT` instead of `DISPLAY`.
+
+             Valid values are `UNCHANGED`, `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `UNCHANGED`.
+          format: enum
+        columnName:
+          type: string
+          description: If specified, returns the column name of the axis in the response.
+      description: |-
+        QueryAxisOptions allows you to customize an axis in the query, such as changing the display mode for its cell set values or providing a custom column name.
+         Only available when the Accept header is a table format, such as text/csv or application/jsonlines.
+    dataservices.query.QueryDimensionDataMemberSelectionDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
+          description: A dimension and its qualifying path to query.
+      description: |-
+        A QueryDimensionLeafSelection allows you to define a member set consisting exclusively
+         of leaf-level, including data, members for the given dimension. Leaf members are those members that have
+         no descendents. A member may be a leaf member regardless of the level it is positioned at.
+    dataservices.query.QueryDimensionLeafSelectionDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
+          description: A dimension and its qualifying path to query.
+      description: |-
+        A QueryDimensionLeafSelection allows you to define a member set consisting exclusively
+         of leaf-level members for the given dimension. Leaf members are those members that have
+         no descendents. A member may be a leaf member regardless of the level it is positioned at.
+         This member selection option, excludes data members.
+    dataservices.query.QueryDimensionLevelPropertyDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
+          description: A dimension and its qualifying path to query.
+        memberValueMode:
+          enum:
+            - NAME
+            - PATH
+          type: string
+          description: |-
+            Controls how to display member values.
+
+             Valid values are `NAME`, `PATH`.
+
+             * `NAME`: Returns the member's display name. This is the default.
+             * `PATH`: Returns the member's name path.
+          format: enum
+        levelId:
+          type: string
+          description: The level ID.
+        levelDepth:
+          type: integer
+          description: The level depth.
+          format: int32
+      description: A QueryDimensionLevelPropertyDTO defines an existing dimension level and its dimension to query.
+    dataservices.query.QueryDimensionLevelSelectionDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
+          description: A dimension and its qualifying path to query.
+        levelIds:
+          type: array
+          items:
+            type: string
+          description: The ordered collection of level identifiers for the dimension. See `Dimension`.
+      description: |-
+        A QueryDimensionLevelSelection allows you to select a dimension level and its members without
+         explicitly listing each member. To see the correct notation for levels, see `Dimension`.
+    dataservices.query.QueryDimensionMemberSelectionDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
+          description: A dimension and its qualifying path to query.
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
+          description: A collection of dimension members to select in the query. This must contain at least one member.
+      description: A QueryDimensionMemberSelection defines dimension members to select in the query.
+    dataservices.query.QueryEffectiveDatePropertyDTO:
+      type: object
+      properties: {}
+      description: A special property that yields the effective date for the record
+    dataservices.query.QueryExecutionOptionsDTO:
+      type: object
+      properties:
+        calendarType:
+          enum:
+            - TENANT_CALENDAR
+            - GREGORIAN_CALENDAR
+          type: string
+          description: |-
+            The calendar type to use. This will be used for all time calculations unless explicitly overridden in
+             the calculation itself. Default is TENANT_CALENDAR.
+          format: enum
+        currencyConversionMode:
+          enum:
+            - TENANT_CURRENCY_CONVERSION
+            - VISIER_CURRENCY_CONVERSION
+          type: string
+          description: |-
+            The currency conversion mode to use. This will be used for all currency conversion calculations
+             unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION.
+          format: enum
+        currencyConversionDate:
+          type: string
+          description: |-
+            The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.
+             Default is the exchange rate at the end of the query time interval. Format is the number of milliseconds since
+             midnight 01 January, 1970 UTC as a string. Note: Epochs are expressed as 64-bit integers and represented as
+             stringified longs in JSON due to JSON's inherent limitation in representing large numbers.
+        lineageDepth:
+          type: integer
+          description: The max number of levels of nesting to unwind when determining the lineage for a derived metric value.
+          format: int32
+        zeroVisibility:
+          enum:
+            - SHOW
+            - HIDE
+            - ELIMINATE
+          type: string
+          description: Show or hide zeros in the result. Default is SHOW.
+          format: enum
+        nullVisibility:
+          enum:
+            - SHOW
+            - HIDE
+            - ELIMINATE
+          type: string
+          description: Show or hide null or N/A values in the result. Default is SHOW.
+          format: enum
+        cellDistributionOptions:
+          $ref: '#/components/schemas/dataservices.query.CellDistributionOptionsDTO'
+        axisVisibility:
+          enum:
+            - SIMPLE
+            - VERBOSE
+          type: string
+          description: The amount of information to return about each axis. Default is SIMPLE.
+          format: enum
+        enableSparseResults:
+          type: boolean
+          description: |-
+            Retrieve sparse cell sets. Sparse results only retrieve non-zero and non-null cells. Whether a result is truly sparse
+             or not is determined by the Visier server.
+        internal:
+          $ref: '#/components/schemas/dataservices.query.InternalQueryExecutionOptionsDTO'
+        enableDescendingSpace:
+          type: boolean
+          description: If true, filter non-time axis member sets to only include members that are in aggregate positions or whose previous position is a leaf
+        currencyConversionCode:
+          type: string
+          description: |-
+            The target currency for all currency conversions.
+             If not specified, the tenant default currency will be used.
+        memberDisplayMode:
+          enum:
+            - DEFAULT
+            - COMPACT
+            - DISPLAY
+            - MDX
+            - COMPACT_DISPLAY
+          type: string
+          description: |-
+            Control how member values are displayed. You can override the `memberDisplayMode` on a per-axis basis, if required.
+
+             Valid values are `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `DEFAULT`.
+
+             * `DEFAULT`: The default member name representation. For non-time members, this returns the technical member name path.
+               For time members, this includes a bracketed member index.
+               For example, Time instant member: `2019-06-01T00:00:00.000Z - [0]`
+               For example, Time interval member: `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`
+             * `COMPACT`: Shortens the member name representation. For time intervals, the member name is the end time of the interval.
+                For example, Time instant member: `2019-06-01T00:00:00.000Z`
+                For example, Time interval member: `2022-07-01T00:00:00.000Z` where the interval member name was `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`
+             * `DISPLAY`: Emits the members' display names whenever possible. When combined with `axisVisibility = VERBOSE`, the full display name path will be emitted.
+             * `MDX`: Emits member name paths where each element is enclosed in square brackets, `[]`. Multidimensional expression (MDX) display mode automatically encloses time members in square brackets and puts them in `COMPACT` format.
+               For example, Location member `North America.United States.California` becomes `[North America].[United States].[California]` in MDX display mode.
+               For example, Time instant member `2019-06-01T00:00:00.000Z - [0]` becomes `[2019-06-01T00:00:00.000Z]` in MDX display mode.
+             * `COMPACT_DISPLAY`: Emit the members' display names after compacting. This applies primarily to time members for event-based metrics. Compact display is required when
+               running multi-metric queries containing both event-based and subject-based metrics. Multi-metric queries with `DISPLAY` mode are changed
+               automatically to `COMPACT_DISPLAY`.
+               For example, Time interval member `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]` becomes `Jun 30, 2022` in `COMPACT_DISPLAY` mode.
+               The exact format of the compacted time member display name depends on the the user's locale.
+          format: enum
+        axesOverallValueMode:
+          enum:
+            - NONE
+            - AGGREGATE
+            - OVERALL
+          type: string
+          description: "If `axes` is defined, use `axesOverallValueMode` to specify the type of overall values to return across the axes. Valid values:\n\n * `NONE`: Returns the metric's values for the selected axes and doesn't return overall values. This is the default.\n * `AGGREGATE`: Returns the metric's overall values for the selected axes members.\n * `OVERALL`: Returns the metric's overall values for all axes members.\n\n **Note**: `AGGREGATE` is not supported for lookup overlays because the overall values of selected members cannot be calculated directly from the data.\n\n Example: Let's say you want to know the Headcount of the locations Canada and US and the genders Male and Female. \n\n When `axesOverallValueMode` is `NONE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n \n When `axesOverallValueMode` is `AGGREGATE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 400 (Overall, Overall)\n * 200 (Overall, Male)\n * 200 (Overall, Female)\n * 200 (Canada, Overall)\n * 200 (US, Overall)\n\n When `axesOverallValueMode` is `OVERALL`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 800 (Overall, Overall)\n * 400 (Overall, Male)\n * 400 (Overall, Female)\n * 400 (Canada, Overall)\n * 400 (US, Overall)\n \n In this example, `OVERALL` returns higher overall values than `AGGREGATE` because `AGGREGATE` returns the overall values for the selected locations (Canada, US) and genders (Male, Female), whereas `OVERALL` returns the overall values across all locations and genders in the data."
+          format: enum
+      description: A QueryExecutionOptions provides additional instructions to perform a query.
+    dataservices.query.QueryFilterDTO:
+      type: object
+      properties:
+        formula:
+          type: string
+          description: A filter expressed as a formula.
+        selectionConcept:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.SelectionConceptReferenceDTO'
+          description: A filter that uses an existing selection concept in Visier.
+        memberSet:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.MemberFilterDTO'
+          description: A filter that includes or excludes dimension members.
+        cohort:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.CohortFilterDTO'
+          description: A filter that identifies a population at a specific time.
+      description: A QueryFilter selects specific data points within a population.
+    dataservices.query.QueryMemberMapPropertyDTO:
+      type: object
+      properties:
+        memberMap:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
+          description: A member map and its qualifying path to query.
+        targetDimensionName:
+          type: string
+          description: The name of the member map's dimension that you want to query. The member selection is based on this dimension.
+      description: A QueryMemberMapProperty defines an existing member map and its dimension to query.
+    dataservices.query.QueryMemberMapSelectionDTO:
+      type: object
+      properties:
+        memberMap:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
+          description: A member map and its qualifying path to query.
+        targetDimensionName:
+          type: string
+          description: The name of the member map's dimension that you want to query. The member selection is based on this dimension.
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
+          description: A collection of the selected dimension members from the `targetDimension`. This must contain at least one member.
+      description: |-
+        A QueryMemberMapSelection groups data in a query by dimension members in a member map.
+         This allows grouping by a dimension that isn't typically valid on the analytic object being
+         queried by selecting a valid member map on the analytic object.
+         Note: This is unique to the data query API and cannot be reproduced in Visier's interface.
+    dataservices.query.QueryNumericRangesDTO:
+      type: object
+      properties:
+        property:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryPropertyDTO'
+          description: The name and qualifying path of a numeric property. Non-numeric properties are not accepted.
+        ranges:
+          type: string
+          description: The ranges to group data into, expressed as a space-separated string of range-bound values.
+        includeNegative:
+          type: boolean
+          description: If `true`, negative ranges are included. Default is false.
+        includeIndependentZeroRange:
+          type: boolean
+          description: If `true`, 0 is an independent range. Default is false.
+        includeAllMember:
+          type: boolean
+          description: If `true`, a member is included that represents all members on the axis. Default is false.
+      description: A QueryNumericRanges groups data into specified ranges based on a property value.
+    dataservices.query.QueryParameterValueDTO:
+      type: object
+      properties:
+        memberValue:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.MemberParameterValueDTO'
+          description: A value for a member parameter.
+        numericValue:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.NumericParameterValueDTO'
+          description: A value for a numeric parameter.
+        planValue:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.PlanParameterValueDTO'
+          description: A value for a plan parameter.
+        aggregationTypeValue:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.AggregationTypeParameterValueDTO'
+          description: A value for an aggregation parameter.
+      description: An object that contains parameter values for either member or numeric parameters.
+    dataservices.query.QueryPropertyDTO:
+      type: object
+      properties:
+        formula:
+          type: string
+          description: A formula-based property.
+        property:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.PropertyReferenceDTO'
+          description: A property reference.
+        selectionConcept:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.SelectionConceptReferenceDTO'
+          description: A selection concept-based property that returns true or false.
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
+          description: A dimension-based property that returns the full name path of the dimension member that the data point is mapped to.
+        memberMapProperty:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryMemberMapPropertyDTO'
+          description: A member map-based property that uses an existing member map in Visier.
+        effectiveDateProperty:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryEffectiveDatePropertyDTO'
+          description: A property that yields the effective date for the record
+        dimensionLevelSelection:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryDimensionLevelPropertyDTO'
+          description: A dimension-based property that returns the member values of the dimension level.
+      description: |-
+        A QueryProperty defines a property of a data point returned from a query.
+         This is not the same as a `property` in Visier's data mode.
+    dataservices.query.QueryTimeIntervalDTO:
+      type: object
+      properties:
+        fromInstant:
+          type: string
+          description: |-
+            The instant from which to extend in the specified `direction`, in milliseconds since 1970-01-01T00:00:00Z.
+             Events that occur on this date are excluded. Subject-based data that ends on this date is included.
+             Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to
+             JSON's inherent limitation in representing large numbers.
+        fromDateTime:
+          type: string
+          description: |-
+            The instant from which to extend in the specified `direction`, as an ISO-8601 formatted date time string.
+             Valid formats: yyyy-MM-dd, yyyy-MM-dd'T'HH:mm:ss, yyyy-MM-dd'T'HH:mm:ss.SSS.
+             Events that occur on this date are excluded. Subject-based data that ends on this date is included.
+        dynamicDateFrom:
+          enum:
+            - SOURCE
+            - COMPLETE_PERIOD
+          type: string
+          description: "Dynamically select the date from which to extend in the specified `direction`. Valid values are `SOURCE` or `COMPLETE_PERIOD`. Both options determine the date using the request's `source` field. Whether the source is a metric, formula, or metrics, each source has earliest and latest data available dates to use. The `direction` determines whether the earliest or latest date is used.\n\n * If `dynamicDateFrom` is `SOURCE`, the query returns data from a date determined by the `source` query definition element. If `dynamicDateFrom` is `COMPLETE_PERIOD`, the query returns data starting from the latest or earliest date with a complete period of data. `COMPLETE_PERIOD` returns periods defined by `intervalPeriodType`. If the period type is MONTH, it returns full months of data. If the period type is YEAR, it returns full years of data. When `dynamicDateFrom` is specified:\n * If `source` is `metric`, then `dynamicDateFrom` considers the date range of available data for the metric.\n * If `source` is `formula`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n * If `source` is `analyticObject`, then `dynamicDateFrom` considers the date range of available data for the analytic object.\n Then, if `direction` is `BACKWARD`, query backward from the data **end** date and if `direction` is `FORWARD`, query forward from the data **start** date.\n This allows you to keep getting the latest or earliest data without changing your query every time there's new or updated data. \n\n Example: If a tenant has Headcount metric data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD`\n means the query will retrieve data backward from 2024-01-01. The effect is the same as if specifying a `fromDateTime` of 2024-01-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-01-01. The effect is the same as if specifying a `fromDateTime` of 2023-01-01'T'00:00:00.000.\n\n Example: If a tenant has Employee subject data available from 2023-01-10 to 2023-04-01 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-02-01. The effect is the same as if specifying a `fromDateTime` of 2023-02-01'T'00:00:00.000.\n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2023-03-15 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2023-03-01. The effect is the same as if specifying a `fromDateTime` of 2023-03-01'T'00:00:00.000.\n\n Example: Retrieve a list of EmployeeIDs for the formula extending 1 month backward from the dynamic source date\n      {\n          \"source\": {\n              \"formula\": \"on Employee validUntil instant filterBy(isActiveEmployee) aggregate count(Employee.EmployeeID)\"\n          }, \n          \"columns\": [\n               {\n                  \"columnDefinition\": {\n                      \"property\": {\n                          \"name\": \"Employee.EmployeeID\",\n                          \"qualifyingPath\": \"Employee\"\n                      }\n                  }\n               },\n               {\n                  \"columnDefinition\": {\n                      \"effectiveDateProperty\": {}\n                  }\n               }\n          ],\n          \"timeInterval\": {\n              \"dynamicDateFrom\": \"SOURCE\",\n              \"intervalPeriodType\": \"MONTH\",\n              \"intervalPeriodCount\": 1,\n              \"direction\": \"BACKWARD\"\n          }\n      }"
+          format: enum
+        intervalPeriodType:
+          enum:
+            - MONTH
+            - DAY
+            - WEEK
+            - QUARTER
+            - YEAR
+          type: string
+          description: The time period type for each interval. Default is MONTH.
+          format: enum
+        intervalPeriodCount:
+          type: integer
+          description: The number of time periods per interval.
+          format: int32
+        direction:
+          enum:
+            - BACKWARD
+            - FORWARD
+          type: string
+          description: The direction to extend. Default is BACKWARD. BACKWARD is useful when the time instant is the current date or with `dynamicDateFrom` because the query continuously retrieves the newest data from current date backwards.
+          format: enum
+        shift:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.TimeShiftDTO'
+          description: The amount of time to shift the time interval by, such as backward by one year. Default is none.
+      description: |-
+        A QueryTimeInterval defines the time interval to query, including the "from" time, period type,
+         period count, time direction, and shift to apply
+    dataservices.query.QueryTimeIntervalsDTO:
+      type: object
+      properties:
+        fromInstant:
+          type: string
+          description: |-
+            The instant from which to extend, in milliseconds since 1970-01-01T00:00:00Z.
+             Events that occur on this date are excluded. Subject-based data that ends on this date is included.
+             Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's
+             inherent limitation in representing large numbers.
+        fromDateTime:
+          type: string
+          description: |-
+            The instant from which to extend, as an ISO-8601 formatted date time string. This value is exclusive.
+             Valid formats: yyyy-MM-dd, yyyy-MM-dd'T'HH:mm:ss, yyyy-MM-dd'T'HH:mm:ss.SSS.
+             Events that occur on this date are excluded. Subject-based data that ends on this date is included.
+        dynamicDateFrom:
+          enum:
+            - SOURCE
+            - COMPLETE_PERIOD
+          type: string
+          description: "Dynamically select the date from which to extend. Valid values are `SOURCE` or `COMPLETE_PERIOD`. Both options use the `source` query definition element to determine the date.\n\n If `dynamicDateFrom` is `SOURCE`, the query returns data from a date determined by the `source` query definition element. If `dynamicDateFrom` is `COMPLETE_PERIOD`, the query returns data starting from the latest or earliest date with a complete period of data. When `dynamicDateFrom` is specified:\n * If `source` is `metric`, then `dynamicDateFrom` considers the date range of available data for the metric.\n * If `source` is `formula`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n * If `source` is `metrics`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n Then, if `direction` is `BACKWARD`, query backward from the data **end** date and if `direction` is `FORWARD`, query forward from the data **start** date. \n This allows you to keep getting the latest or earliest data without changing your query every time there's new or updated data.\n\n Note: For multi-metric queries, if `direction` is `BACKWARD`, query backward from the earliest data end date of all metrics and if `direction` is `FORWARD`, query forward from the latest data start date of all metrics. \n This ensures that all metrics have data in the specified time range.\n\n Example: If a tenant has Headcount metric data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2024-01-01. The effect is the same as if specifying a `fromDateTime` of 2024-01-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-10 to 2023-04-01 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-02-01. The effect is the same as if specifying a `fromDateTime` of 2023-02-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2023-03-15 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2023-03-01. The effect is the same as if specifying a `fromDateTime` of 2023-03-01'T'00:00:00.000. \n\n Example: If a tenant has Headcount data available from 2023-01-01 to 2024-09-01 and Exit Count data available from 2023-01-01 to 2024-01-01, specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD` means the query will retrieve data backward from 2024-01-01. \n Exit Count has an earlier data end date than Headcount, so `dynamicDateFrom` retrieves data backward from Exit Count's data end date to ensure both metrics have data in the specified time range.\n\n Example: Retrieve Headcount (employeeCount) extending 1 month backward from Headcount's dynamic source date\n      {\n          \"query\": {\n              \"source\": {\n                  \"metric\": \"employeeCount\"\n              },\n              \"timeIntervals\": {\n                  \"dynamicDateFrom\": \"SOURCE\",\n                  \"intervalPeriodType\": \"MONTH\",\n                  \"intervalCount\": 1,\n                  \"direction\": \"BACKWARD\"\n              }\n          }\n      }"
+          format: enum
+        intervalPeriodType:
+          enum:
+            - MONTH
+            - DAY
+            - WEEK
+            - QUARTER
+            - YEAR
+          type: string
+          description: The time period type for each interval. Default is MONTH.
+          format: enum
+        intervalPeriodCount:
+          type: integer
+          description: The number of time periods per interval. Default is 1.
+          format: int32
+        intervalCount:
+          type: integer
+          description: The number of intervals. Default is 1.
+          format: int32
+        direction:
+          enum:
+            - BACKWARD
+            - FORWARD
+          type: string
+          description: The direction to extend. Defaults is BACKWARD.
+          format: enum
+        shift:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.TimeShiftDTO'
+          description: The amount of time to shift the time interval by, such as backward by one year.
+        trailingPeriodType:
+          enum:
+            - MONTH
+            - DAY
+            - WEEK
+            - QUARTER
+            - YEAR
+          type: string
+          description: |-
+            The time period type for each trailing period. If `trailingPeriodCount` is defined and `trailingPeriodType` is undefined, the default trailing period type is `MONTH`.
+             If both `trailingPeriodType` and `trailingPeriodCount` are undefined, `intervalPeriodCount` is used as the trailing period count.
+             Note: This parameter is only applicable to metrics that can calculate trailing time. If defined on a metric that doesn't have trailing time, the platform ignores the parameter.
+          format: enum
+        trailingPeriodCount:
+          type: integer
+          description: |-
+            The number of time periods per trailing period. If `trailingPeriodType` is defined and `trailingPeriodCount` is undefined, the default trailing period count is 1.
+             Note: This parameter is only applicable to metrics that can calculate trailing time. If defined on a metric that doesn't have trailing time, the platform ignores the parameter.
+          format: int32
+      description: |-
+        A QueryTimeIntervals defines a series of time intervals to query, including the "from" time, period type, period count,
+         number of intervals, time direction, and shift to apply to each time interval.
+    dataservices.query.SnapshotQueryExecutionDTO:
+      type: object
+      properties:
+        source:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.ListQuerySourceDTO'
+          description: The source data that you want to query.
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.PropertyColumnDTO'
+          description: The columns to include in the result. This must contain at least one column.
+        sortOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.SortOptionDTO'
+          description: The index and direction to sort a column in the `columns` array.
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.QueryFilterDTO'
+          description: The filters of this query. Omit `filters` if no filtering is required.
+        timeIntervals:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryTimeIntervalsDTO'
+          description: The time intervals to query.
+        parameterValues:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.QueryParameterValueDTO'
+          description: The parameter values for either member or numeric parameters.
+        options:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.SnapshotQueryExecutionOptionsDTO'
+          description: Additional instructions for your query, such as a calendar type or conversion information.
+    dataservices.query.SnapshotQueryExecutionOptionsDTO:
+      type: object
+      properties:
+        limit:
+          type: integer
+          description: |-
+            The maximum number of entries to return. Default is to return all entries. If `page` is defined but
+             limit is not defined, limit will be set to a default value of 1000.
+          format: int32
+        queryMode:
+          enum:
+            - DEFAULT
+            - FILL
+            - FAIL
+          type: string
+          description: Determines how the query should handle column definitions that the query is unable to resolve. Default is DEFAULT.
+          format: enum
+        omitHeader:
+          type: boolean
+          description: |-
+            Option to omit the header from the result.
+             If true, queryMode must be either FILL or FAIL.
+             Default is false.
+        calendarType:
+          enum:
+            - TENANT_CALENDAR
+            - GREGORIAN_CALENDAR
+          type: string
+          description: |-
+            The calendar type to use. This will be used for all time calculations unless explicitly overridden in
+             the calculation itself. Default is TENANT_CALENDAR.
+          format: enum
+        currencyConversionDate:
+          type: string
+          description: The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.
+        page:
+          type: integer
+          description: |-
+            A page defines a subset of the overall result set. The number of rows per page is equal to limit
+             with the exception of the last page in the result set which may contain fewer rows. `Page` is an index
+             that begins at 0. The index to start retrieving results is calculated by multiplying `page` by `limit`.
+          format: int32
+        multipleTables:
+          type: boolean
+          description: |-
+            Option to return multiple table files as zipped archive for derived metrics.
+             Default is false. If false, one table is returned for the drill-through metric.
+        currencyConversionCode:
+          type: string
+          description: |-
+            The optional target currency for all currency conversions.
+             If not specified, the tenant default currency will be used.
+        dateTimeDisplayMode:
+          enum:
+            - EPOCH
+            - DATETIME
+          type: string
+          description: |-
+            Control how date-time values are displayed in the result set.
+             Supported values:
+             * `EPOCH`: The number of elapsed milliseconds since January 1, 1970 in UTC timezone. This is the default.
+             * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format.
+          format: enum
+      description: A SnapshotQueryExecutionOptions provides additional instructions to perform a snapshot query.
+    dataservices.query.SortOptionDTO:
+      type: object
+      properties:
+        columnIndex:
+          type: integer
+          description: The index of the column of the list query, staring from 0.
+          format: int32
+        sortDirection:
+          enum:
+            - SORT_ASCENDING
+            - SORT_DESCENDING
+          type: string
+          description: The sort direction.
+          format: enum
+      description: Sort option for a column of a list query.
+    dataservices.query.SqlLikeQueryExecutionDTO:
+      type: object
+      properties:
+        query:
+          type: string
+          description: The SQL-like query string
+        options:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryExecutionOptionsDTO'
+          description: Optional options that currently that cannot be expressed in SQL-like
+      description: |-
+        *
+         Request body for SQL-like query executions
+    dataservices.query.TimeShiftDTO:
+      type: object
+      properties:
+        periodType:
+          enum:
+            - MONTH
+            - DAY
+            - WEEK
+            - QUARTER
+            - YEAR
+          type: string
+          description: The time period type for the shift.
+          format: enum
+        periodCount:
+          type: integer
+          description: The number of intervals. Default is 1.
+          format: int32
+        direction:
+          enum:
+            - BACKWARD
+            - FORWARD
+          type: string
+          description: The direction to extend. Default is BACKWARD.
+          format: enum
+      description: The amount of time to shift the time interval by, such as backward by one year.
+    designer.DataVersionExportColumnDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The column's name.
+        dataType:
+          type: string
+          description: The column's data type. Possible data types are string, integer, number, date, Boolean.
+        allowsNull:
+          type: boolean
+          description: If `true`, the column allows null values.
+        isPrimaryKeyComponent:
+          type: boolean
+          description: If `true`, the column is part of the primary key.
+    designer.DataVersionExportDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The unique identifier of the data version export. Must be a valid UUID.
+        timestamp:
+          type: string
+          description: The date that the data version export was generated, in milliseconds since 1970-01-01T00:00:00Z.
+        dataVersionNumber:
+          type: string
+          description: The data version number for which the export was generated.
+        baseDataVersionNumber:
+          type: string
+          description: The baseline data version number for which the export was generated. If specified, the export is a delta of the differences between `dateVersionNumber` and `baseDataVersionNumber`. If empty, a full export is generated for `dataVersionNumber`.
+        tables:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.DataVersionExportTableDTO'
+          description: Information about the tables in the export.
+        newTables:
+          type: array
+          items:
+            type: string
+          description: Tables that exist in `dataVersionNumber` but did not exist in `baseDataVersionNumber`.
+        deletedTables:
+          type: array
+          items:
+            type: string
+          description: Tables that do not exist in `dataVersionNumber` but did exist in `baseDataVersionNumber`.
+    designer.DataVersionExportDataVersionSummaryDTO:
+      type: object
+      properties:
+        dataVersion:
+          type: string
+          description: The data version number.
+        dataCategory:
+          type: string
+          description: The data category that the data version belongs to. If empty, the data version belongs to the default data category.
+        created:
+          type: string
+          description: The date that the data version was generated, in milliseconds since 1970-01-01T00:00:00Z.
+    designer.DataVersionExportDataVersionsDTO:
+      type: object
+      properties:
+        dataVersions:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.DataVersionExportDataVersionSummaryDTO'
+          description: All the available data versions for the tenant's primary data category.
+    designer.DataVersionExportFileDTO:
+      type: object
+      properties:
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.DataVersionExportColumnDTO'
+          description: Information about a table's columns.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.DataVersionExportPartFileDTO'
+          description: Information about a table's files in the export.
+    designer.DataVersionExportJobStatusDTO:
+      type: object
+      properties:
+        jobUuid:
+          type: string
+          description: The unique identifier of the data version export job.
+        completed:
+          type: boolean
+          description: If `true`, the job completed successfully.
+        failed:
+          type: boolean
+          description: If `true`, the job failed.
+        exportUuid:
+          type: string
+          description: The unique identifier of the data version export generated by the job. If empty, the job hasn't completed successfully.
+    designer.DataVersionExportPartFileDTO:
+      type: object
+      properties:
+        fileId:
+          type: integer
+          description: The unique integer identifier of the file in the data version export.
+          format: int32
+        filename:
+          type: string
+          description: The file's name.
+    designer.DataVersionExportScheduleJobRequestDTO:
+      type: object
+      properties:
+        dataVersionNumber:
+          type: string
+          description: The data version number to generate an export for.
+        baseDataVersionNumber:
+          type: string
+          description: |-
+            Optional. The baseline data version number to use to generate a delta export.
+             Delta exports contain the differences between `baseDataVersionNumber` and
+             `dataVersionNumber`, such as anything updated, added, or removed in `dataVersionNumber`.
+             If `baseDataVersionNumber` is not provided, a full export generates for `dataVersionNumber`.
+    designer.DataVersionExportScheduleJobResponseDTO:
+      type: object
+      properties:
+        jobUuid:
+          type: string
+          description: The unique identifier of the scheduled data version export job.
+    designer.DataVersionExportTableDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of a table in the data version export; for example, Employee or Applicant.
+        commonColumns:
+          allOf:
+            - $ref: '#/components/schemas/designer.DataVersionExportFileDTO'
+          description: Information about the columns and files that are in both `dataVersionNumber` and `baseDataVersionNumber`. Always empty for full exports where `baseDataVersionNumber` is not specified.
+        newColumns:
+          allOf:
+            - $ref: '#/components/schemas/designer.DataVersionExportFileDTO'
+          description: |-
+            Information about new columns and files in the data version.
+             If full export, lists all columns. If delta export, lists columns that exist in `dataVersionNumber` but not in `baseDataVersionNumber`.
+        deletedColumns:
+          type: array
+          items:
+            type: string
+          description: Information about columns that do not exist in `dataVersionNumber` but did exist in `baseDataVersionNumber`.
+    designer.DataVersionExportsDTO:
+      type: object
+      properties:
+        dataVersionExports:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.DataVersionExportDTO'
+          description: Information about data version exports.
+    designer.DownloadSourceFilesDTO:
+      type: object
+      properties:
+        downloadAll:
+          type: boolean
+          description: If `true`, downloads all uploaded files for all sources. Default is `false`.
+        sources:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings representing the object name of each source to download.
+        sourceIds:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings representing the unique identifier of each source to download.
+        minTimestamp:
+          type: string
+          description: The earliest upload time to download files from in ISO-8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files from the earliest available time.
+        maxTimestamp:
+          type: string
+          description: The latest upload time to download files up to in ISO-8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files up to the latest available time.
+    designer.DownloadSourceFilesResponseDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          description: The download request status, such as `Error`.
+        messages:
+          type: string
+          description: A description of the request status.
+    servicing.DocumentSearchLinkDTO:
+      type: object
+      properties:
+        href:
+          type: string
+          description: The URL pointing to the specific document.
+        verb:
+          type: string
+          description: The verb to use when formulating the web request. This is commonly `GET`.
+      description: Defines the attributes of a web request to reference documents in the search results.
+    servicing.SimpleDocumentHeaderSearchResponseDTO:
+      type: object
+      properties:
+        documentHeaders:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SimpleDocumentHeaderSearchResultDTO'
+          description: The ordered collection of document header search results. The results are sorted according to their relevance in a descending order.
+      description: The response body structure for Simple document header search operations.
+    servicing.SimpleDocumentHeaderSearchResultDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The display name of the element in the search result.
+        description:
+          type: string
+          description: The `Web Template Framework` representation of the search result element. This commonly displayed alongside the result by search portals.
+        relevance:
+          type: number
+          description: The relevance of the search result and a number between `0` and `100`.
+          format: double
+        viewLink:
+          allOf:
+            - $ref: '#/components/schemas/servicing.DocumentSearchLinkDTO'
+          description: Use the `viewLink` to build a web request to view this document.
+      description: Structure of a single document header search using the Simple search operation.
+    systemstatus.VeeStatusDTO:
+      type: object
+      properties:
+        overall:
+          type: string
+          description: The overall status of Vee.
+    DvExportStatus:
+      type: object
+      properties:
+        localizedMessage:
+          type: string
+          description: Localized error message describing the root cause of the error.
+        errorCode:
+          type: string
+          description: Error classification.
+        message:
+          type: string
+          description: Not used.
+        rci:
+          type: string
+          description: Optional root cause identifier.
+        userError:
+          type: boolean
+          description: Indicates whether the error is a user error.
+      description: The response structure for errors.
+    TableResponseDTO:
+      type: object
+      properties:
+        header:
+          type: object
+          additionalProperties:
+            type: string
+          description: Description of the columns in the result set.
+        rows:
+          type: array
+          description: Result rows in key-value format.
+          items:
+            type: object
+            additionalProperties:
+              type: string
+    Status:
+      type: object
+      properties:
+        localizedMessage:
+          type: string
+          description: Localized error message describing the root cause of the error.
+        code:
+          type: string
+          description: Error classification.
+        message:
+          type: string
+          description: Not used.
+        rci:
+          type: string
+          description: Optional root cause identifier.
+        userError:
+          type: boolean
+          description: Indicates whether the error is a user error.
+      description: The response structure for errors.
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      name: VisierASIDToken
+      in: cookie
+    ApiKeyAuth:
+      type: apiKey
+      name: apikey
+      in: header
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /v1/auth/oauth2/authorize
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+        password:
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+tags:
+  - name: DataQuery
+    description: |-
+      Query against your data in Visier to get aggregate and list data.
+  - name: DataVersionExport
+    description: |-
+      Export Visier data version information, such as tables, columns, and file information, in CSV format.
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+  - name: Vee
+    description: |-
+      Use Vee through Visier APIs, such as asking questions, submitting feedback, and getting sample questions.
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+  - name: Search
+    description: |-
+      Search for documents, such as analyses, in Visier.
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+  - name: SourceFilesDownload
+    description: |-
+      Download a tenants source files.
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+  - name: Reporting
+    description: |-
+      Create, retrieve, delete, copy, and download reports.
+      <br>**Note**: This API is available for Embedded Partners.
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+security:
+  - ApiKeyAuth: []
+    BearerAuth: []
+  - ApiKeyAuth: []
+    CookieAuth: []
+  - ApiKeyAuth: []
+    OAuth2Auth: []
+# x-tagGroups is for Redocly use to effectively let us categorize our different tags
+x-tagGroups:
+  - name: Data Out
+    tags:
+      - DataQuery
+      - DataVersionExport
+      - Vee
+      - Search
+      - SourceFilesDownload
+      - Reporting

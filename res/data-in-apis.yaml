@@ -1,0 +1,4113 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+  title: Visier Data In APIs
+  description: Visier APIs for sending data to Visier and running data load jobs.
+  license:
+    name: Apache License, Version 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: 22222222.99201.1798
+paths:
+  /v1/api/pgpkey:
+    get:
+      tags:
+        - PGPKey
+      summary: Retrieve all PGP public keys
+      description: Retrieve a list of all PGP public keys in your tenant.
+      operationId: PGPKey_GetAllPGPPublicKeys
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.crypto.PublicKeysDTO'
+    post:
+      tags:
+        - PGPKey
+      summary: Download a public encryption key
+      description: "Generate a key pair and retrieve the public key that you can use to encrypt your data to send to Visier. \n \n In the request body, optionally set the UTC expiration date for the key pair in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years."
+      operationId: PGPKey_GeneratePGPKeyPair
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.crypto.KeyPairGenerateRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.crypto.PublicKeyDTO'
+  /v1/api/pgpkey/{keyID}:
+    get:
+      tags:
+        - PGPKey
+      summary: Retrieve a PGP public key using the key ID
+      description: If you know your PGP key ID, use it to retrieve the PGP public key. To get a list of all key IDs, see `Retrieve all PGP public keys`.
+      operationId: PGPKey_GetPGPPublicKey
+      parameters:
+        - name: keyID
+          in: path
+          description: The key ID of the generated key pair in 16-letter hexadecimal format, including leading zeros.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.crypto.PublicKeyDTO'
+    delete:
+      tags:
+        - PGPKey
+      summary: Delete a PGP key pair
+      description: Delete a PGP key pair using a key ID.
+      operationId: PGPKey_DeletePGPKeyPair
+      parameters:
+        - name: keyID
+          in: path
+          description: The key ID of the generated key pair in 16-letter hexadecimal format, including leading zeros.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.crypto.KeyPairDeleteResponseDTO'
+  /v1/data/directloads/{draftId}/configs:
+    get:
+      tags:
+        - DirectDataIntake
+      summary: Get the direct data intake configuration
+      description: Get the direct data intake configuration.
+      operationId: DirectDataIntake_GetConfig
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.DirectDataLoadConfigDTO'
+    put:
+      tags:
+        - DirectDataIntake
+      summary: Update the direct data intake configuration
+      description: |-
+        Configure the data intake settings, such as the direct data intake job type. Only provide values for the configuration options that should change.
+
+         Configuration options that are not present in the PUT request are ignored and left unchanged.
+      operationId: DirectDataIntake_PutConfig
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.DirectDataLoadConfigDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.DirectDataLoadConfigDTO'
+  /v1/data/directloads/{draftId}/schemas/{objectName}:
+    get:
+      tags:
+        - DirectDataIntake
+      summary: Retrieve an object's data load schema
+      description: |-
+        Gets the load schema for a specified object. The object's load schema represents the structure that the data upload file must follow to upload data to the object.
+
+         In the load schema, the listed columns must be present in the data file as column headers and exactly match the load schema (case sensitive), however,  only the columns whose `isMandatory` field is `true` must contain values in the data file.
+      operationId: DirectDataIntake_ObjectSchema
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: objectName
+          in: path
+          description: The name of the object to return the load schema for.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.DirectDataSchemaDTO'
+  /v1/data/directloads/{draftId}/transactions:
+    post:
+      tags:
+        - DirectDataIntake
+      summary: Start a direct data intake transaction
+      description: |-
+        Create a transaction to contain your data files. To upload files to objects in Visier, you must first start a transaction.
+
+         After starting a transaction and uploading files to the transaction, you can commit the transaction to process the uploaded files or roll back the transaction to discard the uploaded files.
+      operationId: DirectDataIntake_StartTransaction
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.DirectDataTransactionStartResponseDTO'
+  /v1/data/directloads/{draftId}/transactions/{transactionId}:
+    get:
+      tags:
+        - DirectDataIntake
+      summary: Check transaction status
+      description: Retrieve the status of a committed transaction's processing job.
+      operationId: DirectDataIntake_JobStatus
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.DirectDataJobStatusResponseDTO'
+    post:
+      tags:
+        - DirectDataIntake
+      summary: Commit a transaction
+      description: |-
+        Process a transaction and its uploaded data files. This starts a processing job to load the data files into Visier.
+
+         After committing a transaction, you cannot upload additional files to the transaction. Use the `Check transaction status` endpoint to monitor the progress of the processing job.
+      operationId: DirectDataIntake_CommitTransaction
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.DirectDataUploadFileResponseDTO'
+    delete:
+      tags:
+        - DirectDataIntake
+      summary: Roll back a transaction
+      description: |-
+        Rolls back the specified transaction. This discards all files uploaded within the transaction and deletes the transaction.
+
+         After rolling back a transaction, you cannot use the transaction to upload data files.
+      operationId: DirectDataIntake_RollbackTransaction
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.DirectDataUploadFileResponseDTO'
+  /v1/op/data-connector-credentials:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a list of all data connector credentials
+      description: |-
+        Retrieve a list of the connector credentials in a specified tenant. Connector credentials allow
+         Visier to retrieve data from your source systems through an integration user in the source system.
+      operationId: DataAndJobHandling_DataConnectorCredentials
+      parameters:
+        - name: tenantCode
+          in: query
+          description: The tenant code of a specific analytic tenant that you want to retrieve for.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The limit to retrieve.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.ExtractorCredentialsAPIDTO'
+    post:
+      tags:
+        - DataAndJobHandling
+      summary: Create a connector credential
+      description: "Create credentials for a data connector. Connector credentials allow Visier to retrieve data from your source systems through an integration user in the source system. \n \n In the request body, specify one data provider in the `dataProviderAuthParams` parameter. For example, to create connector credentials for a UKG data connector, your request body might look like the following sample.\n ```json\n {\n   model={\n     \"dataProviderAuthParams\": {\n        \"provider\": \"UKG\",\n        \"ultimateAuthParams\": {\n           \"hostDomainName\": \"exampleHostDomain\",\n           \"apiKey\": \"apiKey1234\",\n           \"username\": \"username1234\",\n           \"password\": \"password1234\",\n           \"userAccessKey\": \"accessKey1234\"\n        }\n     },\n     \"dataProviderBasicInformation\": {\n        \"displayName\": \"exampleDisplayName\",\n        \"description\": \"exampleDescription\"\n     }\n }\n ```"
+      operationId: DataAndJobHandling_CreateConnectorCredential
+      parameters:
+        - name: tenantCode
+          in: query
+          description: The tenant code of a specific analytic tenant that you want to create the credential for.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.DataProviderAuthInformationDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.CredentialCreationAPIResponseDTO'
+  /v1/op/data-connectors:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a list of all data connectors
+      description: |-
+        Retrieve a list of the data connectors in a specified tenant. Data connectors are an alternative
+         to generating flat files and transferring them to Visier via SFTP.
+      operationId: DataAndJobHandling_DataConnectors
+      parameters:
+        - name: tenantCode
+          in: query
+          description: The tenant code of a specific analytic tenant that you want to retrieve for.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The limit to retrieve.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.data.ImportDefinitionsAPIDTO'
+  /v1/op/data-connectors/assignCredentials:
+    post:
+      tags:
+        - DataAndJobHandling
+      summary: Assign connector credentials to data connectors
+      description: Assign a connector credential to a data connector.
+      operationId: DataAndJobHandling_AssignConnectorCredential
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/data_in.AssignConnectorCredentialRequest'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.AssignConnectorCredentialsResponseDTO'
+  /v1/op/data-connectors/connector-settings:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve data connector settings
+      description: Get a list of settings for all data connectors. This request retrieves data connectors from the production environment. The response returns a list of settings, if available, for each data connector in the tenant.
+      operationId: DataAndJobHandling_ListConnectorSettings
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.ExtractorSettingsAPIDTO'
+    put:
+      tags:
+        - DataAndJobHandling
+      summary: Update data connector settings
+      description: Define the settings for one or more data connectors. To find the available settings, see `Retrieve data connector settings`.
+      operationId: DataAndJobHandling_SetConnectorSetting
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.SetConnectorSettingsRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.SetConnectorSettingsResponseDTO'
+  /v1/op/data-sources:
+    get:
+      tags:
+        - DataIntake
+      summary: Retrieve a list of sources
+      description: |-
+        Prior to transferring data to Visier, you must identify the sources you want to target. Sources store data for
+         the solution and are used to map data to Visier's data model.
+
+         **Note:** To set up sources in your tenant, contact Visier Customer Success.
+         This API allows you to query the list of available sources, and identify the source schema and required fields.
+      operationId: DataIntake_GetSources
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.PushDataSourceDefinitionsDTO'
+  /v1/op/data-transfer-sessions:
+    post:
+      tags:
+        - DataIntake
+      summary: Start a transfer session
+      description: |-
+        Start a new transfer session. A transfer session can include one or more batches of records to be
+         sent to Visier. Batches of records may be transferred as JSON or file payloads.
+
+         Recommended: For optimal performance, please include all batches of records in a single transfer session.
+      operationId: DataIntake_StartTransfer
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.StartTransferResponse'
+  /v1/op/data-transfer-sessions/{transferSessionId}/add:
+    put:
+      tags:
+        - DataIntake
+      summary: Transfer data to sources via JSON
+      description: |-
+        Transfer data to Visier in batches of records. Each request includes a batch of records
+         formatted as a comma separated array with the first row containing the column headers in the request body. Each
+         subsequent request should also include the first row as a header.
+
+         Each request transfers a batch of records to a single source. Transfer sessions may include one or more batches before completion.
+
+         Each batch is identified by a sequence number. Sequence numbers help identify any batches  that were delivered incorrectly.
+
+         Each batch is limited to the following request size:
+         - Batch size limit: 10 MB
+         - Record count limit: 300,000 rows
+      operationId: DataIntake_PushData
+      parameters:
+        - name: transferSessionId
+          in: path
+          description: The transfer session ID returned after the data transfer session starts.
+          required: true
+          schema:
+            type: string
+        - name: sourceId
+          in: query
+          description: The unique identifier associated with the source you want to transfer data to.
+          schema:
+            type: string
+        - name: sequence
+          in: query
+          description: The unique sequence number associated with a batch of records.
+          schema:
+            type: integer
+            format: uint32
+        - name: tenantCode
+          in: query
+          description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.PushDataResponse'
+  /v1/op/data-transfer-sessions/{transferSessionId}/cancel:
+    put:
+      tags:
+        - DataIntake
+      summary: Cancel a transfer session
+      description: |-
+        Cancel a transfer session after starting it. If a transfer session is cancelled, all
+         records within the transfer session do not persist in Visier's data store.
+
+         If you cancel a transfer session, please start a new transfer session and resend the complete data set.
+
+         You might cancel a transfer session if:
+         - A request to send a batch of records failed.
+         - The original set of records is incomplete.
+         - An infrastructure error occurs.
+      operationId: DataIntake_PushDataCancel
+      parameters:
+        - name: transferSessionId
+          in: path
+          description: The transfer session ID to cancel.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.PushDataCancelResponse'
+  /v1/op/data-versions:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve the latest enabled data versions for all analytic tenants
+      description: |-
+        If you discover any inconsistencies after running metric value validation, you may want to find the data versions
+         causing inconsistencies so you can later disable them.
+
+         Retrieve up to five (5) of the latest enabled data versions for all your analytic tenants or a
+         single specified analytic tenant.
+      operationId: DataAndJobHandling_LatestEnabledDV
+      parameters:
+        - name: tenantCode
+          in: query
+          description: |-
+            The tenant code of a specific analytic tenant that you want to retrieve data versions for.
+             Use this if you are only interested in the results for one analytic tenant.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: |-
+            The limit of analytic tenants to retrieve data versions for.
+             This parameter is not used if the tenantCode parameter is specified.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: numberOfVersions
+          in: query
+          description: The number of latest enabled data versions to retrieve. The maximum value is 5.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.MultipleTenantDataVersionsListDTO'
+  /v1/op/data-versions/disable:
+    put:
+      tags:
+        - DataAndJobHandling
+      summary: Disable data versions for a list of analytic tenants
+      description: |-
+        If you discover that a data version is not what is expected after running metric value validation on a data load,
+         you may want to disable the data version for that processing job.
+
+         Disable the latest enabled data versions for affected analytic tenants or to disable a particular
+         data version for each analytic tenant.
+
+         **Note:** Disabling an older data version may not have an effect on the state of the solution.
+      operationId: DataAndJobHandling_DisableDV
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/data_in.DisableDVRequest'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.DisableDVResponse'
+  /v1/op/data/categories:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a list of all data categories
+      description: Retrieve a list of all available data categories.
+      operationId: DataAndJobHandling_RetrieveDataCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.DataCategoriesResponseDTO'
+  /v1/op/data/startExtractAndLoad:
+    post:
+      tags:
+        - DataAndJobHandling
+      summary: Trigger data connector extraction jobs
+      description: "Run data connector extraction jobs for the administrating tenant or a list of analytic tenants.\n \n This API creates a dispatching job that generates one extraction job per tenant. The dispatching job is the \"parent\" of the extraction jobs and the dispatching job ID is returned in the response. Use that ID to monitor the extraction job statuses by calling `GET /v1/op/jobs/dispatching-jobs/{jobId}/extraction-jobs`.\n\n The extraction job generates receiving jobs to validate the data and processing jobs to populate data in the analytic tenants. Use the dispatching job ID to monitor the receiving and processing job statuses by calling `GET /v1/op/jobs/dispatching-jobs/{jobId}/receiving-jobs` or `GET /v1/op/jobs/dispatching-jobs/{jobId}/processing-jobs`."
+      operationId: DataAndJobHandling_StartExtraction
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.jobs.ExtractDataAndLoadDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.StartExtractionResponse'
+  /v1/op/data/startload:
+    post:
+      tags:
+        - DataAndJobHandling
+      summary: Start the data load for analytic tenants
+      description: |-
+        This API starts the data load process for all analytic tenants included in the specified data files uploaded
+         to the Visier SFTP server. On success, you receive a job ID that can be filtered and searched for within the
+         Jobs room in Visier. This job ID is associated with the receiving job, and related to all processing jobs that
+         spawn for each analytic tenant.
+
+         With the job ID, you can also call the next two APIs to retrieve the status of the receiving job and the status
+         list of all related processing jobs.
+
+         **Prerequisite:** You must first obtain Visier's public encryption key and upload the source data files to Visier's
+         SFTP server. Files must have a .zip.gpg extension, meaning the files are encrypted using the PGP protocol and compressed.
+
+         Visier provides SFTP server credentials and instructions. You can find the encryption key at https://www.visier.com/pgp/visier.public.pgp.asc.
+         After downloading the file, open the file in a text editor or by dragging it into your browser.
+
+         **Note:**
+          - To see the full status of all analytic tenant data loads, navigate to the Jobs room in a project.
+          - For performance and efficiency, Visier requires that the uncompressed batch file size is below 5 GB and that no
+            more than 5000 tenants are included in a batch.
+      operationId: DataAndJobHandling_StartLoad
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/data_in.DataLoadRequest'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.DataLoadResponse'
+  /v1/op/data/uploads:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve data uploads
+      description: |-
+        Retrieve the data uploads and whether they're included in one of:
+         - A list of analytic tenants managed by you.
+         - A single specified analytic tenant.
+         - An upload job.
+      operationId: DataAndJobHandling_RetrieveDataUploads
+      parameters:
+        - name: uploadJobId
+          in: query
+          description: The job ID of an upload job. Use this if you are interested in the data uploads for a specific upload job.
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: The tenant code of a specific analytic tenant that you want to retrieve the data uploads for.
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: The limit of analytic tenants to retrieve data uploads for. This parameter is not used if the tenantCode parameter is specified. Default is 1000.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: numberOfDataUploads
+          in: query
+          description: The maximum number of latest enabled data uploads to retrieve for each analytic tenant. The maximum value is 5. Default is 1.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.TenantDataUploadsListResponseDTO'
+  /v1/op/data/uploads/exclude:
+    put:
+      tags:
+        - DataAndJobHandling
+      summary: Exclude data uploads
+      description: Exclude either a specified list of data uploads or all data uploads for each analytic tenant.
+      operationId: DataAndJobHandling_ExcludeDataUplaods
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/data_in.ExcludeDataUploadsRequest'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.TenantDataUploadsUpdateResponseDTO'
+  /v1/op/data/uploads/include:
+    put:
+      tags:
+        - DataAndJobHandling
+      summary: Include data uploads
+      description: Include either the specified list of data uploads or all data uploads for each analytic tenant.
+      operationId: DataAndJobHandling_IncludeDataUploads
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/data_in.IncludeDataUploadsRequest'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.TenantDataUploadsUpdateResponseDTO'
+  /v1/op/job-status/jobs:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve the statuses of all jobs
+      description: Retrieve the list of statuses for all jobs.
+      operationId: DataAndJobHandling_JobStatus
+      parameters:
+        - name: startTime
+          in: query
+          description: The start time from which to retrieve job statuses.
+          schema:
+            type: string
+        - name: endTime
+          in: query
+          description: The end time from which to retrieve job statuses.
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: The specific status to restrict the list of jobs to.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.JobStatusListResponse'
+  /v1/op/jobs/cancel:
+    post:
+      tags:
+        - DataAndJobHandling
+      summary: Cancel a list of jobs
+      description: |-
+        Cancel a list of processing jobs, upload jobs, receiving jobs, and extraction jobs.
+
+         **Note:** Receiving jobs with the Running status cannot be cancelled.
+      operationId: DataAndJobHandling_CancelJobs
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dp.CancelJobBatchFromJobIdDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dp.JobCancellationResultsDTO'
+  /v1/op/jobs/dispatching-jobs/{jobId}:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a dispatching job's status
+      description: Retrieve the status of a dispatching job, including its job ID and the number of jobs it generated.
+      operationId: DataAndJobHandling_DispatchingJobStatus
+      parameters:
+        - name: jobId
+          in: path
+          description: The ID of the job you want to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.DispatchingJobStatusResponse'
+  /v1/op/jobs/dispatching-jobs/{jobId}/extraction-jobs:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a dispatching job's extraction jobs with their statuses
+      description: |-
+        Retrieve the statuses of extraction jobs associated with a dispatching job. The dispatching job
+         is a "parent" to extraction jobs, which retrieve data from your source systems through data connectors.
+      operationId: DataAndJobHandling_ExtractionJobAndStatus
+      parameters:
+        - name: jobId
+          in: path
+          description: The ID of the dispatching job you want to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: dispatchingJobId
+          in: query
+          description: The ID of the dispatching job that generated the extraction jobs.
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: |-
+            The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.
+             Use this if you are only interested in the results for one analytic tenant.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The limit of extraction job statuses to retrieve.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.ExtractionJobAndStatusResponse'
+  /v1/op/jobs/dispatching-jobs/{jobId}/processing-jobs:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a dispatching job's processing jobs with their statuses
+      description: |-
+        Retrieve the statuses of processing jobs associated with a dispatching job. The dispatching job
+         is a "parent" to extraction jobs, which in turn generate processing jobs and receiving jobs.
+      operationId: DataAndJobHandling_ProcessingJobAndStatus
+      parameters:
+        - name: jobId
+          in: path
+          description: The ID of the dispatching job you want to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: dispatchingJobId
+          in: query
+          description: The ID of the dispatching job that generated the extraction jobs.
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: |-
+            The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.
+             Use this if you are only interested in the results for one analytic tenant.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The limit of extraction job statuses to retrieve.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.ProcessingJobAndStatusResponse'
+  /v1/op/jobs/dispatching-jobs/{jobId}/receiving-jobs:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a dispatching job's receiving jobs with their statuses
+      description: |-
+        Retrieve the statuses of receiving jobs associated with a dispatching job. The dispatching job
+         is a "parent" to extraction jobs, which in turn generate processing jobs and receiving jobs.
+      operationId: DataAndJobHandling_ReceivingJobAndStatus
+      parameters:
+        - name: jobId
+          in: path
+          description: The ID of the dispatching job you want to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: dispatchingJobId
+          in: query
+          description: The ID of the dispatching job that generated the extraction jobs.
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: |-
+            The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.
+             Use this if you are only interested in the results for one analytic tenant.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The limit of extraction job statuses to retrieve.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.ReceivingJobAndStatusResponse'
+  /v1/op/jobs/processing-jobs/{receivingJobId}:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve processing job statuses by receiving job ID
+      description: |-
+        Retrieve a list of statuses for all processing jobs associated with the given receiving job ID.
+         Processing jobs deal with an individual analytic tenant's data load. A processing job is either triggered through
+         the UI or is one of many processing jobs spawned from a receiving job. When a processing job is triggered as part
+         of a set from an receiving job, it is associated to the receiving job through a Parent ID.
+      operationId: DataAndJobHandling_ProcessingJobStatus
+      parameters:
+        - name: receivingJobId
+          in: path
+          description: The receiving job ID
+          required: true
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: |-
+            The tenant code of the tenant you want to retrieve the processing jobs for.
+             Use this if you are only interested in the results for one analytic tenant.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The limit of processing jobs to retrieve per page.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.ProcessingJobStatusResponse'
+  /v1/op/jobs/receiving-jobs:
+    post:
+      tags:
+        - DataIntake
+      summary: Complete a transfer session
+      description: |-
+        Complete the specified transfer session by triggering a receiving job. A receiving job
+         validates the transferred data and adds the transferred data to Visier's data store.
+
+         You can set an optional parameter to generate a data version through a processing job immediately after the receiving job completes.
+      operationId: DataIntake_PushDataComplete
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/data_in.PushDataCompleteRequest'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.PushDataCompleteResponse'
+  /v1/op/jobs/receiving-jobs/{receivingJobId}:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a receiving job's status
+      description: "After sending data to Visier, you may want to know the status of the receiving job and the associated tenant\n receiving jobs. A receiving job validates the transferred data and adds the transferred data to Visier's data\n store. \n\n A successful response indicates that the receiving job was successful. To get the status of the jobs spawned by the receiving job, set the `jobs` parameter to `true`."
+      operationId: DataAndJobHandling_ReceivingJobStatus
+      parameters:
+        - name: receivingJobId
+          in: path
+          description: The jobId provided after sending data to Visier.
+          required: true
+          schema:
+            type: string
+        - name: jobs
+          in: query
+          description: If `true`, returns the status of receiving jobs spawned by the receiving job specified by `jobId`.
+          schema:
+            type: boolean
+        - name: tenantCode
+          in: query
+          description: |-
+            The tenant code of the tenant you want to retrieve the receiving jobs for. Use this if you are only interested
+             in the results for one analytic tenant.
+          schema:
+            type: string
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: The number of job statuses to return per page.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.ReceivingJobStatusResponse'
+  /v1alpha/op/jobs/consolidated-analytics-jobs:
+    post:
+      tags:
+        - DataAndJobHandling
+      summary: Run a consolidated analytics job
+      description: Run a job for a consolidated analytics tenant. This request retrieves data for all source tenants in a consolidated analytics tenant. After the job completes, you can run a processing job to generate a data version for the consolidated analytics tenant. To run a processing job, see `POST /v1alpha/op/jobs/processing-jobs`.
+      operationId: DataAndJobHandling_AdhocConsolidatedAnalyticsJob
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.jobs.ConsolidatedAnalyticsJobRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.JobIdResponse'
+  /v1alpha/op/jobs/extraction-jobs:
+    post:
+      tags:
+        - DataAndJobHandling
+      summary: Run a data connector extraction job
+      description: |-
+        Run an extraction job to retrieve data through a Visier data connector and generate a new data version. Administrating tenants can run extraction jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.
+         If running extraction jobs for an administrating tenant or their analytic tenants, this request starts a dispatching job that generates one extraction job per tenant. The response returns the job ID of the extraction job or dispatching job.
+      operationId: DataAndJobHandling_AdhocExtractionJob
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.jobs.ExtractDataAndLoadDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.JobIdResponse'
+  /v1alpha/op/jobs/processing-jobs:
+    post:
+      tags:
+        - DataAndJobHandling
+      summary: Run a processing job
+      description: |-
+        Run a processing job to generate a new data version. Administrating tenants can run processing jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.
+         If running processing jobs for an administrating tenant or their analytic tenants, this request starts a dispatching job that generates one processing job per tenant. The response returns the job ID of the processing job or dispatching job.
+      operationId: DataAndJobHandling_AdhocProcessingJobs
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.jobs.ProcessingJobRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.JobIdResponse'
+  /v1/data/directloads/{draftId}/transactions/{transactionId}/{objectName}:
+    put:
+      tags:
+        - DirectDataIntake
+      summary: Upload files
+      description: |-
+        Send upload files to a previously-created transaction. Each upload file is associated with a target object in Visier. The files are not processed in Visier until you commit the transaction.
+      operationId: DirectDataIntake_UploadFile
+      parameters:
+        - name: draftId
+          in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction to load data files into.
+          required: true
+          schema:
+            type: string
+        - name: objectName
+          in: path
+          description: |-
+            The name of the object to upload the data to.
+
+            If uploading data to a multi-value property (MVP), specify the property in `{object}--{property}` format; for example, `Employee--Employee_Budgeted_Compensation`.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to upload
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DirectDataUploadFileResponseDTO"
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+  /v1/op/data-transfer-sessions/{transferSessionId}/upload:
+    put:
+      tags:
+        - DataIntake
+      summary: Transfer data to sources via file upload
+      description: |-
+        Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the
+         data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make
+         multiple requests within the same transfer session.
+
+         File size limit: 3 GB
+
+         Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.
+
+         If you define a specific source in the request, all files within the request will target the declared source. If
+         a source is not defined, the filenames are matched against the source regex to correctly assign each file to a
+         source. To find out the source regex, please contact Visier Customer Success.
+
+         **Note:** If you include files that should target multiple sources in one ZIP file, do not define a source in the request.
+
+         Analytic tenants: For optimal transfer speed, provide one ZIP file per source.
+         Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.
+         In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:
+
+         File1.zip
+         - Folder1: WFF_tenantCode1
+            - Filename1.csv
+            - Filename2.csv
+         - Folder2: WFF_tenantCode2
+            - Filename3.csv
+            - Filename4.csv
+      operationId: DataIntake_UploadData
+      parameters:
+        - name: transferSessionId
+          in: path
+          description: The transfer session ID returned after the data transfer session starts.
+          required: true
+          schema:
+            type: string
+        - name: sourceId
+          in: query
+          description: The unique identifier associated with the source you want to transfer data to.
+          schema:
+            type: string
+        - name: sequence
+          in: query
+          description: The unique sequence number associated with a batch of records.
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to upload in CSV or ZIP format.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data_in.PushDataResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/data-connector-credentials/{id}:
+    delete:
+      tags:
+        - DataAndJobHandling
+      summary: Delete a connector credential
+      description: |-
+        Use this API to delete connector credentials from your tenants. Credentials that are no longer valid
+         should be deleted.
+      operationId: DataAndJobHandling_DeleteConnectorCredential
+      parameters:
+        - name: id
+          in: path
+          description: The credentialId of the credential you want to delete.
+          required: true
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: The tenant code of the analytic tenant in which the credential you're deleting.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/op/job-status/jobs/{jobId}:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a specific job's status
+      description: |-
+        Use this API to retrieve the list of statuses for a specific job with id `jobId`.
+        You can retrieve all job statuses or specify a time period to retrieve statuses from.
+      operationId: DataAndJobHandling_JobIdStatus
+      parameters:
+        - name: jobId
+          in: path
+          description: The unique ID of the job to retrieve the status for.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: '#/components/schemas/data_in.ReceivingJobStatusResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/data/upload/files/{filename}:
+    put:
+      tags:
+        - DataUpload
+      summary: Upload a data file to Visier
+      description: "Use this API to upload data files to Visier. You can upload ZIP, CSV, XLS, and XLSX filetypes in plaintext or encrypted with Visier's PGP key.\n\n Use of this API requires client redirect. This API redirects requests directly to Visier's upload infrastructure to support long-running uploads. \n To ensure efficient uploading, we recommend that you use an HTTP client that supports the 100 Continue status code.\n\n The maximum file upload size is 500 MB. We recommend using SFTP for larger file sizes."
+      parameters:
+        - name: filename
+          in: path
+          description: The filename of the data file to upload, including the file extension (such as .zip or .csv).
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          "*/*":
+            schema:
+              type: string
+              format: binary
+      responses:
+        "307":
+          description: Redirect to Visier's upload infrastructure.
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
+    patch:
+      tags:
+        - PlanningDataLoad
+      summary: Upload plan data
+      description: |-
+        Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.
+        The data file must contain the following columns:
+          - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.
+          - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.
+          - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value.
+
+        <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: PlanDataLoad_PlanDataUpload
+      parameters:
+        - name: planId
+          in: path
+          description: The unique identifier of the plan.
+          required: true
+          schema:
+            type: string
+        - name: scenarioId
+          in: path
+          description: The unique identifier of the plan scenario to load data into.
+          required: true
+          schema:
+            type: string
+        - name: calculation
+          in: query
+          description: |-
+            Sets the plan values to rollup, distribute, or neither. Valid values:
+              - **ROLLUP**: Roll up loaded data values to parent and ancestor rows. If the data provides a parent value and its child value, this method prioritizes the loaded value for the child and overwrites the parent.
+              - **DISTRIBUTE**: Distribute loaded data values to their children and descendent rows. If the data provides a parent value and its child value, this method prioritizes the parent values and overrides the loaded child value.
+              - **NONE**: The loaded values are not rolled up or distributed. This is the default.
+          required: false
+          schema:
+            type: string
+        - name: currency
+          in: query
+          description: |-
+            The 3-digit ISO 4217 currency code of the data.
+            If undefined, default is the plan's consolidation currency. If the currency is different from the plan's consolidation currency, the values are converted to the consolidation currency using the conversion rates loaded for the plan's baseline period.
+          required: false
+          schema:
+            type: string
+        - name: method
+          in: query
+          description: |-
+            Sets how to validate the data being loaded into Visier. Valid values:
+              - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.
+              - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.
+              - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default.
+          required: false
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The CSV file to load into the plan.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanDataUploadResponseDTO'
+  /v1alpha/planning/data/plans/{planId}/rows:
+    patch:
+      tags:
+        - PlanningDataLoad
+      summary: Add or remove plan rows
+      description: |-
+        Send a file to Visier to modify a plan's rows. The file must be in CSV format and contain the following columns:
+        - `Add/Remove`: In the column, use the value "Add" to add the specified row to the plan or "Remove" to remove the specified row from the plan.
+        - A column for each plan segment level using the IDs from `planSegmentLevels`.
+          - To add a row, use the corresponding segment member ID from `planSegmentLevelMembers`. If the member doesn't exist in the schema, provide a display name. The response returns its assigned segment member ID.
+          - To remove a row, use the corresponding segmentId as the column name and the segment member ID from `planSegmentLevelMembers` as the row value.
+
+        <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: PlanDataLoad_PlanRowDataLoad
+      parameters:
+        - name: planId
+          in: path
+          description: The unique identifier of the plan.
+          required: true
+          schema:
+            type: string
+        - name: method
+          in: query
+          description: |-
+            Sets how to validate the data being loaded into Visier. Valid values:
+              - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.
+              - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.
+              - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default.
+          required: false
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The CSV file to load into the plan.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanRowDataLoadResponseDTO'
+components:
+  schemas:
+    admin.data.ImportDefinitionAPIDTO:
+      type: object
+      properties:
+        connectorId:
+          type: string
+          description: The ID associated with the data connector.
+        displayName:
+          type: string
+          description: An identifiable data connector name that is displayed within Visier.
+        credentialId:
+          type: string
+          description: The ID associated with the connector credentials currently assigned to this data connector.
+    admin.data.ImportDefinitionsAPIDTO:
+      type: object
+      properties:
+        dataConnectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.data.ImportDefinitionAPIDTO'
+          description: A list of objects representing all the available data connectors in Production.
+        limit:
+          type: integer
+          description: The number of data connectors to return. The maximum number of data connectors to return is 1000.
+          format: uint32
+        start:
+          type: integer
+          description: The index to start retrieving values from, also known as offset. The index begins at 0.
+          format: uint32
+    admin.jobs.ConsolidatedAnalyticsJobRequestDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the consolidated analytics tenant; for example, "WFF_j1r~CAa7s".
+    admin.jobs.ExtractDataAndLoadDTO:
+      type: object
+      properties:
+        tenants:
+          type: array
+          items:
+            type: string
+          description: A list of analytic tenants to dispatch extraction jobs for. One extraction job is dispatched per tenant. Only valid for requests from an administrating tenant.
+        allTenants:
+          type: boolean
+          description: If `true`, one extraction job is dispatched for each accessible analytic tenant. Only valid for requests from an administrating tenant.
+        overrideLastExtractionTimestamp:
+          type: string
+          description: An epoch timestamp in milliseconds from which to retrieve data. This overrides the last extraction date to retrieve more data.
+        publishDataLoadArtifacts:
+          type: boolean
+          description: If `true`, the generated data load artifacts are published to production immediately.
+        runProcessingJob:
+          type: boolean
+          description: If `true`, a processing job is spawned after a dispatched extraction job runs successfully.
+        dataCategoryId:
+          type: string
+          description: The unique identifier of the data category on which to trigger the extraction job. Default is the tenant's primary data category.
+        disableArtifactGeneration:
+          type: boolean
+          description: If `true`, the job does not generate data load artifacts. If unspecified, the default is `false`.
+        connectorIds:
+          type: array
+          items:
+            type: string
+          description: The unique identifiers of the connectors to run extraction jobs.
+        lastExtractionTimeOffsetWeeks:
+          type: integer
+          description: The number of weeks in the past to retrieve data. This overrides the last extraction date to retrieve more data.
+          format: int32
+        monthsToExtract:
+          type: integer
+          description: The number of months to retrieve snapshot data.
+          format: int32
+        extractToTimeOverride:
+          type: string
+          description: An epoch timestamp in milliseconds for the end time up to which to retrieve data.
+        batchSizeOverride:
+          type: integer
+          description: The maximum number of subjects the job can retrieve in each batch.
+          format: int32
+        sqlBatchSize:
+          type: integer
+          description: The maximum number of SQL table records the job can retrieve in each batch.
+          format: int32
+        forceUpdateExistingArtifacts:
+          type: boolean
+          description: If `true` and `disableArtifactGeneration` is `false`, updates extractor artifacts, which may overwrite the artifacts' manual overrides. Ignored if `disableArtifactGeneration` is `true`.
+        excludedTenants:
+          type: array
+          items:
+            type: string
+          description: The unique identifiers of the tenants to exclude from the extraction job. Only valid if `allTenants` is `true`. Only valid for requests from an administrating tenant.
+        spillDebugInfoPartitionsDTO:
+          enum:
+            - spillNone
+            - spillStagesAndRecords
+            - spillAll
+          type: string
+          description: |-
+            The partitioning of debugging info to be generated, if any. Valid values are:
+             - `spillNone`: No debugging info is generated.
+             - `spillStagesAndRecords`: Debugging info is generated for stages and records.
+             - `spillAll`: Debugging info is generated for all partitions.
+          format: enum
+        spillDebugInfoDetailLevelDTO:
+          enum:
+            - fileAndLine
+            - mappingName
+          type: string
+          description: |-
+            The detail level of the debugging info to be generated. Valid values are:
+             - `fileAndLine`: Debugging info is generated for file and line.
+             - `mappingName`: Debugging info is generated for mapping name.
+          format: enum
+        lastExtractionTimeOffsetMonths:
+          type: integer
+          description: The number of months to offset the last extraction time. This overrides the last extraction date backward to retrieve more data.
+          format: int32
+        lastExtractionTimeOffsetMode:
+          type: string
+          description: The mode used to offset the last extraction time (weeks vs months)
+        offsetWeekOption:
+          type: string
+          description: The week options used to offset the last extraction time (first of day / last of day)
+        offsetMonthOption:
+          type: string
+          description: The month options used to offset the last extraction time (first of month / last of month)
+    admin.jobs.ProcessingJobRequestDTO:
+      type: object
+      properties:
+        tenants:
+          type: array
+          items:
+            type: string
+          description: The tenant codes of the tenants to run processing jobs for. If omitted, runs a processing job for the tenant associated with the user who made the API request. Only valid for requests from an administrating tenant.
+        allTenants:
+          type: boolean
+          description: If `true`, runs processing jobs for all accessible analytic tenants. Default is `false`. Only valid for requests from an administrating tenant.
+        dataCategoryId:
+          type: string
+          description: |-
+            The unique identifier of the data category to run the job. If omitted, runs a job using the primary data category.
+             To retrieve a list of all data categories, see `GET /v1/op/data/categories`.
+        publishToProduction:
+          type: boolean
+          description: If `true`, publishes the generated data version to production. Default is `false`.
+        excludedTenants:
+          type: array
+          items:
+            type: string
+          description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true". Only valid for requests from an administrating tenant.
+    admin.AssignConnectorCredentialsByTenantResponseDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The unique identifier associated with the tenant.
+        connectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.AssignConnectorWithCredentialsResponseDTO'
+          description: A list of objects representing the assigned credentials and connectors.
+        status:
+          enum:
+            - Unknown
+            - Succeed
+            - Failed
+          type: string
+          description: The state of the credential assignment. Valid values are Succeed or Failed.
+          format: enum
+        message:
+          type: string
+    admin.AssignConnectorCredentialsResponseDTO:
+      type: object
+      properties:
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.AssignConnectorCredentialsByTenantResponseDTO'
+          description: A list of objects representing the tenants and data connectors that were assigned connector credentials.
+    admin.AssignConnectorWithCredentialsResponseDTO:
+      type: object
+      properties:
+        connector:
+          allOf:
+            - $ref: '#/components/schemas/admin.ConnectorInfoResponseDTO'
+          description: The data connector that was assigned a connector credential.
+        credential:
+          allOf:
+            - $ref: '#/components/schemas/admin.AssignedCredentialInfoResponseDTO'
+          description: A connector credential that was assigned to a data connector
+    admin.AssignedCredentialInfoResponseDTO:
+      type: object
+      properties:
+        credentialId:
+          type: string
+          description: The unique identifier associated with the user.
+        displayName:
+          type: string
+          description: The user's username. This is typically the user's email, such as john@visier.com.
+        message:
+          type: string
+    admin.ConnectorInfoResponseDTO:
+      type: object
+      properties:
+        connectorId:
+          type: string
+          description: The unique identifier associated with the data connector.
+        displayName:
+          type: string
+          description: An identifiable data connector name that is displayed within Visier.
+        description:
+          type: string
+    admin.ConnectorSettingRequestDTO:
+      type: object
+      properties:
+        settingKey:
+          type: string
+          description: The unique identifier associated with the setting.
+        value:
+          type: string
+          description: The setting's value.
+    admin.ConnectorSettingResponseDTO:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The unique identifier of the connector setting.
+        value:
+          type: string
+          description: The value that was set for the connector setting.
+        message:
+          type: string
+    admin.ConnectorSettingsResponseDTO:
+      type: object
+      properties:
+        connector:
+          allOf:
+            - $ref: '#/components/schemas/admin.ConnectorInfoResponseDTO'
+          description: The data connector that was updated in the API request.
+        settings:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.ConnectorSettingResponseDTO'
+          description: The settings that were updated for a data connector.
+    admin.DataVersionAndDateDTO:
+      type: object
+      properties:
+        dataVersion:
+          type: string
+          description: The data version ID.
+        dataVersionDate:
+          type: string
+          description: The date that the data version was created.
+    admin.ExtractorSettingAPIDTO:
+      type: object
+      properties:
+        connectorId:
+          type: string
+          description: The unique identifier associated with the data connector.
+        displayName:
+          type: string
+          description: An identifiable data connector name that is displayed within Visier.
+        connectorSettings:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.ExtractorSettingKeyValueAPIDTO'
+          description: A list of objects representing the settings that are available for the data connector.
+    admin.ExtractorSettingKeyValueAPIDTO:
+      type: object
+      properties:
+        settingKey:
+          type: string
+          description: The unique identifier associated with the setting.
+        value:
+          type: string
+          description: The current value of the setting.
+    admin.ExtractorSettingsAPIDTO:
+      type: object
+      properties:
+        connectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.ExtractorSettingAPIDTO'
+          description: A list of all data connectors in the production environment and their settings.
+    admin.MultipleTenantDataVersionsDetailsDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The owner of the data versions.
+        dataVersions:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.DataVersionAndDateDTO'
+          description: |-
+            The latest enabled data versions for the given analytic tenant. If the analytic tenant
+             has no enabled data versions, an empty string "" is returned.
+    admin.MultipleTenantDataVersionsListDTO:
+      type: object
+      properties:
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.MultipleTenantDataVersionsDetailsDTO'
+          description: A list of analytic tenants and their latest enabled data versions.
+        limit:
+          type: integer
+          description: The number of analytic tenants to retrieve. The maximum number to retrieve is 1000.
+          format: uint32
+        start:
+          type: integer
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          format: uint32
+    admin.SetConnectorSettingRequestDTO:
+      type: object
+      properties:
+        connectorId:
+          type: string
+          description: The unique identifier associated with the data connector.
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.TenantConnectorSettingsRequestDTO'
+          description: The tenant codes and data connector settings to update.
+    admin.SetConnectorSettingResponseDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The unique identifier associated with the tenant.
+        connectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.ConnectorSettingsResponseDTO'
+          description: A list of objects representing the assigned settings and connectors.
+        status:
+          enum:
+            - Unknown
+            - Succeed
+            - Failed
+          type: string
+          description: The state of the setting assignment. Valid values are Succeed or Failed.
+          format: enum
+        message:
+          type: string
+    admin.SetConnectorSettingsRequestDTO:
+      type: object
+      properties:
+        connectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.SetConnectorSettingRequestDTO'
+          description: The settings to define for each data connector and tenant.
+    admin.SetConnectorSettingsResponseDTO:
+      type: object
+      properties:
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.SetConnectorSettingResponseDTO'
+          description: The tenants and data connectors that were updated in the API request.
+    admin.TenantConnectorSettingsRequestDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The unique identifier associated with the tenant.
+        connectorSettings:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.ConnectorSettingRequestDTO'
+          description: The settings to update.
+    data_in.AssignConnectorCredentialRequest:
+      type: object
+      properties:
+        connectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.Connector'
+          description: A list of objects representing the data connectors to be assigned with credentials.
+    data_in.Connector:
+      type: object
+      properties:
+        connectorId:
+          type: string
+          description: The unique identifier associated with the data connector.
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.TenantAndCredential'
+          description: A list of analytic tenants and credentials to be assigned to the connector.
+    data_in.DataLoadRequest:
+      type: object
+      properties:
+        model:
+          allOf:
+            - $ref: '#/components/schemas/data_in.DataLoadRequestModel'
+          description: A form body key that contains a collection of key-value pairs.
+    data_in.DataLoadRequestModel:
+      type: object
+      properties:
+        files:
+          type: array
+          items:
+            type: string
+          description: |-
+            A comma-separated list of file names.
+             Example:
+             `"files": "/path/to/file1.zip.gpg,/path/to/another/file.zip.gpg"`
+        skipDataLoad:
+          type: boolean
+          description: If `true`, receives the files and skips data loading. Does not generate a data version.
+    data_in.DataLoadResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: The unique identifier associated with the receiving job.
+    data_in.DataTransferResultDetail:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The code of the tenant that data was transferred to. For example, WFF_j1r or WFF_j1r~c7o.
+        sourceNames:
+          type: array
+          items:
+            type: string
+          description: A list of strings representing the sources that received a data transfer.
+        dataSize:
+          type: string
+          description: The total size of the transfer session in bytes.
+        rows:
+          type: string
+          description: The total number of rows transferred during the transfer session.
+    data_in.DataVersionObject:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code for the analytic tenant that you are disabling a data version.
+        dataVersions:
+          type: string
+          description: The data version to disable for a particular analytic tenant.
+    data_in.DisableDVModel:
+      type: object
+      properties:
+        dataVersionObjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.DataVersionObject'
+          description: |-
+            A list of objects representing the data version to disable for a particular analytic tenant.
+             The limit of objects to include per request is 1000.
+    data_in.DisableDVRequest:
+      type: object
+      properties:
+        model:
+          allOf:
+            - $ref: '#/components/schemas/data_in.DisableDVModel'
+          description: A form body key that contains a collection of key-value pairs.
+    data_in.DisableDVResponse:
+      type: object
+      properties:
+        totalFailures:
+          type: integer
+          description: The number of data versions that failed during the disabling process.
+          format: int32
+        totalSuccess:
+          type: integer
+          description: The number of data versions that were disabled successfully.
+          format: int32
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.Result'
+          description: A list of objects representing the disabling process.
+    data_in.DispatchingJobStatusResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: The ID of the dispatching job that generated the extraction jobs.
+        tenantCode:
+          type: string
+          description: The tenant that owns the dispatching job. This is usually the administrating tenant.
+        status:
+          type: string
+          description: The current state of the job.
+        totalJobsDispatched:
+          type: integer
+          description: The number of extraction jobs that were generated by the dispatching job.
+          format: int32
+    data_in.ExcludeDataUploadsRequest:
+      type: object
+      properties:
+        uploads:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.UploadToExclude'
+          description: A list of objects representing the data uploads to exclude for a particular analytic tenant.
+    data_in.ExtractionJob:
+      type: object
+      properties:
+        extractionJobId:
+          type: string
+          description: The ID of the extraction job.
+        tenantCode:
+          type: string
+          description: The tenant code of the analytic tenant for the extraction job.
+        status:
+          type: string
+          description: |-
+            The current state of the job.
+             - Valid values: Pending, Running, Succeeded, Failed, Error, Cancelling, Cancelled, RolledBack, Rescheduling, Rescheduled.
+        currentStage:
+          type: string
+          description: |-
+            The current stage of the job. This is not returned if the stage is "Completed".
+             - Valid values: Initialize, Retrieve Main Subject, Retrieve Secondary Subjects, Retrieve Custom Subjects, Process Records, Publish Artifacts, Publish Records, Completed.
+    data_in.ExtractionJobAndStatusResponse:
+      type: object
+      properties:
+        parentJobId:
+          type: string
+          description: The ID of the dispatching job that generated the extraction jobs.
+        parentTenantCode:
+          type: string
+          description: The tenant that owns the dispatching job. This is usually the administrating tenant.
+        limit:
+          type: integer
+          description: The number of extraction jobs to return. The maximum number of jobs to return is 1000.
+          format: int32
+        start:
+          type: integer
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          format: int32
+        extractionJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.ExtractionJob'
+          description: A list of extraction job information.
+    data_in.IncludeDataUploadsRequest:
+      type: object
+      properties:
+        uploads:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.UploadToInclude'
+          description: A list of objects representing the data uploads to include for a particular analytic tenant.
+    data_in.JobStatusListResponse:
+      type: object
+      properties:
+        queryStartTime:
+          type: string
+          description: The start time from which to retrieve job statuses.
+        queryEndTime:
+          type: string
+          description: The end time from which to retrieve job statuses.
+        jobStatus:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.JobStatusWithStartTime'
+          description: The specific status to restrict the list of jobs to.
+    data_in.JobStatusWithStartTime:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: The unique ID of the job.
+        tenant:
+          type: string
+          description: The tenant code.
+        status:
+          type: string
+          description: The status of the job, such as Running or Completed.
+        jobType:
+          type: string
+          description: The type of the job, such as a processing job or receiving job.
+        startTime:
+          type: string
+          description: The time that the job started.
+    data_in.ProcessingJob:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: The job ID of the processing job for the analytic tenant.
+        tenantCode:
+          type: string
+          description: The analytic tenant code.
+        dataVersion:
+          type: string
+          description: The data version associated with the processing job.
+        status:
+          type: string
+          description: The status of the receiving job for the analytic tenant.
+        message:
+          type: string
+          description: A meaningful message about the processing job.
+    data_in.ProcessingJobAndStatusResponse:
+      type: object
+      properties:
+        parentJobId:
+          type: string
+          description: The ID of the dispatching job that generated the extraction jobs.
+        parentTenantCode:
+          type: string
+          description: The tenant that owns the dispatching job. This is usually the administrating tenant.
+        limit:
+          type: integer
+          description: The number of processing jobs to return. The maximum number of jobs to return is 1000.
+          format: int32
+        start:
+          type: integer
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          format: int32
+        processingJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.ProcessingJob'
+          description: A list of processing job information.
+    data_in.ProcessingJobStatusResponse:
+      type: object
+      properties:
+        parentJobId:
+          type: string
+          description: The job ID of the receiving job that spawned this job.
+        parentTenantCode:
+          type: string
+          description: The tenant code of the receiving job that spawned this job.
+        limit:
+          type: integer
+          description: The limit of processing jobs to retrieve per page.
+          format: int32
+        start:
+          type: integer
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          format: int32
+        processingJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.ProcessingJob'
+          description: A list of objects representing the processing jobs to retrieve.
+    data_in.PushDataCancelResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A meaningful message about the transfer session.
+        transferSessionId:
+          type: string
+          description: The unique identifier associated with the transfer session.
+        dataTransferResultDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.DataTransferResultDetail'
+          description: A list of objects representing the results of the transfer session.
+        status:
+          type: string
+          description: The status of the transfer session. A cancelled session returns the status CANCELLED.
+    data_in.PushDataCompleteRequest:
+      type: object
+      properties:
+        transferSessionId:
+          type: string
+          description: The unique identifier associated with the transfer session.
+        processingData:
+          type: boolean
+          description: If `true`, a processing job will be triggered after the receiving job successfully completes. This generates a new data version.
+    data_in.PushDataCompleteResponse:
+      type: object
+      properties:
+        dataReceivingJobId:
+          type: string
+          description: The unique identifier associated with the receiving job.
+        message:
+          type: string
+          description: A meaningful message about the transfer session.
+        transferSessionId:
+          type: string
+          description: The unique identifier associated with the transfer session.
+        dataTransferResultDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.DataTransferResultDetail'
+          description: A list of objects representing the results of the transfer session.
+        status:
+          type: string
+          description: The status of the transfer session. A completed session returns the status SUCCEED.
+    data_in.PushDataResponse:
+      type: object
+      properties:
+        transferSessionId:
+          type: string
+          description: The unique identifier associated with the transfer session.
+        sequence:
+          type: integer
+          description: The unique sequence number associated with a batch of records.
+          format: uint32
+        status:
+          type: string
+          description: The status of the data transfer.
+        message:
+          type: string
+          description: Any additional information about the data transfer.
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.Tenant'
+          description: A list of strings representing the tenants that data was pushed to and their data transfer results.
+    data_in.ReceivingJob:
+      type: object
+      properties:
+        receivingJobId:
+          type: string
+          description: The job ID of the receiving job for the analytic tenant.
+        tenantCode:
+          type: string
+          description: The analytic tenant code.
+        status:
+          type: string
+          description: The status of the receiving job for the analytic tenant.
+    data_in.ReceivingJobAndStatusResponse:
+      type: object
+      properties:
+        parentJobId:
+          type: string
+          description: The ID of the dispatching job that generated the extraction jobs.
+        parentTenantCode:
+          type: string
+          description: The tenant that owns the dispatching job. This is usually the administrating tenant.
+        limit:
+          type: integer
+          description: The number of receiving jobs to return. The maximum number of jobs to return is 1000.
+          format: int32
+        start:
+          type: integer
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          format: int32
+        receivingJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.ReceivingJob'
+          description: A list of receiving job information.
+    data_in.ReceivingJobStatusResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: The unique identifier associated with the receiving job.
+        status:
+          type: string
+          description: The status of the receiving job.
+        parentJobId:
+          type: string
+          description: The job ID of the receiving job that spawned this job.
+        parentTenantCode:
+          type: string
+          description: The tenant code of the receiving job that spawned this job.
+        receivingJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.ReceivingJob'
+          description: A list of objects representing the receiving jobs to retrieve.
+    data_in.Result:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: If applicable, the job ID associated with the data version.
+        dataVersion:
+          type: string
+          description: If applicable, the data version that was disabled.
+        tenantCode:
+          type: string
+          description: The analytic tenant that the disable operation was conducted for.
+        status:
+          type: string
+          description: The outcome of the disabling operation.
+        message:
+          type: string
+          description: If applicable, the message explains what errors occurred while disabling data versions.
+    data_in.Source:
+      type: object
+      properties:
+        sourceId:
+          type: string
+          description: The unique identifier associated with the source that data was transferred to.
+        sourceName:
+          type: string
+          description: The object name of the source.
+        dataSize:
+          type: string
+          description: The size of the data transfer in bytes.
+        rows:
+          type: string
+          description: The number of rows in the data transfer.
+        status:
+          type: string
+          description: The status of the data transfer for this source.
+        message:
+          type: string
+          description: A meaningful message about the data transfer.
+    data_in.StartExtractionResponse:
+      type: object
+      properties:
+        JobId:
+          type: string
+          description: The ID of the dispatching job that generated the extraction jobs.
+    data_in.StartTransferResponse:
+      type: object
+      properties:
+        transferSessionId:
+          type: string
+          description: The unique identifier associated with the transfer session.
+    data_in.Tenant:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The code of the tenant that data was transferred to. For example, WFF_j1r or WFF_j1r~c7o.
+        status:
+          type: string
+          description: The status of the data transfer for this tenant.
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/data_in.Source'
+          description: A list of objects representing the sources that data was pushed to and their data transfer results.
+    data_in.TenantAndCredential:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The unique identifier associated with the tenant.
+        credentialId:
+          type: string
+          description: The unique identifier associated with the credential.
+    data_in.UploadToExclude:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the analytic tenant you are excluding a data upload for.
+        excludeAll:
+          type: boolean
+          description: If `true`, all data uploads are excluded for the analytic tenant.
+        uploadTimes:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of ISO-8601 time strings such as `"2001-10-25T13:45:35.999"` representing the upload time of each data upload to exclude.
+        minUploadTime:
+          type: string
+          description: An ISO-8601 time such as `"2001-10-25T13:45:35.999"` for the earliest upload time. If defined, omit `uploadTimes`. If omitted and `maxUploadTime` is defined, excludes files up to earliest time available.
+        maxUploadTime:
+          type: string
+          description: An ISO-8601 time such as `"2001-10-25T13:45:35.999"` for the latest upload time. If defined, omit `uploadTimes`. If omitted and `minUploadTime` is defined, excludes files up to latest time available.
+        sources:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings representing the object name of each source to exclude. If `uploadTimes` is omitted, excludes files for the given sources for all `uploadTimes`.
+    data_in.UploadToInclude:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the analytic tenant you are including a data upload for.
+        includeAll:
+          type: boolean
+          description: If `true`, all data uploads are included for the analytic tenant.
+        uploadTimes:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of ISO-8601 time strings such as `"2001-10-25T13:45:35.999"` representing the upload time of each data upload to include.
+        minUploadTime:
+          type: string
+          description: An ISO-8601 time such as `"2001-10-25T13:45:35.999"` for the earliest upload time. If defined, omit `uploadTimes`. If omitted and `maxUploadTime` is defined, includes files up to earliest time available.
+        maxUploadTime:
+          type: string
+          description: An ISO-8601 time such as `"2001-10-25T13:45:35.999"` for the latest upload time. If defined, omit `uploadTimes`. If omitted and `minUploadTime` is defined, includes files up to latest time available.
+        sources:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings representing the object name of each source to include. If `uploadTimes` is omitted, includes files for the given sources for all `uploadTimes`.
+    designer.crypto.KeyPairDeleteResponseDTO:
+      type: object
+      properties:
+        keyID:
+          type: string
+          description: The key ID in 16-letter hexadecimal format, including leading zeros.
+    designer.crypto.KeyPairGenerateRequestDTO:
+      type: object
+      properties:
+        expirationDate:
+          type: string
+          description: The UTC expiration date of the key in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years.
+    designer.crypto.PublicKeyDTO:
+      type: object
+      properties:
+        keyID:
+          type: string
+          description: The key ID of the generated key pair in 16-letter hexadecimal format, including leading zeros.
+        dateGenerated:
+          type: string
+          description: The UTC date that the key pair was generated in milliseconds since the Unix epoch.
+        expiryDate:
+          type: string
+          description: The UTC expiration date of the key in milliseconds since the Unix epoch.
+        recipient:
+          type: string
+          description: The tenant code and creation date in milliseconds of the PGP key; for example, WFF_j1r_13490234234.
+        publicKey:
+          type: string
+          description: The public key of the generated key pair.
+    designer.crypto.PublicKeysDTO:
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.crypto.PublicKeyDTO'
+          description: A list of the tenant's public keys.
+    designer.AdpAuthParamsDTO:
+      type: object
+      properties:
+        authCode:
+          type: string
+    designer.BambooAuthParamsDTO:
+      type: object
+      properties:
+        accessKey:
+          type: string
+        tenantDomainName:
+          type: string
+    designer.BasicS3AuthParamsDTO:
+      type: object
+      properties:
+        bucketName:
+          type: string
+        bucketRegion:
+          type: string
+        accessKey:
+          type: string
+        secretKey:
+          type: string
+        path:
+          type: string
+    designer.BigQueryAuthParamsDTO:
+      type: object
+      properties:
+        projectId:
+          type: string
+        datasetLocation:
+          type: string
+        refreshToken:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+        defaultDataset:
+          type: string
+        serviceAccountParams:
+          $ref: '#/components/schemas/designer.BigQueryServiceAccountParamsDTO'
+    designer.BigQueryServiceAccountParamsDTO:
+      type: object
+      properties:
+        serviceAccountEmail:
+          type: string
+        privateKey:
+          type: string
+    designer.CopyS3AuthParamsDTO:
+      type: object
+      properties:
+        iamRole:
+          type: string
+    designer.CredentialCreationAPIResponseDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The unique ID of the newly created credential.
+        symbolName:
+          type: string
+          description: The symbol name of the newly created credential.
+        objectName:
+          type: string
+          description: The object name of the newly created credential.
+        missingConnectionProperties:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.SubjectMissingAccessDTO'
+          description: |-
+            The properties that the credential cannot access despite successful authentication.
+             This is only returned for authentications that do not grant access to all data.
+    designer.DataProviderAuthInformationDTO:
+      type: object
+      properties:
+        dataProviderAuthParams:
+          allOf:
+            - $ref: '#/components/schemas/designer.DataProviderAuthParamsDTO'
+          description: The authentication information for the credential.
+        dataProviderBasicInformation:
+          allOf:
+            - $ref: '#/components/schemas/designer.DataProviderBasicInformationDTO'
+          description: The display name and description for the credential.
+        dataProviderMetadata:
+          $ref: '#/components/schemas/designer.DataProviderBasicMetadataDTO'
+    designer.DataProviderAuthParamsDTO:
+      type: object
+      properties:
+        tenantDomainName:
+          type: string
+        provider:
+          enum:
+            - Bamboo
+            - GoogleSheets
+            - Greenhouse
+            - Jira
+            - Lever
+            - Namely
+            - Qualtrics
+            - Salesforce
+            - UKG
+            - Workday
+            - Icims
+            - ServiceNow
+            - Jdbc
+            - BasicS3
+            - InternalS3
+            - CopyS3
+            - Redshift
+            - Snowflake
+            - BigQuery
+            - SqlServer
+            - Dimensions
+            - IcimsPartnerProviderRedshift
+            - Willow
+            - SuccessFactors
+            - IcimsV2
+            - ADP
+            - WorkdayV2
+            - ServiceNowV2
+            - Medallia
+            - Fusion
+            - SalesforceV2
+            - Gong
+            - Zoom
+            - GoogleCalendar
+            - UKGV2
+            - DayforceV2
+            - GoogleActivityReport
+            - Slack
+            - MySql
+            - WorkdayRaas
+            - Microsoft365
+            - GoogleWorkspace
+            - OracleDb
+            - SmartRecruiters
+            - WorkdayWQL
+            - OEMCornerstone
+          type: string
+          description: The data provider associated with the credential.
+          format: enum
+        bambooAuthParams:
+          $ref: '#/components/schemas/designer.BambooAuthParamsDTO'
+        greenhouseAuthParams:
+          $ref: '#/components/schemas/designer.GreenhouseAuthParamsDTO'
+        googleSheetsAuthParams:
+          $ref: '#/components/schemas/designer.GoogleSheetsAuthParamsDTO'
+        jiraAuthParams:
+          $ref: '#/components/schemas/designer.JiraAuthParamsDTO'
+        leverAuthParams:
+          $ref: '#/components/schemas/designer.LeverAuthParamsDTO'
+        namelyAuthParams:
+          $ref: '#/components/schemas/designer.NamelyAuthParamsDTO'
+        qualtricsAuthParams:
+          $ref: '#/components/schemas/designer.QualtricsAuthParamsDTO'
+        salesforceAuthParams:
+          $ref: '#/components/schemas/designer.SalesforceAuthParamsDTO'
+        ultimateAuthParams:
+          $ref: '#/components/schemas/designer.UltimateAuthParamsDTO'
+        workdayAuthParams:
+          $ref: '#/components/schemas/designer.WorkdayAuthParamsDTO'
+        icimsAuthParams:
+          $ref: '#/components/schemas/designer.IcimsAuthParamsDTO'
+        serviceNowAuthParams:
+          $ref: '#/components/schemas/designer.ServiceNowAuthParamsDTO'
+        jdbcAuthParams:
+          $ref: '#/components/schemas/designer.JdbcAuthParamsDTO'
+        s3AuthParams:
+          $ref: '#/components/schemas/designer.BasicS3AuthParamsDTO'
+        internalS3AuthParams:
+          $ref: '#/components/schemas/designer.InternalS3AuthParamsDTO'
+        copyS3AuthParams:
+          $ref: '#/components/schemas/designer.CopyS3AuthParamsDTO'
+        redshiftAuthParams:
+          $ref: '#/components/schemas/designer.RedshiftAuthParamsDTO'
+        snowflakeAuthParams:
+          $ref: '#/components/schemas/designer.SnowflakeAuthParamsDTO'
+        bigQueryAuthParams:
+          $ref: '#/components/schemas/designer.BigQueryAuthParamsDTO'
+        sqlServerAuthParams:
+          $ref: '#/components/schemas/designer.SqlServerAuthParamsDTO'
+        dimensionsAuthParams:
+          $ref: '#/components/schemas/designer.DimensionsAuthParamsDTO'
+        willowAuthParams:
+          $ref: '#/components/schemas/designer.WillowAuthParamsDTO'
+        emptyAuthParams:
+          $ref: '#/components/schemas/designer.EmptyAuthParamsDTO'
+        successFactorsAuthParams:
+          $ref: '#/components/schemas/designer.SuccessFactorsAuthParamsDTO'
+        fusionAuthParams:
+          $ref: '#/components/schemas/designer.FusionAuthParamsDTO'
+        adpAuthParams:
+          $ref: '#/components/schemas/designer.AdpAuthParamsDTO'
+        medalliaAuthParams:
+          $ref: '#/components/schemas/designer.MedalliaAuthParamsDTO'
+        salesforceV2AuthParams:
+          $ref: '#/components/schemas/designer.SalesforceV2AuthParamsDTO'
+        gongAuthParams:
+          $ref: '#/components/schemas/designer.GongAuthParamsDTO'
+        zoomAuthParams:
+          $ref: '#/components/schemas/designer.ZoomAuthParamsDTO'
+        dayforceV2AuthParams:
+          $ref: '#/components/schemas/designer.DayforceV2AuthParamsDTO'
+        slackAuthParams:
+          $ref: '#/components/schemas/designer.SlackAuthParamsDTO'
+        mySqlAuthParams:
+          $ref: '#/components/schemas/designer.MySqlAuthParamsDTO'
+        workdayRaasAuthParams:
+          $ref: '#/components/schemas/designer.WorkdayRaasAuthParamsDTO'
+        ms365AuthParams:
+          $ref: '#/components/schemas/designer.Microsoft365AuthParamsDTO'
+        googleWorkspaceAuthParams:
+          $ref: '#/components/schemas/designer.GoogleWorkspaceAuthParamsDTO'
+        oracleDbAuthParams:
+          $ref: '#/components/schemas/designer.OracleDbAuthParamsDTO'
+        serviceNowV2AuthParams:
+          $ref: '#/components/schemas/designer.ServiceNowV2AuthParamsDTO'
+        hasUpdates:
+          type: boolean
+        authContext:
+          enum:
+            - DefaultDataExtraction
+            - WorkplaceDynamicsDataExtraction
+            - Notification
+          type: string
+          format: enum
+    designer.DataProviderBasicInformationDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+        description:
+          type: string
+    designer.DataProviderBasicMetadataDTO:
+      type: object
+      properties:
+        canChildrenInherit:
+          type: boolean
+    designer.DayforceV2AuthParamsDTO:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        companyId:
+          type: string
+        tokenHost:
+          type: string
+        hostDomainName:
+          type: string
+    designer.DimensionsAuthParamsDTO:
+      type: object
+      properties:
+        appKey:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+        vanityUrl:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+    designer.EmptyAuthParamsDTO:
+      type: object
+      properties: {}
+    designer.ExtractorCredentialAPIDTO:
+      type: object
+      properties:
+        credentialId:
+          type: string
+          description: The ID associated with the connector credential.
+        displayName:
+          type: string
+          description: An identifiable connector credential name that is displayed within Visier.
+        dataProvider:
+          type: string
+          description: The data provider associated with the credential.
+        isInherited:
+          type: boolean
+          description: Whether this credential is inherited from another tenant.
+        authContext:
+          type: string
+    designer.ExtractorCredentialsAPIDTO:
+      type: object
+      properties:
+        connectorCredentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.ExtractorCredentialAPIDTO'
+          description: A list of objects representing all the available connector credentials in Production.
+        limit:
+          type: integer
+          description: The number of connector credentials to return. The maximum number of data connector credentials to return is 1000.
+          format: uint32
+        start:
+          type: integer
+          description: The index to start retrieving values from, also known as offset. The index begins at 0.
+          format: uint32
+    designer.FusionAuthParamsDTO:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        hostDomainName:
+          type: string
+    designer.GongAuthParamsDTO:
+      type: object
+      properties:
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+    designer.GoogleSheetsAuthParamsDTO:
+      type: object
+      properties:
+        authCode:
+          type: string
+        configuration:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+    designer.GoogleWorkspaceAuthParamsDTO:
+      type: object
+      properties:
+        authCode:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+        serviceAccount:
+          type: string
+        privacyMode:
+          type: string
+    designer.GreenhouseAuthParamsDTO:
+      type: object
+      properties:
+        apiKey:
+          type: string
+    designer.IcimsAuthParamsDTO:
+      type: object
+      properties:
+        customerId:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+        region:
+          enum:
+            - US
+            - EU
+            - CA
+            - ISV
+          type: string
+          format: enum
+    designer.InternalS3AuthParamsDTO:
+      type: object
+      properties:
+        bucketName:
+          type: string
+        path:
+          type: string
+    designer.JdbcAuthParamsDTO:
+      type: object
+      properties:
+        jdbcConnectString:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+    designer.JiraAuthParamsDTO:
+      type: object
+      properties:
+        apiToken:
+          type: string
+        hostName:
+          type: string
+        connectParams:
+          $ref: '#/components/schemas/designer.JiraConnectParamsDTO'
+    designer.JiraConnectParamsDTO:
+      type: object
+      properties:
+        appKey:
+          type: string
+        clientKey:
+          type: string
+        sharedSecret:
+          type: string
+    designer.LeverAuthParamsDTO:
+      type: object
+      properties:
+        apiKey:
+          type: string
+    designer.MedalliaAuthParamsDTO:
+      type: object
+      properties:
+        tenantDomainName:
+          type: string
+        instanceUrl:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+    designer.Microsoft365AuthParamsDTO:
+      type: object
+      properties:
+        oAuthTenantId:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+        privacyMode:
+          type: string
+    designer.MySqlAuthParamsDTO:
+      type: object
+      properties:
+        host:
+          type: string
+        port:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        database:
+          type: string
+        sslMode:
+          type: string
+    designer.NamelyAuthParamsDTO:
+      type: object
+      properties:
+        authCode:
+          type: string
+    designer.OracleDbAuthParamsDTO:
+      type: object
+      properties:
+        host:
+          type: string
+        port:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        serviceName:
+          type: string
+    designer.PushDataColumnDefinitionDTO:
+      type: object
+      properties:
+        columnName:
+          type: string
+          description: The name of the column.
+        dataType:
+          type: string
+          description: The data type associated with the column.
+        dataFormats:
+          type: array
+          items:
+            type: string
+          description: The expected format for datetime data types.
+        isMandatory:
+          type: boolean
+          description: If true, the column value is required. If a column is mandatory, and the file is missing this column, the request will fail.
+        allowEmpty:
+          type: boolean
+          description: If true, the column allows an empty value for the record.
+        defaultValue:
+          type: string
+          description: The default value of the column.
+      description: Definition of the source column.
+    designer.PushDataSourceDefinitionDTO:
+      type: object
+      properties:
+        sourceId:
+          type: string
+          description: The unique identifier associated with the source.
+        name:
+          type: string
+          description: The object name of the source.
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.PushDataColumnDefinitionDTO'
+          description: A list of objects representing the source columns.
+        isInherited:
+          type: boolean
+          description: If true, the source is inherited by all analytic tenants.
+      description: Details of each existing source.
+    designer.PushDataSourceDefinitionsDTO:
+      type: object
+      properties:
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.PushDataSourceDefinitionDTO'
+          description: A list of objects representing the target sources for the request.
+      description: The existing sources.
+    designer.QualtricsAuthParamsDTO:
+      type: object
+      properties:
+        apiToken:
+          type: string
+        dataCenterId:
+          type: string
+    designer.RedshiftAuthParamsDTO:
+      type: object
+      properties:
+        endpoint:
+          type: string
+        port:
+          type: string
+        database:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        tablePrefix:
+          type: string
+        schema:
+          type: string
+    designer.SalesforceAuthParamsDTO:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+        clientId:
+          type: string
+    designer.SalesforceV2AuthParamsDTO:
+      type: object
+      properties:
+        authCode:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+        loginHost:
+          type: string
+    designer.ServiceNowAuthParamsDTO:
+      type: object
+      properties:
+        hostDomainName:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+    designer.ServiceNowV2AuthParamsDTO:
+      type: object
+      properties:
+        hostDomainName:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+        authCode:
+          type: string
+        alternateDomain:
+          type: string
+    designer.SlackAuthParamsDTO:
+      type: object
+      properties:
+        authCode:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+    designer.SnowflakeAuthParamsDTO:
+      type: object
+      properties:
+        accountIdentifier:
+          type: string
+        database:
+          type: string
+        schema:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        warehouse:
+          type: string
+        privateKey:
+          type: string
+    designer.SqlServerAuthParamsDTO:
+      type: object
+      properties:
+        host:
+          type: string
+        port:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        database:
+          type: string
+    designer.SubjectMissingAccessDTO:
+      type: object
+      properties:
+        subject:
+          enum:
+            - Employee
+            - Employee_Budgeted_Compensation
+            - Employment_Start
+            - Employment_Exit
+            - Absenteeism
+            - Supervisory
+            - Organization
+            - Compensation_Payout
+            - CustomSubject
+            - TestConnectionSubject
+            - Internal_Placement
+            - Pay_Change
+            - Hire
+            - Applicant
+            - Candidate
+            - Requisition
+          type: string
+          description: The subjects that cannot be accessed.
+          format: enum
+        attributes:
+          type: array
+          items:
+            type: string
+          description: The attributes that cannot be accessed.
+        errorMessage:
+          type: string
+          description: The error message detailing the access issue.
+    designer.SuccessFactorsAuthParamsDTO:
+      type: object
+      properties:
+        hostDomainName:
+          type: string
+        companyID:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        oAuth:
+          $ref: '#/components/schemas/designer.SuccessFactorsOAuthParamsDTO'
+    designer.SuccessFactorsOAuthParamsDTO:
+      type: object
+      properties:
+        apiKey:
+          type: string
+        privateX509Key:
+          type: string
+        publicX509Cert:
+          type: string
+    designer.UltimateAuthParamsDTO:
+      type: object
+      properties:
+        hostDomainName:
+          type: string
+        apiKey:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        userAccessKey:
+          type: string
+    designer.WillowAuthParamsDTO:
+      type: object
+      properties:
+        apiToken:
+          type: string
+        hostName:
+          type: string
+    designer.WorkdayAuthParamsDTO:
+      type: object
+      properties:
+        userId:
+          type: string
+        domainName:
+          type: string
+        implementationName:
+          type: string
+        password:
+          type: string
+        oAuth:
+          $ref: '#/components/schemas/designer.WorkdayOAuthParamsDTO'
+        refToken:
+          $ref: '#/components/schemas/designer.WorkdayRefreshTokenParamsDTO'
+        integrationSystemId:
+          type: string
+        apiKey:
+          type: string
+    designer.WorkdayOAuthParamsDTO:
+      type: object
+      properties:
+        apiClientId:
+          type: string
+        publicX509Cert:
+          type: string
+        privateX509Key:
+          type: string
+    designer.WorkdayRaasAuthParamsDTO:
+      type: object
+      properties:
+        userId:
+          type: string
+        domainName:
+          type: string
+        implementationName:
+          type: string
+        password:
+          type: string
+        testReportUrl:
+          type: string
+    designer.WorkdayRefreshTokenParamsDTO:
+      type: object
+      properties:
+        apiClientId:
+          type: string
+        clientSecret:
+          type: string
+        refreshToken:
+          type: string
+    designer.ZoomAuthParamsDTO:
+      type: object
+      properties:
+        authCode:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+    dp.CancelJobBatchFromJobIdDTO:
+      type: object
+      properties:
+        jobIds:
+          type: array
+          items:
+            type: string
+          description: A list of jobs to cancel. The maximum number of jobs that can be cancelled is 500.
+    dp.JobCancellationResultDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The analytic tenant whose job the cancel operation was conducted for.
+        jobId:
+          type: string
+          description: The job ID of the job that the cancel operation was conducted for.
+        jobType:
+          type: string
+          description: The job type associated with the job ID.
+        parentJobId:
+          type: string
+          description: If applicable, the job ID of the job that spawned the given job.
+        cancelStatus:
+          enum:
+            - CANCEL_FAILED
+            - CANCEL_SUCCEEDED
+          type: string
+          description: The status of the cancellation.
+          format: enum
+        jobStatus:
+          type: string
+          description: The job status after the cancel operation. If successful, the status is either Cancelled or Cancelling.
+        message:
+          type: string
+          description: If applicable, the message explains what errors occurred while cancelling the jobs.
+    dp.JobCancellationResultsDTO:
+      type: object
+      properties:
+        jobCancellationResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/dp.JobCancellationResultDTO'
+          description: A list of objects representing the job cancellation results.
+    servicing.DataCategoriesResponseDTO:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.DataCategoryResponseDTO'
+      description: A list of data categories.
+    servicing.DataCategoryResponseDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The display name of the data category.
+        id:
+          type: string
+          description: The UUID of the data category.
+      description: The data category's UUID and display name.
+    servicing.DirectDataJobConfigDTO:
+      type: object
+      properties:
+        supplementalMode:
+          enum:
+            - UNCHANGED
+            - IS_PRIMARY
+            - IS_SUPPLEMENTAL
+          type: string
+          description: "The configuration for the processing job as a primary job (default) or a supplemental job. If a primary job is already defined, the direct data \n intake job must be supplemental. The valid values are `IS_PRIMARY`, `IS_SUPPLEMENTAL`, and `UNCHANGED`."
+          format: enum
+        extendObjects:
+          type: array
+          items:
+            type: string
+          description: |-
+            The target analytic objects to load using extension tables.
+             You can extend objects if the job type is supplemental and the target objects already contain data from a previous data version.
+             This allows you to load data for objects that already contain data in Visier.
+      description: Whether the direct data intake job is a primary job or a supplemental job.
+    servicing.DirectDataJobStatusResponseDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant for the data load.
+        transactionId:
+          type: string
+          description: The unique identifier of the committed transaction.
+        jobId:
+          type: string
+          description: The unique identifier of the processing job.
+        status:
+          type: string
+          description: The status of the processing job.
+        message:
+          type: string
+          description: If the processing job fails, this field contains details specific to the failure.
+      description: The job status information for a committed transaction.
+    servicing.DirectDataLoadConfigDTO:
+      type: object
+      properties:
+        job:
+          allOf:
+            - $ref: '#/components/schemas/servicing.DirectDataJobConfigDTO'
+          description: The direct data intake job configuration.
+      description: The configuration for the direct data intake, such as the  direct data intake job type.
+    servicing.DirectDataSchemaDTO:
+      type: object
+      properties:
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.DirectDataSchemaFieldDTO'
+          description: The schema definition for loading a specific object
+      description: Public API Direct Intake schema response object
+    servicing.DirectDataSchemaFieldDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The field's column name. Column names are case sensitive.
+        dataType:
+          type: string
+          description: The column's data type.
+        formats:
+          type: array
+          items:
+            type: string
+          description: The column's accepted formats, such as date formats like "yyyy-MM-dd".
+        isMandatory:
+          type: boolean
+          description: If true, the field must contain a value to successfully load data into the object.
+        emptyValuesAllowed:
+          type: boolean
+          description: If true, the value may be empty.
+      description: The definition of each field in an object's schema.
+    servicing.DirectDataTransactionStartResponseDTO:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: The transaction's unique identifier.
+      description: The response after successfully creating a transaction.
+    servicing.DirectDataUploadFileResponseDTO:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: The unique transaction identifier.
+        status:
+          type: string
+          description: The status of the request.
+        message:
+          type: string
+          description: Upload response message from the provisioning service
+      description: |-
+        The transaction results.
+
+         If uploading a file, a success response means the upload was successful and doesn't always mean the file
+         was successfully loaded into its target object.
+    servicing.JobIdResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+      description: The unique identifier of the returned job.
+    servicing.TenantDataUploadStatusResponseDTO:
+      type: object
+      properties:
+        uploadTime:
+          type: string
+          description: The upload time of the data upload.
+        included:
+          type: boolean
+          description: If "true", the data upload is included.
+    servicing.TenantDataUploadUpdateStatusResponseDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The analytic tenant that the exclusion operation was conducted for.
+        uploadTime:
+          type: string
+          description: The upload time of the data upload
+        status:
+          type: string
+          description: The outcome of the exclusion operation.
+        message:
+          type: string
+          description: If applicable, the message explains why errors were encountered during the exclusion operation.
+    servicing.TenantDataUploadsListResponseDTO:
+      type: object
+      properties:
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.TenantDataUploadsResponseDTO'
+          description: A list of objects representing analytic tenants and their data uploads.
+        limit:
+          type: integer
+          description: The number of analytic tenants to retrieve. The maximum number of analytic tenants to retrieve is 1000.
+          format: uint32
+        start:
+          type: integer
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          format: uint32
+    servicing.TenantDataUploadsResponseDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the analytic tenant owning the data uploads.
+        uploads:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.TenantDataUploadStatusResponseDTO'
+          description: The data uploads completed for the specified analytic tenant. The list is empty if no previous data uploads are found for the analytic tenant.
+    servicing.TenantDataUploadsUpdateResponseDTO:
+      type: object
+      properties:
+        totalFailures:
+          type: integer
+          description: The number of data uploads that failed during the exclusion operation.
+          format: uint32
+        totalSuccess:
+          type: integer
+          description: The number of data uploads that were excluded successfully.
+          format: uint32
+        uploads:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.TenantDataUploadUpdateStatusResponseDTO'
+          description: A list of objects representing the results of the data upload exclusion.
+    DirectDataUploadFileResponseDTO:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: The unique transaction identifier.
+        status:
+          type: string
+          description: The status of the request.
+        message:
+          type: string
+          description: The upload response message from the provisioning service.
+      description: |-
+        The transaction results.
+
+        If uploading a file, a success response means the upload was successful and doesn't always mean the file was successfully loaded into its target object.
+    PlanDataUploadResponseDTO:
+      type: object
+      properties:
+        updatedCellsCount:
+          type: integer
+          description: The number of cells that were updated from the data load process.
+        potentialUpdatedCellsCount:
+          type: integer
+          description: The number of cells that would have been updated if all changes were saved.
+        errors:
+          type: array
+          description: The collection of errors encountered during the data load process.
+          items:
+            $ref: '#/components/schemas/planning.PlanDataLoadErrorDTO'
+        changelists:
+          type: array
+          description: |-
+            The collection of changes grouped by plan item made during the data load process.
+            This list only contains the changes specified by the load.
+            If you indicated in the request that the changes are to be rolled up or distributed,
+            the values modified as a result of the calculations are not listed here.
+          items:
+            $ref: '#/components/schemas/PlanDataLoadChangeListDTO'
+    PlanDataLoadChangeListDTO:
+      type: object
+      properties:
+        planItem:
+          type: string
+          description: The ID of the plan item.
+        changes:
+          type: array
+          description: The collection of changes made for the plan item.
+          items:
+            $ref: '#/components/schemas/PlanDataLoadChangeDTO'
+    PlanDataLoadChangeDTO:
+      type: object
+      properties:
+        rowMembers:
+          type: array
+          description: The collection of member ids that describe the row in the plan.
+          items:
+            type: string
+        period:
+          type: string
+          description: The display name of the time period.
+        oldValue:
+          type: number
+          format: double
+          description: The value that was replaced.
+        newValue:
+          type: number
+          format: double
+          description: The new value loaded into the plan from the data load.
+    PlanRowDataLoadResponseDTO:
+      type: object
+      properties:
+        addedRowsCount:
+          type: integer
+          description: The number of rows added to the plan.
+        removedRowsCount:
+          type: integer
+          description: The number of rows removed from the plan.
+        potentialAddedRowsCount:
+          type: integer
+          description: The number of rows that could have been added to the plan.
+        potentialRemovedRowsCount:
+          type: integer
+          description: The number of rows that could have been removed from the plan.
+        errors:
+          type: array
+          description: The errors that occurred while loading the data.
+          items:
+            $ref: '#/components/schemas/planning.PlanDataLoadErrorDTO'
+        customMembers:
+          type: array
+          description: The custom members and their corresponding IDs in the plan.
+          items:
+            $ref: '#/components/schemas/planning.PlanSegmentLevelMemberDTO'
+    Status:
+      type: object
+      properties:
+        localizedMessage:
+          type: string
+          description: Localized error message describing the root cause of the error.
+        code:
+          type: string
+          description: Error classification.
+        message:
+          type: string
+          description: Not used.
+        rci:
+          type: string
+          description: Optional root cause identifier.
+        userError:
+          type: boolean
+          description: Indicates whether the error is a user error.
+      description: The response structure for errors.
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      name: VisierASIDToken
+      in: cookie
+    ApiKeyAuth:
+      type: apiKey
+      name: apikey
+      in: header
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /v1/auth/oauth2/authorize
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+        password:
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+tags:
+  - name: DirectDataIntake
+    description: |-
+      Use the Direct Data Intake API to load data directly into Visier objects. These objects can be delivered as part of Visier Blueprint, locally modified objects, or even completely custom objects. Objects must be released to production to receive data through the DDI API.
+      You can load data into:
+      - Subjects
+      - Events
+      - Parent-child dimensions
+      - Multi-value properties
+  - name: DataIntake
+    description: |-
+      Send raw or untransformed data to Visier. After we receive the data, Visier runs business rules to transform your data into the expected format for the existing mappings.
+      <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+  - name: DataAndJobHandling
+    description: |-
+      Initiate and manage jobs, included or excluded data, and data connector credentials. Administrating tenant users can manage jobs and data for their analytic tenants.
+  - name: PGPKey
+    description: |-
+      The Pretty Good Privacy (PGP) Key API generates key pairs and provides a public key to encrypt data that you send to Visier. PGP encryption adds an additional layer of security against data disclosure.
+      <br><br>After you generate a key pair and retrieve the public encryption key, you can encrypt your data files before sending them to Visier. When Visier receives files encrypted with the public key, we retrieve the associated private key to decrypt and process the file.
+  - name: PlanningDataLoad
+    description: |-
+      Send data directly to your plan's scenario and optionally add or remove rows from your plan.
+  - name: DataUpload
+    description: |-
+      Send data files to Visier. After we receive the data, Visier starts a receiving job and a processing job to process the data.
+security:
+  - ApiKeyAuth: []
+    BearerAuth: []
+  - ApiKeyAuth: []
+    CookieAuth: []
+  - ApiKeyAuth: []
+    OAuth2Auth: []
+# x-tagGroups is for Redocly use to effectively let us categorize our different tags
+x-tagGroups:
+  - name: Data In
+    tags:
+      - DirectDataIntake
+      - DataIntake
+      - DataAndJobHandling
+      - PGPKey
+      - PlanningDataLoad
+      - DataUpload
