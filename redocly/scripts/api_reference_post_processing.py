@@ -32,10 +32,10 @@ def script_tag_adjustments(html_input: str) -> str:
     pattern = re.compile('<script>(.*?)</script>', re.DOTALL)
 
     def add_cdata(m: re.Match) -> str:
-        if m.group(1):
+        if m.group(1).strip():
             return f"{m.string[m.start(0):m.start(1)]}\n" \
-                   f"//<![CDATA[\n" \
-                   f"{m.string[m.start(1):m.end(1)]}\n" \
+                   f"//<![CDATA[" \
+                   f"{m.string[m.start(1):m.end(1)]}" \
                    f"//]]>\n" \
                    f"{m.string[m.end(1):m.end(0)]}"
         else:
