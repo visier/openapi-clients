@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1793
+  version: 22222222.99201.1802
 paths:
   /v1/admin/capabilities:
     get:
@@ -50,7 +50,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.GetCapabilitiesAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.GetCapabilitiesAPIResponseDTO'
   /v1/admin/capabilities/{capabilityId}:
     get:
       tags:
@@ -96,7 +96,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.CapabilityDTO'
+                $ref: '#/components/schemas/servicing.CapabilityDTO'
   /v1/admin/content-packages:
     get:
       tags:
@@ -144,7 +144,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.GetContentPackagesAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.GetContentPackagesAPIResponseDTO'
   /v1/admin/content-packages/{contentPackageId}:
     get:
       tags:
@@ -190,7 +190,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ContentPackageDTO'
+                $ref: '#/components/schemas/servicing.ContentPackageDTO'
   /v1/admin/data-access-sets:
     get:
       tags:
@@ -254,7 +254,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.GetDataAccessSetsAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.GetDataAccessSetsAPIResponseDTO'
     post:
       tags:
         - Permissions
@@ -285,7 +285,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.CreateDataAccessSetRequestDTO'
+              $ref: '#/components/schemas/servicing.CreateDataAccessSetRequestDTO'
         required: true
       responses:
         default:
@@ -299,7 +299,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.BulkDataAccessSetResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkDataAccessSetResponseDTO'
   /v1/admin/data-access-sets/{dataAccessSetId}:
     get:
       tags:
@@ -345,7 +345,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.DataAccessSetDTO'
+                $ref: '#/components/schemas/servicing.DataAccessSetDTO'
   /v1/admin/data-security-objects:
     get:
       tags:
@@ -404,7 +404,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.GetDataSecurityObjectsAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.GetDataSecurityObjectsAPIResponseDTO'
   /v1/admin/permissions:
     get:
       tags:
@@ -464,7 +464,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.GetPermissionsAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.GetPermissionsAPIResponseDTO'
     put:
       tags:
         - Permissions
@@ -514,7 +514,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionBulkOperationResponseDTO'
+                $ref: '#/components/schemas/servicing.PermissionBulkOperationResponseDTO'
     post:
       tags:
         - Permissions
@@ -564,7 +564,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionBulkOperationResponseDTO'
+                $ref: '#/components/schemas/servicing.PermissionBulkOperationResponseDTO'
     delete:
       tags:
         - Permissions
@@ -595,7 +595,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.DeletePermissionsRequestDTO'
+              $ref: '#/components/schemas/servicing.DeletePermissionsRequestDTO'
         required: true
       responses:
         default:
@@ -609,7 +609,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionBulkOperationResponseDTO'
+                $ref: '#/components/schemas/servicing.PermissionBulkOperationResponseDTO'
   /v1/admin/permissions/users:
     put:
       tags:
@@ -643,7 +643,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.AssignRevokePermissionsRequestDTO'
+              $ref: '#/components/schemas/servicing.AssignRevokePermissionsRequestDTO'
         required: true
       responses:
         default:
@@ -657,7 +657,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.AssignRevokePermissionsResponseDTO'
+                $ref: '#/components/schemas/servicing.AssignRevokePermissionsResponseDTO'
     delete:
       tags:
         - UsersV1
@@ -690,7 +690,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.AssignRevokePermissionsRequestDTO'
+              $ref: '#/components/schemas/servicing.AssignRevokePermissionsRequestDTO'
         required: true
       responses:
         default:
@@ -704,7 +704,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.AssignRevokePermissionsResponseDTO'
+                $ref: '#/components/schemas/servicing.AssignRevokePermissionsResponseDTO'
   /v1/admin/permissions/{permissionId}:
     get:
       tags:
@@ -763,7 +763,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionDTO'
+                $ref: '#/components/schemas/servicing.PermissionDTO'
   /v1/admin/permissions/{permissionId}/users:
     get:
       tags:
@@ -836,7 +836,116 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionAssignedUsersDTO'
+                $ref: '#/components/schemas/servicing.PermissionAssignedUsersDTO'
+  /v1/admin/production-versions:
+    get:
+      tags:
+        - ProductionVersions
+      summary: Retrieve a list of all production versions
+      description: Retrieve a list of all projects that were published to production, ordered from latest published to earliest published.
+      operationId: ProductionVersions_GetProductionVersions
+      parameters:
+        - name: limit
+          in: query
+          description: The maximum number of production versions to return. Default is 400.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The starting index of the first production version to return. Default is 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.GetProductionVersionsAPIResponseDTO'
+    post:
+      tags:
+        - ProductionVersions
+      summary: Perform an operation on production versions
+      description: "Perform operations on production versions, such as exporting a production project's committed changes. \n \n If exporting, please specify `Accept: application/zip, application/json` in the header. The API returns exported changes in ZIP format and error messages in JSON format. If your request returns an error and it doesn't accept `application/json`, you will receive an HTTP 406 status code instead of the appropriate error response body."
+      operationId: ProductionVersions_PostProductionVersions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.ProductionVersionsAPIOperationRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.ProductionVersionsAPIOperationResponseDTO'
+  /v1/admin/production-versions/{productionVersionId}:
+    post:
+      tags:
+        - ProductionVersions
+      summary: Perform an operation on a production version
+      description: |-
+        Perform operations on a specific production version. The following operations are supported:
+         * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
+      operationId: ProductionVersions_PostProductionVersion
+      parameters:
+        - name: productionVersionId
+          in: path
+          description: The production version to use as the target of the operation; for example, the production version to roll back to for the `rollBackTo` operation.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.ProductionVersionAPIOperationRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.ProductionVersionAPIOperationResponseDTO'
   /v1/admin/profiles:
     get:
       tags:
@@ -864,7 +973,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProfilesGetAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.ProfilesGetAPIResponseDTO'
   /v1/admin/profiles/accessible-tenants:
     get:
       tags:
@@ -887,7 +996,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProfilesGetAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.ProfilesGetAPIResponseDTO'
   /v1/admin/profiles/accessible-tenants/{profileId}:
     get:
       tags:
@@ -917,7 +1026,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProfileGetAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.ProfileGetAPIResponseDTO'
   /v1/admin/profiles/accessible-tenants/{profileId}/assign:
     put:
       tags:
@@ -943,7 +1052,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.AccessibleTenantProfileAssignmentRequestDTO'
+              $ref: '#/components/schemas/servicing.AccessibleTenantProfileAssignmentRequestDTO'
         required: true
       responses:
         default:
@@ -957,7 +1066,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.AccessibleTenantProfileAssignmentResponseDTO'
+                $ref: '#/components/schemas/servicing.AccessibleTenantProfileAssignmentResponseDTO'
   /v1/admin/profiles/accessible-tenants/{profileId}/remove:
     delete:
       tags:
@@ -984,7 +1093,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.AccessibleTenantProfileRevokeRequestDTO'
+              $ref: '#/components/schemas/servicing.AccessibleTenantProfileRevokeRequestDTO'
         required: true
       responses:
         default:
@@ -998,7 +1107,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.AccessibleTenantProfileRevokeResponseDTO'
+                $ref: '#/components/schemas/servicing.AccessibleTenantProfileRevokeResponseDTO'
   /v1/admin/profiles/{profileId}:
     get:
       tags:
@@ -1032,7 +1141,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProfileGetAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.ProfileGetAPIResponseDTO'
   /v1/admin/profiles/{profileId}/assign:
     put:
       tags:
@@ -1058,7 +1167,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.LocalTenantProfileAssignmentRequestDTO'
+              $ref: '#/components/schemas/servicing.LocalTenantProfileAssignmentRequestDTO'
         required: true
       responses:
         default:
@@ -1072,7 +1181,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.LocalTenantProfileAssignmentResponseDTO'
+                $ref: '#/components/schemas/servicing.LocalTenantProfileAssignmentResponseDTO'
   /v1/admin/profiles/{profileId}/remove:
     delete:
       tags:
@@ -1098,7 +1207,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.LocalTenantProfileRevokeRequestDTO'
+              $ref: '#/components/schemas/servicing.LocalTenantProfileRevokeRequestDTO'
         required: true
       responses:
         default:
@@ -1112,7 +1221,271 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.LocalTenantProfileRevokeResponseDTO'
+                $ref: '#/components/schemas/servicing.LocalTenantProfileRevokeResponseDTO'
+  /v1/admin/projects:
+    get:
+      tags:
+        - Projects
+      summary: Retrieve a list of draft projects accessible to the user
+      description: |-
+        Get a list of draft projects accessible to the requesting user in the tenant.
+
+         A project is accessible if it is owned by the user or shared to the user.
+      operationId: Projects_GetProjects
+      parameters:
+        - name: with
+          in: query
+          description: |-
+            The types of draft projects to include in the request response.
+             * If empty, returns all the `Open` draft projects.
+             * If `Open`, returns all Open draft projects.
+             * If `Approval`, returns all draft projects in the approval stage. Changes cannot made in Approval projects.
+             * If `Rejected`, returns all draft projects that have been rejected. Changes cannot be committed in Rejected projects.
+             * If `Archived`, returns all draft projects that have been archived. Changes cannot be committed in Archived projects.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          in: query
+          description: The number of projects to return per type. The maximum number of projects to retrieve per type is 1000. The default is 100.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.GetProjectsAPIResponseDTO'
+    post:
+      tags:
+        - Projects
+      summary: Create a new draft project
+      description: Create a new draft project in the tenant.
+      operationId: Projects_CreateProject
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.ProjectDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.ProjectDTO'
+  /v1/admin/projects/{projectId}:
+    get:
+      tags:
+        - Projects
+      summary: Retrieve a draft project's information
+      description: |-
+        Retrieve the details of an accessible draft project. You must know the ID of the project to retrieve its details. To retrieve draft project IDs, see `GET /v1/admin/projects`.
+
+         A project is accessible if it is owned by the user or shared to the user.
+      operationId: Projects_GetProject
+      parameters:
+        - name: projectId
+          in: path
+          description: The unique identifier of the draft project you want to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.ProjectDTO'
+    post:
+      tags:
+        - Projects
+      summary: Perform an operation on a draft project
+      description: |-
+        Perform operations on a draft project. The following operations are supported:
+         * `commitAndPublish`: Commits project changes and publishes the project to production.
+      operationId: Projects_RunProjectOperation
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.ProjectOperationRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.ProjectOperationResponseDTO'
+    delete:
+      tags:
+        - Projects
+      summary: Delete a draft project
+      description: Delete a draft project in the tenant. The project will first be archived if applicable.
+      operationId: Projects_DeleteProject
+      parameters:
+        - name: projectId
+          in: path
+          description: The unique ID of the draft project to be deleted.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.ProjectDTO'
+  /v1/admin/projects/{projectId}/commits:
+    get:
+      tags:
+        - Projects
+      summary: Retrieve a list of all committed changes in a project
+      description: Retrieve the full list of all committed changes in a project.
+      operationId: Projects_GetProjectCommits
+      parameters:
+        - name: projectId
+          in: path
+          description: The unique identifier of the draft project you want to retrieve the committed changes for.
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The maximum number of committed changes to return. Default is 400.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The starting index of the first committed change to return. Default is 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.ProjectCommitsAPIResponseDTO'
+    put:
+      tags:
+        - Projects
+      summary: Import committed changes into a project
+      description: Import a ZIP file that contains a list of committed changes into a draft project. The file must be an export from `POST /v1/admin/production-versions`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
+      operationId: Projects_PutProjectCommits
+      parameters:
+        - name: projectId
+          in: path
+          description: The unique identifier of the draft project you want to import committed changes into.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.PutProjectCommitsRequest'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.ProjectCommitsAPIResponseDTO'
   /v1/admin/system-status:
     get:
       tags:
@@ -1143,7 +1516,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/systemstatus.publicapi.transfers.SystemStatusDTO'
+                $ref: '#/components/schemas/systemstatus.SystemStatusDTO'
     post:
       tags:
         - SystemStatus
@@ -1173,7 +1546,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/systemstatus.publicapi.transfers.SystemStatusDTO'
+                $ref: '#/components/schemas/systemstatus.SystemStatusDTO'
   /v1/admin/tenants:
     get:
       tags:
@@ -1213,7 +1586,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.AllTenantsStatusAPIDTO'
+                $ref: '#/components/schemas/admin.AllTenantsStatusAPIDTO'
     post:
       tags:
         - TenantsV1
@@ -1232,7 +1605,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.publicapi.transfers.TenantProvisionAPIDTO'
+              $ref: '#/components/schemas/admin.TenantProvisionAPIDTO'
         required: true
       responses:
         default:
@@ -1246,7 +1619,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.TenantProvisionAPIDTO'
+                $ref: '#/components/schemas/admin.TenantProvisionAPIDTO'
   /v1/admin/tenants/batch:
     post:
       tags:
@@ -1265,7 +1638,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.publicapi.transfers.BatchTenantProvisionAPIDTO'
+              $ref: '#/components/schemas/admin.BatchTenantProvisionAPIDTO'
         required: true
       responses:
         default:
@@ -1279,7 +1652,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.BatchTenantProvisionAPIDTO'
+                $ref: '#/components/schemas/admin.BatchTenantProvisionAPIDTO'
   /v1/admin/tenants/{tenantId}:
     get:
       tags:
@@ -1310,7 +1683,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.TenantDetailAPIDTO'
+                $ref: '#/components/schemas/admin.TenantDetailAPIDTO'
     put:
       tags:
         - TenantsV1
@@ -1349,7 +1722,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.TenantProvisionAPIDTO'
+                $ref: '#/components/schemas/admin.TenantProvisionAPIDTO'
     delete:
       tags:
         - TenantsV1
@@ -1385,7 +1758,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.TenantStatusAPIDTO'
+                $ref: '#/components/schemas/admin.TenantStatusAPIDTO'
   /v1/admin/tenants/{tenantId}/disable:
     put:
       tags:
@@ -1417,7 +1790,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.TenantStatusAPIDTO'
+                $ref: '#/components/schemas/admin.TenantStatusAPIDTO'
   /v1/admin/tenants/{tenantId}/enable:
     put:
       tags:
@@ -1450,7 +1823,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.TenantStatusAPIDTO'
+                $ref: '#/components/schemas/admin.TenantStatusAPIDTO'
   /v1/admin/user-groups:
     get:
       tags:
@@ -1502,7 +1875,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.UserGroupsGetAPIResponseDTO'
+                $ref: '#/components/schemas/admin.UserGroupsGetAPIResponseDTO'
   /v1/admin/user-groups/permissions:
     put:
       tags:
@@ -1529,7 +1902,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.transfers.PermissionsToUserGroupsRequestDTO'
+              $ref: '#/components/schemas/admin.PermissionsToUserGroupsRequestDTO'
         required: true
       responses:
         default:
@@ -1543,7 +1916,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.PermissionsToUserGroupForTenantDTO'
+                $ref: '#/components/schemas/admin.PermissionsToUserGroupForTenantDTO'
     delete:
       tags:
         - UsersV1
@@ -1569,7 +1942,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.transfers.PermissionsToUserGroupsRequestDTO'
+              $ref: '#/components/schemas/admin.PermissionsToUserGroupsRequestDTO'
         required: true
       responses:
         default:
@@ -1583,7 +1956,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.PermissionsToUserGroupForTenantDTO'
+                $ref: '#/components/schemas/admin.PermissionsToUserGroupForTenantDTO'
   /v1/admin/user-groups/users:
     put:
       tags:
@@ -1618,7 +1991,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.transfers.UsersToUserGroupsRequestDTO'
+              $ref: '#/components/schemas/admin.UsersToUserGroupsRequestDTO'
         required: true
       responses:
         default:
@@ -1632,7 +2005,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.SecurityAssignmentResponseDTO'
+                $ref: '#/components/schemas/admin.SecurityAssignmentResponseDTO'
     delete:
       tags:
         - UsersV1
@@ -1666,7 +2039,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.transfers.UsersToUserGroupsRequestDTO'
+              $ref: '#/components/schemas/admin.UsersToUserGroupsRequestDTO'
         required: true
       responses:
         default:
@@ -1680,7 +2053,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.SecurityAssignmentResponseDTO'
+                $ref: '#/components/schemas/admin.SecurityAssignmentResponseDTO'
   /v1/admin/user-groups/{userGroupId}/users:
     get:
       tags:
@@ -1740,7 +2113,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.UserGroupsUsersDTO'
+                $ref: '#/components/schemas/admin.UserGroupsUsersDTO'
   /v1/admin/users:
     get:
       tags:
@@ -1807,7 +2180,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.AllUsersGetAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.AllUsersGetAPIResponseDTO'
     post:
       tags:
         - UsersV1
@@ -1829,7 +2202,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.UserCreationAPIRequestDTO'
+              $ref: '#/components/schemas/servicing.UserCreationAPIRequestDTO'
         required: true
       responses:
         "201":
@@ -1904,7 +2277,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.UserGetAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.UserGetAPIResponseDTO'
     put:
       tags:
         - UsersV1
@@ -1932,7 +2305,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.UserUpdateAPIRequestDTO'
+              $ref: '#/components/schemas/servicing.UserUpdateAPIRequestDTO'
         required: true
       responses:
         default:
@@ -1946,7 +2319,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.UserUpdateAPIRequestDTO'
+                $ref: '#/components/schemas/servicing.UserUpdateAPIRequestDTO'
     delete:
       tags:
         - UsersV1
@@ -2012,7 +2385,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.AllProfileAssignedForAccessibleTenantDTO'
+                $ref: '#/components/schemas/servicing.AllProfileAssignedForAccessibleTenantDTO'
   /v1/admin/users/{userId}/profiles:
     get:
       tags:
@@ -2046,7 +2419,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.AllProfileAssignedForLocalTenantDTO'
+                $ref: '#/components/schemas/servicing.AllProfileAssignedForLocalTenantDTO'
   /v1/op/validation/tenants:
     get:
       tags:
@@ -2094,7 +2467,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dp_automation.transfers.TenantPreviewEntriesSummaryListDTO'
+                $ref: '#/components/schemas/dp_automation.TenantPreviewEntriesSummaryListDTO'
   /v1/op/validation/tenants/{tenantId}:
     get:
       tags:
@@ -2135,7 +2508,120 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dp_automation.transfers.TenantPreviewEntriesSummaryDTO'
+                $ref: '#/components/schemas/dp_automation.TenantPreviewEntriesSummaryDTO'
+  /v1alpha/admin/api-network-subnets:
+    get:
+      tags:
+        - NetworkSubnets
+      summary: Retrieve a list of API network subnets
+      description: |-
+        Retrieve a list of all IP addresses that can call Visier APIs.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: NetworkSubnets_GetApiSubnets
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.NetworkSubnetsMessageResponse'
+    put:
+      tags:
+        - NetworkSubnets
+      summary: Update API network subnets
+      description: |-
+        Overwrite the existing list of IP addresses that can call Visier APIs with a new list. IP addresses must use the Classless Inter-Domain Routing (CIDR) format: xxx.xxx.xxx.xxx/xx.
+
+         When updating allowed network subnets, the definition in your API call replaces the prior definition. You must provide the entire definition in the PUT call. If you omit IP addresses from the update request, those IP addresses are removed from the allowlist We recommend that you retrieve the current list of allowed network subnets before you update the list.
+
+         **Note**: By updating the allowed network subnets, you may remove your current IP address from the allowlist. If this happens, you will lock yourself out from making additional API calls. Visier does not allow lock outs unless you set `confirmLockout` to `true`. Default is `false`.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: NetworkSubnets_SetApiSubnets
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.NetworkSubnetsMessageRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.NetworkSubnetsMessageResponse'
+    post:
+      tags:
+        - NetworkSubnets
+      summary: Add API network subnets
+      description: |-
+        Add IP addresses to the list of allowed network subnets that can call Visier APIs. IP addresses must use the Classless Inter-Domain Routing (CIDR) format: xxx.xxx.xxx.xxx/xx.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: NetworkSubnets_AddApiSubnets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.NetworkSubnetsMessageRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.NetworkSubnetsMessageResponse'
+    delete:
+      tags:
+        - NetworkSubnets
+      summary: Delete API network subnets
+      description: |-
+        Remove IP addresses from the list of allowed network subnets that can call Visier APIs. IP addresses must use the Classless Inter-Domain Routing (CIDR) format: xxx.xxx.xxx.xxx/xx.
+
+         When updating allowed network subnets, the definition in your API call replaces the prior definition. You must provide the entire definition in the PUT call. If you omit IP addresses from the update request, those IP addresses are removed from the allowlist We recommend that you retrieve the current list of allowed network subnets before you update the list.
+
+         **Note**: By deleting the allowed network subnets, you may remove your current IP address from the allowlist. If this happens, you will lock yourself out from making additional API calls. Visier does not allow lock outs unless you set `confirmLockout` to `true`. Default is `false`.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: NetworkSubnets_DeleteApiSubnets
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.NetworkSubnetsMessageRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.NetworkSubnetsMessageResponse'
   /v1alpha/admin/consolidated-analytics/tenants:
     get:
       tags:
@@ -2172,7 +2658,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPITenantListResponseDTO'
+                $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPITenantListResponseDTO'
     post:
       tags:
         - ConsolidatedAnalytics
@@ -2192,7 +2678,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPITenantCreateRequestDTO'
+              $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPITenantCreateRequestDTO'
         required: true
       responses:
         default:
@@ -2206,7 +2692,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPITenantCreateRequestDTO'
+                $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPITenantCreateRequestDTO'
   /v1alpha/admin/consolidated-analytics/tenants-with-details:
     get:
       tags:
@@ -2245,7 +2731,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPITenantWithDetailsListResponseDTO'
+                $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPITenantWithDetailsListResponseDTO'
   /v1alpha/admin/consolidated-analytics/tenants/{tenantId}/excluded-sources:
     get:
       tags:
@@ -2278,7 +2764,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPIExcludedSourceListDTO'
+                $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPIExcludedSourceListDTO'
     put:
       tags:
         - ConsolidatedAnalytics
@@ -2319,7 +2805,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPIExcludedSourceListDTO'
+                $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPIExcludedSourceListDTO'
     delete:
       tags:
         - ConsolidatedAnalytics
@@ -2357,7 +2843,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPIExcludedSourceListDTO'
+                $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPIExcludedSourceListDTO'
     patch:
       tags:
         - ConsolidatedAnalytics
@@ -2395,7 +2881,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPIExcludedSourceListDTO'
+                $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPIExcludedSourceListDTO'
   /v1alpha/admin/consolidated-analytics/tenants/{tenantId}/source-tenants:
     get:
       tags:
@@ -2440,7 +2926,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPISourceTenantListDTO'
+                $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPISourceTenantListDTO'
     put:
       tags:
         - ConsolidatedAnalytics
@@ -2489,7 +2975,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPISourceTenantListDTO'
+                $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPISourceTenantListDTO'
     delete:
       tags:
         - ConsolidatedAnalytics
@@ -2535,7 +3021,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPISourceTenantListDTO'
+                $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPISourceTenantListDTO'
     patch:
       tags:
         - ConsolidatedAnalytics
@@ -2581,7 +3067,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPISourceTenantListDTO'
+                $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPISourceTenantListDTO'
   /v1alpha/admin/email-domains:
     get:
       tags:
@@ -2605,7 +3091,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.EmailDomainsDTO'
+                $ref: '#/components/schemas/admin.EmailDomainsDTO'
     put:
       tags:
         - EmailDomains
@@ -2640,7 +3126,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.EmailDomainsDTO'
+                $ref: '#/components/schemas/admin.EmailDomainsDTO'
     delete:
       tags:
         - EmailDomains
@@ -2675,7 +3161,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.EmailDomainsDTO'
+                $ref: '#/components/schemas/admin.EmailDomainsDTO'
   /v1alpha/admin/encryption-keys:
     get:
       tags:
@@ -2756,411 +3242,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/admin.KeyName'
-  /v1beta/admin/production-versions:
-    get:
-      tags:
-        - ProductionVersions
-      summary: Retrieve a list of all production versions
-      description: |-
-        Retrieve a list of all projects that were published to production, ordered from latest published to earliest published.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: ProductionVersions_GetProductionVersions
-      parameters:
-        - name: limit
-          in: query
-          description: The maximum number of production versions to return. Default is 400.
-          schema:
-            type: integer
-            format: int32
-        - name: start
-          in: query
-          description: The starting index of the first production version to return. Default is 0.
-          schema:
-            type: integer
-            format: int32
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.GetProductionVersionsAPIResponseDTO'
-    post:
-      tags:
-        - ProductionVersions
-      summary: Perform an operation on production versions
-      description: "Perform operations on production versions, such as exporting a production project's committed changes. \n \n If exporting, please specify `Accept: application/zip, application/json` in the header. The API returns exported changes in ZIP format and error messages in JSON format. If your request returns an error and it doesn't accept `application/json`, you will receive an HTTP 406 status code instead of the appropriate error response body.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: ProductionVersions_PostProductionVersions
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.ProductionVersionsAPIOperationRequestDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProductionVersionsAPIOperationResponseDTO'
-  /v1beta/admin/production-versions/{productionVersionId}:
-    post:
-      tags:
-        - ProductionVersions
-      summary: Perform an operation on a production version
-      description: |-
-        Perform operations on a specific production version. The following operations are supported:
-         * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: ProductionVersions_PostProductionVersion
-      parameters:
-        - name: productionVersionId
-          in: path
-          description: The production version to use as the target of the operation; for example, the production version to roll back to for the `rollBackTo` operation.
-          required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.ProductionVersionAPIOperationRequestDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProductionVersionAPIOperationResponseDTO'
-  /v1beta/admin/projects:
-    get:
-      tags:
-        - Projects
-      summary: Retrieve a list of draft projects accessible to the user
-      description: |-
-        Get a list of draft projects accessible to the requesting user in the tenant.
-
-         A project is accessible if it is owned by the user or shared to the user.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: Projects_GetProjects
-      parameters:
-        - name: with
-          in: query
-          description: |-
-            The types of draft projects to include in the request response.
-             * If empty, returns all the `Open` draft projects.
-             * If `Open`, returns all Open draft projects.
-             * If `Approval`, returns all draft projects in the approval stage. Changes cannot made in Approval projects.
-             * If `Rejected`, returns all draft projects that have been rejected. Changes cannot be committed in Rejected projects.
-             * If `Archived`, returns all draft projects that have been archived. Changes cannot be committed in Archived projects.
-          schema:
-            type: array
-            items:
-              type: string
-        - name: limit
-          in: query
-          description: The number of projects to return per type. The maximum number of projects to retrieve per type is 1000. The default is 100.
-          schema:
-            type: integer
-            format: int32
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.GetProjectsAPIResponseDTO'
-    post:
-      tags:
-        - Projects
-      summary: Create a new draft project
-      description: |-
-        Create a new draft project in the tenant.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: Projects_CreateProject
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectDTO'
-  /v1beta/admin/projects/{projectId}:
-    get:
-      tags:
-        - Projects
-      summary: Retrieve a draft project's information
-      description: |-
-        Retrieve the details of an accessible draft project. You must know the ID of the project to retrieve its details. To retrieve draft project IDs, see `GET v1beta/admin/projects`.
-
-         A project is accessible if it is owned by the user or shared to the user.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: Projects_GetProject
-      parameters:
-        - name: projectId
-          in: path
-          description: The unique identifier of the draft project you want to retrieve.
-          required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectDTO'
-    post:
-      tags:
-        - Projects
-      summary: Perform an operation on a draft project
-      description: |-
-        Perform operations on a draft project. The following operations are supported:
-         * `commitAndPublish`: Commits project changes and publishes the project to production.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: Projects_RunProjectOperation
-      parameters:
-        - name: projectId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectOperationRequestDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectOperationResponseDTO'
-    delete:
-      tags:
-        - Projects
-      summary: Delete a draft project
-      description: |-
-        Delete a draft project in the tenant. The project will first be archived if applicable.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: Projects_DeleteProject
-      parameters:
-        - name: projectId
-          in: path
-          description: The unique ID of the draft project to be deleted.
-          required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectDTO'
-  /v1beta/admin/projects/{projectId}/commits:
-    get:
-      tags:
-        - Projects
-      summary: Retrieve a list of all committed changes in a project
-      description: |-
-        Retrieve the full list of all committed changes in a project.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: Projects_GetProjectCommits
-      parameters:
-        - name: projectId
-          in: path
-          description: The unique identifier of the draft project you want to retrieve the committed changes for.
-          required: true
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: The maximum number of committed changes to return. Default is 400.
-          schema:
-            type: integer
-            format: int32
-        - name: start
-          in: query
-          description: The starting index of the first committed change to return. Default is 0.
-          schema:
-            type: integer
-            format: int32
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectCommitsAPIResponseDTO'
-    put:
-      tags:
-        - Projects
-      summary: Import committed changes into a project
-      description: |-
-        Import a ZIP file that contains a list of committed changes into a draft project. The file must be an export from `POST /v1beta/admin/production-versions`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
-      operationId: Projects_PutProjectCommits
-      parameters:
-        - name: projectId
-          in: path
-          description: The unique identifier of the draft project you want to import committed changes into.
-          required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/admin.PutProjectCommitsRequest'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectCommitsAPIResponseDTO'
   /v1beta/admin/sources:
     post:
       tags:
@@ -3183,7 +3264,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.SourcesAPIOperationRequestDTO'
+              $ref: '#/components/schemas/servicing.SourcesAPIOperationRequestDTO'
         required: true
       responses:
         default:
@@ -3197,7 +3278,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.ExportSourcesAPIOperationResponseDTO'
+                $ref: '#/components/schemas/servicing.ExportSourcesAPIOperationResponseDTO'
     put:
       tags:
         - Sources
@@ -3288,7 +3369,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.TenantManagementAPIListResponseDTO'
+                $ref: '#/components/schemas/admin.TenantManagementAPIListResponseDTO'
     post:
       tags:
         - TenantsV2
@@ -3316,7 +3397,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.publicapi.transfers.TenantManagementAPIUpdateRequestDTO'
+              $ref: '#/components/schemas/admin.TenantManagementAPIUpdateRequestDTO'
         required: true
       responses:
         default:
@@ -3330,7 +3411,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.TenantManagementAPIUpdateResponseDTO'
+                $ref: '#/components/schemas/admin.TenantManagementAPIUpdateResponseDTO'
   /v2/admin/tenants/{tenantId}:
     get:
       tags:
@@ -3369,7 +3450,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.TenantManagementAPIGetResponseDTO'
+                $ref: '#/components/schemas/admin.TenantManagementAPIGetResponseDTO'
       requestBody:
         content:
           application/json:
@@ -3408,7 +3489,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.publicapi.transfers.TenantManagementAPIUpdateRequestDTO'
+              $ref: '#/components/schemas/admin.TenantManagementAPIUpdateRequestDTO'
         required: true
       responses:
         default:
@@ -3422,7 +3503,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.TenantManagementAPIUpdateResponseDTO'
+                $ref: '#/components/schemas/admin.TenantManagementAPIUpdateResponseDTO'
     delete:
       tags:
         - TenantsV2
@@ -3463,7 +3544,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.TenantStatusAPIDTO'
+                $ref: '#/components/schemas/admin.TenantStatusAPIDTO'
   /v2/admin/user-groups:
     get:
       tags:
@@ -3531,7 +3612,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupsChangeDTO'
+                $ref: '#/components/schemas/admin.UserGroupsChangeDTO'
     put:
       tags:
         - UserGroupsV2
@@ -3559,7 +3640,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupsChangeDTO'
+              $ref: '#/components/schemas/admin.UserGroupsChangeDTO'
         required: true
       responses:
         default:
@@ -3573,7 +3654,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupChangeResponseDTO'
+                $ref: '#/components/schemas/admin.UserGroupChangeResponseDTO'
     post:
       tags:
         - UserGroupsV2
@@ -3604,7 +3685,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupsChangeDTO'
+              $ref: '#/components/schemas/admin.UserGroupsChangeDTO'
         required: true
       responses:
         default:
@@ -3618,7 +3699,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupChangeResponseDTO'
+                $ref: '#/components/schemas/admin.UserGroupChangeResponseDTO'
     delete:
       tags:
         - UserGroupsV2
@@ -3649,7 +3730,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupsDeleteRequestDTO'
+              $ref: '#/components/schemas/admin.UserGroupsDeleteRequestDTO'
         required: true
       responses:
         default:
@@ -3663,7 +3744,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupDeleteResponseDTO'
+                $ref: '#/components/schemas/admin.UserGroupDeleteResponseDTO'
     patch:
       tags:
         - UserGroupsV2
@@ -3696,7 +3777,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupsChangeDTO'
+              $ref: '#/components/schemas/admin.UserGroupsChangeDTO'
         required: true
       responses:
         default:
@@ -3710,7 +3791,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupChangeResponseDTO'
+                $ref: '#/components/schemas/admin.UserGroupChangeResponseDTO'
   /v2/admin/user-groups/{userGroupId}:
     get:
       tags:
@@ -3767,7 +3848,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupChangeDefinitionDTO'
+                $ref: '#/components/schemas/admin.UserGroupChangeDefinitionDTO'
     delete:
       tags:
         - UserGroupsV2
@@ -3818,7 +3899,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupSingleDeleteResponseDTO'
+                $ref: '#/components/schemas/admin.UserGroupSingleDeleteResponseDTO'
   /v2/admin/users:
     put:
       tags:
@@ -3841,7 +3922,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.UsersUpdateAPIRequestDTO'
+              $ref: '#/components/schemas/servicing.UsersUpdateAPIRequestDTO'
         required: true
       responses:
         default:
@@ -3855,7 +3936,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.UsersAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.UsersAPIResponseDTO'
     post:
       tags:
         - UsersV2
@@ -3877,7 +3958,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.UsersCreationAPIRequestDTO'
+              $ref: '#/components/schemas/servicing.UsersCreationAPIRequestDTO'
         required: true
       responses:
         default:
@@ -3891,7 +3972,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.UsersAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.UsersAPIResponseDTO'
     delete:
       tags:
         - UsersV2
@@ -3913,7 +3994,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.UsersDeleteAPIRequestDTO'
+              $ref: '#/components/schemas/servicing.UsersDeleteAPIRequestDTO'
         required: true
       responses:
         default:
@@ -3927,7 +4008,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.UsersAPIResponseDTO'
+                $ref: '#/components/schemas/servicing.UsersAPIResponseDTO'
   /v1/admin/users/reports/application-logs:
     get:
       tags:
@@ -4173,7 +4254,7 @@ components:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionDTO'
+            $ref: '#/components/schemas/servicing.PermissionDTO'
           description: The list of permissions that will be created or updated
     admin.PutProjectCommitsRequest:
       type: object
@@ -4225,13 +4306,13 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the issuers for the SSO providers that can authenticate this tenant.
-    admin.publicapi.transfers.AllTenantsStatusAPIDTO:
+    admin.AllTenantsStatusAPIDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.TenantDetailAPIDTO'
+            $ref: '#/components/schemas/admin.TenantDetailAPIDTO'
           description: A list of objects representing all the analytic tenants.
         limit:
           type: integer
@@ -4241,15 +4322,15 @@ components:
           type: integer
           description: The index to start retrieving values from, also known as offset. The index begins at 0.
           format: uint32
-    admin.publicapi.transfers.BatchTenantProvisionAPIDTO:
+    admin.BatchTenantProvisionAPIDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.TenantProvisionAPIDTO'
+            $ref: '#/components/schemas/admin.TenantProvisionAPIDTO'
           description: An array of tenants to create. The maximum number of tenants to create in one request is 200.
-    admin.publicapi.transfers.BusinessLocationDTO:
+    admin.BusinessLocationDTO:
       type: object
       properties:
         countryCode:
@@ -4259,21 +4340,21 @@ components:
           type: string
           description: The postal code associated with the business location. Cannot be blank.
       description: The location of operations or where business is performed.
-    admin.publicapi.transfers.CustomPropertyDTO:
+    admin.CustomPropertyDTO:
       type: object
       properties:
         key:
           type: string
         value:
           type: string
-    admin.publicapi.transfers.CustomTenantPropertyDTO:
+    admin.CustomTenantPropertyDTO:
       type: object
       properties:
         key:
           type: string
         value:
           type: string
-    admin.publicapi.transfers.ElementIDsDTO:
+    admin.ElementIDsDTO:
       type: object
       properties:
         ids:
@@ -4281,7 +4362,7 @@ components:
           items:
             type: string
           description: The unique identifiers.
-    admin.publicapi.transfers.HomeAnalysisByUserGroupDTO:
+    admin.HomeAnalysisByUserGroupDTO:
       type: object
       properties:
         userGroupId:
@@ -4290,7 +4371,28 @@ components:
         homeAnalysisId:
           type: string
           description: The unique ID of the analysis to show for this user group when a user logs in.
-    admin.publicapi.transfers.TenantDetailAPIDTO:
+    admin.NetworkSubnetsMessageRequest:
+      type: object
+      properties:
+        networkSubnetsForApi:
+          type: array
+          items:
+            type: string
+          description: The IP addresses in the request.
+        confirmLockout:
+          type: boolean
+          description: If `true`, you acknowledge that the API call removes your IP address from the list of allowed network subnets and you will not be able to call Visier APIs from your current IP address. Default is `false`. To avoid this, add your current IP address to the allowed network subnets list.
+      description: The IP addresses to modify in the API network subnet allowlist.
+    admin.NetworkSubnetsMessageResponse:
+      type: object
+      properties:
+        networkSubnetsForApi:
+          type: array
+          items:
+            type: string
+          description: The IP addresses that are allowed to call Visier APIs.
+      description: The list of IP addresses that are allowed to call Visier APIs.
+    admin.TenantDetailAPIDTO:
       type: object
       properties:
         tenantCode:
@@ -4314,7 +4416,7 @@ components:
         modules:
           type: array
           items:
-            $ref: '#/components/schemas/designer.transfers.TenantModuleDTO'
+            $ref: '#/components/schemas/designer.TenantModuleDTO'
           description: The modules assigned to the analytic tenant.
         industryCode:
           type: integer
@@ -4331,7 +4433,7 @@ components:
         customProperties:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.CustomTenantPropertyDTO'
+            $ref: '#/components/schemas/admin.CustomTenantPropertyDTO'
           description: A set of key-value pairs that represent different customizable properties for the analytic tenant.
         ssoInstanceIssuers:
           type: array
@@ -4346,7 +4448,7 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, which can be used as values for the idp_url parameter
-    admin.publicapi.transfers.TenantManagementAPIGetResponseDTO:
+    admin.TenantManagementAPIGetResponseDTO:
       type: object
       properties:
         tenantCode:
@@ -4378,7 +4480,7 @@ components:
           format: uint32
         primaryBusinessLocation:
           allOf:
-            - $ref: '#/components/schemas/admin.publicapi.transfers.BusinessLocationDTO'
+            - $ref: '#/components/schemas/admin.BusinessLocationDTO'
           description: The primary location of operations or where business is performed. If undefined, it is omitted from the response.
         canAdministerOtherTenants:
           type: boolean
@@ -4391,7 +4493,7 @@ components:
         customProperties:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.CustomPropertyDTO'
+            $ref: '#/components/schemas/admin.CustomPropertyDTO'
           description: A set of key-value pairs that represent different customizable properties for the analytic tenant.
         ssoInstanceIssuers:
           type: array
@@ -4407,7 +4509,7 @@ components:
         homeAnalysisByUserGroup:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.HomeAnalysisByUserGroupDTO'
+            $ref: '#/components/schemas/admin.HomeAnalysisByUserGroupDTO'
           description: A list of objects representing the analysis displayed to specific user groups when users log in.
         clickThroughLink:
           type: string
@@ -4423,13 +4525,13 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter.
-    admin.publicapi.transfers.TenantManagementAPIListResponseDTO:
+    admin.TenantManagementAPIListResponseDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.TenantManagementAPIGetResponseDTO'
+            $ref: '#/components/schemas/admin.TenantManagementAPIGetResponseDTO'
           description: A list of objects representing all the analytic tenants.
         limit:
           type: integer
@@ -4439,7 +4541,7 @@ components:
           type: integer
           description: The index to start retrieving values from, also known as offset. The index begins at 0.
           format: uint32
-    admin.publicapi.transfers.TenantManagementAPIUpdateRequestDTO:
+    admin.TenantManagementAPIUpdateRequestDTO:
       type: object
       properties:
         tenantCode:
@@ -4463,7 +4565,7 @@ components:
           format: uint32
         primaryBusinessLocation:
           allOf:
-            - $ref: '#/components/schemas/admin.publicapi.transfers.BusinessLocationDTO'
+            - $ref: '#/components/schemas/admin.BusinessLocationDTO'
           description: The primary location of operations or where business is performed. This field is optional.
         purchasedModules:
           type: array
@@ -4484,7 +4586,7 @@ components:
         customProperties:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.CustomPropertyDTO'
+            $ref: '#/components/schemas/admin.CustomPropertyDTO'
           description: A list of objects that represent different customizable properties for the analytic tenant. This is optional.
         ssoInstanceIssuers:
           type: array
@@ -4496,13 +4598,13 @@ components:
           description: |-
             The unique ID of the analysis to display for this tenant when a user logs in. This is optional. Causes the API request to take longer because it must publish a project to production.
 
-             Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/`8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`.
+             Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: `https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`.
 
              The `homeAnalysisID` is `8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`. Alternatively, retrieve the ID by copying the `Analysis ID` or `contentId` found by following the `Embed a Visualization` documentation.
         homeAnalysisByUserGroup:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.HomeAnalysisByUserGroupDTO'
+            $ref: '#/components/schemas/admin.HomeAnalysisByUserGroupDTO'
           description: A list of objects representing the analysis to display to specific user groups when users log in. This is optional. Causes the API request to take longer because it must publish a project to production.
         updateAction:
           enum:
@@ -4529,7 +4631,7 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter. This is optional.
-    admin.publicapi.transfers.TenantManagementAPIUpdateResponseDTO:
+    admin.TenantManagementAPIUpdateResponseDTO:
       type: object
       properties:
         tenantCode:
@@ -4544,7 +4646,7 @@ components:
           format: uint32
         primaryBusinessLocation:
           allOf:
-            - $ref: '#/components/schemas/admin.publicapi.transfers.BusinessLocationDTO'
+            - $ref: '#/components/schemas/admin.BusinessLocationDTO'
           description: The primary location of operations or where business is performed. If undefined, it is omitted from the response.
         purchasedModules:
           type: array
@@ -4559,7 +4661,7 @@ components:
         customProperties:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.CustomPropertyDTO'
+            $ref: '#/components/schemas/admin.CustomPropertyDTO'
           description: A list of objects that represent different customizable properties for the analytic tenant.
         ssoInstanceIssuers:
           type: array
@@ -4578,7 +4680,7 @@ components:
         homeAnalysisByUserGroup:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.HomeAnalysisByUserGroupDTO'
+            $ref: '#/components/schemas/admin.HomeAnalysisByUserGroupDTO'
           description: A list of objects representing the analysis to display to specific user groups when users log in.
         status:
           type: string
@@ -4597,7 +4699,7 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter. This is optional.
-    admin.publicapi.transfers.TenantProvisionAPIDTO:
+    admin.TenantProvisionAPIDTO:
       type: object
       properties:
         tenantCode:
@@ -4629,7 +4731,7 @@ components:
         customProperties:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.CustomTenantPropertyDTO'
+            $ref: '#/components/schemas/admin.CustomTenantPropertyDTO'
           description: A set of key-value pairs that represent different customizable properties for the analytic tenant.
         ssoInstanceIssuers:
           type: array
@@ -4643,7 +4745,7 @@ components:
           description: |-
             A comma-separated list of strings that represent the URLs, or domains, which can be used as values for the idp_url
              OAuth parameter.
-    admin.publicapi.transfers.TenantStatusAPIDTO:
+    admin.TenantStatusAPIDTO:
       type: object
       properties:
         tenantCode:
@@ -4658,7 +4760,7 @@ components:
         canAdministerOtherTenants:
           type: boolean
           description: If true, the tenant is an administrating tenant.
-    admin.publicapi.transfers.UserGroupChangeDefinitionDTO:
+    admin.UserGroupChangeDefinitionDTO:
       type: object
       properties:
         userGroupId:
@@ -4672,11 +4774,11 @@ components:
           description: A detailed description of the population and purpose of the user group.
         permissionIds:
           allOf:
-            - $ref: '#/components/schemas/admin.publicapi.transfers.ElementIDsDTO'
+            - $ref: '#/components/schemas/admin.ElementIDsDTO'
           description: The unique identifiers of permissions assigned to members of this user group.
         users:
           allOf:
-            - $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupChangeUsersDTO'
+            - $ref: '#/components/schemas/admin.UserGroupChangeUsersDTO'
           description: The users assigned to the user group. You can define user group members dynamically with `dynamicFilterDefinition` or manually with `includeAllUsers` or `manuallyIncludedIds`.
         tenantCode:
           type: string
@@ -4688,7 +4790,7 @@ components:
           description: |-
             The project ID in which to update or create the user group.
              If omitted and the ProjectID request header is not defined, the change is published to production immediately.
-    admin.publicapi.transfers.UserGroupChangeDimensionFilterDTO:
+    admin.UserGroupChangeDimensionFilterDTO:
       type: object
       properties:
         dimensionId:
@@ -4696,16 +4798,16 @@ components:
           description: The object name of the dimension.
         subjectReferencePath:
           allOf:
-            - $ref: '#/components/schemas/admin.publicapi.transfers.ElementIDsDTO'
+            - $ref: '#/components/schemas/admin.ElementIDsDTO'
           description: |-
             A qualifying path if the dimension is from an analytic object that references Employee.
              For example, use `subjectReferencePath` to create a filter on the `Employment_Start_Type` dimension from the `Employment_Start` object, which references `Employee`: `{ "ids": [ "Employee", "Employment_Start" ] }`.
         memberSelections:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupChangeMemberSelectionDTO'
+            $ref: '#/components/schemas/admin.UserGroupChangeMemberSelectionDTO'
           description: The dimension members to select in the dynamic filter.
-    admin.publicapi.transfers.UserGroupChangeFailureDTO:
+    admin.UserGroupChangeFailureDTO:
       type: object
       properties:
         displayName:
@@ -4723,7 +4825,7 @@ components:
         projectId:
           type: string
           description: The ID of the project in which the user group could not be created or updated.
-    admin.publicapi.transfers.UserGroupChangeFilterDTO:
+    admin.UserGroupChangeFilterDTO:
       type: object
       properties:
         filterId:
@@ -4735,9 +4837,9 @@ components:
         dimensionFilters:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupChangeDimensionFilterDTO'
+            $ref: '#/components/schemas/admin.UserGroupChangeDimensionFilterDTO'
           description: The dimensions in the dynamic filter.
-    admin.publicapi.transfers.UserGroupChangeMemberSelectionDTO:
+    admin.UserGroupChangeMemberSelectionDTO:
       type: object
       properties:
         isExcluded:
@@ -4748,20 +4850,20 @@ components:
           items:
             type: string
           description: The name path for dimension members; for example, `[ "North America", "US", "CA" ]`.
-    admin.publicapi.transfers.UserGroupChangeResponseDTO:
+    admin.UserGroupChangeResponseDTO:
       type: object
       properties:
         successes:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupChangeSuccessDTO'
+            $ref: '#/components/schemas/admin.UserGroupChangeSuccessDTO'
           description: The user groups that were created.
         failures:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupChangeFailureDTO'
+            $ref: '#/components/schemas/admin.UserGroupChangeFailureDTO'
           description: The user groups that were not created.
-    admin.publicapi.transfers.UserGroupChangeSuccessDTO:
+    admin.UserGroupChangeSuccessDTO:
       type: object
       properties:
         displayName:
@@ -4776,7 +4878,7 @@ components:
         projectId:
           type: string
           description: The ID of the project the user group was created or updated in.
-    admin.publicapi.transfers.UserGroupChangeUsersDTO:
+    admin.UserGroupChangeUsersDTO:
       type: object
       properties:
         includeAllUsers:
@@ -4787,26 +4889,26 @@ components:
              * Cannot be combined with `manuallyIncludedIds` or `dynamicFilterDefinition`.
         manuallyIncludedIds:
           allOf:
-            - $ref: '#/components/schemas/admin.publicapi.transfers.ElementIDsDTO'
+            - $ref: '#/components/schemas/admin.ElementIDsDTO'
           description: |-
             Includes specified user IDs in the user group.
              * May be combined with `dynamicFilterDefinition`.
              * Omit if `includeAllUsers` is `true`.
         manuallyExcludedIds:
           allOf:
-            - $ref: '#/components/schemas/admin.publicapi.transfers.ElementIDsDTO'
+            - $ref: '#/components/schemas/admin.ElementIDsDTO'
           description: |-
             Excludes specified user IDs from the user group.
              * You can manually exclude users if `includeAllUsers` is `true` or if `dynamicFilterDefinition` is defined.
              * Excluded IDs must not overlap with user IDs in `manuallyIncludedIds`.
         dynamicFilterDefinition:
           allOf:
-            - $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupFiltersDTO'
+            - $ref: '#/components/schemas/admin.UserGroupFiltersDTO'
           description: |-
             The filters that dynamically define a population through dimensions or dimensions accessible through references from the analytic object.
              * Omit if `includeAllUsers` is `true`.
              * You can combine dynamic filters with manually-assigned users.
-    admin.publicapi.transfers.UserGroupDeleteDTO:
+    admin.UserGroupDeleteDTO:
       type: object
       properties:
         tenantCode:
@@ -4822,7 +4924,7 @@ components:
           description: |-
             The project ID in which to delete the user group.
              If omitted and the `ProjectID` request header is not defined, the change is published to production immediately.
-    admin.publicapi.transfers.UserGroupDeleteFailureDTO:
+    admin.UserGroupDeleteFailureDTO:
       type: object
       properties:
         tenantCode:
@@ -4840,20 +4942,20 @@ components:
         projectId:
           type: string
           description: The ID of the project in which the user group could not be deleted.
-    admin.publicapi.transfers.UserGroupDeleteResponseDTO:
+    admin.UserGroupDeleteResponseDTO:
       type: object
       properties:
         successes:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupDeleteSuccessDTO'
+            $ref: '#/components/schemas/admin.UserGroupDeleteSuccessDTO'
           description: The user groups that were successfully deleted.
         failures:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupDeleteFailureDTO'
+            $ref: '#/components/schemas/admin.UserGroupDeleteFailureDTO'
           description: The user groups that were not deleted successfully.
-    admin.publicapi.transfers.UserGroupDeleteSuccessDTO:
+    admin.UserGroupDeleteSuccessDTO:
       type: object
       properties:
         tenantCode:
@@ -4865,42 +4967,42 @@ components:
         projectId:
           type: string
           description: The ID of the project in which user group was deleted.
-    admin.publicapi.transfers.UserGroupFiltersDTO:
+    admin.UserGroupFiltersDTO:
       type: object
       properties:
         filters:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupChangeFilterDTO'
+            $ref: '#/components/schemas/admin.UserGroupChangeFilterDTO'
           description: The filters that define user group membership.
-    admin.publicapi.transfers.UserGroupSingleDeleteResponseDTO:
+    admin.UserGroupSingleDeleteResponseDTO:
       type: object
       properties:
         success:
           allOf:
-            - $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupDeleteSuccessDTO'
+            - $ref: '#/components/schemas/admin.UserGroupDeleteSuccessDTO'
           description: The user group was successfully deleted.
         failure:
           allOf:
-            - $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupDeleteFailureDTO'
+            - $ref: '#/components/schemas/admin.UserGroupDeleteFailureDTO'
           description: The user group was not successfully deleted.
-    admin.publicapi.transfers.UserGroupsChangeDTO:
+    admin.UserGroupsChangeDTO:
       type: object
       properties:
         userGroups:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupChangeDefinitionDTO'
+            $ref: '#/components/schemas/admin.UserGroupChangeDefinitionDTO'
           description: The user groups and their definitions.
-    admin.publicapi.transfers.UserGroupsDeleteRequestDTO:
+    admin.UserGroupsDeleteRequestDTO:
       type: object
       properties:
         userGroups:
           type: array
           items:
-            $ref: '#/components/schemas/admin.publicapi.transfers.UserGroupDeleteDTO'
+            $ref: '#/components/schemas/admin.UserGroupDeleteDTO'
           description: The user groups to delete.
-    admin.transfers.ConsolidatedAnalyticsAPIExcludedSourceListDTO:
+    admin.ConsolidatedAnalyticsAPIExcludedSourceListDTO:
       type: object
       properties:
         excludedSources:
@@ -4908,7 +5010,7 @@ components:
           items:
             type: string
           description: A list of the CA tenant's excluded sources.
-    admin.transfers.ConsolidatedAnalyticsAPISourceTenantListDTO:
+    admin.ConsolidatedAnalyticsAPISourceTenantListDTO:
       type: object
       properties:
         tenantCodes:
@@ -4916,7 +5018,7 @@ components:
           items:
             type: string
           description: A list of the CA tenant's source tenants.
-    admin.transfers.ConsolidatedAnalyticsAPITenantCreateRequestDTO:
+    admin.ConsolidatedAnalyticsAPITenantCreateRequestDTO:
       type: object
       properties:
         tenantCode:
@@ -4924,7 +5026,7 @@ components:
           description: |-
             The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
              is the consolidated analytic tenant code.
-    admin.transfers.ConsolidatedAnalyticsAPITenantListResponseDTO:
+    admin.ConsolidatedAnalyticsAPITenantListResponseDTO:
       type: object
       properties:
         tenantCodes:
@@ -4932,7 +5034,7 @@ components:
           items:
             type: string
           description: A list of CA tenant codes.
-    admin.transfers.ConsolidatedAnalyticsAPITenantWithDetails:
+    admin.ConsolidatedAnalyticsAPITenantWithDetails:
       type: object
       properties:
         tenantCode:
@@ -4948,15 +5050,15 @@ components:
           items:
             type: string
           description: A list of the CA tenant's excluded sources.
-    admin.transfers.ConsolidatedAnalyticsAPITenantWithDetailsListResponseDTO:
+    admin.ConsolidatedAnalyticsAPITenantWithDetailsListResponseDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.ConsolidatedAnalyticsAPITenantWithDetails'
+            $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPITenantWithDetails'
           description: A list of CA tenants and their details.
-    admin.transfers.EmailDomainsDTO:
+    admin.EmailDomainsDTO:
       type: object
       properties:
         domains:
@@ -4967,7 +5069,7 @@ components:
         confirmNotAllowedDomain:
           type: boolean
           description: If `true`, you cannot sign in using credentials, such as username and password. You can only log in with single sign-on (SSO). To avoid this, add your current email address's domain to allowed domains list.
-    admin.transfers.PermissionResponseDTO:
+    admin.PermissionResponseDTO:
       type: object
       properties:
         permissionId:
@@ -4976,7 +5078,7 @@ components:
         displayName:
           type: string
           description: An identifiable permission name to display in Visier, such as "Diversity Access".
-    admin.transfers.PermissionsToUserGroupForTenantDTO:
+    admin.PermissionsToUserGroupForTenantDTO:
       type: object
       properties:
         tenantCode:
@@ -4991,9 +5093,9 @@ components:
         userGroups:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.UserGroupGetAPIResponseDTO'
+            $ref: '#/components/schemas/admin.UserGroupGetAPIResponseDTO'
           description: A list of objects representing user groups and the permissions to assign to or remove from them.
-    admin.transfers.PermissionsToUserGroupRequestDTO:
+    admin.PermissionsToUserGroupRequestDTO:
       type: object
       properties:
         userGroupId:
@@ -5004,23 +5106,23 @@ components:
           items:
             type: string
           description: A list of strings representing the unique permission IDs to assign.
-    admin.transfers.PermissionsToUserGroupsRequestDTO:
+    admin.PermissionsToUserGroupsRequestDTO:
       type: object
       properties:
         userGroups:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.PermissionsToUserGroupRequestDTO'
+            $ref: '#/components/schemas/admin.PermissionsToUserGroupRequestDTO'
           description: A list of objects representing the user groups and permissions to assign or remove.
-    admin.transfers.SecurityAssignmentResponseDTO:
+    admin.SecurityAssignmentResponseDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.TenantAssignmentsDTO'
+            $ref: '#/components/schemas/admin.TenantAssignmentsDTO'
           description: A list of objects representing the tenants and users that were assigned to or removed from user groups.
-    admin.transfers.SimpleUserDTO:
+    admin.SimpleUserDTO:
       type: object
       properties:
         userId:
@@ -5029,7 +5131,7 @@ components:
         username:
           type: string
           description: The user's username. This is typically the user's email, such as john@visier.com.
-    admin.transfers.TargetProjectForTenantDTO:
+    admin.TargetProjectForTenantDTO:
       type: object
       properties:
         tenantCode:
@@ -5038,17 +5140,17 @@ components:
         projectId:
           type: string
           description: The project in which to make changes for the tenant.
-    admin.transfers.TargetProjectForTenantsListDTO:
+    admin.TargetProjectForTenantsListDTO:
       type: object
       properties:
         targetProjectForTenants:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.TargetProjectForTenantDTO'
+            $ref: '#/components/schemas/admin.TargetProjectForTenantDTO'
           description: |-
             Administrating tenants can specify the tenants and projects in which to make assignments to users. Specify one `projectId` per `tenantCode`.
              If omitted, the request is immediately published to production or applied to the `ProjectID` in the request header, if available, for the administrating tenant or TargetTenantID, if available.
-    admin.transfers.TenantAssignmentsDTO:
+    admin.TenantAssignmentsDTO:
       type: object
       properties:
         tenantCode:
@@ -5068,12 +5170,12 @@ components:
         assignments:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.UserSecurityAssignmentsDTO'
+            $ref: '#/components/schemas/admin.UserSecurityAssignmentsDTO'
           description: A list of objects representing the user group and user assignments.
         projectId:
           type: string
           description: The ID of the project that the change was made in, if applicable.
-    admin.transfers.UserGroupGetAPIResponseDTO:
+    admin.UserGroupGetAPIResponseDTO:
       type: object
       properties:
         userGroupId:
@@ -5085,15 +5187,15 @@ components:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.PermissionResponseDTO'
+            $ref: '#/components/schemas/admin.PermissionResponseDTO'
           description: A list of objects representing the user's permissions.
-    admin.transfers.UserGroupsGetAPIResponseDTO:
+    admin.UserGroupsGetAPIResponseDTO:
       type: object
       properties:
         userGroups:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.UserGroupGetAPIResponseDTO'
+            $ref: '#/components/schemas/admin.UserGroupGetAPIResponseDTO'
           description: A list of user groups.
         limit:
           type: integer
@@ -5103,13 +5205,13 @@ components:
           type: integer
           description: The index to start retrieving results from, also known as offset.
           format: uint32
-    admin.transfers.UserGroupsUsersDTO:
+    admin.UserGroupsUsersDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.UserGroupsUsersForTenantDTO'
+            $ref: '#/components/schemas/admin.UserGroupsUsersForTenantDTO'
           description: A list of objects representing the users that are explicitly assigned to the user group, organized by the tenants the users belong to.
         limit:
           type: integer
@@ -5119,7 +5221,7 @@ components:
           type: integer
           description: The index to start retrieving values from, also known as offset. The index begins at 0.
           format: uint32
-    admin.transfers.UserGroupsUsersForTenantDTO:
+    admin.UserGroupsUsersForTenantDTO:
       type: object
       properties:
         tenantCode:
@@ -5128,9 +5230,9 @@ components:
         users:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.SimpleUserDTO'
+            $ref: '#/components/schemas/admin.SimpleUserDTO'
           description: A list of objects representing the users in the user group.
-    admin.transfers.UserSecurityAssignmentsDTO:
+    admin.UserSecurityAssignmentsDTO:
       type: object
       properties:
         id:
@@ -5142,9 +5244,9 @@ components:
         users:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.SimpleUserDTO'
+            $ref: '#/components/schemas/admin.SimpleUserDTO'
           description: A list of objects representing the users assigned to or removed from the user group.
-    admin.transfers.UsersToUserGroupRequestDTO:
+    admin.UsersToUserGroupRequestDTO:
       type: object
       properties:
         userGroupId:
@@ -5155,17 +5257,17 @@ components:
           items:
             type: string
           description: A list of strings representing unique user IDs to assign to or remove from the user group. The maximum number of `userIds` per user group is 100.
-    admin.transfers.UsersToUserGroupsRequestDTO:
+    admin.UsersToUserGroupsRequestDTO:
       type: object
       properties:
         userGroups:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.UsersToUserGroupRequestDTO'
+            $ref: '#/components/schemas/admin.UsersToUserGroupRequestDTO'
           description: A list of objects representing the user groups and users to assign or remove.
         targetProjectForTenantsList:
           allOf:
-            - $ref: '#/components/schemas/admin.transfers.TargetProjectForTenantsListDTO'
+            - $ref: '#/components/schemas/admin.TargetProjectForTenantsListDTO'
           description: |-
             Administrating tenants can specify the tenants and projects in which to assign users to user groups or remove users from user groups. Specify one `projectId` per `tenantCode`.
              If omitted, the request is immediately published to production or applied to the ProjectID in the request header, if available, for the administrating tenant or TargetTenantID, if available.
@@ -5212,7 +5314,7 @@ components:
           type: string
           description: The UTC expiration date of the key in milliseconds since the Unix epoch.
       description: Information about who generated an encryption key, its key name, algorithm, generation date, and expiration date.
-    designer.transfers.ModuleSettingsDTO:
+    designer.ModuleSettingsDTO:
       type: object
       properties:
         unavailableForAssignment:
@@ -5224,7 +5326,7 @@ components:
         locale:
           type: string
           description: The language of the module. For example, a module that is in English will have the locale "en".
-    designer.transfers.TenantModuleDTO:
+    designer.TenantModuleDTO:
       type: object
       properties:
         displayName:
@@ -5235,9 +5337,9 @@ components:
           description: The symbol name of the module. For example, "Talent_Management".
         moduleSettings:
           allOf:
-            - $ref: '#/components/schemas/designer.transfers.ModuleSettingsDTO'
+            - $ref: '#/components/schemas/designer.ModuleSettingsDTO'
           description: The settings associated with the module.
-    dp_automation.transfers.MetricValidationSummaryDTO:
+    dp_automation.MetricValidationSummaryDTO:
       type: object
       properties:
         symbolName:
@@ -5250,7 +5352,7 @@ components:
           type: number
           description: The current value of the metric expressed as an integer.
           format: double
-    dp_automation.transfers.TenantPreviewEntriesSummaryDTO:
+    dp_automation.TenantPreviewEntriesSummaryDTO:
       type: object
       properties:
         tenantCode:
@@ -5265,15 +5367,15 @@ components:
         metrics:
           type: array
           items:
-            $ref: '#/components/schemas/dp_automation.transfers.MetricValidationSummaryDTO'
+            $ref: '#/components/schemas/dp_automation.MetricValidationSummaryDTO'
           description: A list of metrics and their values.
-    dp_automation.transfers.TenantPreviewEntriesSummaryListDTO:
+    dp_automation.TenantPreviewEntriesSummaryListDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/dp_automation.transfers.TenantPreviewEntriesSummaryDTO'
+            $ref: '#/components/schemas/dp_automation.TenantPreviewEntriesSummaryDTO'
           description: A list of objects representing all the analytic tenants.
         limit:
           type: integer
@@ -5283,7 +5385,7 @@ components:
           type: integer
           description: The index to start retrieving results from, also known as offset. The index begins at 0.
           format: uint32
-    servicing.publicapi.transfers.AccessibleTenantProfileAssignmentRequestDTO:
+    servicing.AccessibleTenantProfileAssignmentRequestDTO:
       type: object
       properties:
         targetUserIds:
@@ -5294,7 +5396,7 @@ components:
         targetTenantCodes:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.TargetTenantCodeDTO'
+            $ref: '#/components/schemas/servicing.TargetTenantCodeDTO'
           description: A list of objects representing the  analytic tenants for profiles assigned to the users.
         validityStartTime:
           type: string
@@ -5302,7 +5404,7 @@ components:
         validityEndTime:
           type: string
           description: An exclusive date-time when this profile is no longer active.
-    servicing.publicapi.transfers.AccessibleTenantProfileAssignmentResponseDTO:
+    servicing.AccessibleTenantProfileAssignmentResponseDTO:
       type: object
       properties:
         errors:
@@ -5311,24 +5413,24 @@ components:
         badTenantCodes:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.TenantCodeErrorDTO'
+            $ref: '#/components/schemas/servicing.TenantCodeErrorDTO'
           description: A list of objects representing any tenants that returned errors.
         badUserIds:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.UserIdErrorDTO'
+            $ref: '#/components/schemas/servicing.UserIdErrorDTO'
           description: A list of objects representing the user IDs that may not be valid.
         failedAssignments:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.FailedAccessibleTenantProfileAssignmentDTO'
+            $ref: '#/components/schemas/servicing.FailedAccessibleTenantProfileAssignmentDTO'
           description: A list of objects representing any errors during the assignment operation.
         successfulAssignments:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.SuccessfulAccessibleTenantProfileAssignmentDTO'
+            $ref: '#/components/schemas/servicing.SuccessfulAccessibleTenantProfileAssignmentDTO'
           description: A list of user IDs that were successfully assigned the profiles.
-    servicing.publicapi.transfers.AccessibleTenantProfileRevokeRequestDTO:
+    servicing.AccessibleTenantProfileRevokeRequestDTO:
       type: object
       properties:
         targetUserIds:
@@ -5339,32 +5441,32 @@ components:
         targetTenantCodes:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.TargetTenantCodeDTO'
+            $ref: '#/components/schemas/servicing.TargetTenantCodeDTO'
           description: A list of objects representing the  analytic tenants for removing profiles from each target user ID.
-    servicing.publicapi.transfers.AccessibleTenantProfileRevokeResponseDTO:
+    servicing.AccessibleTenantProfileRevokeResponseDTO:
       type: object
       properties:
         badTenantCodes:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.ReducedTenantCodeErrorDTO'
+            $ref: '#/components/schemas/servicing.ReducedTenantCodeErrorDTO'
           description: A list of objects representing any tenants that returned errors.
         badUserIds:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.ReducedUserIdErrorDTO'
+            $ref: '#/components/schemas/servicing.ReducedUserIdErrorDTO'
           description: A list of objects representing the user IDs that may not be valid.
         unaffectedUsers:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.SuccessfulLocalTenantProfileAssignmentDTO'
+            $ref: '#/components/schemas/servicing.SuccessfulLocalTenantProfileAssignmentDTO'
           description: A list of objects representing the valid user IDs that were not affected.
         succeeded:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.SuccessfulLocalTenantProfileAssignmentDTO'
+            $ref: '#/components/schemas/servicing.SuccessfulLocalTenantProfileAssignmentDTO'
           description: A list of objects representing the valid user IDs that succeeded.
-    servicing.publicapi.transfers.AdditionalCapabilitiesDTO:
+    servicing.AdditionalCapabilitiesDTO:
       type: object
       properties:
         additionalCapabilities:
@@ -5372,7 +5474,7 @@ components:
           items:
             type: string
           description: The additional capabilities assigned to this profile.
-    servicing.publicapi.transfers.AdminCapabilityConfigDTO:
+    servicing.AdminCapabilityConfigDTO:
       type: object
       properties:
         allCapabilitiesAccess:
@@ -5383,45 +5485,45 @@ components:
           items:
             type: string
           description: A list of the capabilities assigned in the permission. Not required if `allCapabilitiesAccess` is true.
-    servicing.publicapi.transfers.AllPermissionsAssignedForLocalTenantDTO:
+    servicing.AllPermissionsAssignedForLocalTenantDTO:
       type: object
       properties:
         assignedPermissions:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionAssignedForLocalTenantDTO'
+            $ref: '#/components/schemas/servicing.PermissionAssignedForLocalTenantDTO'
           description: A list of objects representing the user's permissions.
-    servicing.publicapi.transfers.AllProfileAssignedForAccessibleTenantDTO:
+    servicing.AllProfileAssignedForAccessibleTenantDTO:
       type: object
       properties:
         assignedProfilesForAccessibleTenant:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.ProfileAssignedForAccessibleTenantDTO'
+            $ref: '#/components/schemas/servicing.ProfileAssignedForAccessibleTenantDTO'
           description: A list of objects representing the user profiles assigned to the user and their validity range.
-    servicing.publicapi.transfers.AllProfileAssignedForLocalTenantDTO:
+    servicing.AllProfileAssignedForLocalTenantDTO:
       type: object
       properties:
         assignedProfiles:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.ProfileAssignedForLocalTenantDTO'
+            $ref: '#/components/schemas/servicing.ProfileAssignedForLocalTenantDTO'
           description: A list of objects representing the user profiles assigned to the user and their validity range.
-    servicing.publicapi.transfers.AllUserGroupsAssignedForLocalTenantDTO:
+    servicing.AllUserGroupsAssignedForLocalTenantDTO:
       type: object
       properties:
         assignedUserGroups:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.UserGroupAssignedForLocalTenantDTO'
+            $ref: '#/components/schemas/servicing.UserGroupAssignedForLocalTenantDTO'
           description: A list of objects representing the available user groups.
-    servicing.publicapi.transfers.AllUsersGetAPIResponseDTO:
+    servicing.AllUsersGetAPIResponseDTO:
       type: object
       properties:
         users:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.UserGetAPIResponseDTO'
+            $ref: '#/components/schemas/servicing.UserGetAPIResponseDTO'
           description: A list of available users.
         limit:
           type: integer
@@ -5431,7 +5533,7 @@ components:
           type: integer
           description: The index to start retrieving results from, also known as offset. The index begins at 0.
           format: uint32
-    servicing.publicapi.transfers.AnalyticObjectDTO:
+    servicing.AnalyticObjectDTO:
       type: object
       properties:
         analyticObjectId:
@@ -5458,30 +5560,30 @@ components:
         relatedObjects:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.RelatedAnalyticObjectDTO'
+            $ref: '#/components/schemas/servicing.RelatedAnalyticObjectDTO'
           description: The analytic objects related to the data security object.
         securableProperties:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.SecurablePropertyDTO'
+            $ref: '#/components/schemas/servicing.SecurablePropertyDTO'
           description: All available properties from the data security object and its related analytic objects that you can configure data access for.
         securableDimensions:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.SecurableDimensionDTO'
+            $ref: '#/components/schemas/servicing.SecurableDimensionDTO'
           description: A list of dimensions that are available to define population access filters in the permission.
-    servicing.publicapi.transfers.AssignRevokePermissionByPermissionDTO:
+    servicing.AssignRevokePermissionByPermissionDTO:
       type: object
       properties:
         permission:
-          $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionAssignedForLocalTenantDTO'
+          $ref: '#/components/schemas/servicing.PermissionAssignedForLocalTenantDTO'
         users:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.AssignRevokePermissionByUserDTO'
+            $ref: '#/components/schemas/servicing.AssignRevokePermissionByUserDTO'
           description: A list of objects representing the users that was permission was assigned to or removed from.
       description: The results of the permission assignment or removal.
-    servicing.publicapi.transfers.AssignRevokePermissionByTenantDTO:
+    servicing.AssignRevokePermissionByTenantDTO:
       type: object
       properties:
         tenantCode:
@@ -5490,7 +5592,7 @@ components:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.AssignRevokePermissionByPermissionDTO'
+            $ref: '#/components/schemas/servicing.AssignRevokePermissionByPermissionDTO'
           description: A list of objects representing the assigned or removed permissions.
         status:
           enum:
@@ -5507,7 +5609,7 @@ components:
           type: string
           description: The ID of the project that the change was made in, if applicable.
       description: The permissions organized by tenant.
-    servicing.publicapi.transfers.AssignRevokePermissionByUserDTO:
+    servicing.AssignRevokePermissionByUserDTO:
       type: object
       properties:
         userId:
@@ -5520,7 +5622,7 @@ components:
           type: string
           description: A meaningful message about the user permission.
       description: The results of the permission assignment or removal by user.
-    servicing.publicapi.transfers.AssignRevokePermissionRequestDTO:
+    servicing.AssignRevokePermissionRequestDTO:
       type: object
       properties:
         permissionId:
@@ -5534,46 +5636,46 @@ components:
       description: |-
         Set permission detail
          permissionId with assign to userIds
-    servicing.publicapi.transfers.AssignRevokePermissionsRequestDTO:
+    servicing.AssignRevokePermissionsRequestDTO:
       type: object
       properties:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.AssignRevokePermissionRequestDTO'
+            $ref: '#/components/schemas/servicing.AssignRevokePermissionRequestDTO'
           description: A list of objects representing the permissions to assign to or remove from users.
         targetProjectForTenantsList:
           allOf:
-            - $ref: '#/components/schemas/admin.transfers.TargetProjectForTenantsListDTO'
+            - $ref: '#/components/schemas/admin.TargetProjectForTenantsListDTO'
           description: |-
             Administrating tenants can specify the tenants and projects in which to assign permissions to users or remove permissions from users. Specify one `projectId` per `tenantCode`.
              If omitted, the request is immediately published to production or applied to the `ProjectID` in the request header, if available, for the administrating tenant or TargetTenantID, if available.
       description: |-
         Set permissions request
          List of permissionId with assign to user Ids
-    servicing.publicapi.transfers.AssignRevokePermissionsResponseDTO:
+    servicing.AssignRevokePermissionsResponseDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.AssignRevokePermissionByTenantDTO'
+            $ref: '#/components/schemas/servicing.AssignRevokePermissionByTenantDTO'
           description: A list of objects representing the users that were assigned permissions, organized by the tenants the users belong to.
       description: The results of the permission assignment or removal.
-    servicing.publicapi.transfers.BulkDataAccessSetResponseDTO:
+    servicing.BulkDataAccessSetResponseDTO:
       type: object
       properties:
         successes:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.DataAccessSetSuccessDTO'
+            $ref: '#/components/schemas/servicing.DataAccessSetSuccessDTO'
           description: The successfully created data access sets.
         failures:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.DataAccessSetFailureDTO'
+            $ref: '#/components/schemas/servicing.DataAccessSetFailureDTO'
           description: The data access sets that failed to be created and any relevant error information.
-    servicing.publicapi.transfers.CapabilitiesDTO:
+    servicing.CapabilitiesDTO:
       type: object
       properties:
         capability:
@@ -5585,7 +5687,7 @@ components:
         viewLevel:
           type: string
           description: The view level of the profile for the given capability.
-    servicing.publicapi.transfers.CapabilityDTO:
+    servicing.CapabilityDTO:
       type: object
       properties:
         name:
@@ -5597,14 +5699,14 @@ components:
         description:
           type: string
           description: A description of the capability.
-    servicing.publicapi.transfers.CommitAndPublishOperationResponseDTO:
+    servicing.CommitAndPublishOperationResponseDTO:
       type: object
       properties:
         publishedVersion:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectDTO'
+            - $ref: '#/components/schemas/servicing.ProjectDTO'
           description: The project version that was published to production.
-    servicing.publicapi.transfers.CommitDTO:
+    servicing.CommitDTO:
       type: object
       properties:
         id:
@@ -5616,7 +5718,7 @@ components:
         description:
           type: string
           description: A description of the committed change.
-    servicing.publicapi.transfers.ContentPackageDTO:
+    servicing.ContentPackageDTO:
       type: object
       properties:
         contentPackageId:
@@ -5628,15 +5730,15 @@ components:
         description:
           type: string
           description: A description of the content package.
-    servicing.publicapi.transfers.CreateDataAccessSetRequestDTO:
+    servicing.CreateDataAccessSetRequestDTO:
       type: object
       properties:
         shareablePropertyAccessConfigs:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.DataAccessSetDTO'
+            $ref: '#/components/schemas/servicing.DataAccessSetDTO'
           description: The data access sets to be created.
-    servicing.publicapi.transfers.DataAccessSetDTO:
+    servicing.DataAccessSetDTO:
       type: object
       properties:
         id:
@@ -5654,9 +5756,9 @@ components:
         propertyAccessConfigs:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.PropertyAccessConfigDTO'
+            $ref: '#/components/schemas/servicing.PropertyAccessConfigDTO'
           description: The data access assigned to properties in the data access set.
-    servicing.publicapi.transfers.DataAccessSetErrorDTO:
+    servicing.DataAccessSetErrorDTO:
       type: object
       properties:
         message:
@@ -5665,7 +5767,7 @@ components:
         rci:
           type: string
           description: A root cause identifier that allows Visier to determine the source of the problem.
-    servicing.publicapi.transfers.DataAccessSetFailureDTO:
+    servicing.DataAccessSetFailureDTO:
       type: object
       properties:
         dataAccessSetId:
@@ -5676,9 +5778,9 @@ components:
           description: An identifiable data access set name to display in Visier, such as "Detailed(Employee)".
         error:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.DataAccessSetErrorDTO'
+            - $ref: '#/components/schemas/servicing.DataAccessSetErrorDTO'
           description: The error associated with the failure.
-    servicing.publicapi.transfers.DataAccessSetSuccessDTO:
+    servicing.DataAccessSetSuccessDTO:
       type: object
       properties:
         dataAccessSetId:
@@ -5687,7 +5789,7 @@ components:
         displayName:
           type: string
           description: An identifiable data access set name to display in Visier, such as "Detailed(Employee)".
-    servicing.publicapi.transfers.DataSecurityProfileDTO:
+    servicing.DataSecurityProfileDTO:
       type: object
       properties:
         analyticObjectId:
@@ -5695,7 +5797,7 @@ components:
           description: The unique ID of the analytic object assigned data security in this permission.
         propertySetConfig:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.PropertySetConfigDTO'
+            - $ref: '#/components/schemas/servicing.PropertySetConfigDTO'
           description: A list of objects representing the data access for an analytic object’s properties.
         allDataPointAccess:
           type: boolean
@@ -5703,12 +5805,12 @@ components:
         memberFilterConfigs:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.MemberFilterConfigDTO'
+            $ref: '#/components/schemas/servicing.MemberFilterConfigDTO'
           description: Custom filters that define population access for an item in the permission.
         inheritedAccessConfigs:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.InheritedAccessConfigDTO'
+            $ref: '#/components/schemas/servicing.InheritedAccessConfigDTO'
           description: |-
             The events and related objects inherited from the analytic object.
              By default, all events and related objects associated with the analytic object will be inherited from the analytic object in a permission.
@@ -5717,7 +5819,7 @@ components:
              To add custom filters to an event or related object, add the object to `inheritedAccessConfigs` and define `memberFilterConfigs`.
         inheritedReferenceMemberFilterConfig:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.InheritedReferenceMemberFilterConfigDTO'
+            - $ref: '#/components/schemas/servicing.InheritedReferenceMemberFilterConfigDTO'
           description: |-
             Configures the analytic object to inherit population access filters from. The target analytic object must be assigned population access in the permission and have a binding (strong) reference from the source analytic object.
              * For example, assume `Applicant` -> `Requisition` is configured to be a binding (strong) reference.
@@ -5735,7 +5837,7 @@ components:
              * **NoData**: The object exists but doesn't have loaded data.
              * **NotFound**: The object doesn't exist.
           format: enum
-    servicing.publicapi.transfers.DeletePermissionsRequestDTO:
+    servicing.DeletePermissionsRequestDTO:
       type: object
       properties:
         permissionIds:
@@ -5743,14 +5845,14 @@ components:
           items:
             type: string
           description: The identifiers of the permissions to delete.
-    servicing.publicapi.transfers.DimensionFilterDTO:
+    servicing.DimensionFilterDTO:
       type: object
       properties:
         staticDimensionFilter:
-          $ref: '#/components/schemas/servicing.publicapi.transfers.StaticDimensionFilterDTO'
+          $ref: '#/components/schemas/servicing.StaticDimensionFilterDTO'
         dynamicDimensionFilter:
-          $ref: '#/components/schemas/servicing.publicapi.transfers.DynamicDimensionFilterDTO'
-    servicing.publicapi.transfers.DynamicDimensionFilterDTO:
+          $ref: '#/components/schemas/servicing.DynamicDimensionFilterDTO'
+    servicing.DynamicDimensionFilterDTO:
       type: object
       properties:
         dimensionId:
@@ -5764,7 +5866,7 @@ components:
         dynamicPropertyMappings:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.DynamicPropertyMappingDTO'
+            $ref: '#/components/schemas/servicing.DynamicPropertyMappingDTO'
           description: The properties assigned population access in the dynamic filter.
         dimensionStatus:
           enum:
@@ -5779,7 +5881,7 @@ components:
              * **NoData**: The object exists but doesn't have loaded data.
              * **NotFound**: The object doesn't exist.
           format: enum
-    servicing.publicapi.transfers.DynamicPropertyMappingDTO:
+    servicing.DynamicPropertyMappingDTO:
       type: object
       properties:
         hierarchyPropertyId:
@@ -5787,7 +5889,7 @@ components:
           description: The unique ID of the property.
         userProperty:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.UserPropertyDTO'
+            - $ref: '#/components/schemas/servicing.UserPropertyDTO'
           description: The user property that you want to link the name property or organization head to.
         hierarchyPropertyStatus:
           enum:
@@ -5801,7 +5903,7 @@ components:
              * **Valid**: The object exists and has loaded data.
              * **NotFound**: The object doesn't exist.
           format: enum
-    servicing.publicapi.transfers.ErrorDTO:
+    servicing.ErrorDTO:
       type: object
       properties:
         rootCauseId:
@@ -5813,7 +5915,7 @@ components:
         errorMessage:
           type: string
           description: A description of the error that occurred.
-    servicing.publicapi.transfers.ExportProductionVersionsAPIOperationParametersDTO:
+    servicing.ExportProductionVersionsAPIOperationParametersDTO:
       type: object
       properties:
         startVersion:
@@ -5827,13 +5929,13 @@ components:
           items:
             type: string
           description: A list of versions between `startVersion` and `endVersion` to exclude.
-    servicing.publicapi.transfers.ExportProductionVersionsAPIOperationResponseDTO:
+    servicing.ExportProductionVersionsAPIOperationResponseDTO:
       type: object
       properties: {}
-    servicing.publicapi.transfers.ExportSourcesAPIOperationResponseDTO:
+    servicing.ExportSourcesAPIOperationResponseDTO:
       type: object
       properties: {}
-    servicing.publicapi.transfers.FailedAccessibleTenantProfileAssignmentDTO:
+    servicing.FailedAccessibleTenantProfileAssignmentDTO:
       type: object
       properties:
         userId:
@@ -5847,9 +5949,9 @@ components:
           description: If true, the target assignment is for all analytic tenants.
         error:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.ErrorDTO'
+            - $ref: '#/components/schemas/servicing.ErrorDTO'
           description: The details about the error.
-    servicing.publicapi.transfers.FailedLocalTenantProfileAssignmentDTO:
+    servicing.FailedLocalTenantProfileAssignmentDTO:
       type: object
       properties:
         userId:
@@ -5857,9 +5959,9 @@ components:
           description: The impacted user ID.
         error:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.ErrorDTO'
+            - $ref: '#/components/schemas/servicing.ErrorDTO'
           description: The details about the error.
-    servicing.publicapi.transfers.FailedLocalTenantProfileRevokeDTO:
+    servicing.FailedLocalTenantProfileRevokeDTO:
       type: object
       properties:
         userId:
@@ -5868,79 +5970,79 @@ components:
         message:
           type: string
           description: The details about the error.
-    servicing.publicapi.transfers.GetCapabilitiesAPIResponseDTO:
+    servicing.GetCapabilitiesAPIResponseDTO:
       type: object
       properties:
         capabilities:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.CapabilityDTO'
+            $ref: '#/components/schemas/servicing.CapabilityDTO'
           description: A list of objects representing the available capabilities.
-    servicing.publicapi.transfers.GetContentPackagesAPIResponseDTO:
+    servicing.GetContentPackagesAPIResponseDTO:
       type: object
       properties:
         contentPackages:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.ContentPackageDTO'
+            $ref: '#/components/schemas/servicing.ContentPackageDTO'
           description: A list of objects representing the available content packages.
-    servicing.publicapi.transfers.GetDataAccessSetsAPIResponseDTO:
+    servicing.GetDataAccessSetsAPIResponseDTO:
       type: object
       properties:
         dataAccessSets:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.DataAccessSetDTO'
+            $ref: '#/components/schemas/servicing.DataAccessSetDTO'
           description: A list of objects representing the shareable data access sets.
-    servicing.publicapi.transfers.GetDataSecurityObjectsAPIResponseDTO:
+    servicing.GetDataSecurityObjectsAPIResponseDTO:
       type: object
       properties:
         analyticObjects:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.AnalyticObjectDTO'
+            $ref: '#/components/schemas/servicing.AnalyticObjectDTO'
           description: A list of analytic objects and their related objects that are available to define data access to.
-    servicing.publicapi.transfers.GetPermissionsAPIResponseDTO:
+    servicing.GetPermissionsAPIResponseDTO:
       type: object
       properties:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionDTO'
+            $ref: '#/components/schemas/servicing.PermissionDTO'
           description: A list of objects representing the available permissions.
       description: List of available permissions
-    servicing.publicapi.transfers.GetProductionVersionsAPIResponseDTO:
+    servicing.GetProductionVersionsAPIResponseDTO:
       type: object
       properties:
         publishedVersions:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectDTO'
+            $ref: '#/components/schemas/servicing.ProjectDTO'
           description: A list of projects that were published to production.
-    servicing.publicapi.transfers.GetProjectsAPIResponseDTO:
+    servicing.GetProjectsAPIResponseDTO:
       type: object
       properties:
         openProjects:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectDTO'
+            $ref: '#/components/schemas/servicing.ProjectDTO'
           description: A list of objects representing the accessible open projects for the user.
         approvalProjects:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectDTO'
+            $ref: '#/components/schemas/servicing.ProjectDTO'
           description: A list of objects representing the accessible approval projects for the user.
         rejectedProjects:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectDTO'
+            $ref: '#/components/schemas/servicing.ProjectDTO'
           description: A list of objects representing the accessible rejected projects for the user.
         archivedProjects:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectDTO'
+            $ref: '#/components/schemas/servicing.ProjectDTO'
           description: A list of objects representing the accessible archived projects for the user.
-    servicing.publicapi.transfers.HierarchyPropertyDTO:
+    servicing.HierarchyPropertyDTO:
       type: object
       properties:
         hierarchyPropertyId:
@@ -5949,7 +6051,7 @@ components:
         displayName:
           type: string
           description: An identifiable property name to display in Visier, such as "Name Property".
-    servicing.publicapi.transfers.InheritedAccessConfigDTO:
+    servicing.InheritedAccessConfigDTO:
       type: object
       properties:
         analyticObjectId:
@@ -5961,9 +6063,9 @@ components:
         memberFilterConfigs:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.MemberFilterConfigDTO'
+            $ref: '#/components/schemas/servicing.MemberFilterConfigDTO'
           description: Custom filters that define population access for an inherited analytic object in the permission.
-    servicing.publicapi.transfers.InheritedReferenceMemberFilterConfigDTO:
+    servicing.InheritedReferenceMemberFilterConfigDTO:
       type: object
       properties:
         targetAnalyticObjectId:
@@ -5976,13 +6078,13 @@ components:
           description: |-
             The optional object name of a binding (strong) reference to the target analytic object. If not specified, uses the first binding reference from the source
             to the target analytic object.
-    servicing.publicapi.transfers.LastLoginDTO:
+    servicing.LastLoginDTO:
       type: object
       properties:
         timestamp:
           type: string
           description: The time that the user last logged into Visier.
-    servicing.publicapi.transfers.LocalTenantProfileAssignmentRequestDTO:
+    servicing.LocalTenantProfileAssignmentRequestDTO:
       type: object
       properties:
         targetUserIds:
@@ -5996,7 +6098,7 @@ components:
         validityEndTime:
           type: string
           description: An exclusive date-time when this profile is no longer active.
-    servicing.publicapi.transfers.LocalTenantProfileAssignmentResponseDTO:
+    servicing.LocalTenantProfileAssignmentResponseDTO:
       type: object
       properties:
         errors:
@@ -6005,19 +6107,19 @@ components:
         badUserIds:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.UserIdErrorDTO'
+            $ref: '#/components/schemas/servicing.UserIdErrorDTO'
           description: A list of objects representing the user IDs that may not be valid.
         failedAssignments:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.FailedLocalTenantProfileAssignmentDTO'
+            $ref: '#/components/schemas/servicing.FailedLocalTenantProfileAssignmentDTO'
           description: A list of objects representing any errors that occurred during the assignment operation.
         successfulAssignments:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.SuccessfulLocalTenantProfileAssignmentDTO'
+            $ref: '#/components/schemas/servicing.SuccessfulLocalTenantProfileAssignmentDTO'
           description: A list of the user IDs that were successfully assigned the profile.
-    servicing.publicapi.transfers.LocalTenantProfileRevokeRequestDTO:
+    servicing.LocalTenantProfileRevokeRequestDTO:
       type: object
       properties:
         targetUserIds:
@@ -6025,28 +6127,28 @@ components:
           items:
             type: string
           description: A list of users to remove this profile from.
-    servicing.publicapi.transfers.LocalTenantProfileRevokeResponseDTO:
+    servicing.LocalTenantProfileRevokeResponseDTO:
       type: object
       properties:
         failed:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.FailedLocalTenantProfileRevokeDTO'
+            $ref: '#/components/schemas/servicing.FailedLocalTenantProfileRevokeDTO'
           description: A list of objects representing any errors that occurred during the assignment operation.
         succeeded:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.SuccessfulLocalTenantProfileAssignmentDTO'
+            $ref: '#/components/schemas/servicing.SuccessfulLocalTenantProfileAssignmentDTO'
           description: A list of the user IDs that successfully had a profile removed.
-    servicing.publicapi.transfers.MemberFilterConfigDTO:
+    servicing.MemberFilterConfigDTO:
       type: object
       properties:
         dimensionFilters:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.DimensionFilterDTO'
+            $ref: '#/components/schemas/servicing.DimensionFilterDTO'
           description: "A list of objects representing the custom filters that define population access for the item. \n A custom filter can be a \"member filter\" (`staticDimensionFilter`) or a \"dynamic filter\" (`dynamicDimensionFilter`)."
-    servicing.publicapi.transfers.MemberSelectionDTO:
+    servicing.MemberSelectionDTO:
       type: object
       properties:
         namePath:
@@ -6069,7 +6171,7 @@ components:
              * **Valid**: The object exists and has loaded data.
              * **NotFound**: The object doesn't exist.
           format: enum
-    servicing.publicapi.transfers.PermissionAssignedByTenantDTO:
+    servicing.PermissionAssignedByTenantDTO:
       type: object
       properties:
         tenantCode:
@@ -6078,10 +6180,10 @@ components:
         users:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionAssignedUserDTO'
+            $ref: '#/components/schemas/servicing.PermissionAssignedUserDTO'
           description: A list of objects representing the users that the permission is assigned to.
       description: The users assigned a specific permission, grouped by tenant.
-    servicing.publicapi.transfers.PermissionAssignedForLocalTenantDTO:
+    servicing.PermissionAssignedForLocalTenantDTO:
       type: object
       properties:
         permissionId:
@@ -6093,7 +6195,7 @@ components:
         description:
           type: string
           description: A user-defined description of the permission.
-    servicing.publicapi.transfers.PermissionAssignedUserDTO:
+    servicing.PermissionAssignedUserDTO:
       type: object
       properties:
         userId:
@@ -6112,13 +6214,13 @@ components:
               - UserAndUserGroup: The permission was directly assigned to the user and assigned because the user belongs to
                 a user group that is assigned the permission.
       description: The user and the method through which the user was assigned the permission.
-    servicing.publicapi.transfers.PermissionAssignedUsersDTO:
+    servicing.PermissionAssignedUsersDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionAssignedByTenantDTO'
+            $ref: '#/components/schemas/servicing.PermissionAssignedByTenantDTO'
           description: A list of objects representing the users that are assigned the specific permission, organized by the tenants the users belong to.
         limit:
           type: integer
@@ -6129,20 +6231,20 @@ components:
           description: The index of the tenant to start retrieving results from, also known as offset. The index begins at 0.
           format: uint32
       description: Users that are assigned a specific permission.
-    servicing.publicapi.transfers.PermissionBulkOperationResponseDTO:
+    servicing.PermissionBulkOperationResponseDTO:
       type: object
       properties:
         successes:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionSuccessDTO'
+            $ref: '#/components/schemas/servicing.PermissionSuccessDTO'
           description: The successfully processed permissions.
         failures:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionFailureDTO'
+            $ref: '#/components/schemas/servicing.PermissionFailureDTO'
           description: The permissions that did not process and any relevant error information.
-    servicing.publicapi.transfers.PermissionDTO:
+    servicing.PermissionDTO:
       type: object
       properties:
         permissionId:
@@ -6157,17 +6259,17 @@ components:
         dataSecurityProfiles:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.DataSecurityProfileDTO'
+            $ref: '#/components/schemas/servicing.DataSecurityProfileDTO'
           description: A list of objects representing the data security for each item in a permission.
         adminCapabilityConfig:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.AdminCapabilityConfigDTO'
+            - $ref: '#/components/schemas/servicing.AdminCapabilityConfigDTO'
           description: The capabilities assigned in the permission.
         roleModulesConfig:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.RoleModulesConfigDTO'
+            - $ref: '#/components/schemas/servicing.RoleModulesConfigDTO'
           description: A list of content packages assigned to the permission.
-    servicing.publicapi.transfers.PermissionErrorDTO:
+    servicing.PermissionErrorDTO:
       type: object
       properties:
         message:
@@ -6176,7 +6278,7 @@ components:
         rci:
           type: string
           description: A root cause identifier that allows Visier to determine the source of the problem.
-    servicing.publicapi.transfers.PermissionFailureDTO:
+    servicing.PermissionFailureDTO:
       type: object
       properties:
         permissionId:
@@ -6187,9 +6289,9 @@ components:
           description: An identifiable permission name to display in Visier, such as "Diversity Access".
         error:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.PermissionErrorDTO'
+            - $ref: '#/components/schemas/servicing.PermissionErrorDTO'
           description: The error associated with the failure.
-    servicing.publicapi.transfers.PermissionSuccessDTO:
+    servicing.PermissionSuccessDTO:
       type: object
       properties:
         permissionId:
@@ -6198,7 +6300,7 @@ components:
         displayName:
           type: string
           description: An identifiable permission name to display in Visier, such as "Diversity Access".
-    servicing.publicapi.transfers.ProductionVersionAPIOperationRequestDTO:
+    servicing.ProductionVersionAPIOperationRequestDTO:
       type: object
       properties:
         operation:
@@ -6210,14 +6312,14 @@ components:
             The operation to perform. Valid values:
              * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
           format: enum
-    servicing.publicapi.transfers.ProductionVersionAPIOperationResponseDTO:
+    servicing.ProductionVersionAPIOperationResponseDTO:
       type: object
       properties:
         rollBackTo:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.ProjectDTO'
+            - $ref: '#/components/schemas/servicing.ProjectDTO'
           description: The project created by the `rollBackTo` operation.
-    servicing.publicapi.transfers.ProductionVersionsAPIOperationRequestDTO:
+    servicing.ProductionVersionsAPIOperationRequestDTO:
       type: object
       properties:
         operation:
@@ -6231,16 +6333,16 @@ components:
           format: enum
         exportParameters:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.ExportProductionVersionsAPIOperationParametersDTO'
+            - $ref: '#/components/schemas/servicing.ExportProductionVersionsAPIOperationParametersDTO'
           description: The parameters for the `export` option, such as the production version to start exporting versions from. Required for `export` operations.
-    servicing.publicapi.transfers.ProductionVersionsAPIOperationResponseDTO:
+    servicing.ProductionVersionsAPIOperationResponseDTO:
       type: object
       properties:
         export:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.ExportProductionVersionsAPIOperationResponseDTO'
+            - $ref: '#/components/schemas/servicing.ExportProductionVersionsAPIOperationResponseDTO'
           description: The result of the `export` operation.
-    servicing.publicapi.transfers.ProfileAssignedForAccessibleTenantDTO:
+    servicing.ProfileAssignedForAccessibleTenantDTO:
       type: object
       properties:
         profileId:
@@ -6267,7 +6369,7 @@ components:
             An exclusive date-time when this profile is no longer active.
 
              Note: Long.Max_Value means that endTime is undefined and is equivalent to permanent access.
-    servicing.publicapi.transfers.ProfileAssignedForLocalTenantDTO:
+    servicing.ProfileAssignedForLocalTenantDTO:
       type: object
       properties:
         profileId:
@@ -6285,13 +6387,13 @@ components:
         capabilities:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.CapabilitiesDTO'
+            $ref: '#/components/schemas/servicing.CapabilitiesDTO'
           description: A list of objects representing the access that this profile has for the capabilities of this profile.
         additionalCapabilities:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.AdditionalCapabilitiesDTO'
+            - $ref: '#/components/schemas/servicing.AdditionalCapabilitiesDTO'
           description: A list of the additional capabilities that are assigned to this profile.
-    servicing.publicapi.transfers.ProfileGetAPIResponseDTO:
+    servicing.ProfileGetAPIResponseDTO:
       type: object
       properties:
         profileId:
@@ -6303,30 +6405,30 @@ components:
         capabilities:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.CapabilitiesDTO'
+            $ref: '#/components/schemas/servicing.CapabilitiesDTO'
           description: A list of objects representing the access that this profile has for the capabilities of this profile.
         additionalCapabilities:
           type: array
           items:
             type: string
           description: A list of the additional capabilities that are assigned to this profile.
-    servicing.publicapi.transfers.ProfilesGetAPIResponseDTO:
+    servicing.ProfilesGetAPIResponseDTO:
       type: object
       properties:
         profiles:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.ProfileGetAPIResponseDTO'
+            $ref: '#/components/schemas/servicing.ProfileGetAPIResponseDTO'
           description: A list of objects representing the available profiles.
-    servicing.publicapi.transfers.ProjectCommitsAPIResponseDTO:
+    servicing.ProjectCommitsAPIResponseDTO:
       type: object
       properties:
         commits:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.CommitDTO'
+            $ref: '#/components/schemas/servicing.CommitDTO'
           description: A list of committed changes in the project.
-    servicing.publicapi.transfers.ProjectDTO:
+    servicing.ProjectDTO:
       type: object
       properties:
         id:
@@ -6365,7 +6467,7 @@ components:
              **canShare**: The project has been shared to the user with `Share` access.
              **owner**: The user is the owner of the project.
              Omit when creating a new project.
-    servicing.publicapi.transfers.ProjectOperationRequestDTO:
+    servicing.ProjectOperationRequestDTO:
       type: object
       properties:
         operation:
@@ -6377,14 +6479,14 @@ components:
             The operation to perform on a draft project. Valid values:
              * `commitAndPublish`: Commits the requesting user's changes and publishes the draft project to production.
           format: enum
-    servicing.publicapi.transfers.ProjectOperationResponseDTO:
+    servicing.ProjectOperationResponseDTO:
       type: object
       properties:
         commitAndPublish:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.CommitAndPublishOperationResponseDTO'
+            - $ref: '#/components/schemas/servicing.CommitAndPublishOperationResponseDTO'
           description: The result of the `commitAndPublish` operation.
-    servicing.publicapi.transfers.PropertyAccessConfigDTO:
+    servicing.PropertyAccessConfigDTO:
       type: object
       properties:
         propertyId:
@@ -6422,25 +6524,25 @@ components:
              * **NoData**: The object exists but doesn't have loaded data.
              * **NotFound**: The object doesn't exist.
           format: enum
-    servicing.publicapi.transfers.PropertySetConfigDTO:
+    servicing.PropertySetConfigDTO:
       type: object
       properties:
         propertyAccessConfigs:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.PropertyAccessConfigDTO'
+            $ref: '#/components/schemas/servicing.PropertyAccessConfigDTO'
           description: The data access for a property.
         shareableDataAccessSet:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.ShareableDataAccessSet'
+            - $ref: '#/components/schemas/servicing.ShareableDataAccessSet'
           description: A shareable data access set. Shareable data access sets may be linked in multiple permissions.
-    servicing.publicapi.transfers.ReducedErrorDTO:
+    servicing.ReducedErrorDTO:
       type: object
       properties:
         errorMessage:
           type: string
           description: A meaningful message for the end user.
-    servicing.publicapi.transfers.ReducedTenantCodeErrorDTO:
+    servicing.ReducedTenantCodeErrorDTO:
       type: object
       properties:
         tenantCode:
@@ -6451,9 +6553,9 @@ components:
           description: If true, the assignment is for all the analytic tenants of the specified tenant.
         error:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.ReducedErrorDTO'
+            - $ref: '#/components/schemas/servicing.ReducedErrorDTO'
           description: The details about the error.
-    servicing.publicapi.transfers.ReducedUserIdErrorDTO:
+    servicing.ReducedUserIdErrorDTO:
       type: object
       properties:
         userId:
@@ -6461,9 +6563,9 @@ components:
           description: The bad user ID.
         error:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.ReducedErrorDTO'
+            - $ref: '#/components/schemas/servicing.ReducedErrorDTO'
           description: The details about the error.
-    servicing.publicapi.transfers.RelatedAnalyticObjectDTO:
+    servicing.RelatedAnalyticObjectDTO:
       type: object
       properties:
         analyticObjectId:
@@ -6472,7 +6574,7 @@ components:
         displayName:
           type: string
           description: An identifiable analytic object name to display in Visier, such as "Recognition".
-    servicing.publicapi.transfers.RoleModulesConfigDTO:
+    servicing.RoleModulesConfigDTO:
       type: object
       properties:
         contentPackageIds:
@@ -6480,7 +6582,7 @@ components:
           items:
             type: string
           description: The unique IDs of the content packages assigned to the permission.
-    servicing.publicapi.transfers.SecurableDimensionDTO:
+    servicing.SecurableDimensionDTO:
       type: object
       properties:
         dimensionId:
@@ -6497,9 +6599,9 @@ components:
         hierarchyProperties:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.HierarchyPropertyDTO'
+            $ref: '#/components/schemas/servicing.HierarchyPropertyDTO'
           description: The list of hierarchies you can map to a user in a permission's dynamic filter.
-    servicing.publicapi.transfers.SecurablePropertyDTO:
+    servicing.SecurablePropertyDTO:
       type: object
       properties:
         propertyId:
@@ -6517,13 +6619,13 @@ components:
         referenceSymbolName:
           type: string
           description: The reference symbol name.
-    servicing.publicapi.transfers.ShareableDataAccessSet:
+    servicing.ShareableDataAccessSet:
       type: object
       properties:
         dataAccessSetId:
           type: string
           description: The unique identifier of the shareable data access set.
-    servicing.publicapi.transfers.SourcesAPIOperationRequestDTO:
+    servicing.SourcesAPIOperationRequestDTO:
       type: object
       properties:
         operation:
@@ -6535,7 +6637,7 @@ components:
             The operation to perform. Valid values:
              * `exportSources`: Export all sources from the tenant. If successful, a ZIP file is returned containing a compressed JSON file with the sources.
           format: enum
-    servicing.publicapi.transfers.StaticDimensionFilterDTO:
+    servicing.StaticDimensionFilterDTO:
       type: object
       properties:
         dimensionId:
@@ -6549,7 +6651,7 @@ components:
         memberSelections:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.MemberSelectionDTO'
+            $ref: '#/components/schemas/servicing.MemberSelectionDTO'
           description: A list of objects representing the dimension members assigned population access in the member filter.
         dimensionStatus:
           enum:
@@ -6564,7 +6666,7 @@ components:
              * **NoData**: The object exists but doesn't have loaded data.
              * **NotFound**: The object doesn't exist.
           format: enum
-    servicing.publicapi.transfers.SuccessfulAccessibleTenantProfileAssignmentDTO:
+    servicing.SuccessfulAccessibleTenantProfileAssignmentDTO:
       type: object
       properties:
         userId:
@@ -6576,13 +6678,13 @@ components:
         forAllChildren:
           type: boolean
           description: If true, the target assignment is for all analytic tenants.
-    servicing.publicapi.transfers.SuccessfulLocalTenantProfileAssignmentDTO:
+    servicing.SuccessfulLocalTenantProfileAssignmentDTO:
       type: object
       properties:
         userId:
           type: string
           description: The user ID.
-    servicing.publicapi.transfers.TargetTenantCodeDTO:
+    servicing.TargetTenantCodeDTO:
       type: object
       properties:
         tenantCode:
@@ -6591,7 +6693,7 @@ components:
         forAllChildren:
           type: boolean
           description: If true, the assignment is for all the analytic tenants of the specified tenant.
-    servicing.publicapi.transfers.TenantCodeErrorDTO:
+    servicing.TenantCodeErrorDTO:
       type: object
       properties:
         tenantCode:
@@ -6602,9 +6704,9 @@ components:
           description: If true, the target assignment is for all analytic tenants.
         error:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.ErrorDTO'
+            - $ref: '#/components/schemas/servicing.ErrorDTO'
           description: The details about the error.
-    servicing.publicapi.transfers.UserCreationAPIRequestDTO:
+    servicing.UserCreationAPIRequestDTO:
       type: object
       properties:
         username:
@@ -6622,7 +6724,7 @@ components:
         email:
           type: string
           description: The user's email. This is used if the user's email is different from their username. For example, "john.doe@visier.com".
-    servicing.publicapi.transfers.UserGetAPIResponseDTO:
+    servicing.UserGetAPIResponseDTO:
       type: object
       properties:
         userId:
@@ -6642,24 +6744,24 @@ components:
           description: If false, the user account is disabled.
         profiles:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.AllProfileAssignedForLocalTenantDTO'
+            - $ref: '#/components/schemas/servicing.AllProfileAssignedForLocalTenantDTO'
           description: A list of objects representing the list of available profiles. Not returned if the user has no profiles.
         permissions:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.AllPermissionsAssignedForLocalTenantDTO'
+            - $ref: '#/components/schemas/servicing.AllPermissionsAssignedForLocalTenantDTO'
           description: A list of objects representing the user's permissions.
         userGroups:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.AllUserGroupsAssignedForLocalTenantDTO'
+            - $ref: '#/components/schemas/servicing.AllUserGroupsAssignedForLocalTenantDTO'
           description: A list of objects representing the available user groups.
         lastLogin:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.LastLoginDTO'
+            - $ref: '#/components/schemas/servicing.LastLoginDTO'
           description: An object that represents the time that the user last logged into Visier.
         email:
           type: string
           description: The user's email address.
-    servicing.publicapi.transfers.UserGroupAssignedForLocalTenantDTO:
+    servicing.UserGroupAssignedForLocalTenantDTO:
       type: object
       properties:
         userGroupId:
@@ -6668,7 +6770,7 @@ components:
         displayName:
           type: string
           description: An identifiable user group name to display in Visier, such as "Leadership User Group".
-    servicing.publicapi.transfers.UserIdErrorDTO:
+    servicing.UserIdErrorDTO:
       type: object
       properties:
         userId:
@@ -6676,15 +6778,15 @@ components:
           description: The bad user ID.
         error:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.ErrorDTO'
+            - $ref: '#/components/schemas/servicing.ErrorDTO'
           description: The details about the error.
-    servicing.publicapi.transfers.UserPropertyDTO:
+    servicing.UserPropertyDTO:
       type: object
       properties:
         name:
           type: string
           description: The name property to map to in the dynamic filter. Valid values are one of `username`, `email`, `employeeId`.
-    servicing.publicapi.transfers.UserUpdateAPIRequestDTO:
+    servicing.UserUpdateAPIRequestDTO:
       type: object
       properties:
         displayName:
@@ -6699,7 +6801,7 @@ components:
         email:
           type: string
           description: The user's email address.
-    servicing.publicapi.transfers.UsersAPIErrorMessageDTO:
+    servicing.UsersAPIErrorMessageDTO:
       type: object
       properties:
         message:
@@ -6708,7 +6810,7 @@ components:
         rci:
           type: string
           description: The unique identifier associated to this error
-    servicing.publicapi.transfers.UsersAPIFailureDTO:
+    servicing.UsersAPIFailureDTO:
       type: object
       properties:
         userId:
@@ -6722,22 +6824,22 @@ components:
           description: An identifiable name to display within Visier. For example, "John Smith".
         error:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.UsersAPIErrorMessageDTO'
+            - $ref: '#/components/schemas/servicing.UsersAPIErrorMessageDTO'
           description: The error thrown during creation.
-    servicing.publicapi.transfers.UsersAPIResponseDTO:
+    servicing.UsersAPIResponseDTO:
       type: object
       properties:
         successes:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.UsersAPISuccessDTO'
+            $ref: '#/components/schemas/servicing.UsersAPISuccessDTO'
           description: The users for which the request succeeded.
         failures:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.UsersAPIFailureDTO'
+            $ref: '#/components/schemas/servicing.UsersAPIFailureDTO'
           description: The users for which the request failed.
-    servicing.publicapi.transfers.UsersAPISuccessDTO:
+    servicing.UsersAPISuccessDTO:
       type: object
       properties:
         userId:
@@ -6758,15 +6860,15 @@ components:
         email:
           type: string
           description: The user's email address.
-    servicing.publicapi.transfers.UsersCreationAPIRequestDTO:
+    servicing.UsersCreationAPIRequestDTO:
       type: object
       properties:
         users:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.UserCreationAPIRequestDTO'
+            $ref: '#/components/schemas/servicing.UserCreationAPIRequestDTO'
           description: A list of objects representing users to create. Maximum 100 users can be created in a single request.
-    servicing.publicapi.transfers.UsersDeleteAPIRequestDTO:
+    servicing.UsersDeleteAPIRequestDTO:
       type: object
       properties:
         userIds:
@@ -6774,15 +6876,15 @@ components:
           items:
             type: string
           description: A list of objects representing users to delete. Maximum 100 users can be deleted in a single request.
-    servicing.publicapi.transfers.UsersUpdateAPIRequestDTO:
+    servicing.UsersUpdateAPIRequestDTO:
       type: object
       properties:
         users:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.UsersUpdateAPIUserDTO'
+            $ref: '#/components/schemas/servicing.UsersUpdateAPIUserDTO'
           description: A list of objects representing users to update. Maximum 100 users can be updated in a single request.
-    servicing.publicapi.transfers.UsersUpdateAPIUserDTO:
+    servicing.UsersUpdateAPIUserDTO:
       type: object
       properties:
         userId:
@@ -6800,7 +6902,7 @@ components:
         email:
           type: string
           description: The user's email address.
-    systemstatus.publicapi.transfers.SystemStatusDTO:
+    systemstatus.SystemStatusDTO:
       type: object
       properties:
         overall:
@@ -6902,22 +7004,22 @@ tags:
   - name: Projects
     description: |-
       Create projects, publish projects, and retrieve project details.
-      <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: ProductionVersions
+    x-displayName: Production Versions
     description: |-
       Use this API to retrieve information about data versions that were published to production.
       In Visier, production is the version of Visier available to your end users.
-      <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: UsersV2
+    x-displayName: Users V2
     description: |-
       Manage users in bulk, such as creating, updating, and deleting many users.
       <br>**Tip:** Visier recommends that administrating tenant users focus primarily on managing users at the administrating tenant level. These users likely belong directly to your organization, such as customer support, customer value managers, account executives, and customer success. These users work with clients to manage their day-to-day solution needs.
   - name: UserGroupsV2
+    x-displayName: User Groups V2
     description: |-
       Manage user groups in Visier, such as creating, updating, and deleting user groups in bulk.
   - name: UsersV1
+    x-displayName: Users V1
     description: |-
       Manage users within an organization, such as assigning permissions to users and retrieving user permission assignments and application logs.
       <br>**Tip:** Visier recommends that administrating tenant users focus primarily on managing users at the administrating tenant level. These users likely belong directly to your organization, such as customer support, customer value managers, account executives, and customer success. These users work with clients to manage their day-to-day solution needs
@@ -6928,15 +7030,18 @@ tags:
     description: |-
       Manage permissions in Visier, such as retrieving the details of a permission, content package, or data access set, creating new permissions and data access sets, and updating or deleting permissions. To assign permissions to users, see Users V1.
   - name: TenantsV2
+    x-displayName: Tenants V2
     description: |-
       Create analytic tenants, deprovision tenants, retrieve tenant information, and update tenant information. Tenants V2 improves upon Tenants V1 in the following ways:
         * Programmatically assign a Home analysis to your analytic tenants.
         * Specify whether to merge or replace values when updating the details of an analytic tenant.
         * Specify the property fields to include in the response for GET requests.
   - name: TenantsV1
+    x-displayName: Tenants V1
     description: |-
       Create analytic tenants, retrieve tenant information, and validate metric values.
   - name: ConsolidatedAnalytics
+    x-displayName: Consolidated Analytics
     description: |-
       Manage your consolidated analytics (CA) tenants in Visier, such as retrieving the details of CA tenants, creating CA tenants, adding or deleting source tenants from CA tenants, and excluding sources from CA tenants.
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
@@ -6947,16 +7052,25 @@ tags:
       <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: SystemStatus
+    x-displayName: System Status
     description: |-
       Check the health and status of Visier's platform and services.
   - name: EmailDomains
+    x-displayName: Email Domains
     description: |-
       Manage the list of user email address domains that are allowed in your tenant.
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: EncryptionKeys
+    x-displayName: Encryption Keys
     description: |-
       Manage the encryption keys in your Visier tenant. Administrating tenants can specify the tenant in which to manage keys using the `TargetTenantID` header. For PGP keys, see `/v1/api/pgpkey`.
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+  - name: NetworkSubnets
+    x-displayName: Network Subnets
+    description: |-
+      Manage the IP addresses that can call Visier APIs.
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
 security:
@@ -6966,9 +7080,8 @@ security:
     CookieAuth: []
   - ApiKeyAuth: []
     OAuth2Auth: []
-# x-tagGroups is for Redocly use to effectively let us categorize our different tags
 x-tagGroups:
-  - name: Administration
+  - name: administration
     tags:
       - Projects
       - ProductionVersions
@@ -6984,3 +7097,4 @@ x-tagGroups:
       - SystemStatus
       - EmailDomains
       - EncryptionKeys
+      - NetworkSubnets

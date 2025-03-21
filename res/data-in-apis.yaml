@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1793
+  version: 22222222.99201.1802
 paths:
   /v1/api/pgpkey:
     get:
@@ -161,7 +161,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.DirectDataLoadConfigDTO'
+                $ref: '#/components/schemas/servicing.DirectDataLoadConfigDTO'
     put:
       tags:
         - DirectDataIntake
@@ -187,7 +187,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.publicapi.transfers.DirectDataLoadConfigDTO'
+              $ref: '#/components/schemas/servicing.DirectDataLoadConfigDTO'
         required: true
       responses:
         default:
@@ -201,7 +201,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.DirectDataLoadConfigDTO'
+                $ref: '#/components/schemas/servicing.DirectDataLoadConfigDTO'
   /v1/data/directloads/{draftId}/schemas/{objectName}:
     get:
       tags:
@@ -242,7 +242,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.DirectDataSchemaDTO'
+                $ref: '#/components/schemas/servicing.DirectDataSchemaDTO'
   /v1/data/directloads/{draftId}/transactions:
     post:
       tags:
@@ -277,7 +277,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.DirectDataTransactionStartResponseDTO'
+                $ref: '#/components/schemas/servicing.DirectDataTransactionStartResponseDTO'
   /v1/data/directloads/{draftId}/transactions/{transactionId}:
     get:
       tags:
@@ -315,7 +315,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.DirectDataJobStatusResponseDTO'
+                $ref: '#/components/schemas/servicing.DirectDataJobStatusResponseDTO'
     post:
       tags:
         - DirectDataIntake
@@ -355,7 +355,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.DirectDataUploadFileResponseDTO'
+                $ref: '#/components/schemas/servicing.DirectDataUploadFileResponseDTO'
     delete:
       tags:
         - DirectDataIntake
@@ -395,7 +395,52 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.DirectDataUploadFileResponseDTO'
+                $ref: '#/components/schemas/servicing.DirectDataUploadFileResponseDTO'
+  /v1/data/directloads/{draftId}/transactions/{transactionId}/{objectName}/sample-data:
+    post:
+      tags:
+        - DirectDataIntake
+      summary: Load sample data
+      description: Load sample data in a previously-created transaction. The data is not processed in Visier until you commit the transaction. Sample data is available for `employee`, `employee_exit`, `employment_start`, and `organization_hierarchy`.
+      operationId: DirectDataIntake_LoadSampleData
+      parameters:
+        - name: draftId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: objectName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: sampleName
+          in: query
+          description: |-
+            The name of the target object to load sample data. Sample data is available for:
+             * `employee`: The Employee subject.
+             * `employee_exit`: The Employee Exit event.
+             * `employment_start`: The Employment Start event.
+             * `organization_hierarchy`: The Organization Hierarchy dimension.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.DirectDataUploadFileResponseDTO'
   /v1/op/data-connector-credentials:
     get:
       tags:
@@ -440,7 +485,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/designer.transfers.ExtractorCredentialsAPIDTO'
+                $ref: '#/components/schemas/designer.ExtractorCredentialsAPIDTO'
     post:
       tags:
         - DataAndJobHandling
@@ -462,7 +507,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/designer.transfers.DataProviderAuthInformationDTO'
+              $ref: '#/components/schemas/designer.DataProviderAuthInformationDTO'
         required: true
       responses:
         default:
@@ -476,7 +521,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/designer.transfers.CredentialCreationAPIResponseDTO'
+                $ref: '#/components/schemas/designer.CredentialCreationAPIResponseDTO'
   /v1/op/data-connectors:
     get:
       tags:
@@ -521,7 +566,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.data.transfers.ImportDefinitionsAPIDTO'
+                $ref: '#/components/schemas/admin.data.ImportDefinitionsAPIDTO'
   /v1/op/data-connectors/assignCredentials:
     post:
       tags:
@@ -553,7 +598,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.AssignConnectorCredentialsResponseDTO'
+                $ref: '#/components/schemas/admin.AssignConnectorCredentialsResponseDTO'
   /v1/op/data-connectors/connector-settings:
     get:
       tags:
@@ -579,7 +624,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.ExtractorSettingsAPIDTO'
+                $ref: '#/components/schemas/admin.ExtractorSettingsAPIDTO'
     put:
       tags:
         - DataAndJobHandling
@@ -596,7 +641,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.transfers.SetConnectorSettingsRequestDTO'
+              $ref: '#/components/schemas/admin.SetConnectorSettingsRequestDTO'
         required: true
       responses:
         default:
@@ -610,7 +655,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.SetConnectorSettingsResponseDTO'
+                $ref: '#/components/schemas/admin.SetConnectorSettingsResponseDTO'
   /v1/op/data-sources:
     get:
       tags:
@@ -641,7 +686,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/designer.transfers.PushDataSourceDefinitionsDTO'
+                $ref: '#/components/schemas/designer.PushDataSourceDefinitionsDTO'
   /v1/op/data-transfer-sessions:
     post:
       tags:
@@ -835,7 +880,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.transfers.MultipleTenantDataVersionsListDTO'
+                $ref: '#/components/schemas/admin.MultipleTenantDataVersionsListDTO'
   /v1/op/data-versions/disable:
     put:
       tags:
@@ -900,7 +945,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.DataCategoriesResponseDTO'
+                $ref: '#/components/schemas/servicing.DataCategoriesResponseDTO'
   /v1/op/data/startExtractAndLoad:
     post:
       tags:
@@ -1041,7 +1086,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.TenantDataUploadsListResponseDTO'
+                $ref: '#/components/schemas/servicing.TenantDataUploadsListResponseDTO'
   /v1/op/data/uploads/exclude:
     put:
       tags:
@@ -1073,7 +1118,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.TenantDataUploadsUpdateResponseDTO'
+                $ref: '#/components/schemas/servicing.TenantDataUploadsUpdateResponseDTO'
   /v1/op/data/uploads/include:
     put:
       tags:
@@ -1105,7 +1150,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.TenantDataUploadsUpdateResponseDTO'
+                $ref: '#/components/schemas/servicing.TenantDataUploadsUpdateResponseDTO'
   /v1/op/job-status/jobs:
     get:
       tags:
@@ -1167,7 +1212,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/dp.transfers.CancelJobBatchFromJobIdDTO'
+              $ref: '#/components/schemas/dp.CancelJobBatchFromJobIdDTO'
         required: true
       responses:
         default:
@@ -1181,7 +1226,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dp.transfers.JobCancellationResultsDTO'
+                $ref: '#/components/schemas/dp.JobCancellationResultsDTO'
   /v1/op/jobs/dispatching-jobs/{jobId}:
     get:
       tags:
@@ -1566,7 +1611,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.JobIdResponse'
+                $ref: '#/components/schemas/servicing.JobIdResponse'
   /v1alpha/op/jobs/extraction-jobs:
     post:
       tags:
@@ -1600,7 +1645,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.JobIdResponse'
+                $ref: '#/components/schemas/servicing.JobIdResponse'
   /v1alpha/op/jobs/processing-jobs:
     post:
       tags:
@@ -1634,7 +1679,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.publicapi.transfers.JobIdResponse'
+                $ref: '#/components/schemas/servicing.JobIdResponse'
   /v1/data/directloads/{draftId}/transactions/{transactionId}/{objectName}:
     put:
       tags:
@@ -2015,7 +2060,7 @@ paths:
                 $ref: '#/components/schemas/PlanRowDataLoadResponseDTO'
 components:
   schemas:
-    admin.data.transfers.ImportDefinitionAPIDTO:
+    admin.data.ImportDefinitionAPIDTO:
       type: object
       properties:
         connectorId:
@@ -2027,13 +2072,13 @@ components:
         credentialId:
           type: string
           description: The ID associated with the connector credentials currently assigned to this data connector.
-    admin.data.transfers.ImportDefinitionsAPIDTO:
+    admin.data.ImportDefinitionsAPIDTO:
       type: object
       properties:
         dataConnectors:
           type: array
           items:
-            $ref: '#/components/schemas/admin.data.transfers.ImportDefinitionAPIDTO'
+            $ref: '#/components/schemas/admin.data.ImportDefinitionAPIDTO'
           description: A list of objects representing all the available data connectors in Production.
         limit:
           type: integer
@@ -2166,7 +2211,7 @@ components:
           items:
             type: string
           description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true". Only valid for requests from an administrating tenant.
-    admin.transfers.AssignConnectorCredentialsByTenantResponseDTO:
+    admin.AssignConnectorCredentialsByTenantResponseDTO:
       type: object
       properties:
         tenantCode:
@@ -2175,7 +2220,7 @@ components:
         connectors:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.AssignConnectorWithCredentialsResponseDTO'
+            $ref: '#/components/schemas/admin.AssignConnectorWithCredentialsResponseDTO'
           description: A list of objects representing the assigned credentials and connectors.
         status:
           enum:
@@ -2187,26 +2232,26 @@ components:
           format: enum
         message:
           type: string
-    admin.transfers.AssignConnectorCredentialsResponseDTO:
+    admin.AssignConnectorCredentialsResponseDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.AssignConnectorCredentialsByTenantResponseDTO'
+            $ref: '#/components/schemas/admin.AssignConnectorCredentialsByTenantResponseDTO'
           description: A list of objects representing the tenants and data connectors that were assigned connector credentials.
-    admin.transfers.AssignConnectorWithCredentialsResponseDTO:
+    admin.AssignConnectorWithCredentialsResponseDTO:
       type: object
       properties:
         connector:
           allOf:
-            - $ref: '#/components/schemas/admin.transfers.ConnectorInfoResponseDTO'
+            - $ref: '#/components/schemas/admin.ConnectorInfoResponseDTO'
           description: The data connector that was assigned a connector credential.
         credential:
           allOf:
-            - $ref: '#/components/schemas/admin.transfers.AssignedCredentialInfoResponseDTO'
+            - $ref: '#/components/schemas/admin.AssignedCredentialInfoResponseDTO'
           description: A connector credential that was assigned to a data connector
-    admin.transfers.AssignedCredentialInfoResponseDTO:
+    admin.AssignedCredentialInfoResponseDTO:
       type: object
       properties:
         credentialId:
@@ -2217,7 +2262,7 @@ components:
           description: The user's username. This is typically the user's email, such as john@visier.com.
         message:
           type: string
-    admin.transfers.ConnectorInfoResponseDTO:
+    admin.ConnectorInfoResponseDTO:
       type: object
       properties:
         connectorId:
@@ -2228,7 +2273,7 @@ components:
           description: An identifiable data connector name that is displayed within Visier.
         description:
           type: string
-    admin.transfers.ConnectorSettingRequestDTO:
+    admin.ConnectorSettingRequestDTO:
       type: object
       properties:
         settingKey:
@@ -2237,7 +2282,7 @@ components:
         value:
           type: string
           description: The setting's value.
-    admin.transfers.ConnectorSettingResponseDTO:
+    admin.ConnectorSettingResponseDTO:
       type: object
       properties:
         key:
@@ -2248,19 +2293,19 @@ components:
           description: The value that was set for the connector setting.
         message:
           type: string
-    admin.transfers.ConnectorSettingsResponseDTO:
+    admin.ConnectorSettingsResponseDTO:
       type: object
       properties:
         connector:
           allOf:
-            - $ref: '#/components/schemas/admin.transfers.ConnectorInfoResponseDTO'
+            - $ref: '#/components/schemas/admin.ConnectorInfoResponseDTO'
           description: The data connector that was updated in the API request.
         settings:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.ConnectorSettingResponseDTO'
+            $ref: '#/components/schemas/admin.ConnectorSettingResponseDTO'
           description: The settings that were updated for a data connector.
-    admin.transfers.DataVersionAndDateDTO:
+    admin.DataVersionAndDateDTO:
       type: object
       properties:
         dataVersion:
@@ -2269,7 +2314,7 @@ components:
         dataVersionDate:
           type: string
           description: The date that the data version was created.
-    admin.transfers.ExtractorSettingAPIDTO:
+    admin.ExtractorSettingAPIDTO:
       type: object
       properties:
         connectorId:
@@ -2281,9 +2326,9 @@ components:
         connectorSettings:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.ExtractorSettingKeyValueAPIDTO'
+            $ref: '#/components/schemas/admin.ExtractorSettingKeyValueAPIDTO'
           description: A list of objects representing the settings that are available for the data connector.
-    admin.transfers.ExtractorSettingKeyValueAPIDTO:
+    admin.ExtractorSettingKeyValueAPIDTO:
       type: object
       properties:
         settingKey:
@@ -2292,15 +2337,15 @@ components:
         value:
           type: string
           description: The current value of the setting.
-    admin.transfers.ExtractorSettingsAPIDTO:
+    admin.ExtractorSettingsAPIDTO:
       type: object
       properties:
         connectors:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.ExtractorSettingAPIDTO'
+            $ref: '#/components/schemas/admin.ExtractorSettingAPIDTO'
           description: A list of all data connectors in the production environment and their settings.
-    admin.transfers.MultipleTenantDataVersionsDetailsDTO:
+    admin.MultipleTenantDataVersionsDetailsDTO:
       type: object
       properties:
         tenantCode:
@@ -2309,17 +2354,17 @@ components:
         dataVersions:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.DataVersionAndDateDTO'
+            $ref: '#/components/schemas/admin.DataVersionAndDateDTO'
           description: |-
             The latest enabled data versions for the given analytic tenant. If the analytic tenant
              has no enabled data versions, an empty string "" is returned.
-    admin.transfers.MultipleTenantDataVersionsListDTO:
+    admin.MultipleTenantDataVersionsListDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.MultipleTenantDataVersionsDetailsDTO'
+            $ref: '#/components/schemas/admin.MultipleTenantDataVersionsDetailsDTO'
           description: A list of analytic tenants and their latest enabled data versions.
         limit:
           type: integer
@@ -2329,7 +2374,7 @@ components:
           type: integer
           description: The index to start retrieving results from, also known as offset. The index begins at 0.
           format: uint32
-    admin.transfers.SetConnectorSettingRequestDTO:
+    admin.SetConnectorSettingRequestDTO:
       type: object
       properties:
         connectorId:
@@ -2338,9 +2383,9 @@ components:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.TenantConnectorSettingsRequestDTO'
+            $ref: '#/components/schemas/admin.TenantConnectorSettingsRequestDTO'
           description: The tenant codes and data connector settings to update.
-    admin.transfers.SetConnectorSettingResponseDTO:
+    admin.SetConnectorSettingResponseDTO:
       type: object
       properties:
         tenantCode:
@@ -2349,7 +2394,7 @@ components:
         connectors:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.ConnectorSettingsResponseDTO'
+            $ref: '#/components/schemas/admin.ConnectorSettingsResponseDTO'
           description: A list of objects representing the assigned settings and connectors.
         status:
           enum:
@@ -2361,23 +2406,23 @@ components:
           format: enum
         message:
           type: string
-    admin.transfers.SetConnectorSettingsRequestDTO:
+    admin.SetConnectorSettingsRequestDTO:
       type: object
       properties:
         connectors:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.SetConnectorSettingRequestDTO'
+            $ref: '#/components/schemas/admin.SetConnectorSettingRequestDTO'
           description: The settings to define for each data connector and tenant.
-    admin.transfers.SetConnectorSettingsResponseDTO:
+    admin.SetConnectorSettingsResponseDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.SetConnectorSettingResponseDTO'
+            $ref: '#/components/schemas/admin.SetConnectorSettingResponseDTO'
           description: The tenants and data connectors that were updated in the API request.
-    admin.transfers.TenantConnectorSettingsRequestDTO:
+    admin.TenantConnectorSettingsRequestDTO:
       type: object
       properties:
         tenantCode:
@@ -2386,7 +2431,7 @@ components:
         connectorSettings:
           type: array
           items:
-            $ref: '#/components/schemas/admin.transfers.ConnectorSettingRequestDTO'
+            $ref: '#/components/schemas/admin.ConnectorSettingRequestDTO'
           description: The settings to update.
     data_in.AssignConnectorCredentialRequest:
       type: object
@@ -2943,19 +2988,19 @@ components:
           items:
             $ref: '#/components/schemas/designer.crypto.PublicKeyDTO'
           description: A list of the tenant's public keys.
-    designer.transfers.AdpAuthParamsDTO:
+    designer.AdpAuthParamsDTO:
       type: object
       properties:
         authCode:
           type: string
-    designer.transfers.BambooAuthParamsDTO:
+    designer.BambooAuthParamsDTO:
       type: object
       properties:
         accessKey:
           type: string
         tenantDomainName:
           type: string
-    designer.transfers.BasicS3AuthParamsDTO:
+    designer.BasicS3AuthParamsDTO:
       type: object
       properties:
         bucketName:
@@ -2968,7 +3013,7 @@ components:
           type: string
         path:
           type: string
-    designer.transfers.BigQueryAuthParamsDTO:
+    designer.BigQueryAuthParamsDTO:
       type: object
       properties:
         projectId:
@@ -2984,20 +3029,20 @@ components:
         defaultDataset:
           type: string
         serviceAccountParams:
-          $ref: '#/components/schemas/designer.transfers.BigQueryServiceAccountParamsDTO'
-    designer.transfers.BigQueryServiceAccountParamsDTO:
+          $ref: '#/components/schemas/designer.BigQueryServiceAccountParamsDTO'
+    designer.BigQueryServiceAccountParamsDTO:
       type: object
       properties:
         serviceAccountEmail:
           type: string
         privateKey:
           type: string
-    designer.transfers.CopyS3AuthParamsDTO:
+    designer.CopyS3AuthParamsDTO:
       type: object
       properties:
         iamRole:
           type: string
-    designer.transfers.CredentialCreationAPIResponseDTO:
+    designer.CredentialCreationAPIResponseDTO:
       type: object
       properties:
         uuid:
@@ -3012,24 +3057,24 @@ components:
         missingConnectionProperties:
           type: array
           items:
-            $ref: '#/components/schemas/designer.transfers.SubjectMissingAccessDTO'
+            $ref: '#/components/schemas/designer.SubjectMissingAccessDTO'
           description: |-
             The properties that the credential cannot access despite successful authentication.
              This is only returned for authentications that do not grant access to all data.
-    designer.transfers.DataProviderAuthInformationDTO:
+    designer.DataProviderAuthInformationDTO:
       type: object
       properties:
         dataProviderAuthParams:
           allOf:
-            - $ref: '#/components/schemas/designer.transfers.DataProviderAuthParamsDTO'
+            - $ref: '#/components/schemas/designer.DataProviderAuthParamsDTO'
           description: The authentication information for the credential.
         dataProviderBasicInformation:
           allOf:
-            - $ref: '#/components/schemas/designer.transfers.DataProviderBasicInformationDTO'
+            - $ref: '#/components/schemas/designer.DataProviderBasicInformationDTO'
           description: The display name and description for the credential.
         dataProviderMetadata:
-          $ref: '#/components/schemas/designer.transfers.DataProviderBasicMetadataDTO'
-    designer.transfers.DataProviderAuthParamsDTO:
+          $ref: '#/components/schemas/designer.DataProviderBasicMetadataDTO'
+    designer.DataProviderAuthParamsDTO:
       type: object
       properties:
         tenantDomainName:
@@ -3086,81 +3131,81 @@ components:
           description: The data provider associated with the credential.
           format: enum
         bambooAuthParams:
-          $ref: '#/components/schemas/designer.transfers.BambooAuthParamsDTO'
+          $ref: '#/components/schemas/designer.BambooAuthParamsDTO'
         greenhouseAuthParams:
-          $ref: '#/components/schemas/designer.transfers.GreenhouseAuthParamsDTO'
+          $ref: '#/components/schemas/designer.GreenhouseAuthParamsDTO'
         googleSheetsAuthParams:
-          $ref: '#/components/schemas/designer.transfers.GoogleSheetsAuthParamsDTO'
+          $ref: '#/components/schemas/designer.GoogleSheetsAuthParamsDTO'
         jiraAuthParams:
-          $ref: '#/components/schemas/designer.transfers.JiraAuthParamsDTO'
+          $ref: '#/components/schemas/designer.JiraAuthParamsDTO'
         leverAuthParams:
-          $ref: '#/components/schemas/designer.transfers.LeverAuthParamsDTO'
+          $ref: '#/components/schemas/designer.LeverAuthParamsDTO'
         namelyAuthParams:
-          $ref: '#/components/schemas/designer.transfers.NamelyAuthParamsDTO'
+          $ref: '#/components/schemas/designer.NamelyAuthParamsDTO'
         qualtricsAuthParams:
-          $ref: '#/components/schemas/designer.transfers.QualtricsAuthParamsDTO'
+          $ref: '#/components/schemas/designer.QualtricsAuthParamsDTO'
         salesforceAuthParams:
-          $ref: '#/components/schemas/designer.transfers.SalesforceAuthParamsDTO'
+          $ref: '#/components/schemas/designer.SalesforceAuthParamsDTO'
         ultimateAuthParams:
-          $ref: '#/components/schemas/designer.transfers.UltimateAuthParamsDTO'
+          $ref: '#/components/schemas/designer.UltimateAuthParamsDTO'
         workdayAuthParams:
-          $ref: '#/components/schemas/designer.transfers.WorkdayAuthParamsDTO'
+          $ref: '#/components/schemas/designer.WorkdayAuthParamsDTO'
         icimsAuthParams:
-          $ref: '#/components/schemas/designer.transfers.IcimsAuthParamsDTO'
+          $ref: '#/components/schemas/designer.IcimsAuthParamsDTO'
         serviceNowAuthParams:
-          $ref: '#/components/schemas/designer.transfers.ServiceNowAuthParamsDTO'
+          $ref: '#/components/schemas/designer.ServiceNowAuthParamsDTO'
         jdbcAuthParams:
-          $ref: '#/components/schemas/designer.transfers.JdbcAuthParamsDTO'
+          $ref: '#/components/schemas/designer.JdbcAuthParamsDTO'
         s3AuthParams:
-          $ref: '#/components/schemas/designer.transfers.BasicS3AuthParamsDTO'
+          $ref: '#/components/schemas/designer.BasicS3AuthParamsDTO'
         internalS3AuthParams:
-          $ref: '#/components/schemas/designer.transfers.InternalS3AuthParamsDTO'
+          $ref: '#/components/schemas/designer.InternalS3AuthParamsDTO'
         copyS3AuthParams:
-          $ref: '#/components/schemas/designer.transfers.CopyS3AuthParamsDTO'
+          $ref: '#/components/schemas/designer.CopyS3AuthParamsDTO'
         redshiftAuthParams:
-          $ref: '#/components/schemas/designer.transfers.RedshiftAuthParamsDTO'
+          $ref: '#/components/schemas/designer.RedshiftAuthParamsDTO'
         snowflakeAuthParams:
-          $ref: '#/components/schemas/designer.transfers.SnowflakeAuthParamsDTO'
+          $ref: '#/components/schemas/designer.SnowflakeAuthParamsDTO'
         bigQueryAuthParams:
-          $ref: '#/components/schemas/designer.transfers.BigQueryAuthParamsDTO'
+          $ref: '#/components/schemas/designer.BigQueryAuthParamsDTO'
         sqlServerAuthParams:
-          $ref: '#/components/schemas/designer.transfers.SqlServerAuthParamsDTO'
+          $ref: '#/components/schemas/designer.SqlServerAuthParamsDTO'
         dimensionsAuthParams:
-          $ref: '#/components/schemas/designer.transfers.DimensionsAuthParamsDTO'
+          $ref: '#/components/schemas/designer.DimensionsAuthParamsDTO'
         willowAuthParams:
-          $ref: '#/components/schemas/designer.transfers.WillowAuthParamsDTO'
+          $ref: '#/components/schemas/designer.WillowAuthParamsDTO'
         emptyAuthParams:
-          $ref: '#/components/schemas/designer.transfers.EmptyAuthParamsDTO'
+          $ref: '#/components/schemas/designer.EmptyAuthParamsDTO'
         successFactorsAuthParams:
-          $ref: '#/components/schemas/designer.transfers.SuccessFactorsAuthParamsDTO'
+          $ref: '#/components/schemas/designer.SuccessFactorsAuthParamsDTO'
         fusionAuthParams:
-          $ref: '#/components/schemas/designer.transfers.FusionAuthParamsDTO'
+          $ref: '#/components/schemas/designer.FusionAuthParamsDTO'
         adpAuthParams:
-          $ref: '#/components/schemas/designer.transfers.AdpAuthParamsDTO'
+          $ref: '#/components/schemas/designer.AdpAuthParamsDTO'
         medalliaAuthParams:
-          $ref: '#/components/schemas/designer.transfers.MedalliaAuthParamsDTO'
+          $ref: '#/components/schemas/designer.MedalliaAuthParamsDTO'
         salesforceV2AuthParams:
-          $ref: '#/components/schemas/designer.transfers.SalesforceV2AuthParamsDTO'
+          $ref: '#/components/schemas/designer.SalesforceV2AuthParamsDTO'
         gongAuthParams:
-          $ref: '#/components/schemas/designer.transfers.GongAuthParamsDTO'
+          $ref: '#/components/schemas/designer.GongAuthParamsDTO'
         zoomAuthParams:
-          $ref: '#/components/schemas/designer.transfers.ZoomAuthParamsDTO'
+          $ref: '#/components/schemas/designer.ZoomAuthParamsDTO'
         dayforceV2AuthParams:
-          $ref: '#/components/schemas/designer.transfers.DayforceV2AuthParamsDTO'
+          $ref: '#/components/schemas/designer.DayforceV2AuthParamsDTO'
         slackAuthParams:
-          $ref: '#/components/schemas/designer.transfers.SlackAuthParamsDTO'
+          $ref: '#/components/schemas/designer.SlackAuthParamsDTO'
         mySqlAuthParams:
-          $ref: '#/components/schemas/designer.transfers.MySqlAuthParamsDTO'
+          $ref: '#/components/schemas/designer.MySqlAuthParamsDTO'
         workdayRaasAuthParams:
-          $ref: '#/components/schemas/designer.transfers.WorkdayRaasAuthParamsDTO'
+          $ref: '#/components/schemas/designer.WorkdayRaasAuthParamsDTO'
         ms365AuthParams:
-          $ref: '#/components/schemas/designer.transfers.Microsoft365AuthParamsDTO'
+          $ref: '#/components/schemas/designer.Microsoft365AuthParamsDTO'
         googleWorkspaceAuthParams:
-          $ref: '#/components/schemas/designer.transfers.GoogleWorkspaceAuthParamsDTO'
+          $ref: '#/components/schemas/designer.GoogleWorkspaceAuthParamsDTO'
         oracleDbAuthParams:
-          $ref: '#/components/schemas/designer.transfers.OracleDbAuthParamsDTO'
+          $ref: '#/components/schemas/designer.OracleDbAuthParamsDTO'
         serviceNowV2AuthParams:
-          $ref: '#/components/schemas/designer.transfers.ServiceNowV2AuthParamsDTO'
+          $ref: '#/components/schemas/designer.ServiceNowV2AuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -3170,19 +3215,19 @@ components:
             - Notification
           type: string
           format: enum
-    designer.transfers.DataProviderBasicInformationDTO:
+    designer.DataProviderBasicInformationDTO:
       type: object
       properties:
         displayName:
           type: string
         description:
           type: string
-    designer.transfers.DataProviderBasicMetadataDTO:
+    designer.DataProviderBasicMetadataDTO:
       type: object
       properties:
         canChildrenInherit:
           type: boolean
-    designer.transfers.DayforceV2AuthParamsDTO:
+    designer.DayforceV2AuthParamsDTO:
       type: object
       properties:
         username:
@@ -3195,7 +3240,7 @@ components:
           type: string
         hostDomainName:
           type: string
-    designer.transfers.DimensionsAuthParamsDTO:
+    designer.DimensionsAuthParamsDTO:
       type: object
       properties:
         appKey:
@@ -3210,10 +3255,10 @@ components:
           type: string
         password:
           type: string
-    designer.transfers.EmptyAuthParamsDTO:
+    designer.EmptyAuthParamsDTO:
       type: object
       properties: {}
-    designer.transfers.ExtractorCredentialAPIDTO:
+    designer.ExtractorCredentialAPIDTO:
       type: object
       properties:
         credentialId:
@@ -3230,13 +3275,13 @@ components:
           description: Whether this credential is inherited from another tenant.
         authContext:
           type: string
-    designer.transfers.ExtractorCredentialsAPIDTO:
+    designer.ExtractorCredentialsAPIDTO:
       type: object
       properties:
         connectorCredentials:
           type: array
           items:
-            $ref: '#/components/schemas/designer.transfers.ExtractorCredentialAPIDTO'
+            $ref: '#/components/schemas/designer.ExtractorCredentialAPIDTO'
           description: A list of objects representing all the available connector credentials in Production.
         limit:
           type: integer
@@ -3246,7 +3291,7 @@ components:
           type: integer
           description: The index to start retrieving values from, also known as offset. The index begins at 0.
           format: uint32
-    designer.transfers.FusionAuthParamsDTO:
+    designer.FusionAuthParamsDTO:
       type: object
       properties:
         username:
@@ -3255,14 +3300,14 @@ components:
           type: string
         hostDomainName:
           type: string
-    designer.transfers.GongAuthParamsDTO:
+    designer.GongAuthParamsDTO:
       type: object
       properties:
         clientId:
           type: string
         clientSecret:
           type: string
-    designer.transfers.GoogleSheetsAuthParamsDTO:
+    designer.GoogleSheetsAuthParamsDTO:
       type: object
       properties:
         authCode:
@@ -3273,7 +3318,7 @@ components:
           type: string
         clientSecret:
           type: string
-    designer.transfers.GoogleWorkspaceAuthParamsDTO:
+    designer.GoogleWorkspaceAuthParamsDTO:
       type: object
       properties:
         authCode:
@@ -3286,12 +3331,12 @@ components:
           type: string
         privacyMode:
           type: string
-    designer.transfers.GreenhouseAuthParamsDTO:
+    designer.GreenhouseAuthParamsDTO:
       type: object
       properties:
         apiKey:
           type: string
-    designer.transfers.IcimsAuthParamsDTO:
+    designer.IcimsAuthParamsDTO:
       type: object
       properties:
         customerId:
@@ -3312,14 +3357,14 @@ components:
             - ISV
           type: string
           format: enum
-    designer.transfers.InternalS3AuthParamsDTO:
+    designer.InternalS3AuthParamsDTO:
       type: object
       properties:
         bucketName:
           type: string
         path:
           type: string
-    designer.transfers.JdbcAuthParamsDTO:
+    designer.JdbcAuthParamsDTO:
       type: object
       properties:
         jdbcConnectString:
@@ -3328,7 +3373,7 @@ components:
           type: string
         password:
           type: string
-    designer.transfers.JiraAuthParamsDTO:
+    designer.JiraAuthParamsDTO:
       type: object
       properties:
         apiToken:
@@ -3336,8 +3381,8 @@ components:
         hostName:
           type: string
         connectParams:
-          $ref: '#/components/schemas/designer.transfers.JiraConnectParamsDTO'
-    designer.transfers.JiraConnectParamsDTO:
+          $ref: '#/components/schemas/designer.JiraConnectParamsDTO'
+    designer.JiraConnectParamsDTO:
       type: object
       properties:
         appKey:
@@ -3346,12 +3391,12 @@ components:
           type: string
         sharedSecret:
           type: string
-    designer.transfers.LeverAuthParamsDTO:
+    designer.LeverAuthParamsDTO:
       type: object
       properties:
         apiKey:
           type: string
-    designer.transfers.MedalliaAuthParamsDTO:
+    designer.MedalliaAuthParamsDTO:
       type: object
       properties:
         tenantDomainName:
@@ -3362,7 +3407,7 @@ components:
           type: string
         clientSecret:
           type: string
-    designer.transfers.Microsoft365AuthParamsDTO:
+    designer.Microsoft365AuthParamsDTO:
       type: object
       properties:
         oAuthTenantId:
@@ -3373,7 +3418,7 @@ components:
           type: string
         privacyMode:
           type: string
-    designer.transfers.MySqlAuthParamsDTO:
+    designer.MySqlAuthParamsDTO:
       type: object
       properties:
         host:
@@ -3388,12 +3433,12 @@ components:
           type: string
         sslMode:
           type: string
-    designer.transfers.NamelyAuthParamsDTO:
+    designer.NamelyAuthParamsDTO:
       type: object
       properties:
         authCode:
           type: string
-    designer.transfers.OracleDbAuthParamsDTO:
+    designer.OracleDbAuthParamsDTO:
       type: object
       properties:
         host:
@@ -3406,7 +3451,7 @@ components:
           type: string
         serviceName:
           type: string
-    designer.transfers.PushDataColumnDefinitionDTO:
+    designer.PushDataColumnDefinitionDTO:
       type: object
       properties:
         columnName:
@@ -3430,7 +3475,7 @@ components:
           type: string
           description: The default value of the column.
       description: Definition of the source column.
-    designer.transfers.PushDataSourceDefinitionDTO:
+    designer.PushDataSourceDefinitionDTO:
       type: object
       properties:
         sourceId:
@@ -3442,29 +3487,29 @@ components:
         columns:
           type: array
           items:
-            $ref: '#/components/schemas/designer.transfers.PushDataColumnDefinitionDTO'
+            $ref: '#/components/schemas/designer.PushDataColumnDefinitionDTO'
           description: A list of objects representing the source columns.
         isInherited:
           type: boolean
           description: If true, the source is inherited by all analytic tenants.
       description: Details of each existing source.
-    designer.transfers.PushDataSourceDefinitionsDTO:
+    designer.PushDataSourceDefinitionsDTO:
       type: object
       properties:
         sources:
           type: array
           items:
-            $ref: '#/components/schemas/designer.transfers.PushDataSourceDefinitionDTO'
+            $ref: '#/components/schemas/designer.PushDataSourceDefinitionDTO'
           description: A list of objects representing the target sources for the request.
       description: The existing sources.
-    designer.transfers.QualtricsAuthParamsDTO:
+    designer.QualtricsAuthParamsDTO:
       type: object
       properties:
         apiToken:
           type: string
         dataCenterId:
           type: string
-    designer.transfers.RedshiftAuthParamsDTO:
+    designer.RedshiftAuthParamsDTO:
       type: object
       properties:
         endpoint:
@@ -3481,14 +3526,14 @@ components:
           type: string
         schema:
           type: string
-    designer.transfers.SalesforceAuthParamsDTO:
+    designer.SalesforceAuthParamsDTO:
       type: object
       properties:
         refreshToken:
           type: string
         clientId:
           type: string
-    designer.transfers.SalesforceV2AuthParamsDTO:
+    designer.SalesforceV2AuthParamsDTO:
       type: object
       properties:
         authCode:
@@ -3499,7 +3544,7 @@ components:
           type: string
         loginHost:
           type: string
-    designer.transfers.ServiceNowAuthParamsDTO:
+    designer.ServiceNowAuthParamsDTO:
       type: object
       properties:
         hostDomainName:
@@ -3508,7 +3553,7 @@ components:
           type: string
         password:
           type: string
-    designer.transfers.ServiceNowV2AuthParamsDTO:
+    designer.ServiceNowV2AuthParamsDTO:
       type: object
       properties:
         hostDomainName:
@@ -3521,7 +3566,7 @@ components:
           type: string
         alternateDomain:
           type: string
-    designer.transfers.SlackAuthParamsDTO:
+    designer.SlackAuthParamsDTO:
       type: object
       properties:
         authCode:
@@ -3530,7 +3575,7 @@ components:
           type: string
         clientSecret:
           type: string
-    designer.transfers.SnowflakeAuthParamsDTO:
+    designer.SnowflakeAuthParamsDTO:
       type: object
       properties:
         accountIdentifier:
@@ -3547,7 +3592,7 @@ components:
           type: string
         privateKey:
           type: string
-    designer.transfers.SqlServerAuthParamsDTO:
+    designer.SqlServerAuthParamsDTO:
       type: object
       properties:
         host:
@@ -3560,7 +3605,7 @@ components:
           type: string
         database:
           type: string
-    designer.transfers.SubjectMissingAccessDTO:
+    designer.SubjectMissingAccessDTO:
       type: object
       properties:
         subject:
@@ -3592,7 +3637,7 @@ components:
         errorMessage:
           type: string
           description: The error message detailing the access issue.
-    designer.transfers.SuccessFactorsAuthParamsDTO:
+    designer.SuccessFactorsAuthParamsDTO:
       type: object
       properties:
         hostDomainName:
@@ -3604,8 +3649,8 @@ components:
         password:
           type: string
         oAuth:
-          $ref: '#/components/schemas/designer.transfers.SuccessFactorsOAuthParamsDTO'
-    designer.transfers.SuccessFactorsOAuthParamsDTO:
+          $ref: '#/components/schemas/designer.SuccessFactorsOAuthParamsDTO'
+    designer.SuccessFactorsOAuthParamsDTO:
       type: object
       properties:
         apiKey:
@@ -3614,7 +3659,7 @@ components:
           type: string
         publicX509Cert:
           type: string
-    designer.transfers.UltimateAuthParamsDTO:
+    designer.UltimateAuthParamsDTO:
       type: object
       properties:
         hostDomainName:
@@ -3627,14 +3672,14 @@ components:
           type: string
         userAccessKey:
           type: string
-    designer.transfers.WillowAuthParamsDTO:
+    designer.WillowAuthParamsDTO:
       type: object
       properties:
         apiToken:
           type: string
         hostName:
           type: string
-    designer.transfers.WorkdayAuthParamsDTO:
+    designer.WorkdayAuthParamsDTO:
       type: object
       properties:
         userId:
@@ -3646,14 +3691,14 @@ components:
         password:
           type: string
         oAuth:
-          $ref: '#/components/schemas/designer.transfers.WorkdayOAuthParamsDTO'
+          $ref: '#/components/schemas/designer.WorkdayOAuthParamsDTO'
         refToken:
-          $ref: '#/components/schemas/designer.transfers.WorkdayRefreshTokenParamsDTO'
+          $ref: '#/components/schemas/designer.WorkdayRefreshTokenParamsDTO'
         integrationSystemId:
           type: string
         apiKey:
           type: string
-    designer.transfers.WorkdayOAuthParamsDTO:
+    designer.WorkdayOAuthParamsDTO:
       type: object
       properties:
         apiClientId:
@@ -3662,7 +3707,7 @@ components:
           type: string
         privateX509Key:
           type: string
-    designer.transfers.WorkdayRaasAuthParamsDTO:
+    designer.WorkdayRaasAuthParamsDTO:
       type: object
       properties:
         userId:
@@ -3675,7 +3720,7 @@ components:
           type: string
         testReportUrl:
           type: string
-    designer.transfers.WorkdayRefreshTokenParamsDTO:
+    designer.WorkdayRefreshTokenParamsDTO:
       type: object
       properties:
         apiClientId:
@@ -3684,7 +3729,7 @@ components:
           type: string
         refreshToken:
           type: string
-    designer.transfers.ZoomAuthParamsDTO:
+    designer.ZoomAuthParamsDTO:
       type: object
       properties:
         authCode:
@@ -3693,7 +3738,7 @@ components:
           type: string
         clientSecret:
           type: string
-    dp.transfers.CancelJobBatchFromJobIdDTO:
+    dp.CancelJobBatchFromJobIdDTO:
       type: object
       properties:
         jobIds:
@@ -3701,7 +3746,7 @@ components:
           items:
             type: string
           description: A list of jobs to cancel. The maximum number of jobs that can be cancelled is 500.
-    dp.transfers.JobCancellationResultDTO:
+    dp.JobCancellationResultDTO:
       type: object
       properties:
         tenantCode:
@@ -3729,23 +3774,23 @@ components:
         message:
           type: string
           description: If applicable, the message explains what errors occurred while cancelling the jobs.
-    dp.transfers.JobCancellationResultsDTO:
+    dp.JobCancellationResultsDTO:
       type: object
       properties:
         jobCancellationResults:
           type: array
           items:
-            $ref: '#/components/schemas/dp.transfers.JobCancellationResultDTO'
+            $ref: '#/components/schemas/dp.JobCancellationResultDTO'
           description: A list of objects representing the job cancellation results.
-    servicing.publicapi.transfers.DataCategoriesResponseDTO:
+    servicing.DataCategoriesResponseDTO:
       type: object
       properties:
         categories:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.DataCategoryResponseDTO'
+            $ref: '#/components/schemas/servicing.DataCategoryResponseDTO'
       description: A list of data categories.
-    servicing.publicapi.transfers.DataCategoryResponseDTO:
+    servicing.DataCategoryResponseDTO:
       type: object
       properties:
         name:
@@ -3755,7 +3800,7 @@ components:
           type: string
           description: The UUID of the data category.
       description: The data category's UUID and display name.
-    servicing.publicapi.transfers.DirectDataJobConfigDTO:
+    servicing.DirectDataJobConfigDTO:
       type: object
       properties:
         supplementalMode:
@@ -3775,7 +3820,7 @@ components:
              You can extend objects if the job type is supplemental and the target objects already contain data from a previous data version.
              This allows you to load data for objects that already contain data in Visier.
       description: Whether the direct data intake job is a primary job or a supplemental job.
-    servicing.publicapi.transfers.DirectDataJobStatusResponseDTO:
+    servicing.DirectDataJobStatusResponseDTO:
       type: object
       properties:
         tenantCode:
@@ -3794,24 +3839,24 @@ components:
           type: string
           description: If the processing job fails, this field contains details specific to the failure.
       description: The job status information for a committed transaction.
-    servicing.publicapi.transfers.DirectDataLoadConfigDTO:
+    servicing.DirectDataLoadConfigDTO:
       type: object
       properties:
         job:
           allOf:
-            - $ref: '#/components/schemas/servicing.publicapi.transfers.DirectDataJobConfigDTO'
+            - $ref: '#/components/schemas/servicing.DirectDataJobConfigDTO'
           description: The direct data intake job configuration.
       description: The configuration for the direct data intake, such as the  direct data intake job type.
-    servicing.publicapi.transfers.DirectDataSchemaDTO:
+    servicing.DirectDataSchemaDTO:
       type: object
       properties:
         schema:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.DirectDataSchemaFieldDTO'
+            $ref: '#/components/schemas/servicing.DirectDataSchemaFieldDTO'
           description: The schema definition for loading a specific object
       description: Public API Direct Intake schema response object
-    servicing.publicapi.transfers.DirectDataSchemaFieldDTO:
+    servicing.DirectDataSchemaFieldDTO:
       type: object
       properties:
         name:
@@ -3832,14 +3877,14 @@ components:
           type: boolean
           description: If true, the value may be empty.
       description: The definition of each field in an object's schema.
-    servicing.publicapi.transfers.DirectDataTransactionStartResponseDTO:
+    servicing.DirectDataTransactionStartResponseDTO:
       type: object
       properties:
         transactionId:
           type: string
           description: The transaction's unique identifier.
       description: The response after successfully creating a transaction.
-    servicing.publicapi.transfers.DirectDataUploadFileResponseDTO:
+    servicing.DirectDataUploadFileResponseDTO:
       type: object
       properties:
         transactionId:
@@ -3856,13 +3901,13 @@ components:
 
          If uploading a file, a success response means the upload was successful and doesn't always mean the file
          was successfully loaded into its target object.
-    servicing.publicapi.transfers.JobIdResponse:
+    servicing.JobIdResponse:
       type: object
       properties:
         jobId:
           type: string
       description: The unique identifier of the returned job.
-    servicing.publicapi.transfers.TenantDataUploadStatusResponseDTO:
+    servicing.TenantDataUploadStatusResponseDTO:
       type: object
       properties:
         uploadTime:
@@ -3871,7 +3916,7 @@ components:
         included:
           type: boolean
           description: If "true", the data upload is included.
-    servicing.publicapi.transfers.TenantDataUploadUpdateStatusResponseDTO:
+    servicing.TenantDataUploadUpdateStatusResponseDTO:
       type: object
       properties:
         tenantCode:
@@ -3886,13 +3931,13 @@ components:
         message:
           type: string
           description: If applicable, the message explains why errors were encountered during the exclusion operation.
-    servicing.publicapi.transfers.TenantDataUploadsListResponseDTO:
+    servicing.TenantDataUploadsListResponseDTO:
       type: object
       properties:
         tenants:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.TenantDataUploadsResponseDTO'
+            $ref: '#/components/schemas/servicing.TenantDataUploadsResponseDTO'
           description: A list of objects representing analytic tenants and their data uploads.
         limit:
           type: integer
@@ -3902,7 +3947,7 @@ components:
           type: integer
           description: The index to start retrieving results from, also known as offset. The index begins at 0.
           format: uint32
-    servicing.publicapi.transfers.TenantDataUploadsResponseDTO:
+    servicing.TenantDataUploadsResponseDTO:
       type: object
       properties:
         tenantCode:
@@ -3911,9 +3956,9 @@ components:
         uploads:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.TenantDataUploadStatusResponseDTO'
+            $ref: '#/components/schemas/servicing.TenantDataUploadStatusResponseDTO'
           description: The data uploads completed for the specified analytic tenant. The list is empty if no previous data uploads are found for the analytic tenant.
-    servicing.publicapi.transfers.TenantDataUploadsUpdateResponseDTO:
+    servicing.TenantDataUploadsUpdateResponseDTO:
       type: object
       properties:
         totalFailures:
@@ -3927,7 +3972,7 @@ components:
         uploads:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.publicapi.transfers.TenantDataUploadUpdateStatusResponseDTO'
+            $ref: '#/components/schemas/servicing.TenantDataUploadUpdateStatusResponseDTO'
           description: A list of objects representing the results of the data upload exclusion.
     DirectDataUploadFileResponseDTO:
       type: object
@@ -3958,7 +4003,7 @@ components:
           type: array
           description: The collection of errors encountered during the data load process.
           items:
-            $ref: '#/components/schemas/planning.transfers.PlanDataLoadErrorDTO'
+            $ref: '#/components/schemas/planning.PlanDataLoadErrorDTO'
         changelists:
           type: array
           description: |-
@@ -4017,12 +4062,12 @@ components:
           type: array
           description: The errors that occurred while loading the data.
           items:
-            $ref: '#/components/schemas/planning.transfers.PlanDataLoadErrorDTO'
+            $ref: '#/components/schemas/planning.PlanDataLoadErrorDTO'
         customMembers:
           type: array
           description: The custom members and their corresponding IDs in the plan.
           items:
-            $ref: '#/components/schemas/planning.transfers.PlanSegmentLevelMemberDTO'
+            $ref: '#/components/schemas/planning.PlanSegmentLevelMemberDTO'
     Status:
       type: object
       properties:
@@ -4070,6 +4115,7 @@ components:
             write: Grants write access
 tags:
   - name: DirectDataIntake
+    x-displayName: Direct Data Intake
     description: |-
       Use the Direct Data Intake API to load data directly into Visier objects. These objects can be delivered as part of Visier Blueprint, locally modified objects, or even completely custom objects. Objects must be released to production to receive data through the DDI API.
       You can load data into:
@@ -4078,20 +4124,25 @@ tags:
       - Parent-child dimensions
       - Multi-value properties
   - name: DataIntake
+    x-displayName: Data Intake
     description: |-
       Send raw or untransformed data to Visier. After we receive the data, Visier runs business rules to transform your data into the expected format for the existing mappings.
       <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
   - name: DataAndJobHandling
+    x-displayName: Data and Job Handling
     description: |-
       Initiate and manage jobs, included or excluded data, and data connector credentials. Administrating tenant users can manage jobs and data for their analytic tenants.
   - name: PGPKey
+    x-displayName: PGP Key
     description: |-
       The Pretty Good Privacy (PGP) Key API generates key pairs and provides a public key to encrypt data that you send to Visier. PGP encryption adds an additional layer of security against data disclosure.
       <br><br>After you generate a key pair and retrieve the public encryption key, you can encrypt your data files before sending them to Visier. When Visier receives files encrypted with the public key, we retrieve the associated private key to decrypt and process the file.
   - name: PlanningDataLoad
+    x-displayName: Planning Data Load
     description: |-
       Send data directly to your plan's scenario and optionally add or remove rows from your plan.
   - name: DataUpload
+    x-displayName: Data Upload
     description: |-
       Send data files to Visier. After we receive the data, Visier starts a receiving job and a processing job to process the data.
 security:
@@ -4101,9 +4152,8 @@ security:
     CookieAuth: []
   - ApiKeyAuth: []
     OAuth2Auth: []
-# x-tagGroups is for Redocly use to effectively let us categorize our different tags
 x-tagGroups:
-  - name: Data In
+  - name: data in
     tags:
       - DirectDataIntake
       - DataIntake

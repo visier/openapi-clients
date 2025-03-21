@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1793
+  version: 22222222.99201.1802
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -36,6 +36,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/authentication.OAuth2UserInfoDTO'
+      security:
+        - BearerAuth: []
   /v1/admin/visierSecureToken:
     post:
       tags:
@@ -63,6 +65,8 @@ paths:
             text/plain:
               schema:
                 type: string
+      security:
+        - {}
   /v1/admin/visierImpersonationToken:
     post:
       tags:
@@ -96,6 +100,9 @@ paths:
             text/plain:
               schema:
                 type: string
+      security:
+        - ApiKeyAuth: []
+          CookieAuth: []
   /v1/auth/oauth2/authorize:
     get:
       tags:
@@ -137,6 +144,8 @@ paths:
                 $ref: "#/components/schemas/Status"
         "3XX":
           description: Redirect to authorization page.
+      security:
+        - {}
   /v1/auth/oauth2/token:
     post:
       tags:
@@ -163,6 +172,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TokenResponse"
+      security:
+        - {}
 components:
   schemas:
     authentication.OAuth2UserInfoDTO:
@@ -182,7 +193,7 @@ components:
           description: The user's unique ID.
         visier:capabilities:
           allOf:
-            - $ref: '#/components/schemas/servicing.transfers.ServicingCapabilityProtoEnumAccessLookupDTO'
+            - $ref: '#/components/schemas/servicing.ServicingCapabilityProtoEnumAccessLookupDTO'
           description: The user's profile capabilities.
         visier:subnets:
           allOf:
@@ -250,7 +261,7 @@ components:
           type: string
           description: The tenant's vanity name.
       description: Detailed information about the tenant.
-    servicing.transfers.CapabilityGroupDTO:
+    servicing.CapabilityGroupDTO:
       type: object
       properties:
         group:
@@ -355,13 +366,13 @@ components:
             - Embedded
           type: string
           format: enum
-    servicing.transfers.ServicingCapabilityProtoEnumAccessLookupDTO:
+    servicing.ServicingCapabilityProtoEnumAccessLookupDTO:
       type: object
       properties:
         capabilityGroups:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.transfers.CapabilityGroupDTO'
+            $ref: '#/components/schemas/servicing.CapabilityGroupDTO'
     GenerateImpersonationTokenRequest:
       description: The details of the user to impersonate.
       type: object
@@ -486,9 +497,11 @@ components:
             write: Grants write access
 tags:
   - name: BasicAuthentication
+    x-displayName: Basic Authentication
     description: |-
       Request an authentication token through basic authentication. With basic authentication, use your username and password to request a secure token. The response returns an ASID token that you can use in your API calls.
   - name: OAuth2
+    x-displayName: OAuth 2.0
     description: "Request an authentication token through OAuth 2.0 with Open ID Connect (OIDC). With OAuth 2.0 with OIDC, use an OAuth 2.0 grant to request an authentication token. \nThe response returns a JSON Web Token (JWT) that you can use in your API calls."
 security:
   - ApiKeyAuth: []
@@ -498,7 +511,7 @@ security:
   - ApiKeyAuth: []
     OAuth2Auth: []
 x-tagGroups:
-  - name: Authentication
+  - name: authentication
     tags:
       - BasicAuthentication
       - OAuth2

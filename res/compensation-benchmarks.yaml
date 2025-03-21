@@ -5,18 +5,12 @@ info:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
   version: "1.0"
-  
 tags:
-- name: Benchmarks
-  description: |
-    Get benchmark values.
-- name: Dimensions
-  description: |
-    Discover dimensions and members.
-    
-    A dimension organizes unique values of an attribute into a list or a hierarchical structure of members. 
-    The structure can be navigated to discover the members, and the members can be used to look up benchmark values.
-
+  - name: Benchmarks
+    description: |
+      Get benchmark values.
+  - name: Dimensions
+    description: "Discover dimensions and members.\n\nA dimension organizes unique values of an attribute into a list or a hierarchical structure of members. \nThe structure can be navigated to discover the members, and the members can be used to look up benchmark values.\n"
 paths:
   /v1/compensation-benchmarks/base-salary:
     get:
@@ -26,51 +20,47 @@ paths:
       description: |
         Retrieve the base salary benchmark value.
       parameters:
-      - name: job
-        in: query
-        required: true
-        schema:
-          type: string
-        description: |
-          The job member ID.
-      - name: industry
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The industry member ID. If the ID is not provided, the response returns the benchmark value across all industries.
-      - name: naicsCode
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The North American Industry Classification System (NAICS) code. 
-          
-          If the NAICS code is not provided, the response returns the benchmark value across all industries.
-          If both `naicsCode` and `industry` are provided, the response returns the benchmark value for the `industry` parameter. The entered `naicsCode` will not be applied.
-      - name: location
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The location member ID. If the ID is not provided, the response returns the benchmark value across all locations.
-      - name: companySize
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The company size member ID. If the ID is not provided, the response returns the benchmark value across all company sizes.
-      - name: careerLevel
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The career level member ID. If the ID is not provided, the response returns the benchmark value across all career levels.
+        - name: job
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |
+            The job member ID.
+        - name: industry
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The industry member ID. If the ID is not provided, the response returns the benchmark value across all industries.
+        - name: naicsCode
+          in: query
+          required: false
+          schema:
+            type: string
+          description: "The North American Industry Classification System (NAICS) code. \n\nIf the NAICS code is not provided, the response returns the benchmark value across all industries.\nIf both `naicsCode` and `industry` are provided, the response returns the benchmark value for the `industry` parameter. The entered `naicsCode` will not be applied.\n"
+        - name: location
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The location member ID. If the ID is not provided, the response returns the benchmark value across all locations.
+        - name: companySize
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The company size member ID. If the ID is not provided, the response returns the benchmark value across all company sizes.
+        - name: careerLevel
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The career level member ID. If the ID is not provided, the response returns the benchmark value across all career levels.
       responses:
         "200":
           description: |
@@ -106,11 +96,11 @@ paths:
         httpMethod: "POST"
         uri: "${lambda-get-salary-arn}"
       security:
-      - api_key: []
+        - api_key: []
   /v1/compensation-benchmarks/base-salaries:
     post:
       summary: Get salary benchmark values in bulk
-      tags: [ Benchmarks ]
+      tags: [Benchmarks]
       operationId: "GetSalaryBenchmarksInBulk"
       description: |
         Retrieve multiple base salary benchmark values in a single request.
@@ -124,9 +114,7 @@ paths:
         required: true
       responses:
         "200":
-          description: |
-            The bulk request was completed. Review the responses individually to see which actions were successful. 
-            If you receive a 400 status code for an individual response, it indicates missing parameters, invalid members, or no benchmark values were found.
+          description: "The bulk request was completed. Review the responses individually to see which actions were successful. \nIf you receive a 400 status code for an individual response, it indicates missing parameters, invalid members, or no benchmark values were found.\n"
           content:
             application/json:
               schema:
@@ -158,7 +146,7 @@ paths:
         httpMethod: "POST"
         uri: "${lambda-get-batch-benchmarks-arn}"
       security:
-        - api_key: [ ]
+        - api_key: []
   /v1/compensation-benchmarks/jobs:
     get:
       summary: Get jobs
@@ -167,82 +155,70 @@ paths:
       description: |
         Retrieve a list of all the jobs in Visier's ontology.
       parameters:
-      - name: hierarchy
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The ID of the job hierarchy to navigate.
+        - name: hierarchy
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The ID of the job hierarchy to navigate.
 
-          If not provided, Visier's default job hierarchy is used. In the default hierarchy, jobs are organized into three levels with domain and subdomain groupings.
-      - name: parent
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The ID of the parent member.
-          
-          If the ID is provided, the response returns the immediate children of the parent member.
-          
-          To get the top-level members, use the value `root`.
+            If not provided, Visier's default job hierarchy is used. In the default hierarchy, jobs are organized into three levels with domain and subdomain groupings.
+        - name: parent
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The ID of the parent member.
 
-          Member availability and the parent-child relationship depends on the selected hierarchy. Please refer to the `hierarchy` parameter.
-      - name: term
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The input search term. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. 
-          Your search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.
+            If the ID is provided, the response returns the immediate children of the parent member.
 
-          The minimum length is 3 characters and the maximum length is 100 characters.
+            To get the top-level members, use the value `root`.
 
-          ***The search term must be URL encoded.***
-      - name: naicsCode
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The North American Industry Classification System (NAICS) code.
+            Member availability and the parent-child relationship depends on the selected hierarchy. Please refer to the `hierarchy` parameter.
+        - name: term
+          in: query
+          required: false
+          schema:
+            type: string
+          description: "The input search term. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. \nYour search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.\n\nThe minimum length is 3 characters and the maximum length is 100 characters.\n\n***The search term must be URL encoded.***\n"
+        - name: naicsCode
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The North American Industry Classification System (NAICS) code.
 
-          If `naicsCode` is provided, `term` is required. The most relevant job members associated with the naicsCode are returned first.
-      - name: hasBenchmarkValue
-        in: query
-        required: false
-        schema:
-          type: boolean
-        description: |
-          Filter members based on the availability of benchmark values. 
-          If `true`, members with benchmark values are returned. 
-          If `false`, members without benchmark values are returned. 
-          If no value is specified, all members are returned.
-      - name: semanticOnly
-        in: query
-        required: false
-        schema:
-          type: boolean
-        description: |
-          If `true`, only semantic search will be used to find matches. Ensure the parameter `lexicalOnly` is set to `false`.
-          Default is `false`. By default, both semantic and lexical search are used to find matches.
-      - name: lexicalOnly
-        in: query
-        required: false
-        schema:
-          type: boolean
-        description: |
-          If `true`, only lexical search will be used to find matches. Ensure the parameter `semanticOnly` is set to `false`. 
-          Default is `false`. By default, both semantic and lexical search are used to find matches.
-      - name: typicalTitlesSearch
-        in: query
-        required: false
-        schema:
-          type: boolean
-        description: |
-          If `true`, similar job titles for a job member are included in the lexical search for matches. Ensure the parameters 'lexicalOnly' is set to 'true' and 'semanticOnly' is set to 'false'. Default is `false`.
+            If `naicsCode` is provided, `term` is required. The most relevant job members associated with the naicsCode are returned first.
+        - name: hasBenchmarkValue
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: "Filter members based on the availability of benchmark values. \nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned. \nIf no value is specified, all members are returned.\n"
+        - name: semanticOnly
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, only semantic search will be used to find matches. Ensure the parameter `lexicalOnly` is set to `false`.
+            Default is `false`. By default, both semantic and lexical search are used to find matches.
+        - name: lexicalOnly
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: "If `true`, only lexical search will be used to find matches. Ensure the parameter `semanticOnly` is set to `false`. \nDefault is `false`. By default, both semantic and lexical search are used to find matches.\n"
+        - name: typicalTitlesSearch
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, similar job titles for a job member are included in the lexical search for matches. Ensure the parameters 'lexicalOnly' is set to 'true' and 'semanticOnly' is set to 'false'. Default is `false`.
       responses:
         "200":
           description: |
@@ -280,22 +256,22 @@ paths:
         httpMethod: "POST"
         uri: "${lambda-get-salary-arn}"
       security:
-      - api_key: []
+        - api_key: []
   /v1/compensation-benchmarks/jobs/standardize:
     post:
       summary: Standardize custom job titles in bulk
-      tags: [ Dimensions ]
+      tags: [Dimensions]
       operationId: "StandardizeJobsInBulk"
       description: |
         Find the top standardized job matches for any custom job title and optional NAICS code in bulk.
       requestBody:
         description: |
           The custom job titles that you want to retrieve standardized jobs for, the optional NAICS code to retrieve industry specific jobs, and the optional number of top matches to retrieve.
-          
+
           By default, both semantic and lexical search are used to find matches. If you want to use a specific search method, set one of the parameters `semanticOnly` or `lexicalOnly` to `true`. Default for `semanticOnly` and `lexicalOnly` are `false`.
-          
+
           The minimum custom job title length is 3 characters and the maximum length is 100 characters. You can submit up to 30 custom job titles per request.
-          
+
           The default number of top matches returned is 5.
         content:
           application/json:
@@ -337,7 +313,7 @@ paths:
         httpMethod: "POST"
         uri: "${lambda-get-batch-dimension-members-arn}"
       security:
-        - api_key: [ ]
+        - api_key: []
   /v1/compensation-benchmarks/jobs/hierarchies:
     get:
       summary: Get job hierarchies
@@ -346,15 +322,15 @@ paths:
       description: |
         Retrieve a list of all hierarchies used to organize jobs.
       parameters:
-      - name: naicsCode
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The North American Industry Classification System (NAICS) code.
+        - name: naicsCode
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The North American Industry Classification System (NAICS) code.
 
-          If provided, the response returns the hierarchies associated with the code.
+            If provided, the response returns the hierarchies associated with the code.
       responses:
         "200":
           description: |
@@ -392,18 +368,18 @@ paths:
         httpMethod: "POST"
         uri: "${lambda-get-occupation-hierarchies-arn}"
       security:
-      - api_key: []
+        - api_key: []
   /v1/compensation-benchmarks/jobs/search:
     post:
       summary: Search jobs by IDs
-      tags: [ Dimensions ]
+      tags: [Dimensions]
       operationId: "SearchJobs"
       description: |
         Retrieve a matching job for each specified job ID.
       requestBody:
         description: |
           The job IDs that you want to retrieve a job match.
-          
+
           Include the mandatory `jobIds` field.
         content:
           application/json:
@@ -412,9 +388,7 @@ paths:
         required: true
       responses:
         "200":
-          description: |
-            The request was completed. Review the responses individually to see which actions were successful. 
-            If you receive a 400 status code for an individual input, it indicates an invalid job ID or no job was found.
+          description: "The request was completed. Review the responses individually to see which actions were successful. \nIf you receive a 400 status code for an individual input, it indicates an invalid job ID or no job was found.\n"
           content:
             application/json:
               schema:
@@ -446,29 +420,17 @@ paths:
         httpMethod: "POST"
         uri: "${lambda-search-jobs-arn}"
       security:
-        - api_key: [ ]
+        - api_key: []
   /v1/compensation-benchmarks/jobs/feedback:
     post:
       summary: Send feedback to help improve the quality of the job match results
-      tags: [ Dimensions ]
+      tags: [Dimensions]
       operationId: "SubmitJobsFeedback"
-      description: |
-        This API allows you to submit feedback on the quality of the job match results returned by the Get jobs endpoint. 
-        
-        You must include the search term (job title you entered) in the request body. You can include the optional `naicsCode` if it was used as part of the search in the Get jobs endpoint.
-        
-        You can also submit additional comments by providing values for `additionalComments`, along with `term` and `naicsCode`.
-        
-        **Note:**
-        
-        For `term`, the minimum is 3 characters and the maximum is 100 characters.
-        
-        For `additionalComments`, the maximum is 150 characters.
-
+      description: "This API allows you to submit feedback on the quality of the job match results returned by the Get jobs endpoint. \n\nYou must include the search term (job title you entered) in the request body. You can include the optional `naicsCode` if it was used as part of the search in the Get jobs endpoint.\n\nYou can also submit additional comments by providing values for `additionalComments`, along with `term` and `naicsCode`.\n\n**Note:**\n\nFor `term`, the minimum is 3 characters and the maximum is 100 characters.\n\nFor `additionalComments`, the maximum is 150 characters.\n"
       requestBody:
         description: |
           The feedback you want to submit for.
-          
+
           Ensure to include the mandatory fields: search term (`term`).
         content:
           application/json:
@@ -506,7 +468,7 @@ paths:
         uri: "${lambda-submit-match-feedback-arn}"
         type: "aws_proxy"
       security:
-      - api_key: [ ]
+        - api_key: []
   /v1/compensation-benchmarks/industries:
     get:
       summary: Get industries
@@ -515,36 +477,32 @@ paths:
       description: |
         Retrieve a list of all available industries.
       parameters:
-      - name: parent
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The ID of the parent member.
-          
-          If the ID is provided, the response returns the immediate children of the parent member.
+        - name: parent
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The ID of the parent member.
 
-          To get the top-level members, use the value `root`.
-      - name: naicsCode
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The North American Industry Classification System (NAICS) code.
+            If the ID is provided, the response returns the immediate children of the parent member.
 
-          If provided, the response returns the best matching member associated with the code.
-      - name: hasBenchmarkValue
-        in: query
-        required: false
-        schema:
-          type: boolean
-        description: |
-          Filter members based on the availability of benchmark values. 
-          If `true`, members with benchmark values are returned. 
-          If `false`, members without benchmark values are returned. 
-          If no value is specified, all members are returned.
+            To get the top-level members, use the value `root`.
+        - name: naicsCode
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The North American Industry Classification System (NAICS) code.
+
+            If provided, the response returns the best matching member associated with the code.
+        - name: hasBenchmarkValue
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: "Filter members based on the availability of benchmark values. \nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned. \nIf no value is specified, all members are returned.\n"
       responses:
         "200":
           description: |
@@ -582,7 +540,7 @@ paths:
         httpMethod: "POST"
         uri: "${lambda-get-dimension-members-arn}"
       security:
-      - api_key: []
+        - api_key: []
   /v1/compensation-benchmarks/locations:
     get:
       summary: Get locations
@@ -591,43 +549,39 @@ paths:
       description: |
         Retrieve a list of all available locations.
       parameters:
-      - name: parent
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The ID of the parent member.
-          
-          If the ID is provided, the response returns the immediate children of the parent member.
+        - name: parent
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The ID of the parent member.
 
-          To get the top-level member, use the value `root`.
-      - name: countryCode
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The **ISO 3166-1** country code to look up. Returns location members that match the country code.
-          
-          Currently, the only supported country code is `US`.
-      - name: postalCode
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          Postal code to look up. If `postalCode` is provided, `countryCode` is required. Returns location members that match both the country code and postal code.
-      - name: hasBenchmarkValue
-        in: query
-        required: false
-        schema:
-          type: boolean
-        description: |
-          Filter members based on the availability of benchmark values. 
-          If `true`, members with benchmark values are returned. 
-          If `false`, members without benchmark values are returned. 
-          If no value is specified, all members are returned.
+            If the ID is provided, the response returns the immediate children of the parent member.
+
+            To get the top-level member, use the value `root`.
+        - name: countryCode
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The **ISO 3166-1** country code to look up. Returns location members that match the country code.
+
+            Currently, the only supported country code is `US`.
+        - name: postalCode
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            Postal code to look up. If `postalCode` is provided, `countryCode` is required. Returns location members that match both the country code and postal code.
+        - name: hasBenchmarkValue
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: "Filter members based on the availability of benchmark values. \nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned. \nIf no value is specified, all members are returned.\n"
       responses:
         "200":
           description: |
@@ -665,11 +619,11 @@ paths:
         httpMethod: "POST"
         uri: "${lambda-get-dimension-members-arn}"
       security:
-      - api_key: []
+        - api_key: []
   /v1/compensation-benchmarks/locations/search:
     post:
       summary: Get location members in bulk
-      tags: [ Dimensions ]
+      tags: [Dimensions]
       operationId: "SearchLocationsInBulk"
       description: |
         Retrieve location members in bulk by country code and postal code.
@@ -683,9 +637,7 @@ paths:
         required: true
       responses:
         "200":
-          description: |
-            The request was completed. Review the responses individually to see which actions were successful. 
-            If you receive a 400 status code for an individual input, it indicates an invalid look up code or no location was found.
+          description: "The request was completed. Review the responses individually to see which actions were successful. \nIf you receive a 400 status code for an individual input, it indicates an invalid look up code or no location was found.\n"
           content:
             application/json:
               schema:
@@ -717,7 +669,7 @@ paths:
         httpMethod: "POST"
         uri: "${lambda-get-batch-dimension-members-arn}"
       security:
-        - api_key: [ ]
+        - api_key: []
   /v1/compensation-benchmarks/company-sizes:
     get:
       summary: Get company sizes
@@ -726,25 +678,21 @@ paths:
       description: |
         Retrieve a list of all available company sizes.
       parameters:
-      - name: headcount
-        in: query
-        required: false
-        schema:
-          type: integer
-        description: |
-          The number of employees.
+        - name: headcount
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: |
+            The number of employees.
 
-          If provided, the response returns the members with the same headcount.
-      - name: hasBenchmarkValue
-        in: query
-        required: false
-        schema:
-          type: boolean
-        description: |
-          Filter members based on the availability of benchmark values. 
-          If `true`, members with benchmark values are returned. 
-          If `false`, members without benchmark values are returned. 
-          If no value is specified, all members are returned.
+            If provided, the response returns the members with the same headcount.
+        - name: hasBenchmarkValue
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: "Filter members based on the availability of benchmark values. \nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned. \nIf no value is specified, all members are returned.\n"
       responses:
         "200":
           description: |
@@ -782,7 +730,7 @@ paths:
         httpMethod: "POST"
         uri: "${lambda-get-dimension-members-arn}"
       security:
-      - api_key: []
+        - api_key: []
   /v1/compensation-benchmarks/career-levels:
     get:
       summary: Get career levels
@@ -791,25 +739,21 @@ paths:
       description: |
         Retrieve a list of all available career levels.
       parameters:
-      - name: job
-        in: query
-        required: false
-        schema:
-          type: string
-        description: |
-          The job member ID.
+        - name: job
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The job member ID.
 
-          If provided, the response returns the members for the job.
-      - name: hasBenchmarkValue
-        in: query
-        required: false
-        schema:
-          type: boolean
-        description: |
-          Filter members based on the availability of benchmark values. 
-          If `true`, members with benchmark values are returned. 
-          If `false`, members without benchmark values are returned. 
-          If no value is specified, all members are returned.
+            If provided, the response returns the members for the job.
+        - name: hasBenchmarkValue
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: "Filter members based on the availability of benchmark values. \nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned. \nIf no value is specified, all members are returned.\n"
       responses:
         "200":
           description: |
@@ -847,7 +791,7 @@ paths:
         httpMethod: "POST"
         uri: "${lambda-get-dimension-members-arn}"
       security:
-      - api_key: []
+        - api_key: []
   /v1/compensation-benchmarks/info:
     get:
       summary: Get benchmark metadata
@@ -886,14 +830,13 @@ paths:
         uri: "${lambda-get-info-arn}"
       security:
         - api_key: []
-
 components:
   securitySchemes:
     api_key:
       type: "apiKey"
       in: "header"
       name: "x-api-key"
-      x-amazon-apigateway-api-key-source : "HEADER"
+      x-amazon-apigateway-api-key-source: "HEADER"
   schemas:
     BenchmarkValue:
       title: BenchmarkValue
@@ -942,16 +885,16 @@ components:
           description: |
             The industry member ID for the returned benchmarks.
       required:
-      - percentile10
-      - percentile25
-      - percentile50
-      - percentile75
-      - percentile90
-      - alignedRangeMin
-      - alignedRangeMax
-      - referenceDate
-      - releaseDate
-      - industryId
+        - percentile10
+        - percentile25
+        - percentile50
+        - percentile75
+        - percentile90
+        - alignedRangeMin
+        - alignedRangeMax
+        - referenceDate
+        - releaseDate
+        - industryId
     BenchmarkInfo:
       title: BenchmarkInfo
       description: |
@@ -971,9 +914,9 @@ components:
           description: |
             The date that API changes are released.
       required:
-      - referenceDate
-      - releaseDate
-      - apiReleaseDate
+        - referenceDate
+        - releaseDate
+        - apiReleaseDate
     DimensionMember:
       title: DimensionMember
       description: |
@@ -1017,9 +960,7 @@ components:
             properties:
               label:
                 type: string
-                description: |
-                  A word or phrase that describes a section of the member description. 
-                  This field will be excluded from the response if the member description does not have sections.
+                description: "A word or phrase that describes a section of the member description. \nThis field will be excluded from the response if the member description does not have sections.\n"
               text:
                 type: string
                 description: |
@@ -1046,12 +987,12 @@ components:
           type: string
           description: The description of the North American Industry Classification System (NAICS) category that matches the provided naicsCode, using NAICS version 2022.
       required:
-      - id
-      - name
-      - description
-      - hasBenchmarkValue
-      - hasChildren
-      - status
+        - id
+        - name
+        - description
+        - hasBenchmarkValue
+        - hasChildren
+        - status
     Hierarchy:
       title: Hierarchy
       description: |
@@ -1068,9 +1009,9 @@ components:
           type: string
           description: Description of the hierarchy.
       required:
-      - id
-      - name
-      - hasChildren
+        - id
+        - name
+        - hasChildren
     LocationSearchInput:
       description: |
         A list of location query parameters for bulk operation. The maximum batch size is 1000.
@@ -1101,11 +1042,7 @@ components:
               - postalCode
         hasBenchmarkValue:
           type: boolean
-          description: |
-            Filter members based on the availability of benchmark values. 
-            If `true`, members with benchmark values are returned. 
-            If `false`, members without benchmark values are returned. 
-            If no value is specified, all members are returned.
+          description: "Filter members based on the availability of benchmark values. \nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned. \nIf no value is specified, all members are returned.\n"
       required:
         - searchInputs
     LocationSearchOutput:
@@ -1179,7 +1116,7 @@ components:
           items:
             type: "string"
       required:
-      - jobIDs
+        - jobIDs
     JobSearchOutput:
       type: object
       properties:
@@ -1214,13 +1151,13 @@ components:
                 description: |
                   A brief identifier of the type of error.
             required:
-            - httpStatus
-            - message
-            - rci
-            - errorCode
+              - httpStatus
+              - message
+              - rci
+              - errorCode
       required:
-      - successes
-      - failures
+        - successes
+        - failures
     SalaryBenchmarkInputs:
       description: |
         A list of salary query parameters for bulk operation. The maximum batch size is 1000.
@@ -1385,11 +1322,9 @@ components:
           description: If provided, the naicsCode entered when using the Get jobs endpoint. You're providing feedback on the quality of the results for the search term and code.
         additionalComments:
           type: string
-          description: |
-            Additional written feedback about the job match results returned by the Get jobs endpoint. 
-            The maximum is 150 characters.
+          description: "Additional written feedback about the job match results returned by the Get jobs endpoint. \nThe maximum is 150 characters.\n"
       required:
-      - term
+        - term
     JobStandardizationInput:
       description: |
         The custom job titles to standardize.
@@ -1397,13 +1332,7 @@ components:
       properties:
         terms:
           type: "array"
-          description: |
-            A list of input search terms. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. 
-            Your search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.
-
-            The maximum number of search terms is 30.
-
-            For the individual search term, the minimum length is 3 characters and the maximum length is 100 characters.
+          description: "A list of input search terms. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. \nYour search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.\n\nThe maximum number of search terms is 30.\n\nFor the individual search term, the minimum length is 3 characters and the maximum length is 100 characters.\n"
           items:
             type: "string"
         naicsCode:
@@ -1474,15 +1403,14 @@ components:
           description: |
             A root cause identifier that allows Visier to determine the source of the problem.
       required:
-      - errorCode
-      - message
-      - rci
-
+        - errorCode
+        - message
+        - rci
 x-amazon-apigateway-gateway-responses:
   # We don't have auth between Alpine front door and this API GW,
   # so, missing auth token means we are simply requesting for a resource that does not exist.
   MISSING_AUTHENTICATION_TOKEN:
-    statusCode: 404 
+    statusCode: 404
     responseParameters: {}
     responseTemplates:
       application/json: "{\"errorCode\":\"USER_INPUT_ERROR\",\"message\":\"Resource not found\",\"rci\":\"RCI9000001\"}"
@@ -1494,7 +1422,12 @@ x-amazon-apigateway-gateway-responses:
     responseTemplates:
       application/json: "{\"errorCode\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Internal server error\",\"rci\":\"RCI9000002\"}"
   DEFAULT_5XX:
-    statusCode: 500 
+    statusCode: 500
     responseParameters: {}
     responseTemplates:
       application/json: "{\"errorCode\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Internal server error\",\"rci\":\"RCI9000003\"}"
+x-tagGroups:
+  - name: compensation benchmarks
+    tags:
+      - Benchmarks
+      - Dimensions
