@@ -32,26 +32,18 @@ jobs:
 
     - name: Run tests
       working-directory: redocly
-      run: pytest ./scripts/combine_yamls_test.py
-
-    - name: Run Python script to combine YAMLs
-      working-directory: redocly  # Run script in the redocly folder
-      run: |
-        mkdir -p output
-        python ./scripts/combine_yamls.py
+      run: pytest
 
     - name: Install Redocly CLI
       run: npm install -g @redocly/cli
 
     - name: Generate API documentation with Redocly
-      working-directory: redocly  # Run Redocly CLI in the redocly folder
-      run: |
-        redocly build-docs ./master_api_combined.yaml --template templates/redoc-template.html --output output/api-reference.htm
-
-    - name: Remove HTML comments
-      # Run the Python script to remove comments and extra whitespace so Madcap Flare displays it nicely.
       working-directory: redocly
-      run: python ./scripts/remove_comments.py
+      run: redocly build-docs ../res/visier-apis.yaml --template templates/redoc-template.html --output output/api-reference.htm
+
+    - name: Run post-processing on generated documentation
+      working-directory: redocly
+      run: python ./scripts/api_reference_post_processing.py
 
     - name: Create tar.gz of HTML file
       run: |
