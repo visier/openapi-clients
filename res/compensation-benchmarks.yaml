@@ -218,7 +218,8 @@ paths:
           schema:
             type: boolean
           description: |
-            If `true`, similar job titles for a job member are included in the lexical search for matches. Ensure the parameters 'lexicalOnly' is set to 'true' and 'semanticOnly' is set to 'false'. Default is `false`.
+            If `true`, similar job titles for a job member are included in the lexical search for matches. Ensure the parameters 'lexicalOnly' is set to 'true' and 'semanticOnly' is set to 'false'.
+            Default is `false`.
       responses:
         "200":
           description: |
@@ -380,7 +381,7 @@ paths:
         description: |
           The job IDs that you want to retrieve a job match.
 
-          Include the mandatory `jobIds` field.
+          Include the mandatory `jobIDs` field.
         content:
           application/json:
             schema:
@@ -884,6 +885,10 @@ components:
           type: string
           description: |
             The industry member ID for the returned benchmarks.
+        careerLevelId:
+          type: string
+          description: |
+            The career level member ID for the returned benchmarks.
       required:
         - percentile10
         - percentile25
@@ -895,6 +900,7 @@ components:
         - referenceDate
         - releaseDate
         - industryId
+        - careerLevelId
     BenchmarkInfo:
       title: BenchmarkInfo
       description: |
@@ -977,6 +983,11 @@ components:
           description: Similar job titles for a job member. This field will be excluded from the response if there are no similar job titles.
           items:
             type: string
+        relatedJobs:
+          type: array
+          description: The job IDs for similar jobs, sorted in descending order of similarity. This field will be excluded from the response if there are no similar jobs.
+          items:
+            type: string
         naicsId:
           type: string
           description: The North American Industry Classification System (NAICS) code that matches the provided naicsCode, using NAICS version 2022.
@@ -986,6 +997,12 @@ components:
         naicsDescription:
           type: string
           description: The description of the North American Industry Classification System (NAICS) category that matches the provided naicsCode, using NAICS version 2022.
+        socCode:
+          type: string
+          description: The Standard Occupational Classification (SOC) code for the job member, using SOC version 2018.
+        socName:
+          type: string
+          description: The detailed occupation name from the Standard Occupational Classification (SOC) system for the job member, using SOC version 2018.
       required:
         - id
         - name
@@ -1262,6 +1279,10 @@ components:
           type: string
           description: |
             The industry member ID for the returned benchmarks.
+        careerLevelId:
+          type: string
+          description: |
+            The career level member ID for the returned benchmarks.
       required:
         - uuid
         - percentile10
@@ -1274,6 +1295,7 @@ components:
         - referenceDate
         - releaseDate
         - industryId
+        - careerLevelId
     SalaryBenchmarksBatchProcessingFailureOutput:
       title: SalaryBenchmarksBatchProcessingFailureOutput
       description: |
@@ -1347,13 +1369,13 @@ components:
             The number of top matches to retrieve.
           default: 5
         semanticOnly:
-          type: "boolean"
+          type: boolean
           description: |
             If `true`, only semantic search will be used to find matches. Ensure the parameter `lexicalOnly` is set to `false`.
             Default is `false`. By default, both semantic and lexical search are used to find matches.
           default: False
         lexicalOnly:
-          type: "boolean"
+          type: boolean
           description: |
             If `true`, only lexical search will be used to find matches. Ensure the parameter `semanticOnly` is set to `false`.
             Default is `false`. By default, both semantic and lexical search are used to find matches.
@@ -1362,6 +1384,7 @@ components:
           type: boolean
           description: |
             If `true`, similar job titles for a job member are included in the lexical search for matches. Ensure the parameters 'lexicalOnly' is set to 'true' and 'semanticOnly' is set to 'false'.
+            Default is `false`.
           default: False
       required:
         - "terms"
