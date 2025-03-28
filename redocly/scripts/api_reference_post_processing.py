@@ -18,6 +18,18 @@ def strip_html_comments(html_input: str) -> str:
     return re.sub(pattern, '', html_input)
 
 
+def strip_version(html_input: str) -> str:
+    """ Removes the version information from generated output """
+
+    # Define a regex pattern to remove the version, which is present in two places:
+    #  * In the HTML inside a span tag
+    #  * In the API Specification JSON
+    pattern = r'(<span>\(|,"version":")[0-9\.]+(\)</span>|")'
+
+    # Substitute the pattern in the HTML content with an empty string
+    return re.sub(pattern, '', html_input)
+
+
 def correct_br_tags(html_input: str) -> str:
     """ Replaces <br> with XML-compliant <br/> """
     return html_input.replace("<br>", "<br/>")
@@ -51,6 +63,7 @@ if __name__ == '__main__':
         content = file.read()
 
     content = strip_html_comments(content)
+    content = strip_version(content)
     content = correct_br_tags(content)
     content = script_tag_adjustments(content)
 
