@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1808
+  version: 22222222.99201.1813
 paths:
   /v1/data/query/aggregate:
     post:
@@ -44,7 +44,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dataservices.query.CellSetDTO'
+                $ref: '#/components/schemas/dataservices.query.CellSetOrErrorDTO'
             application/jsonlines:
               schema:
                 type: string
@@ -1551,6 +1551,18 @@ components:
       description: |-
         The set of cells returned from executing an aggregation query.
          A CellSet represents a structured, multidimensional array of values.
+    dataservices.query.CellSetOrErrorDTO:
+      type: object
+      properties:
+        cellSet:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.CellSetDTO'
+          description: The resulting cell set from a successful query execution.
+        error:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryExecutionErrorDTO'
+          description: An error for a failed query execution.
+      description: A result that is either a cell set for a successful query execution, or an error for a failed query execution.
     dataservices.query.CohortFilterDTO:
       type: object
       properties:
@@ -1999,6 +2011,57 @@ components:
       type: object
       properties: {}
       description: A special property that yields the effective date for the record
+    dataservices.query.QueryExecutionErrorDTO:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: A brief identifier of the type of error.
+        message:
+          type: string
+          description: The details of the error.
+        allErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.QueryExecutionErrorsDTO'
+          description: All errors
+      description: |-
+        An error that occurred during query execution. A QueryExecutionError returns as part of a
+         successful batch aggregation query for any queries that failed. This is different from errors,
+         which return for failed requests.
+    dataservices.query.QueryExecutionErrorDetailsDTO:
+      type: object
+      properties:
+        objectType:
+          type: string
+          description: Query request object type.
+        queryIndex:
+          type: integer
+          description: The position of the query within the request query list.
+          format: int32
+        columnIndex:
+          type: integer
+          description: The position of the column within the request column list.
+          format: int32
+        error:
+          type: string
+          description: The details of the error.
+      description: The details of a error that occurred during query execution.
+    dataservices.query.QueryExecutionErrorsDTO:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: A brief identifier of the type of error.
+        message:
+          type: string
+          description: The message of the error.
+        allErrorDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.QueryExecutionErrorDetailsDTO'
+          description: The list of the error details.
+      description: The errors that occurred during query execution.
     dataservices.query.QueryExecutionOptionsDTO:
       type: object
       properties:

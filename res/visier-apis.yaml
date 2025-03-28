@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1808
+  version: 22222222.99201.1813
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -4391,7 +4391,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/dataservices.query.CellSetDTO'
+                $ref: '#/components/schemas/dataservices.query.CellSetOrErrorDTO'
             application/jsonlines:
               schema:
                 type: string
@@ -8132,14 +8132,7 @@ paths:
       tags:
         - UsersV1
       summary: Retrieve the Application Logs
-      description: |-
-        This API allows you to export the Application Logs for a tenant. The Application Logs track information about your
-         users and how they are using the application. Performing regular audits will help you identify potential security
-         issues and keep your data safe. As part of user management, download the Application Logs to monitor user activity
-         and logon events to ensure your users are performing authorized activities.
-
-         Administrating tenant users can export application logs for the administrating tenant and the analytic tenants
-         those users belong to.
+      description: "This API allows you to export the Application Logs for a tenant. The Application Logs track information about your\n users and how they are using the application. Performing regular audits will help you identify potential security\n issues and keep your data safe. As part of user management, download the Application Logs to monitor user activity\n and logon events to ensure your users are performing authorized activities. \n\n Application logs are retained in the system for 180 days.\n\n Administrating tenant users can export application logs for the administrating tenant and the analytic tenants\n those users belong to."
       operationId: UsersV1_GetApplicationLogsXLSX
       parameters:
         - name: startTime
@@ -8689,6 +8682,7 @@ paths:
         - DataUpload
       summary: Upload a data file to Visier
       description: "Use this API to upload data files to Visier. You can upload ZIP, CSV, XLS, and XLSX filetypes in plaintext or encrypted with Visier's PGP key.\n\n Use of this API requires client redirect. This API redirects requests directly to Visier's upload infrastructure to support long-running uploads. \n To ensure efficient uploading, we recommend that you use an HTTP client that supports the 100 Continue status code.\n\n The maximum file upload size is 500 MB. We recommend using SFTP for larger file sizes."
+      operationId: DataUpload_FileUpload
       parameters:
         - name: filename
           in: path
@@ -8927,772 +8921,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/jobs/{id}:
-    get:
-      summary: Get job details by ID
-      tags: [Jobs Library]
-      operationId: "GetJob"
-      description: |
-        If you know the ID of a job, use this endpoint to retrieve information such as display name, description, Automation Index, Remote Work Index, alternative names, and skills.
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "string"
-          description: |
-            The ID of the job to retrieve details for.
-        - name: "Accept-Language"
-          in: "header"
-          schema:
-            type: "string"
-          description: |
-            Allows you to specify if you want the output to be in one of the accepted languages.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is English.
-      responses:
-        "200":
-          description: |
-            Details of the requested job.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Job"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-get-job-arn}"
-      security:
-        - api_key: []
-  /v1/jobs:
-    get:
-      summary: Retrieve a list of jobs
-      tags: [Jobs Library]
-      operationId: "ListJobs"
-      description: |
-        Use this endpoint to retrieve all the jobs in Visier's Jobs Library.
-      parameters:
-        - name: "Accept-Language"
-          in: "header"
-          schema:
-            type: "string"
-          description: |
-            Allows you to specify if you want the output to be in one of the accepted languages.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is English.
-      responses:
-        "200":
-          description: |
-            List of jobs.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/JobList"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-list-jobs-arn}"
-      security:
-        - api_key: []
-  /v1/jobs/search:
-    get:
-      summary: Search jobs
-      tags: [Jobs Library]
-      operationId: "SearchJob"
-      description: |
-        Retrieve a list of jobs that match a specified search term.
-      parameters:
-        - name: "term"
-          in: "query"
-          required: true
-          schema:
-            type: "string"
-          description: |
-            The term to search for. The search term must be URL encoded and the minimum length is 3 characters.
-        - name: "Accept-Language"
-          in: "header"
-          schema:
-            type: "string"
-          description: |
-            Allows you to specify if you want the output to be in one of the accepted languages.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is English.
-      responses:
-        "200":
-          description: |
-            List of jobs matching the search term.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/JobList"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-search-job-arn}"
-      security:
-        - api_key: []
-  /v1/jobs/standardize:
-    post:
-      summary: Standardize custom job titles
-      tags: [Jobs Library]
-      operationId: "StandardizeJobs"
-      description: |
-        Find the top standardized job matches for any custom job title and optional NAICS code.
-      requestBody:
-        description: |
-          The custom job titles that you want to retrieve standardized jobs for and the optional NAICS code to retrieve industry specific jobs.
-
-          The minimum length is 3 characters and the maximum length is 100 characters. You can submit up to 10 custom job titles per request.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/JobStandardizationInputSkills"
-        required: true
-      responses:
-        "200":
-          description: |
-            The top standardized job matches for each custom job title.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/JobStandardizationOutputSkills"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-standardize-job-arn}"
-        type: "aws_proxy"
-      security:
-        - api_key: []
-  /v1/skills/{id}:
-    get:
-      summary: Get skill details by ID
-      tags: [Skills Library]
-      operationId: "GetSkill"
-      description: |
-        If you know the ID of a skill, use this endpoint to retrieve information such as display name, description, Automation Index, Remote Work Index, and alternative names.
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "string"
-          description: |
-            The ID of the skill to retrieve details for.
-        - name: "Accept-Language"
-          in: "header"
-          schema:
-            type: "string"
-          description: |
-            Allows you to specify if you want the output to be in one of the accepted languages.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is English.
-      responses:
-        "200":
-          description: |
-            Details of the requested skill.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Skill"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-get-skill-arn}"
-      security:
-        - api_key: []
-  /v1/skills:
-    get:
-      summary: Retrieve a list of skills
-      tags: [Skills Library]
-      operationId: "ListSkills"
-      description: |
-        Use this endpoint to retrieve all skills in Visier's Skills Library.
-      parameters:
-        - name: "skillGroupId"
-          in: "query"
-          schema:
-            type: "string"
-          description: |
-            Filter only skills that belong to a certain skill group.
-        - name: "skillCategoryId"
-          in: "query"
-          schema:
-            type: "string"
-          description: |
-            Filter only skills that belong to a certain skill category.
-        - name: "Accept-Language"
-          in: "header"
-          schema:
-            type: "string"
-          description: |
-            Allows you to specify if you want the output to be in one of the accepted languages.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is English.
-      responses:
-        "200":
-          description: |
-            List of skills.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SkillList"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-list-skills-arn}"
-      security:
-        - api_key: []
-  /v1/skills/search:
-    get:
-      summary: Search skills
-      tags: [Skills Library]
-      operationId: "SearchSkill"
-      description: |
-        Retrieve a list of skills that match a specified search term.
-      parameters:
-        - name: "term"
-          in: "query"
-          required: true
-          schema:
-            type: "string"
-          description: |
-            The term to search for. The search term must be URL encoded and the minimum length is 3 characters.
-        - name: "Accept-Language"
-          in: "header"
-          schema:
-            type: "string"
-          description: |
-            Allows you to specify if you want the output to be in one of the accepted languages.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is English.
-      responses:
-        "200":
-          description: |
-            List of skills matching the search term.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SkillList"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-search-skill-arn}"
-      security:
-        - api_key: []
-  /v1/skills/extract:
-    post:
-      summary: Extract skills from text
-      tags: [Skills Library]
-      operationId: "ExtractSkills"
-      description: |
-        Extract the relevant skills from text such as job descriptions and course outlines.
-      parameters:
-        - name: "Accept-Language"
-          in: "header"
-          schema:
-            type: "string"
-          description: |
-            Allows you to specify if you want the output to be in one of the accepted languages.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is English.
-      requestBody:
-        description: |
-          The text to extract skills from.
-
-          The minimum length is 4 characters and the maximum length is 7500 characters.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SkillExtractionInput"
-      responses:
-        "200":
-          description: |
-            List of skills extracted from the text.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SkillExtractionOutput"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-extract-skills-arn}"
-      security:
-        - api_key: []
-  /v1/skills/match:
-    post:
-      summary: Match a skill set to a group of skill sets (targets)
-      tags: [Skills Library]
-      operationId: "MatchSkills"
-      description: |
-        Find the best match between a skill set and a group of skill sets (targets). The response returns a ranking of the targets with the best match appearing at the top of the list.
-      requestBody:
-        description: |
-          The skill set and the group of skill sets (targets) to be matched. The skills included in each skill set are entered in the following format [skill_id, score]. The score represents how prevalent the skill was in the source and is used as a weighting factor when determining the best match.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SkillMatchInput"
-      responses:
-        "200":
-          description: |
-            Ranked list of skill sets (targets) with the best match appearing at the top of the list. The integer value indicates the position of the target in the request body.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SkillMatchOutput"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-match-skills-arn}"
-      security:
-        - api_key: []
-  /v1/skill-groups/{id}:
-    get:
-      summary: Get skill group details by ID
-      tags: [Skills Library]
-      operationId: "GetSkillGroup"
-      description: |
-        If you know the ID of a skill group, use this endpoint to retrieve information such as display name, description, Automation Index, Remote Work Index, and alternative names.
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "string"
-          description: |
-            The ID of the skill group to retrieve details for.
-        - name: "Accept-Language"
-          in: "header"
-          schema:
-            type: "string"
-          description: |
-            Allows you to specify if you want the output to be in one of the accepted languages.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is English.
-      responses:
-        "200":
-          description: |
-            Details of the requested skill group.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SkillGroup"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-get-meta-skill-arn}"
-      security:
-        - api_key: []
-  /v1/skill-groups:
-    get:
-      summary: Retrieve a list of skill groups
-      tags: [Skills Library]
-      operationId: "ListSkillGroups"
-      description: |
-        Use this endpoint to retrieve all skill groups in Visier's Skills Library.
-      parameters:
-        - name: "skillCategoryId"
-          in: "query"
-          schema:
-            type: "string"
-          description: |
-            Filter only skills that belong to a certain skill category.
-        - name: "Accept-Language"
-          in: "header"
-          schema:
-            type: "string"
-          description: |
-            Allows you to specify if you want the output to be in one of the accepted languages.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is English.
-      responses:
-        "200":
-          description: |
-            List of skill groups.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SkillGroupList"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-list-meta-skills-arn}"
-      security:
-        - api_key: []
-  /v1/skill-categories/{id}:
-    get:
-      summary: Get skill category details by ID
-      tags: [Skills Library]
-      operationId: "GetSkillCategory"
-      description: |
-        If you know the ID of a skill category, use this endpoint to retrieve information such as display name, description, Automation Index, Remote Work Index, and alternative names.
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "string"
-          description: |
-            The ID of the skill category to retrieve details for.
-        - name: "Accept-Language"
-          in: "header"
-          schema:
-            type: "string"
-          description: |
-            Allows you to specify if you want the output to be in one of the accepted languages.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is English.
-      responses:
-        "200":
-          description: |
-            Details of the requested skill category.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SkillCategory"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-get-super-skill-arn}"
-      security:
-        - api_key: []
-  /v1/skill-categories:
-    get:
-      summary: Retrieve a list of skill categories
-      tags: [Skills Library]
-      operationId: "ListSkillCategories"
-      description: |
-        Use this endpoint to retrieve all skill categories in Visier's Skills Library.
-      parameters:
-        - name: "Accept-Language"
-          in: "header"
-          schema:
-            type: "string"
-          description: |
-            Allows you to specify if you want the output to be in one of the accepted languages.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is English.
-      responses:
-        "200":
-          description: |
-            List of skill categories.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SkillCategoryList"
-        "400":
-          description: |
-            The API request failed given the parameters provided, such as missing or invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "500":
-          description: |
-            An unexpected exception occurred on the server.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "504":
-          description: |
-            The server is taking too long to respond and the request timed out.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        credentials: "${apigateway_role}"
-        httpMethod: "POST"
-        uri: "${lambda-list-super-skills-arn}"
-      security:
-        - api_key: []
   /v1/compensation-benchmarks/base-salary:
     get:
       summary: Get base salary benchmark value
@@ -10510,6 +9738,772 @@ paths:
         credentials: "${apigateway_role}"
         httpMethod: "POST"
         uri: "${lambda-get-info-arn}"
+      security:
+        - api_key: []
+  /v1/jobs/{id}:
+    get:
+      summary: Get job details by ID
+      tags: [Jobs Library]
+      operationId: "GetJob"
+      description: |
+        If you know the ID of a job, use this endpoint to retrieve information such as display name, description, Automation Index, Remote Work Index, alternative names, and skills.
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+          description: |
+            The ID of the job to retrieve details for.
+        - name: "Accept-Language"
+          in: "header"
+          schema:
+            type: "string"
+          description: |
+            Allows you to specify if you want the output to be in one of the accepted languages.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is English.
+      responses:
+        "200":
+          description: |
+            Details of the requested job.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-job-arn}"
+      security:
+        - api_key: []
+  /v1/jobs:
+    get:
+      summary: Retrieve a list of jobs
+      tags: [Jobs Library]
+      operationId: "ListJobs"
+      description: |
+        Use this endpoint to retrieve all the jobs in Visier's Jobs Library.
+      parameters:
+        - name: "Accept-Language"
+          in: "header"
+          schema:
+            type: "string"
+          description: |
+            Allows you to specify if you want the output to be in one of the accepted languages.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is English.
+      responses:
+        "200":
+          description: |
+            List of jobs.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobList"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-list-jobs-arn}"
+      security:
+        - api_key: []
+  /v1/jobs/search:
+    get:
+      summary: Search jobs
+      tags: [Jobs Library]
+      operationId: "SearchJob"
+      description: |
+        Retrieve a list of jobs that match a specified search term.
+      parameters:
+        - name: "term"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+          description: |
+            The term to search for. The search term must be URL encoded and the minimum length is 3 characters.
+        - name: "Accept-Language"
+          in: "header"
+          schema:
+            type: "string"
+          description: |
+            Allows you to specify if you want the output to be in one of the accepted languages.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is English.
+      responses:
+        "200":
+          description: |
+            List of jobs matching the search term.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobList"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-search-job-arn}"
+      security:
+        - api_key: []
+  /v1/jobs/standardize:
+    post:
+      summary: Standardize custom job titles
+      tags: [Jobs Library]
+      operationId: "StandardizeJobs"
+      description: |
+        Find the top standardized job matches for any custom job title and optional NAICS code.
+      requestBody:
+        description: |
+          The custom job titles that you want to retrieve standardized jobs for and the optional NAICS code to retrieve industry specific jobs.
+
+          The minimum length is 3 characters and the maximum length is 100 characters. You can submit up to 10 custom job titles per request.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobStandardizationInputSkills"
+        required: true
+      responses:
+        "200":
+          description: |
+            The top standardized job matches for each custom job title.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobStandardizationOutputSkills"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-standardize-job-arn}"
+        type: "aws_proxy"
+      security:
+        - api_key: []
+  /v1/skills/{id}:
+    get:
+      summary: Get skill details by ID
+      tags: [Skills Library]
+      operationId: "GetSkill"
+      description: |
+        If you know the ID of a skill, use this endpoint to retrieve information such as display name, description, Automation Index, Remote Work Index, and alternative names.
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+          description: |
+            The ID of the skill to retrieve details for.
+        - name: "Accept-Language"
+          in: "header"
+          schema:
+            type: "string"
+          description: |
+            Allows you to specify if you want the output to be in one of the accepted languages.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is English.
+      responses:
+        "200":
+          description: |
+            Details of the requested skill.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Skill"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-skill-arn}"
+      security:
+        - api_key: []
+  /v1/skills:
+    get:
+      summary: Retrieve a list of skills
+      tags: [Skills Library]
+      operationId: "ListSkills"
+      description: |
+        Use this endpoint to retrieve all skills in Visier's Skills Library.
+      parameters:
+        - name: "skillGroupId"
+          in: "query"
+          schema:
+            type: "string"
+          description: |
+            Filter only skills that belong to a certain skill group.
+        - name: "skillCategoryId"
+          in: "query"
+          schema:
+            type: "string"
+          description: |
+            Filter only skills that belong to a certain skill category.
+        - name: "Accept-Language"
+          in: "header"
+          schema:
+            type: "string"
+          description: |
+            Allows you to specify if you want the output to be in one of the accepted languages.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is English.
+      responses:
+        "200":
+          description: |
+            List of skills.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillList"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-list-skills-arn}"
+      security:
+        - api_key: []
+  /v1/skills/search:
+    get:
+      summary: Search skills
+      tags: [Skills Library]
+      operationId: "SearchSkill"
+      description: |
+        Retrieve a list of skills that match a specified search term.
+      parameters:
+        - name: "term"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+          description: |
+            The term to search for. The search term must be URL encoded and the minimum length is 3 characters.
+        - name: "Accept-Language"
+          in: "header"
+          schema:
+            type: "string"
+          description: |
+            Allows you to specify if you want the output to be in one of the accepted languages.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is English.
+      responses:
+        "200":
+          description: |
+            List of skills matching the search term.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillList"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-search-skill-arn}"
+      security:
+        - api_key: []
+  /v1/skills/extract:
+    post:
+      summary: Extract skills from text
+      tags: [Skills Library]
+      operationId: "ExtractSkills"
+      description: |
+        Extract the relevant skills from text such as job descriptions and course outlines.
+      parameters:
+        - name: "Accept-Language"
+          in: "header"
+          schema:
+            type: "string"
+          description: |
+            Allows you to specify if you want the output to be in one of the accepted languages.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is English.
+      requestBody:
+        description: |
+          The text to extract skills from.
+
+          The minimum length is 4 characters and the maximum length is 7500 characters.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillExtractionInput"
+      responses:
+        "200":
+          description: |
+            List of skills extracted from the text.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillExtractionOutput"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-extract-skills-arn}"
+      security:
+        - api_key: []
+  /v1/skills/match:
+    post:
+      summary: Match a skill set to a group of skill sets (targets)
+      tags: [Skills Library]
+      operationId: "MatchSkills"
+      description: |
+        Find the best match between a skill set and a group of skill sets (targets). The response returns a ranking of the targets with the best match appearing at the top of the list.
+      requestBody:
+        description: |
+          The skill set and the group of skill sets (targets) to be matched. The skills included in each skill set are entered in the following format [skill_id, score]. The score represents how prevalent the skill was in the source and is used as a weighting factor when determining the best match.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillMatchInput"
+      responses:
+        "200":
+          description: |
+            Ranked list of skill sets (targets) with the best match appearing at the top of the list. The integer value indicates the position of the target in the request body.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillMatchOutput"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-match-skills-arn}"
+      security:
+        - api_key: []
+  /v1/skill-groups/{id}:
+    get:
+      summary: Get skill group details by ID
+      tags: [Skills Library]
+      operationId: "GetSkillGroup"
+      description: |
+        If you know the ID of a skill group, use this endpoint to retrieve information such as display name, description, Automation Index, Remote Work Index, and alternative names.
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+          description: |
+            The ID of the skill group to retrieve details for.
+        - name: "Accept-Language"
+          in: "header"
+          schema:
+            type: "string"
+          description: |
+            Allows you to specify if you want the output to be in one of the accepted languages.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is English.
+      responses:
+        "200":
+          description: |
+            Details of the requested skill group.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillGroup"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-meta-skill-arn}"
+      security:
+        - api_key: []
+  /v1/skill-groups:
+    get:
+      summary: Retrieve a list of skill groups
+      tags: [Skills Library]
+      operationId: "ListSkillGroups"
+      description: |
+        Use this endpoint to retrieve all skill groups in Visier's Skills Library.
+      parameters:
+        - name: "skillCategoryId"
+          in: "query"
+          schema:
+            type: "string"
+          description: |
+            Filter only skills that belong to a certain skill category.
+        - name: "Accept-Language"
+          in: "header"
+          schema:
+            type: "string"
+          description: |
+            Allows you to specify if you want the output to be in one of the accepted languages.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is English.
+      responses:
+        "200":
+          description: |
+            List of skill groups.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillGroupList"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-list-meta-skills-arn}"
+      security:
+        - api_key: []
+  /v1/skill-categories/{id}:
+    get:
+      summary: Get skill category details by ID
+      tags: [Skills Library]
+      operationId: "GetSkillCategory"
+      description: |
+        If you know the ID of a skill category, use this endpoint to retrieve information such as display name, description, Automation Index, Remote Work Index, and alternative names.
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+          description: |
+            The ID of the skill category to retrieve details for.
+        - name: "Accept-Language"
+          in: "header"
+          schema:
+            type: "string"
+          description: |
+            Allows you to specify if you want the output to be in one of the accepted languages.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is English.
+      responses:
+        "200":
+          description: |
+            Details of the requested skill category.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillCategory"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-super-skill-arn}"
+      security:
+        - api_key: []
+  /v1/skill-categories:
+    get:
+      summary: Retrieve a list of skill categories
+      tags: [Skills Library]
+      operationId: "ListSkillCategories"
+      description: |
+        Use this endpoint to retrieve all skill categories in Visier's Skills Library.
+      parameters:
+        - name: "Accept-Language"
+          in: "header"
+          schema:
+            type: "string"
+          description: |
+            Allows you to specify if you want the output to be in one of the accepted languages.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is English.
+      responses:
+        "200":
+          description: |
+            List of skill categories.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillCategoryList"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-list-super-skills-arn}"
       security:
         - api_key: []
 components:
@@ -14028,6 +14022,18 @@ components:
       description: |-
         The set of cells returned from executing an aggregation query.
          A CellSet represents a structured, multidimensional array of values.
+    dataservices.query.CellSetOrErrorDTO:
+      type: object
+      properties:
+        cellSet:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.CellSetDTO'
+          description: The resulting cell set from a successful query execution.
+        error:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryExecutionErrorDTO'
+          description: An error for a failed query execution.
+      description: A result that is either a cell set for a successful query execution, or an error for a failed query execution.
     dataservices.query.CohortFilterDTO:
       type: object
       properties:
@@ -14476,6 +14482,57 @@ components:
       type: object
       properties: {}
       description: A special property that yields the effective date for the record
+    dataservices.query.QueryExecutionErrorDTO:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: A brief identifier of the type of error.
+        message:
+          type: string
+          description: The details of the error.
+        allErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.QueryExecutionErrorsDTO'
+          description: All errors
+      description: |-
+        An error that occurred during query execution. A QueryExecutionError returns as part of a
+         successful batch aggregation query for any queries that failed. This is different from errors,
+         which return for failed requests.
+    dataservices.query.QueryExecutionErrorDetailsDTO:
+      type: object
+      properties:
+        objectType:
+          type: string
+          description: Query request object type.
+        queryIndex:
+          type: integer
+          description: The position of the query within the request query list.
+          format: int32
+        columnIndex:
+          type: integer
+          description: The position of the column within the request column list.
+          format: int32
+        error:
+          type: string
+          description: The details of the error.
+      description: The details of a error that occurred during query execution.
+    dataservices.query.QueryExecutionErrorsDTO:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: A brief identifier of the type of error.
+        message:
+          type: string
+          description: The message of the error.
+        allErrorDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.QueryExecutionErrorDetailsDTO'
+          description: The list of the error details.
+      description: The errors that occurred during query execution.
     dataservices.query.QueryExecutionOptionsDTO:
       type: object
       properties:
@@ -18557,6 +18614,7 @@ components:
             - GeminiManager
             - GeminiSupport
             - GeminiAdmin
+            - GeminiSysAdmin
             - ConsolidatedAnalytics
             - RequestSecureTicket
             - RequestAuthToken
@@ -18688,14 +18746,6 @@ components:
           type: string
           description: The password that corresponds to the user making the request.
       description: Your username and password credentials to request an authentication token.
-    GoogleProtobufAny:
-      type: object
-      properties:
-        '@type':
-          type: string
-          description: The type of the serialized message.
-      additionalProperties: true
-      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
     TokenResponse:
       type: object
       properties:
@@ -18895,499 +18945,6 @@ components:
           type: boolean
           description: Indicates whether the error is a user error.
       description: The response structure for errors.
-    Job:
-      description: |
-        Details describing a job.
-      type: "object"
-      properties:
-        id:
-          type: "string"
-          description: |
-            The unique ID of the job.
-        name:
-          type: "string"
-          description: |
-            The localized display name of the job.
-        description:
-          type: "string"
-          description: |
-            The localized description of the job.
-        iscoCode:
-          type: "string"
-          description: |
-            The International Standard Classification of Occupations (ISCO) code of the job.
-
-            This field will be omitted if the job is not associated with an ISCO code.
-        socCode:
-          type: "string"
-          description: |
-            The Standard Occupational Classification (SOC) code of the job.
-
-            This field will be omitted if the job is not associated with a SOC code.
-        alternativeTitles:
-          type: "array"
-          items:
-            type: "string"
-          description: |
-            List of alternative localized names for this job.
-        essentialSkills:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Skill"
-          description: |
-            List of essential skills for this job.
-        optionalSkills:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Skill"
-          description: |
-            List of optional skills for this job.
-        remoteIndex:
-          type: "number"
-          description: |
-            The Remote Index represents how readily a job can be done through remote work. The index ranges from 0 to 100, where a value of 100 means the job can be done entirely remotely.
-
-            This field will be omitted if remotability is not applicable to the job.
-        automationIndex:
-          type: "integer"
-          description: |
-            The Automation Index represents how readily a job can be automated. The index ranges from 0 to 100, where a value of 100 means the job is completely automatable.
-
-            This field will be omitted if automation is not applicable to the job.
-      required:
-        - "id"
-        - "name"
-        - "description"
-        - "alternativeTitles"
-        - "essentialSkills"
-        - "optionalSkills"
-    JobList:
-      type: "array"
-      items:
-        type: "object"
-        title: "JobEntry"
-        properties:
-          id:
-            type: "string"
-            description: |
-              The unique ID of the job.
-          name:
-            type: "string"
-            description: |
-              The localized display name of the job.
-          description:
-            type: "string"
-            description: |
-              The localized description of the job.
-        required:
-          - id
-          - name
-          - description
-    JobStandardizationInputSkills:
-      description: |
-        The custom job titles to standardize.
-      type: "object"
-      properties:
-        jobs:
-          type: "array"
-          items:
-            type: "string"
-        naicsCode:
-          type: "string"
-          description: |
-            The North American Industry Classification System (NAICS) code.
-
-            If `naicsCode` is provided, the most relevant job titles associated with the naicsCode are returned first.
-      required:
-        - "jobs"
-    JobStandardizationOutputSkills:
-      type: "array"
-      items:
-        title: OutputEntry
-        type: object
-        properties:
-          job:
-            type: "string"
-            description: |
-              The custom job title input.
-          matches:
-            type: array
-            description: |
-              The top standardized job matches.
-            items:
-              type: object
-              properties:
-                id:
-                  type: "string"
-                  description: |
-                    The unique ID of the job.
-                name:
-                  type: "string"
-                  description: |
-                    The localized display name of the job.
-                description:
-                  type: "string"
-                  description: |
-                    The localized description of the job.
-                score:
-                  type: "integer"
-                  description: |
-                    The score representing the confidence level of the match between the standardized job and the custom job title input. The score ranges from 0 to 100.
-              required:
-                - id
-                - name
-                - description
-                - score
-        required:
-          - job
-          - matches
-    Skill:
-      description: |
-        The details describing a skill.
-      type: "object"
-      properties:
-        id:
-          type: "string"
-          description: |
-            The unique ID of the skill.
-        name:
-          type: "string"
-          description: |
-            The localized display name of the skill.
-        description:
-          type: "string"
-          description: |
-            The localized description of the skill.
-        skillGroupId:
-          type: "string"
-          description: |
-            ID of the skill group that this skill belongs to.
-        skillCategoryId:
-          type: "string"
-          description: "ID of the skill category that this skill belongs to. \n"
-        isKnowledge:
-          type: "boolean"
-          description: |
-            Indicates whether the skill is a knowledge skill.
-        skillType:
-          type: "string"
-          description: |
-            The type of skill. Valid values are `Soft`, `Hard`, and `Unknown`.
-        alternativeTitles:
-          type: "array"
-          items:
-            type: "string"
-          description: |
-            List of alternative localized names for this skill.
-        remoteIndex:
-          type: "number"
-          description: |
-            The Remote Index represents how readily a skill can be done through remote work. The index ranges from 0 to 100, where a value of 100 means the skill can be done entirely remotely.
-
-            This field will be omitted if remotability is not applicable to the skill.
-        automationIndex:
-          type: "integer"
-          description: |
-            The Automation Index represents how readily a skill can be automated. The index ranges from 0 to 100, where a value of 100 means the skill is completely automatable.
-
-            This field will be omitted if automation is not applicable to the skill.
-      required:
-        - "id"
-        - "name"
-        - "description"
-        - "skillGroupId"
-        - "skillCategoryId"
-        - "isKnowledge"
-        - "skillType"
-        - "alternativeTitles"
-    SkillList:
-      type: "array"
-      items:
-        type: "object"
-        title: "SkillEntry"
-        properties:
-          id:
-            type: "string"
-            description: |
-              The unique ID of the skill.
-          name:
-            type: "string"
-            description: |
-              The localized display name of the skill.
-          description:
-            type: "string"
-            description: |
-              The localized description of the skill.
-        required:
-          - id
-          - name
-          - description
-    SkillGroup:
-      description: |
-        Details describing a skill group.
-      type: "object"
-      properties:
-        id:
-          type: "string"
-          description: |
-            The unique ID of the skill group.
-        name:
-          type: "string"
-          description: |
-            The localized display name of the skill group.
-        description:
-          type: "string"
-          description: |
-            The localized description of the skill group.
-        skillCategoryId:
-          type: "string"
-          description: |
-            ID of the parent skill category.
-        skills:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Skill"
-          description: |
-            List of skills under this skill group.
-      required:
-        - "id"
-        - "name"
-        - "description"
-        - "skillCategoryId"
-        - "skills"
-    SkillGroupList:
-      type: "array"
-      items:
-        type: "object"
-        title: "SkillGroupEntry"
-        properties:
-          id:
-            type: "string"
-            description: |
-              The unique ID of the skill group.
-          name:
-            type: "string"
-            description: |
-              The localized display name of the skill group.
-          description:
-            type: "string"
-            description: |
-              The localized description of the skill group.
-        required:
-          - id
-          - name
-          - description
-    SkillCategory:
-      description: |
-        Details describing a skill category.
-      type: "object"
-      properties:
-        id:
-          type: "string"
-          description: |
-            The unique ID of the skill category.
-        name:
-          type: "string"
-          description: |
-            The localized display name of the skill category.
-        description:
-          type: "string"
-          description: |
-            The localized description of the skill category.
-        skillGroups:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/SkillGroup"
-          description: |
-            List of skill groups under this skill category.
-      required:
-        - "id"
-        - "name"
-        - "description"
-        - "skillGroups"
-    SkillCategoryList:
-      type: "array"
-      items:
-        type: "object"
-        title: "SkillCategoryEntry"
-        properties:
-          id:
-            type: "string"
-            description: |
-              The unique ID of the skill category.
-          name:
-            type: "string"
-            description: |
-              The localized display name of the skill category.
-          description:
-            type: "string"
-            description: |
-              The localized description of the skill category.
-        required:
-          - id
-          - name
-          - description
-    SkillExtractionInput:
-      description: |
-        The text to extract skills from, such as a job description or course outline.
-      type: object
-      properties:
-        content:
-          type: string
-          maxLength: 7500
-          minLength: 4
-          description: |
-            The body of text to extract skills from.
-
-            The maximum length is 7500 characters. The minimum length is 4 characters.
-        languageCode:
-          type: string
-          description: |
-            Identifies the language of the input text.
-
-            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
-
-            If no value is specified, the response language is used.
-        limit:
-          type: integer
-          minimum: 1
-          maximum: 50
-          description: |
-            The limit on the number of skills extracted from the text. The minimum is 1 and the maximum is 50 skills.
-
-            If no value is specified, the default limit of 10 skills is used.
-      required:
-        - content
-    SkillExtractionOutput:
-      type: "array"
-      items:
-        title: ExtractedSkill
-        type: object
-        properties:
-          id:
-            type: "string"
-            description: |
-              The unique ID of the skill.
-          name:
-            type: "string"
-            description: |
-              The localized display name of the skill.
-          description:
-            type: "string"
-            description: |
-              The localized description of the skill.
-          score:
-            type: "integer"
-            description: |
-              The score representing the confidence level of the match between the extracted skill and the standardized skill in Visier’s Skills Library. The score ranges from 0 to 100.
-        required:
-          - id
-          - name
-          - description
-          - score
-    SkillMatchInput:
-      description: |
-        The skill set and the group of skill sets (targets) to be matched.
-      type: object
-      properties:
-        skillSet:
-          type: array
-          minItems: 1
-          uniqueItems: true
-          items:
-            oneOf:
-              - type: string
-              - type: integer
-            minItems: 2
-            maxItems: 2
-            items:
-              description: |
-                The skills that make up the skill set to be matched. The skills included in each skill set are entered in the following format [skill_id, score]. The skill_id is the unique identifier of a skill in the Skills Library. The score represents how prevalent the skill was in the source and is used as a weighting factor when determining the best match.
-          description: |
-            The skills that make up the skill set that will be matched against a group of skill sets (targets).
-          example:
-            - - "21795"
-              - 85
-            - - "19391"
-              - 50
-            - - "21577"
-              - 40
-        targetSkillSets:
-          type: array
-          minItems: 1
-          items:
-            type: array
-            minItems: 1
-            description: |
-              The group of skill sets (targets) that is matched to the input skill set.
-            items:
-              type: array
-              oneOf:
-                - type: string
-                - type: integer
-              minItems: 2
-              maxItems: 2
-              items:
-                description: |
-                  The skills that make up the skill set to be matched. The skills included in each skill set are entered in the following format [skill_id, score]. The skill_id is the unique identifier of a skill in the Skills Library. The score represents how prevalent the skill was in the source and is used as a weighting factor when determining the best match.
-          description: |
-            A comma-separated list of strings that represent the group of skill sets (targets).
-          example:
-            - - - "21795"
-                - 75
-              - - "19391"
-                - 70
-              - - "21577"
-                - 40
-            - - - "15812"
-                - 90
-              - - "16835"
-                - 88
-              - - "30645"
-                - 76
-            - - - "21577"
-                - 90
-              - - "19391"
-                - 67
-              - - "19237"
-                - 66
-      required:
-        - content
-    SkillMatchOutput:
-      type: array
-      minItems: 1
-      description: |
-        Ranked list of the skill sets (targets) with the best match appearing at the top of the list. The integer value indicates the position of the target in the request body.
-        list. The groups are ranked by the best matched skill set to worst matched skill set to the input 'skills' candidate.
-      example:
-        - 0
-        - 2
-        - 1
-      items:
-        type: integer
-        description: The position of the target skill set in the request body. The number sequence starts at 0.
-    ApiError:
-      title: ApiError
-      description: |
-        Description of an API error.
-      type: object
-      properties:
-        errorCode:
-          type: string
-          description: |
-            A brief identifier of the type of error.
-        message:
-          type: string
-          description: |
-            The details of the error.
-        rci:
-          type: string
-          description: |
-            A root cause identifier that allows Visier to determine the source of the problem.
-      required:
-        - errorCode
-        - message
-        - rci
     BenchmarkValue:
       title: BenchmarkValue
       description: |
@@ -19956,6 +19513,499 @@ components:
         required:
           - job
           - matches
+    ApiError:
+      title: ApiError
+      description: |
+        Description of an API error.
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: |
+            A brief identifier of the type of error.
+        message:
+          type: string
+          description: |
+            The details of the error.
+        rci:
+          type: string
+          description: |
+            A root cause identifier that allows Visier to determine the source of the problem.
+      required:
+        - errorCode
+        - message
+        - rci
+    Job:
+      description: |
+        Details describing a job.
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          description: |
+            The unique ID of the job.
+        name:
+          type: "string"
+          description: |
+            The localized display name of the job.
+        description:
+          type: "string"
+          description: |
+            The localized description of the job.
+        iscoCode:
+          type: "string"
+          description: |
+            The International Standard Classification of Occupations (ISCO) code of the job.
+
+            This field will be omitted if the job is not associated with an ISCO code.
+        socCode:
+          type: "string"
+          description: |
+            The Standard Occupational Classification (SOC) code of the job.
+
+            This field will be omitted if the job is not associated with a SOC code.
+        alternativeTitles:
+          type: "array"
+          items:
+            type: "string"
+          description: |
+            List of alternative localized names for this job.
+        essentialSkills:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Skill"
+          description: |
+            List of essential skills for this job.
+        optionalSkills:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Skill"
+          description: |
+            List of optional skills for this job.
+        remoteIndex:
+          type: "number"
+          description: |
+            The Remote Index represents how readily a job can be done through remote work. The index ranges from 0 to 100, where a value of 100 means the job can be done entirely remotely.
+
+            This field will be omitted if remotability is not applicable to the job.
+        automationIndex:
+          type: "integer"
+          description: |
+            The Automation Index represents how readily a job can be automated. The index ranges from 0 to 100, where a value of 100 means the job is completely automatable.
+
+            This field will be omitted if automation is not applicable to the job.
+      required:
+        - "id"
+        - "name"
+        - "description"
+        - "alternativeTitles"
+        - "essentialSkills"
+        - "optionalSkills"
+    JobList:
+      type: "array"
+      items:
+        type: "object"
+        title: "JobEntry"
+        properties:
+          id:
+            type: "string"
+            description: |
+              The unique ID of the job.
+          name:
+            type: "string"
+            description: |
+              The localized display name of the job.
+          description:
+            type: "string"
+            description: |
+              The localized description of the job.
+        required:
+          - id
+          - name
+          - description
+    JobStandardizationInputSkills:
+      description: |
+        The custom job titles to standardize.
+      type: "object"
+      properties:
+        jobs:
+          type: "array"
+          items:
+            type: "string"
+        naicsCode:
+          type: "string"
+          description: |
+            The North American Industry Classification System (NAICS) code.
+
+            If `naicsCode` is provided, the most relevant job titles associated with the naicsCode are returned first.
+      required:
+        - "jobs"
+    JobStandardizationOutputSkills:
+      type: "array"
+      items:
+        title: OutputEntry
+        type: object
+        properties:
+          job:
+            type: "string"
+            description: |
+              The custom job title input.
+          matches:
+            type: array
+            description: |
+              The top standardized job matches.
+            items:
+              type: object
+              properties:
+                id:
+                  type: "string"
+                  description: |
+                    The unique ID of the job.
+                name:
+                  type: "string"
+                  description: |
+                    The localized display name of the job.
+                description:
+                  type: "string"
+                  description: |
+                    The localized description of the job.
+                score:
+                  type: "integer"
+                  description: |
+                    The score representing the confidence level of the match between the standardized job and the custom job title input. The score ranges from 0 to 100.
+              required:
+                - id
+                - name
+                - description
+                - score
+        required:
+          - job
+          - matches
+    Skill:
+      description: |
+        The details describing a skill.
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          description: |
+            The unique ID of the skill.
+        name:
+          type: "string"
+          description: |
+            The localized display name of the skill.
+        description:
+          type: "string"
+          description: |
+            The localized description of the skill.
+        skillGroupId:
+          type: "string"
+          description: |
+            ID of the skill group that this skill belongs to.
+        skillCategoryId:
+          type: "string"
+          description: "ID of the skill category that this skill belongs to. \n"
+        isKnowledge:
+          type: "boolean"
+          description: |
+            Indicates whether the skill is a knowledge skill.
+        skillType:
+          type: "string"
+          description: |
+            The type of skill. Valid values are `Soft`, `Hard`, and `Unknown`.
+        alternativeTitles:
+          type: "array"
+          items:
+            type: "string"
+          description: |
+            List of alternative localized names for this skill.
+        remoteIndex:
+          type: "number"
+          description: |
+            The Remote Index represents how readily a skill can be done through remote work. The index ranges from 0 to 100, where a value of 100 means the skill can be done entirely remotely.
+
+            This field will be omitted if remotability is not applicable to the skill.
+        automationIndex:
+          type: "integer"
+          description: |
+            The Automation Index represents how readily a skill can be automated. The index ranges from 0 to 100, where a value of 100 means the skill is completely automatable.
+
+            This field will be omitted if automation is not applicable to the skill.
+      required:
+        - "id"
+        - "name"
+        - "description"
+        - "skillGroupId"
+        - "skillCategoryId"
+        - "isKnowledge"
+        - "skillType"
+        - "alternativeTitles"
+    SkillList:
+      type: "array"
+      items:
+        type: "object"
+        title: "SkillEntry"
+        properties:
+          id:
+            type: "string"
+            description: |
+              The unique ID of the skill.
+          name:
+            type: "string"
+            description: |
+              The localized display name of the skill.
+          description:
+            type: "string"
+            description: |
+              The localized description of the skill.
+        required:
+          - id
+          - name
+          - description
+    SkillGroup:
+      description: |
+        Details describing a skill group.
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          description: |
+            The unique ID of the skill group.
+        name:
+          type: "string"
+          description: |
+            The localized display name of the skill group.
+        description:
+          type: "string"
+          description: |
+            The localized description of the skill group.
+        skillCategoryId:
+          type: "string"
+          description: |
+            ID of the parent skill category.
+        skills:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Skill"
+          description: |
+            List of skills under this skill group.
+      required:
+        - "id"
+        - "name"
+        - "description"
+        - "skillCategoryId"
+        - "skills"
+    SkillGroupList:
+      type: "array"
+      items:
+        type: "object"
+        title: "SkillGroupEntry"
+        properties:
+          id:
+            type: "string"
+            description: |
+              The unique ID of the skill group.
+          name:
+            type: "string"
+            description: |
+              The localized display name of the skill group.
+          description:
+            type: "string"
+            description: |
+              The localized description of the skill group.
+        required:
+          - id
+          - name
+          - description
+    SkillCategory:
+      description: |
+        Details describing a skill category.
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          description: |
+            The unique ID of the skill category.
+        name:
+          type: "string"
+          description: |
+            The localized display name of the skill category.
+        description:
+          type: "string"
+          description: |
+            The localized description of the skill category.
+        skillGroups:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SkillGroup"
+          description: |
+            List of skill groups under this skill category.
+      required:
+        - "id"
+        - "name"
+        - "description"
+        - "skillGroups"
+    SkillCategoryList:
+      type: "array"
+      items:
+        type: "object"
+        title: "SkillCategoryEntry"
+        properties:
+          id:
+            type: "string"
+            description: |
+              The unique ID of the skill category.
+          name:
+            type: "string"
+            description: |
+              The localized display name of the skill category.
+          description:
+            type: "string"
+            description: |
+              The localized description of the skill category.
+        required:
+          - id
+          - name
+          - description
+    SkillExtractionInput:
+      description: |
+        The text to extract skills from, such as a job description or course outline.
+      type: object
+      properties:
+        content:
+          type: string
+          maxLength: 7500
+          minLength: 4
+          description: |
+            The body of text to extract skills from.
+
+            The maximum length is 7500 characters. The minimum length is 4 characters.
+        languageCode:
+          type: string
+          description: |
+            Identifies the language of the input text.
+
+            Format: **ISO 639-1** language code. For a list of supported languages, see "Supported Languages" in the Skills Intelligence Engine API documentation.
+
+            If no value is specified, the response language is used.
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 50
+          description: |
+            The limit on the number of skills extracted from the text. The minimum is 1 and the maximum is 50 skills.
+
+            If no value is specified, the default limit of 10 skills is used.
+      required:
+        - content
+    SkillExtractionOutput:
+      type: "array"
+      items:
+        title: ExtractedSkill
+        type: object
+        properties:
+          id:
+            type: "string"
+            description: |
+              The unique ID of the skill.
+          name:
+            type: "string"
+            description: |
+              The localized display name of the skill.
+          description:
+            type: "string"
+            description: |
+              The localized description of the skill.
+          score:
+            type: "integer"
+            description: |
+              The score representing the confidence level of the match between the extracted skill and the standardized skill in Visier’s Skills Library. The score ranges from 0 to 100.
+        required:
+          - id
+          - name
+          - description
+          - score
+    SkillMatchInput:
+      description: |
+        The skill set and the group of skill sets (targets) to be matched.
+      type: object
+      properties:
+        skillSet:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            oneOf:
+              - type: string
+              - type: integer
+            minItems: 2
+            maxItems: 2
+            items:
+              description: |
+                The skills that make up the skill set to be matched. The skills included in each skill set are entered in the following format [skill_id, score]. The skill_id is the unique identifier of a skill in the Skills Library. The score represents how prevalent the skill was in the source and is used as a weighting factor when determining the best match.
+          description: |
+            The skills that make up the skill set that will be matched against a group of skill sets (targets).
+          example:
+            - - "21795"
+              - 85
+            - - "19391"
+              - 50
+            - - "21577"
+              - 40
+        targetSkillSets:
+          type: array
+          minItems: 1
+          items:
+            type: array
+            minItems: 1
+            description: |
+              The group of skill sets (targets) that is matched to the input skill set.
+            items:
+              type: array
+              oneOf:
+                - type: string
+                - type: integer
+              minItems: 2
+              maxItems: 2
+              items:
+                description: |
+                  The skills that make up the skill set to be matched. The skills included in each skill set are entered in the following format [skill_id, score]. The skill_id is the unique identifier of a skill in the Skills Library. The score represents how prevalent the skill was in the source and is used as a weighting factor when determining the best match.
+          description: |
+            A comma-separated list of strings that represent the group of skill sets (targets).
+          example:
+            - - - "21795"
+                - 75
+              - - "19391"
+                - 70
+              - - "21577"
+                - 40
+            - - - "15812"
+                - 90
+              - - "16835"
+                - 88
+              - - "30645"
+                - 76
+            - - - "21577"
+                - 90
+              - - "19391"
+                - 67
+              - - "19237"
+                - 66
+      required:
+        - content
+    SkillMatchOutput:
+      type: array
+      minItems: 1
+      description: |
+        Ranked list of the skill sets (targets) with the best match appearing at the top of the list. The integer value indicates the position of the target in the request body.
+        list. The groups are ranked by the best matched skill set to worst matched skill set to the input 'skills' candidate.
+      example:
+        - 0
+        - 2
+        - 1
+      items:
+        type: integer
+        description: The position of the target skill set in the request body. The number sequence starts at 0.
   securitySchemes:
     CookieAuth:
       type: apiKey
@@ -20146,17 +20196,17 @@ tags:
     x-displayName: Object Configuration
     description: |-
       Manage objects in your analytic model.
+  - name: Benchmarks
+    description: |
+      Get benchmark values.
+  - name: Dimensions
+    description: "Discover dimensions and members.\n\nA dimension organizes unique values of an attribute into a list or a hierarchical structure of members. \nThe structure can be navigated to discover the members, and the members can be used to look up benchmark values.\n"
   - name: Jobs Library
     description: |
       Access over 3,300 standard jobs and get complete details in 27 languages, such as alternative titles, descriptions, and skills.
   - name: Skills Library
     description: |
       Access over 14,000 skills and get complete skill details in 27 languages, such as alternative titles, descriptions, and hierarchies.
-  - name: Benchmarks
-    description: |
-      Get benchmark values.
-  - name: Dimensions
-    description: "Discover dimensions and members.\n\nA dimension organizes unique values of an attribute into a list or a hierarchical structure of members. \nThe structure can be navigated to discover the members, and the members can be used to look up benchmark values.\n"
 x-tagGroups:
   - name: authentication
     tags:
@@ -20199,14 +20249,14 @@ x-tagGroups:
     tags:
       - DataModel
       - ObjectConfiguration
-  - name: skills intelligence
-    tags:
-      - Jobs Library
-      - Skills Library
   - name: compensation benchmarks
     tags:
       - Benchmarks
       - Dimensions
+  - name: skills intelligence
+    tags:
+      - Jobs Library
+      - Skills Library
 security:
   - ApiKeyAuth: []
     BearerAuth: []
