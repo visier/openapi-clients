@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1808
+  version: 22222222.99201.1813
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -318,6 +318,7 @@ components:
             - GeminiManager
             - GeminiSupport
             - GeminiAdmin
+            - GeminiSysAdmin
             - ConsolidatedAnalytics
             - RequestSecureTicket
             - RequestAuthToken
@@ -390,14 +391,6 @@ components:
           type: string
           description: The password that corresponds to the user making the request.
       description: Your username and password credentials to request an authentication token.
-    GoogleProtobufAny:
-      type: object
-      properties:
-        "@type":
-          type: string
-          description: The type of the serialized message.
-      additionalProperties: true
-      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
     TokenResponse:
       type: object
       properties:

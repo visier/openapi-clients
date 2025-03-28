@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1808
+  version: 22222222.99201.1813
 paths:
   /v1/admin/capabilities:
     get:
@@ -4014,14 +4014,7 @@ paths:
       tags:
         - UsersV1
       summary: Retrieve the Application Logs
-      description: |-
-        This API allows you to export the Application Logs for a tenant. The Application Logs track information about your
-         users and how they are using the application. Performing regular audits will help you identify potential security
-         issues and keep your data safe. As part of user management, download the Application Logs to monitor user activity
-         and logon events to ensure your users are performing authorized activities.
-
-         Administrating tenant users can export application logs for the administrating tenant and the analytic tenants
-         those users belong to.
+      description: "This API allows you to export the Application Logs for a tenant. The Application Logs track information about your\n users and how they are using the application. Performing regular audits will help you identify potential security\n issues and keep your data safe. As part of user management, download the Application Logs to monitor user activity\n and logon events to ensure your users are performing authorized activities. \n\n Application logs are retained in the system for 180 days.\n\n Administrating tenant users can export application logs for the administrating tenant and the analytic tenants\n those users belong to."
       operationId: UsersV1_GetApplicationLogsXLSX
       parameters:
         - name: startTime

@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1808
+  version: 22222222.99201.1813
 paths:
   /v1/api/pgpkey:
     get:
@@ -1901,6 +1901,7 @@ paths:
         - DataUpload
       summary: Upload a data file to Visier
       description: "Use this API to upload data files to Visier. You can upload ZIP, CSV, XLS, and XLSX filetypes in plaintext or encrypted with Visier's PGP key.\n\n Use of this API requires client redirect. This API redirects requests directly to Visier's upload infrastructure to support long-running uploads. \n To ensure efficient uploading, we recommend that you use an HTTP client that supports the 100 Continue status code.\n\n The maximum file upload size is 500 MB. We recommend using SFTP for larger file sizes."
+      operationId: DataUpload_FileUpload
       parameters:
         - name: filename
           in: path
