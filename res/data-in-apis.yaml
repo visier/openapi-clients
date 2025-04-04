@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1813
+  version: 22222222.99201.1823
 paths:
   /v1/api/pgpkey:
     get:
@@ -244,6 +244,39 @@ paths:
               schema:
                 $ref: '#/components/schemas/servicing.DirectDataSchemaDTO'
   /v1/data/directloads/{draftId}/transactions:
+    get:
+      tags:
+        - DirectDataIntake
+      summary: Retrieve a list of open transactions
+      description: |-
+        *
+         Get a list of all open transactions. Doesn't return committed transactions or rolled back transactions.
+      operationId: DirectDataIntake_ListTransactions
+      parameters:
+        - name: draftId
+          in: path
+          description: Optionally specify the unique identifier of a project to retrieve open transactions from. Currently, the only supported value is `prod` to retrieve open transactions for the production version.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.DirectDataListTransactionsResponseDTO'
     post:
       tags:
         - DirectDataIntake
@@ -2503,9 +2536,11 @@ components:
         tenantCode:
           type: string
           description: The tenant code for the analytic tenant that you are disabling a data version.
-        dataVersions:
+        dataVersion:
           type: string
-          description: The data version to disable for a particular analytic tenant.
+          description: |-
+            The data version to disable for a particular analytic tenant.
+             If not specified, disables the latest enabled data version for the analytic tenant.
     data_in.DisableDVModel:
       type: object
       properties:
@@ -3840,6 +3875,15 @@ components:
           type: string
           description: If the processing job fails, this field contains details specific to the failure.
       description: The job status information for a committed transaction.
+    servicing.DirectDataListTransactionsResponseDTO:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.DirectDataTransactionDTO'
+          description: The list of open transactions.
+      description: A list of all currently open transactions.
     servicing.DirectDataLoadConfigDTO:
       type: object
       properties:
@@ -3878,6 +3922,25 @@ components:
           type: boolean
           description: If true, the value may be empty.
       description: The definition of each field in an object's schema.
+    servicing.DirectDataTransactionDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant for the data load.
+        transactionId:
+          type: string
+          description: The transaction's unique identifier.
+        created:
+          type: string
+          description: The transaction's creation date and time. The format is YYYY-MM-DDTHH:mm:ss.SSSZ (ISO 8601).
+        updated:
+          type: string
+          description: The transaction's last update date and time. The format is YYYY-MM-DDTHH:mm:ss.SSSZ (ISO 8601).
+        status:
+          type: string
+          description: The status of the transaction, such as open, progressing, or committed.
+      description: An open transaction.
     servicing.DirectDataTransactionStartResponseDTO:
       type: object
       properties:
