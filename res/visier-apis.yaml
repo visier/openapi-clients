@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1823
+  version: 22222222.99201.1828
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -8466,6 +8466,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.UsersAPIResponseDTO'
+  /v2alpha/data/model/analytic-objects:
+    put:
+      tags:
+        - DataModel
+      summary: Update analytic objects
+      description: |-
+        Update the details of an analytic object. Supports reverting subjects, events, and internal comparisons to Blueprint.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: DataModel_UpdateAnalyticObjects
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
   /v1/admin/users/reports/application-logs:
     get:
       tags:
@@ -19107,6 +19143,107 @@ components:
           items:
             $ref: '#/components/schemas/servicing.VeeQuestionDeleteDefinitionsByTenantDTO'
           description: The sample questions to delete for each tenant.
+    servicing.v2.objectconfiguration.AnalyticObjectDefinitionDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The UUID identifying the analytic object.
+        objectName:
+          type: string
+          description: The object name of the analytic object.
+        updateOperation:
+          enum:
+            - unspecified
+            - revertToBP
+          type: string
+          description: |-
+            Update the analytic object. Required for `PUT` requests. Valid values:
+             - `unspecified`: Do not update the object.
+             - `revertToBP`: Undo any tenant overrides and revert the object back to its Blueprint state.
+          format: enum
+      description: Information about the analytic object, such as its UUID and object name.
+    servicing.v2.objectconfiguration.AnalyticObjectRequestDTO:
+      type: object
+      properties:
+        analyticObjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectWithContextDTO'
+          description: The analytic objects in the request.
+      description: The analytic objects to create or update.
+    servicing.v2.objectconfiguration.AnalyticObjectWithContextDTO:
+      type: object
+      properties:
+        executionContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+          description: The context of the API request, such as the tenant code and project ID.
+        analyticObject:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectDefinitionDTO'
+          description: Information about the analytic object, such as its UUID and object name.
+      description: Information about the analytic object and the context of the API request, such as the tenant code and project ID.
+    servicing.v2.objectconfiguration.BulkChangeResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.SuccessfulChangeDTO'
+          description: The list of successful changes.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.FailedChangeDTO'
+          description: The list of failed changes.
+    servicing.v2.objectconfiguration.ExecutionContextDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code.
+        projectId:
+          type: string
+          description: The project ID.
+      description: The context of the API request, such as the tenant code and project ID.
+    servicing.v2.objectconfiguration.FailedChangeDTO:
+      type: object
+      properties:
+        executionContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+          description: The tenant and, optionally, project that change was attempted on.
+        objectName:
+          type: string
+          description: The object name of the object that was attempted to be changed.
+        uuid:
+          type: string
+          description: The UUID of the object that was attempted to be changed.
+        displayName:
+          type: string
+          description: The display name of the object that was attempted to be changed.
+        messages:
+          type: array
+          items:
+            type: string
+          description: The error messages.
+    servicing.v2.objectconfiguration.SuccessfulChangeDTO:
+      type: object
+      properties:
+        executionContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+          description: The tenant and, optionally, project that change was made on.
+        objectName:
+          type: string
+          description: The object name of the object that was changed.
+        uuid:
+          type: string
+          description: The UUID of the object that was changed.
+        displayName:
+          type: string
+          description: The display name of the object that was changed.
     servicing.CapabilityGroupDTO:
       type: object
       properties:
