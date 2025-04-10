@@ -5,6 +5,7 @@ theme:
     showObjectSchemaExamples: true
     schemaDefinitionsTagName: 'Schemas'
     pathInMiddlePanel: true
+    generatedSamplesMaxDepth: 30
     theme:
       components:
         httpBadges: 
