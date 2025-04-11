@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1828
+  version: 22222222.99201.1830
 paths:
   /v1/api/pgpkey:
     get:
@@ -248,9 +248,7 @@ paths:
       tags:
         - DirectDataIntake
       summary: Retrieve a list of open transactions
-      description: |-
-        *
-         Get a list of all open transactions. Doesn't return committed transactions or rolled back transactions.
+      description: Get a list of all open transactions. Doesn't return committed transactions or rolled back transactions.
       operationId: DirectDataIntake_ListTransactions
       parameters:
         - name: draftId
