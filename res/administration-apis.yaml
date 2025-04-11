@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1828
+  version: 22222222.99201.1830
 paths:
   /v1/admin/capabilities:
     get:
@@ -3170,7 +3170,7 @@ paths:
       description: |-
         Retrieve a list of all encryption keys. The response returns information about each key, including the key name, algorithm, user who generated the key, the generation date, and expiration date.
 
-         <br>**Note:** <em>These APIs are in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: EncryptionKeys_ListAllEncryptionKeysMetadata
       responses:
@@ -3190,7 +3190,7 @@ paths:
       tags:
         - EncryptionKeys
       summary: Generate an encryption key
-      description: "Create an encryption key using a specific algorithm. The algorithm must be one of `HmacSHA224`, `HmacSHA256`, `HmacSHA384`, or `HmacSHA512`.\n \n In the request body, set the algorithm, give the key a display name and, optionally, set the UTC expiration date for the key pair in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years.\n \n The maximum number of encryption keys per tenant is 5.\n\n <br>**Note:** <em>These APIs are in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Create an encryption key using a specific algorithm. The algorithm must be one of `HmacSHA224`, `HmacSHA256`, `HmacSHA384`, or `HmacSHA512`.\n \n In the request body, set the algorithm, give the key a display name and, optionally, set the UTC expiration date for the key pair in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years.\n \n The maximum number of encryption keys per tenant is 5.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: EncryptionKeys_GenerateEncryptionKeys
       requestBody:
         content:
@@ -3219,7 +3219,7 @@ paths:
       description: |-
         Delete a specific encryption key.
 
-         <br>**Note:** <em>These APIs are in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: EncryptionKeys_DeleteEncryptionKeys
       parameters:
