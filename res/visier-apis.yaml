@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1830
+  version: 22222222.99201.1842
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -7211,6 +7211,271 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.JobIdResponse'
+  /v1alpha/op/webhooks:
+    get:
+      tags:
+        - Webhooks
+      summary: Retrieve a list of webhooks
+      description: |-
+        Retrieve a list of all webhooks. The response returns each webhook's definition, such as its endpoint URL, active status, and event types.
+
+         <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Webhooks_GetAllWebhooks
+      parameters:
+        - name: event
+          in: query
+          description: Retrieve all webhooks listening for the specified event type. Default is to retrieve all webhooks.
+          schema:
+            type: string
+        - name: isActive
+          in: query
+          description: If `true`, retrieve active webhooks only. If `false`, retrieve active and inactive webhooks. Default is `false`.
+          schema:
+            type: boolean
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookResponsesDTO'
+    post:
+      tags:
+        - Webhooks
+      summary: Create a webhook
+      description: |-
+        Create a new webhook with Visier. You must specify the webhook's endpoint URL, its active status, the event types to listen for, and the credentials to authenticate calls to the webhook endpoint.
+
+         <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Webhooks_CreateWebhook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.webhook.WebhookRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookResponseDTO'
+  /v1alpha/op/webhooks/{webhookId}:
+    get:
+      tags:
+        - Webhooks
+      summary: Get the webhook with the specified ID
+      description: |-
+        Retrieve the details of a specific webhook. You must know the ID of the webhook to retrieve its details. To retrieve webhook IDs, see `GET /v1alpha/op/webhooks`.
+
+         <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Webhooks_GetWebhook
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookResponseDTO'
+    put:
+      tags:
+        - Webhooks
+      summary: Update a webhook's details
+      description: |-
+        Update the details of an existing webhook, such as its URL and active status. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1alpha/op/webhooks`. To update a webhook's credentials, see `PUT /v1/alpha/op/webhooks/{webhookId}/credentials`.
+
+         When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values.
+
+         <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Webhooks_UpdateWebhook
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.webhook.WebhookRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookResponseDTO'
+    delete:
+      tags:
+        - Webhooks
+      summary: Delete a webhook
+      description: |-
+        Delete a specific webhook. You must know the ID of the webhook to delete it. To retrieve webhook IDs, see `GET /v1alpha/op/webhooks`.
+
+         <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Webhooks_DeleteWebhook
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookResponseDTO'
+  /v1alpha/op/webhooks/{webhookId}/credentials:
+    put:
+      tags:
+        - Webhooks
+      summary: Update a webhook's credentials
+      description: |-
+        Update the credentials to authenticate calls to the webhook endpoint. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1alpha/op/webhooks`. To update a webhook's details, see `PUT /v1/alpha/op/webhooks/{webhookId}`.
+
+         When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values.
+
+         <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Webhooks_UpdateWebhookCredentials
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.webhook.WebhookCredentialsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookResponseDTO'
+    delete:
+      tags:
+        - Webhooks
+      summary: Delete a webhook's credentials
+      description: "Delete the credentials for a webhook. You must know the ID of the webhook to delete its credentials. To retrieve webhook IDs, see `GET /v1alpha/op/webhooks`.\n \n <br>**Note**: Without credentials, the webhook cannot be used.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: Webhooks_DeleteWebhookCredentials
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookResponseDTO'
+  /v1alpha/op/webhooks/{webhookId}/testEvent:
+    post:
+      tags:
+        - Webhooks
+      summary: Test a webhook
+      description: |-
+        Send a test event to an existing webhook. This validates whether the webhook works. You must specify the webhook ID and an event type.
+
+         <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: Webhooks_SendTestEvent
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookMessageResponseDTO'
   /v1alpha/planning/model/plans:
     get:
       tags:
@@ -8471,6 +8736,11 @@ paths:
       summary: Update analytic objects
       description: |-
         Update the details of an analytic object. Supports reverting subjects, events, and internal comparisons to Blueprint.
+
+         You can revert tenant override objects to Blueprint. If you execute the `revertToBP` operation on a:
+         - Blueprint object: Nothing happens. The object is already the Blueprint version!
+         - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.
+         - Tenant object: The API request fails. The object is unique to your tenant and no Blueprint version exists.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -11403,6 +11673,8 @@ components:
         offsetMonthOption:
           type: string
           description: The month options used to offset the last extraction time (first of month / last of month)
+        credentialId:
+          type: string
     admin.jobs.ProcessingJobRequestDTO:
       type: object
       properties:
@@ -11646,6 +11918,14 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter.
+        effectiveIndustryCode:
+          type: integer
+          description: The effective 2-6 digit NAICS code for the industry to which the analytic tenant belongs. If undefined, it is omitted from the response.
+          format: int32
+        companySize:
+          type: integer
+          description: The determined company size for the analytic tenant. If undefined, it is omitted from the response.
+          format: int32
     admin.TenantManagementAPIListResponseDTO:
       type: object
       properties:
@@ -13565,6 +13845,11 @@ components:
           description: |-
             A list of strings representing the members within a dimension path. For example, a dimension for Location
              may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
+        memberId:
+          type: string
+          description: |-
+            *
+             The unique ID of the member. This can be used if the dimension member does not have a path. e.g. SD groups
       description: The members of a dimension.
     dataservices.common.MemberValuesDTO:
       type: object
@@ -16096,6 +16381,7 @@ components:
             - SmartRecruiters
             - WorkdayWQL
             - OEMCornerstone
+            - Databricks
           type: string
           description: The data provider associated with the credential.
           format: enum
@@ -16175,6 +16461,8 @@ components:
           $ref: '#/components/schemas/designer.OracleDbAuthParamsDTO'
         serviceNowV2AuthParams:
           $ref: '#/components/schemas/designer.ServiceNowV2AuthParamsDTO'
+        databricksAuthParams:
+          $ref: '#/components/schemas/designer.DatabricksAuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -16347,6 +16635,17 @@ components:
           items:
             $ref: '#/components/schemas/designer.DataVersionExportDTO'
           description: Information about data version exports.
+    designer.DatabricksAuthParamsDTO:
+      type: object
+      properties:
+        shareCredentialsVersion:
+          type: string
+        bearerToken:
+          type: string
+        endpoint:
+          type: string
+        expirationTime:
+          type: string
     designer.DayforceV2AuthParamsDTO:
       type: object
       properties:
@@ -16914,6 +17213,111 @@ components:
           type: string
         clientSecret:
           type: string
+    designer.webhook.WebhookBasicAuthCredentialDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The username for the webhook credential.
+        password:
+          type: string
+          description: The password for the webhook credential.
+      description: The basic authentication credentials for the webhook.
+    designer.webhook.WebhookCredentialsDTO:
+      type: object
+      properties:
+        basicAuth:
+          allOf:
+            - $ref: '#/components/schemas/designer.webhook.WebhookBasicAuthCredentialDTO'
+          description: Authentication using a username and password.
+        accessToken:
+          type: string
+          description: Authentication using an access token.
+      description: The credentials to authenticate calls to the webhook endpoint. Must be one of `basicAuth` or `accessToken`.
+    designer.webhook.WebhookDetailsDTO:
+      type: object
+      properties:
+        targetUrl:
+          type: string
+          description: The target URL to call when an event occurs.
+        isActive:
+          type: boolean
+          description: If `true`, the webhook is active. Default is `true`.
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
+          description: |-
+            The events that the webhook is listening for. Valid values:
+             - `jobResultSuccess`: A job completed successfully.
+             - `jobResultFailure`: A job failed to complete.
+             - `jobReschedule`: A job was rescheduled.
+             - `dvPublish`: A data version published to production.
+        keyName:
+          type: string
+          description: The display name of the encryption key for the webhook.
+      description: Information about the webhook, such as its URL, active status, and event types to listen for.
+    designer.webhook.WebhookEventTypeDTO:
+      type: object
+      properties:
+        eventType:
+          type: string
+          description: |-
+            The possible event types to listen for. Valid values:
+             - `jobResultSuccess`: A job completed successfully.
+             - `jobResultFailure`: A job failed to complete.
+             - `jobReschedule`: A job was rescheduled.
+             - `dvPublish`: A data version published to production.
+      description: The possible event types for Visier webhooks.
+    designer.webhook.WebhookMessageResponseDTO:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: The standard HTTP response code to inform you of the success or failure of the webhook notification attempt.
+          format: int32
+        message:
+          type: string
+          description: Information about the notification attempt.
+        messageId:
+          type: string
+          description: The unique identifier of the message.
+        eventId:
+          type: string
+          description: The unique identifier of the event that triggered the webhook notification.
+      description: The results of the webhook notification attempt.
+    designer.webhook.WebhookRequestDTO:
+      type: object
+      properties:
+        details:
+          allOf:
+            - $ref: '#/components/schemas/designer.webhook.WebhookDetailsDTO'
+          description: The webhook's details, such as its URL, active status, and event types to listen for.
+        credentials:
+          allOf:
+            - $ref: '#/components/schemas/designer.webhook.WebhookCredentialsDTO'
+          description: The webhook's credentials, such as a username and password or access token.
+      description: The details and credentials for a webhook.
+    designer.webhook.WebhookResponseDTO:
+      type: object
+      properties:
+        webhookID:
+          type: string
+          description: The unique identifier of the webhook.
+        details:
+          allOf:
+            - $ref: '#/components/schemas/designer.webhook.WebhookDetailsDTO'
+          description: The webhook's details, such as its URL, active status, and event types to listen for.
+      description: The webhook's details, such as its URL, active status, and event types to listen for.
+    designer.webhook.WebhookResponsesDTO:
+      type: object
+      properties:
+        webhooks:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.webhook.WebhookResponseDTO'
+          description: A list of webhooks.
+      description: The returned list of webhooks.
     dp.CancelJobBatchFromJobIdDTO:
       type: object
       properties:
@@ -21607,6 +22011,13 @@ tags:
       Create, retrieve, and delete concepts in your analytic model. You can create and delete one or more concepts in an API call.
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+  - name: Webhooks
+    x-displayName: Webhooks
+    description: |-
+      Create, manage, and retrieve webhook definitions. Use webhooks to register your own HTTPS endpoints with Visier and listen for specific events. When these events occur, Visier sends an API request to your registered endpoint. For example, you can create a webhook to monitor job status events with Visier. Visier sends you a success or failure notification to your registered endpoint after the job completes.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: Benchmarks
     description: |
       Get benchmark values.
@@ -21669,6 +22080,9 @@ x-tagGroups:
     tags:
       - Jobs Library
       - Skills Library
+  - name: webhooks
+    tags:
+      - Webhooks
 security:
   - ApiKeyAuth: []
     BearerAuth: []

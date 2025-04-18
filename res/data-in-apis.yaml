@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1830
+  version: 22222222.99201.1842
 paths:
   /v1/api/pgpkey:
     get:
@@ -2219,6 +2219,8 @@ components:
         offsetMonthOption:
           type: string
           description: The month options used to offset the last extraction time (first of month / last of month)
+        credentialId:
+          type: string
     admin.jobs.ProcessingJobRequestDTO:
       type: object
       properties:
@@ -3161,6 +3163,7 @@ components:
             - SmartRecruiters
             - WorkdayWQL
             - OEMCornerstone
+            - Databricks
           type: string
           description: The data provider associated with the credential.
           format: enum
@@ -3240,6 +3243,8 @@ components:
           $ref: '#/components/schemas/designer.OracleDbAuthParamsDTO'
         serviceNowV2AuthParams:
           $ref: '#/components/schemas/designer.ServiceNowV2AuthParamsDTO'
+        databricksAuthParams:
+          $ref: '#/components/schemas/designer.DatabricksAuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -3261,6 +3266,17 @@ components:
       properties:
         canChildrenInherit:
           type: boolean
+    designer.DatabricksAuthParamsDTO:
+      type: object
+      properties:
+        shareCredentialsVersion:
+          type: string
+        bearerToken:
+          type: string
+        endpoint:
+          type: string
+        expirationTime:
+          type: string
     designer.DayforceV2AuthParamsDTO:
       type: object
       properties:

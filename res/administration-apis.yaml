@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1830
+  version: 22222222.99201.1842
 paths:
   /v1/admin/capabilities:
     get:
@@ -4518,6 +4518,14 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter.
+        effectiveIndustryCode:
+          type: integer
+          description: The effective 2-6 digit NAICS code for the industry to which the analytic tenant belongs. If undefined, it is omitted from the response.
+          format: int32
+        companySize:
+          type: integer
+          description: The determined company size for the analytic tenant. If undefined, it is omitted from the response.
+          format: int32
     admin.TenantManagementAPIListResponseDTO:
       type: object
       properties:
