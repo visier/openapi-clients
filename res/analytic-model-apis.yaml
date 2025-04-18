@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1830
+  version: 22222222.99201.1842
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1949,6 +1949,11 @@ paths:
       description: |-
         Update the details of an analytic object. Supports reverting subjects, events, and internal comparisons to Blueprint.
 
+         You can revert tenant override objects to Blueprint. If you execute the `revertToBP` operation on a:
+         - Blueprint object: Nothing happens. The object is already the Blueprint version!
+         - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.
+         - Tenant object: The API request fails. The object is unique to your tenant and no Blueprint version exists.
+
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: DataModel_UpdateAnalyticObjects
@@ -2286,6 +2291,11 @@ components:
           description: |-
             A list of strings representing the members within a dimension path. For example, a dimension for Location
              may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
+        memberId:
+          type: string
+          description: |-
+            *
+             The unique ID of the member. This can be used if the dimension member does not have a path. e.g. SD groups
       description: The members of a dimension.
     dataservices.common.MemberValuesDTO:
       type: object

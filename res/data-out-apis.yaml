@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1830
+  version: 22222222.99201.1842
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1243,6 +1243,11 @@ components:
           description: |-
             A list of strings representing the members within a dimension path. For example, a dimension for Location
              may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
+        memberId:
+          type: string
+          description: |-
+            *
+             The unique ID of the member. This can be used if the dimension member does not have a path. e.g. SD groups
       description: The members of a dimension.
     dataservices.common.MemberValuesDTO:
       type: object
