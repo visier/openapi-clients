@@ -21,7 +21,7 @@ output_api_dir="$4/$package_name"
 templates_dir="$blueprints_dir/templates"
 
 # Extract the specification version
-spec_version=$(grep -E "version: [0-9\.]+" "$spec_file" | grep -oE "[0-9\.]+")
+spec_version=$(grep -E "version: [0-9\.]+" "$spec_file" | grep -oE "[0-9\.]+" | sed -E 's/^[0-9]+/0/')
 
 if [ -n "$version_postfix" ]; then
     spec_version="${spec_version}.${version_postfix}"
