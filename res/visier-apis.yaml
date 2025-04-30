@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1842
+  version: 22222222.99201.1876
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -6589,6 +6589,89 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/admin.KeyName'
+  /v1alpha/admin/product/releases:
+    get:
+      tags:
+        - ReleaseVersionConfiguration
+      summary: Retrieve available product releases
+      description: |-
+        Retrieve a list of release versions available for each product. The response returns information such as the unique ID of the product, the latest release version, and when the latest release version of the product will automatically be activated. Sometimes, the previous and latest versions are the same.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: ReleaseVersionConfiguration_GetAvailableReleases
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.ProductReleasesDTO'
+  /v1alpha/admin/product/versions:
+    get:
+      tags:
+        - ReleaseVersionConfiguration
+      summary: Retrieve active product release versions
+      description: |-
+        Retrieve the currently active product release versions for a tenant.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: ReleaseVersionConfiguration_GetReleaseVersions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.ProductVersionsDTO'
+    patch:
+      tags:
+        - ReleaseVersionConfiguration
+      summary: Activate product release versions
+      description: |-
+        Set the product release version to activate it on the selected tenants. Analytic tenants will automatically inherit the release version from the administrating tenant. You cannot rollback to a previous version.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: ReleaseVersionConfiguration_SetReleaseVersions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.ProductVersionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.ProductVersionsUpdateResponseDTO'
   /v1alpha/data/data-version-exports/data-versions:
     get:
       tags:
@@ -8928,6 +9011,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptResponseDTO'
+    put:
+      tags:
+        - ConceptsV2
+      summary: Update concepts
+      description: |-
+        Update existing concepts. The response returns whether each concept was successfully updated or not. When updating objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PUT` request definition.
+
+         In `PUT` calls, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the concept. To partially update a concept, see the `PATCH` method.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: ConceptsV2_PutConcepts
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
     post:
       tags:
         - ConceptsV2
@@ -8997,6 +9123,49 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptDeleteRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+    patch:
+      tags:
+        - ConceptsV2
+      summary: Partially update concepts
+      description: |-
+        Make partial changes to existing concepts. The response returns whether each concept was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition.
+
+         Unlike `PUT`, which completely replaces the concept definition, use `PATCH` to change specific fields in the concept without affecting omitted fields. To replace a concept's entire definition, see the `PUT` method.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: ConceptsV2_PatchConcepts
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptRequestDTO'
         required: true
       responses:
         default:
@@ -12678,6 +12847,102 @@ components:
           items:
             $ref: '#/components/schemas/admin.PermissionsToUserGroupRequestDTO'
           description: A list of objects representing the user groups and permissions to assign or remove.
+    admin.ProductReleaseDTO:
+      type: object
+      properties:
+        productId:
+          type: string
+          description: The unique ID of the product.
+        previousVersion:
+          type: string
+          description: The release version being replaced by the latest version.
+        previousVersionEndDate:
+          type: string
+          description: The end-of-life date for the previous release version. Once this date has passed, the latest version will be automatically activated on all tenants. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+        latestVersion:
+          type: string
+          description: The release version that replaces previous versions.
+      description: Details about the available release versions for a specific product.
+    admin.ProductReleasesDTO:
+      type: object
+      properties:
+        releases:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.ProductReleaseDTO'
+          description: A list of products and details about their available release versions.
+      description: A collection of products and details about their available release versions.
+    admin.ProductVersionDTO:
+      type: object
+      properties:
+        productId:
+          type: string
+          description: The unique ID of the product.
+        version:
+          type: string
+          description: The release version of the product.
+        tenantCodes:
+          type: array
+          items:
+            type: string
+          description: The tenants you want to execute the API call on. Retrieve or activate the product release versions on these tenants.
+      description: Provides information about the product release version of a tenant. It is used when retrieving the active product release version and activating the product release version.
+    admin.ProductVersionsDTO:
+      type: object
+      properties:
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.ProductVersionDTO'
+          description: A list of products and their current release versions for a tenant.
+      description: A collection of products and their current release version for a tenant.
+    admin.ProductVersionsUpdateFailureTenantResponseDTO:
+      type: object
+      properties:
+        productId:
+          type: string
+          description: The unique ID of the product that failed to activate.
+        version:
+          type: string
+          description: The release version of the product that was being activated.
+        tenantCodes:
+          type: array
+          items:
+            type: string
+          description: The tenants where the specified release version failed to activate.
+        message:
+          type: string
+          description: More information about why the activation failed.
+      description: Provides details about the failed activation of a product release version.
+    admin.ProductVersionsUpdateResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.ProductVersionsUpdateSuccessfulTenantResponseDTO'
+          description: The products that were successfully activated.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.ProductVersionsUpdateFailureTenantResponseDTO'
+          description: The products that failed to activate.
+      description: A collection of responses indicating the success or failure of a product release version activation request, including lists of tenants with successful or failed activations.
+    admin.ProductVersionsUpdateSuccessfulTenantResponseDTO:
+      type: object
+      properties:
+        productId:
+          type: string
+          description: The unique ID of the product that was successfully activated.
+        version:
+          type: string
+          description: The release version of the product that was activated.
+        tenantCodes:
+          type: array
+          items:
+            type: string
+          description: The tenants where the specified release version was succesfully activated.
+      description: Provides confirmation details about the successful activation of a product release version.
     admin.SecurityAssignmentResponseDTO:
       type: object
       properties:
@@ -14060,9 +14325,7 @@ components:
       properties:
         id:
           type: string
-          description: |-
-            The unique ID of the dimension.
-             Note: See `Dimensions` to get the ID`.
+          description: The unique ID of the dimension.
         displayName:
           type: string
           description: The localized display name of the dimension.
@@ -14125,7 +14388,7 @@ components:
       properties:
         name:
           type: string
-          description: The ID of the dimension. See `Dimensions` to get the ID.
+          description: The ID of the dimension. To get a dimension's ID, call the Data Model API.
         qualifyingPath:
           type: string
           description: |-
@@ -15401,10 +15664,10 @@ components:
           format: enum
         levelId:
           type: string
-          description: The level ID.
+          description: The level ID. For example, "Level_1" or "Level_2".
         levelDepth:
           type: integer
-          description: The level depth.
+          description: The level depth. For a parent-child dimension, depth must be greater than 0. For example, 1 or 2.
           format: int32
       description: A QueryDimensionLevelPropertyDTO defines an existing dimension level and its dimension to query.
     dataservices.query.QueryDimensionLevelSelectionDTO:
@@ -15418,10 +15681,16 @@ components:
           type: array
           items:
             type: string
-          description: The ordered collection of level identifiers for the dimension. See `Dimension`.
+          description: A list of level IDs for the dimension levels that you want to query. For example, ["Level_1", "Level_2"]. To get a dimension's level IDs, call the Data Model API.
+        levelDepths:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: A list of level depths for the dimension levels that you want to query. For a parent-child dimension, depth must be greater than 0. For example, [1, 2]. To get a dimension's level depths, call the Data Model API.
       description: |-
         A QueryDimensionLevelSelection allows you to select a dimension level and its members without
-         explicitly listing each member. To see the correct notation for levels, see `Dimension`.
+         explicitly listing each member.
     dataservices.query.QueryDimensionMemberSelectionDTO:
       type: object
       properties:
@@ -20435,6 +20704,7 @@ components:
             - ReportingManagement
             - QuotaManagement
             - WebhookManagement
+            - ProfileManagement
           type: string
           format: enum
         accessLevel:
@@ -20914,10 +21184,16 @@ components:
           description: The description of the North American Industry Classification System (NAICS) category that matches the provided naicsCode, using NAICS version 2022.
         socCode:
           type: string
-          description: The Standard Occupational Classification (SOC) code for the job member, using SOC version 2018.
+          description: The Standard Occupational Classification (SOC) code for the job member, using SOC version 2018. This optional field is returned if a single SOC code maps to the job member.
         socName:
           type: string
-          description: The detailed occupation name from the Standard Occupational Classification (SOC) system for the job member, using SOC version 2018.
+          description: The detailed occupation name from the Standard Occupational Classification (SOC) system for the job member, using SOC version 2018. This optional field is returned if a single SOC code maps to the job member.
+        socCodes:
+          type: object
+          description: The Standard Occupational Classification (SOC) codes for the job member mapped to career level ids, using SOC version 2018. This optional field is returned if multiple SOC codes map to different career levels of the job member.
+        socNames:
+          type: object
+          description: The detailed occupation names from the Standard Occupational Classification (SOC) system for the job member mapped to career level ids, using SOC version 2018. This optional field is returned if multiple SOC codes map to different career levels of the job member.
       required:
         - id
         - name
@@ -21989,6 +22265,13 @@ tags:
       Manage the IP addresses that can call Visier APIs.
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+  - name: ReleaseVersionConfiguration
+    x-displayName: Release Versions
+    description: |-
+      Manage the Visier product release versions for your tenants.
+      <br>**Note:** <em>This API is available for Embedded Partners.</em>
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: DataModel
     x-displayName: Data Model
     description: |-
@@ -22008,7 +22291,7 @@ tags:
   - name: ConceptsV2
     x-displayName: Concepts V2
     description: |-
-      Create, retrieve, and delete concepts in your analytic model. You can create and delete one or more concepts in an API call.
+      Create, retrieve, update, and delete concepts in your analytic model. You can create, update, and delete one or more concepts in an API call.
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
   - name: Webhooks
@@ -22067,6 +22350,7 @@ x-tagGroups:
       - EmailDomains
       - EncryptionKeys
       - NetworkSubnets
+      - ReleaseVersionConfiguration
   - name: analytic model
     tags:
       - DataModel

@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1842
+  version: 22222222.99201.1876
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2140,6 +2140,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptResponseDTO'
+    put:
+      tags:
+        - ConceptsV2
+      summary: Update concepts
+      description: |-
+        Update existing concepts. The response returns whether each concept was successfully updated or not. When updating objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PUT` request definition.
+
+         In `PUT` calls, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the concept. To partially update a concept, see the `PATCH` method.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: ConceptsV2_PutConcepts
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
     post:
       tags:
         - ConceptsV2
@@ -2209,6 +2252,49 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptDeleteRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+    patch:
+      tags:
+        - ConceptsV2
+      summary: Partially update concepts
+      description: |-
+        Make partial changes to existing concepts. The response returns whether each concept was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition.
+
+         Unlike `PUT`, which completely replaces the concept definition, use `PATCH` to change specific fields in the concept without affecting omitted fields. To replace a concept's entire definition, see the `PUT` method.
+
+         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      operationId: ConceptsV2_PatchConcepts
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptRequestDTO'
         required: true
       responses:
         default:
@@ -2506,9 +2592,7 @@ components:
       properties:
         id:
           type: string
-          description: |-
-            The unique ID of the dimension.
-             Note: See `Dimensions` to get the ID`.
+          description: The unique ID of the dimension.
         displayName:
           type: string
           description: The localized display name of the dimension.
@@ -2571,7 +2655,7 @@ components:
       properties:
         name:
           type: string
-          description: The ID of the dimension. See `Dimensions` to get the ID.
+          description: The ID of the dimension. To get a dimension's ID, call the Data Model API.
         qualifyingPath:
           type: string
           description: |-
@@ -4566,7 +4650,7 @@ tags:
   - name: ConceptsV2
     x-displayName: Concepts V2
     description: |-
-      Create, retrieve, and delete concepts in your analytic model. You can create and delete one or more concepts in an API call.
+      Create, retrieve, update, and delete concepts in your analytic model. You can create, update, and delete one or more concepts in an API call.
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
 security:

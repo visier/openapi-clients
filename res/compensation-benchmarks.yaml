@@ -999,10 +999,16 @@ components:
           description: The description of the North American Industry Classification System (NAICS) category that matches the provided naicsCode, using NAICS version 2022.
         socCode:
           type: string
-          description: The Standard Occupational Classification (SOC) code for the job member, using SOC version 2018.
+          description: The Standard Occupational Classification (SOC) code for the job member, using SOC version 2018. This optional field is returned if a single SOC code maps to the job member.
         socName:
           type: string
-          description: The detailed occupation name from the Standard Occupational Classification (SOC) system for the job member, using SOC version 2018.
+          description: The detailed occupation name from the Standard Occupational Classification (SOC) system for the job member, using SOC version 2018. This optional field is returned if a single SOC code maps to the job member.
+        socCodes:
+          type: object
+          description: The Standard Occupational Classification (SOC) codes for the job member mapped to career level ids, using SOC version 2018. This optional field is returned if multiple SOC codes map to different career levels of the job member.
+        socNames:
+          type: object
+          description: The detailed occupation names from the Standard Occupational Classification (SOC) system for the job member mapped to career level ids, using SOC version 2018. This optional field is returned if multiple SOC codes map to different career levels of the job member.
       required:
         - id
         - name

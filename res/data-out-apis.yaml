@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1842
+  version: 22222222.99201.1876
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1273,7 +1273,7 @@ components:
       properties:
         name:
           type: string
-          description: The ID of the dimension. See `Dimensions` to get the ID.
+          description: The ID of the dimension. To get a dimension's ID, call the Data Model API.
         qualifyingPath:
           type: string
           description: |-
@@ -1978,10 +1978,10 @@ components:
           format: enum
         levelId:
           type: string
-          description: The level ID.
+          description: The level ID. For example, "Level_1" or "Level_2".
         levelDepth:
           type: integer
-          description: The level depth.
+          description: The level depth. For a parent-child dimension, depth must be greater than 0. For example, 1 or 2.
           format: int32
       description: A QueryDimensionLevelPropertyDTO defines an existing dimension level and its dimension to query.
     dataservices.query.QueryDimensionLevelSelectionDTO:
@@ -1995,10 +1995,16 @@ components:
           type: array
           items:
             type: string
-          description: The ordered collection of level identifiers for the dimension. See `Dimension`.
+          description: A list of level IDs for the dimension levels that you want to query. For example, ["Level_1", "Level_2"]. To get a dimension's level IDs, call the Data Model API.
+        levelDepths:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: A list of level depths for the dimension levels that you want to query. For a parent-child dimension, depth must be greater than 0. For example, [1, 2]. To get a dimension's level depths, call the Data Model API.
       description: |-
         A QueryDimensionLevelSelection allows you to select a dimension level and its members without
-         explicitly listing each member. To see the correct notation for levels, see `Dimension`.
+         explicitly listing each member.
     dataservices.query.QueryDimensionMemberSelectionDTO:
       type: object
       properties:
