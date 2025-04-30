@@ -26,7 +26,7 @@ def load_yaml(file_path):
 
 def save_yaml(data, file_path):
     with open(file_path, 'w') as file:
-        yaml.safe_dump(data, file)
+        yaml.safe_dump(data, file, sort_keys=False)
 
 
 def find_null_schemas(spec):
