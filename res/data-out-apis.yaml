@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1876
+  version: 22222222.99201.1880
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1720,9 +1720,7 @@ components:
             - TENANT_CURRENCY_CONVERSION
             - VISIER_CURRENCY_CONVERSION
           type: string
-          description: |-
-            The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly
-             overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION.
+          description: This option is deprecated. Use `currencyConversionCode` instead.
           format: enum
         currencyConversionDate:
           type: string
@@ -1741,9 +1739,7 @@ components:
              Default is false. If false, one table is returned for the drill-through metric.
         currencyConversionCode:
           type: string
-          description: |-
-            The optional target currency for all currency conversions.
-             If not specified, the tenant default currency will be used.
+          description: Overrides the tenant's default currency for currency conversions.
         recordMode:
           enum:
             - NORMAL
@@ -2090,9 +2086,7 @@ components:
             - TENANT_CURRENCY_CONVERSION
             - VISIER_CURRENCY_CONVERSION
           type: string
-          description: |-
-            The currency conversion mode to use. This will be used for all currency conversion calculations
-             unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION.
+          description: This option is deprecated. Use `currencyConversionCode` instead.
           format: enum
         currencyConversionDate:
           type: string
@@ -2142,9 +2136,7 @@ components:
           description: If true, filter non-time axis member sets to only include members that are in aggregate positions or whose previous position is a leaf
         currencyConversionCode:
           type: string
-          description: |-
-            The target currency for all currency conversions.
-             If not specified, the tenant default currency will be used.
+          description: Overrides the tenant's default currency for currency conversions.
         memberDisplayMode:
           enum:
             - DEFAULT
@@ -2753,10 +2745,19 @@ components:
           description: A comma-separated list of strings representing the unique identifier of each source to download.
         minTimestamp:
           type: string
-          description: The earliest upload time to download files from in ISO-8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files from the earliest available time.
+          description: The earliest upload time to download files from in ISO 8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files from the earliest available time.
         maxTimestamp:
           type: string
-          description: The latest upload time to download files up to in ISO-8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files up to the latest available time.
+          description: The latest upload time to download files up to in ISO 8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files up to the latest available time.
+        minSnapshotTimestamp:
+          type: string
+          description: The earliest snapshot time to download files from in ISO 8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files from the earliest available time.
+        maxSnapshotTimestamp:
+          type: string
+          description: The latest snapshot time to download files up to in ISO 8601 format, such as `"2001-10-25T13:45:35.999"`. If omitted, downloads files up to the latest available time.
+        includeNonActiveFiles:
+          type: boolean
+          description: If `true`, includes excluded files in download. Default is `false`.
     designer.DownloadSourceFilesResponseDTO:
       type: object
       properties:
