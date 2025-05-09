@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1880
+  version: 22222222.99201.1892
 paths:
   /v1/api/pgpkey:
     get:
@@ -2221,6 +2221,7 @@ components:
           description: The month options used to offset the last extraction time (first of month / last of month)
         credentialId:
           type: string
+          description: If running a job for the Databricks connector, specify the unique identifier of the connector credentials to use.
     admin.jobs.ProcessingJobRequestDTO:
       type: object
       properties:
@@ -3164,6 +3165,7 @@ components:
             - WorkdayWQL
             - OEMCornerstone
             - Databricks
+            - JiraV2
           type: string
           description: The data provider associated with the credential.
           format: enum

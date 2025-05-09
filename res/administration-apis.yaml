@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1880
+  version: 22222222.99201.1892
 paths:
   /v1/admin/capabilities:
     get:
@@ -4524,6 +4524,49 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, which can be used as values for the idp_url parameter
+    admin.TenantDetailsTraitsDTO:
+      type: object
+      properties:
+        aggregationRights:
+          type: boolean
+          description: If `true`, the tenant is opted in to Visier's data aggregation program, such as Visier Benchmarks. Default is `false`. If `false`, `aggregationRights` isn't returned in the response.
+        tenantType:
+          enum:
+            - ROOT_ADMIN
+            - ROOT
+            - BLUEPRINT
+            - ENTERPRISE
+            - ENTERPRISE_ROOT
+            - BENCHMARK
+            - PARTNER
+            - PARTNER_CUSTOMER
+            - SMB_BP
+            - SMB_CUSTOMER
+            - UNKNOWN
+          type: string
+          description: |-
+            The tenant's type. Valid values:
+             * `ENTERPRISE`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.
+             * `PARTNER`: An administrating tenant that manages one or more analytic tenants. Partner tenants are managed by non-Visier administrators, such as an embedded partner or system integration partner.
+             * `PARTNER_CUSTOMER`: An analytic tenant managed by a partner that represents the partner's customer's instance of Visier.
+          format: enum
+        dataProfileType:
+          enum:
+            - Regular
+            - Integration
+            - Demo
+            - Cat
+            - Test
+          type: string
+          description: |-
+            The tenant's data profile, which designates how the tenant's data is used. Valid values:
+             * `Regular`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.
+             * `Integration`: A partner tenant for development, staging, and testing.
+             * `Demo`: A Visier tenant for demonstrations and training.
+             * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.
+             * `Test`: A Visier tenant for development and testing.
+          format: enum
+      description: The tenant's traits, including aggregation rights, tenant type, and data profile type.
     admin.TenantManagementAPIGetResponseDTO:
       type: object
       properties:
@@ -4603,12 +4646,16 @@ components:
           description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter.
         effectiveIndustryCode:
           type: integer
-          description: The effective 2-6 digit NAICS code for the industry to which the analytic tenant belongs. If undefined, it is omitted from the response.
+          description: The 6-digit NAICS code for the industry to which the analytic tenant belongs. This is calculated from industry codes in the tenant's data if the tenant has business unit data. Not returned if the effective industry code cannot be calculated.
           format: int32
         companySize:
           type: integer
-          description: The determined company size for the analytic tenant. If undefined, it is omitted from the response.
+          description: The latest headcount value for the analytic tenant. Not returned if no headcount data is available.
           format: int32
+        traits:
+          allOf:
+            - $ref: '#/components/schemas/admin.TenantDetailsTraitsDTO'
+          description: The tenant's traits, including aggregation rights, tenant type, and data profile type.
     admin.TenantManagementAPIListResponseDTO:
       type: object
       properties:
@@ -4715,6 +4762,10 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter. This is optional.
+        traits:
+          allOf:
+            - $ref: '#/components/schemas/admin.TenantDetailsTraitsDTO'
+          description: The tenant's traits, including aggregation rights, tenant type, and data profile type.
     admin.TenantManagementAPIUpdateResponseDTO:
       type: object
       properties:
@@ -6981,6 +7032,9 @@ components:
         email:
           type: string
           description: The user's email address.
+        username:
+          type: string
+          description: The user's username. This is typically the user's email, such as john@jupiter.com. If a user's username changes, they must authenticate using the new username.
     servicing.UsersAPIErrorMessageDTO:
       type: object
       properties:
@@ -7082,6 +7136,9 @@ components:
         email:
           type: string
           description: The user's email address.
+        username:
+          type: string
+          description: The user's username. This is typically the user's email, such as john@jupiter.com. If a user's username changes, they must authenticate using the new username.
     systemstatus.SystemStatusDTO:
       type: object
       properties:
