@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1880
+  version: 22222222.99201.1892
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1245,9 +1245,7 @@ components:
              may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
         memberId:
           type: string
-          description: |-
-            *
-             The unique ID of the member. This can be used if the dimension member does not have a path. e.g. SD groups
+          description: The unique identifier of the dimension member. Use `memberId` if the dimension member doesn't have a path, such as SD groups.
       description: The members of a dimension.
     dataservices.common.MemberValuesDTO:
       type: object
@@ -1265,8 +1263,8 @@ components:
       description: |-
         Member filter values are discrete member references in a dimension filter. You can define
          included and excluded members simultaneously. This is typically done with filtering applied on
-         dimensions with multiple levels. For example, a Location parameter may include “South
-         America” and exclude “Brazil” which results in the metric being evaluated for all South American
+         dimensions with multiple levels. For example, a Location parameter may include "South
+         America" and exclude "Brazil" which results in the metric being evaluated for all South American
          countries except Brazil.
     dataservices.datamodel.DimensionReferenceDTO:
       type: object

@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1880
+  version: 22222222.99201.1892
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2379,9 +2379,7 @@ components:
              may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
         memberId:
           type: string
-          description: |-
-            *
-             The unique ID of the member. This can be used if the dimension member does not have a path. e.g. SD groups
+          description: The unique identifier of the dimension member. Use `memberId` if the dimension member doesn't have a path, such as SD groups.
       description: The members of a dimension.
     dataservices.common.MemberValuesDTO:
       type: object
@@ -2399,8 +2397,8 @@ components:
       description: |-
         Member filter values are discrete member references in a dimension filter. You can define
          included and excluded members simultaneously. This is typically done with filtering applied on
-         dimensions with multiple levels. For example, a Location parameter may include “South
-         America” and exclude “Brazil” which results in the metric being evaluated for all South American
+         dimensions with multiple levels. For example, a Location parameter may include "South
+         America" and exclude "Brazil" which results in the metric being evaluated for all South American
          countries except Brazil.
     dataservices.datamodel.AggregationTypeOptionDTO:
       type: object
@@ -4178,16 +4176,6 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptTypeDetailsDTO'
           description: The concept type and its details.
       description: Information about the concept, such as its UUID and concept type.
-    servicing.v2.objectconfiguration.ConceptDeleteDTO:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: The UUID identifying the concept.
-        objectName:
-          type: string
-          description: The object name of the concept.
-      description: The concepts to delete.
     servicing.v2.objectconfiguration.ConceptDeleteRequestDTO:
       type: object
       properties:
@@ -4206,7 +4194,7 @@ components:
           description: The context of the API request, such as the tenant code and project ID.
         concept:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptDeleteDTO'
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ObjectIdDTO'
           description: Information identifying the concept to delete.
       description: Information about the concept to delete and the context of the API request, such as the tenant code and project ID.
     servicing.v2.objectconfiguration.ConceptRequestDTO:
@@ -4315,6 +4303,16 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptMetricDefinitionDTO'
           description: Information about the metric, such as its formula and data type.
+    servicing.v2.objectconfiguration.ObjectIdDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The UUID identifying the object.
+        objectName:
+          type: string
+          description: The object name of the object.
+      description: The identifier for the object.
     servicing.v2.objectconfiguration.ProcessConceptDefinitionDTO:
       type: object
       properties:
