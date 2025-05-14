@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1892
+  version: 22222222.99201.1905
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -19943,9 +19943,6 @@ components:
         email:
           type: string
           description: The user's email address.
-        username:
-          type: string
-          description: The user's username. This is typically the user's email, such as john@jupiter.com. If a user's username changes, they must authenticate using the new username.
     servicing.UsersAPIErrorMessageDTO:
       type: object
       properties:
@@ -20047,9 +20044,6 @@ components:
         email:
           type: string
           description: The user's email address.
-        username:
-          type: string
-          description: The user's username. This is typically the user's email, such as john@jupiter.com. If a user's username changes, they must authenticate using the new username.
     servicing.VeeQuestionChangeDefinitionDTO:
       type: object
       properties:
