@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1905
+  version: 22222222.99201.1906
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -6444,22 +6444,16 @@ paths:
         - EmailDomains
       summary: Add domains to the list of allowed domains
       description: |-
-        Add email address domains to the allowed domains list.
+        Add email address domains to the allowed domains list. The response returns an updated list of allowed email domains.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: EmailDomains_AddAllowedEmailDomains
-      parameters:
-        - name: confirmNotAllowedDomain
-          in: query
-          description: If `true`, you cannot sign in using credentials, such as username and password. You can only log in with single sign-on (SSO). To avoid this, add your current email address's domain to allowed domains list.
-          schema:
-            type: boolean
       requestBody:
         content:
           application/json:
             schema:
-              type: string
+              $ref: '#/components/schemas/admin.EmailDomainsDTO'
         required: true
       responses:
         default:
@@ -6479,22 +6473,16 @@ paths:
         - EmailDomains
       summary: Remove domains from the list of allowed domains
       description: |-
-        Delete email address domains from the allowed domains list.
+        Delete email address domains from the allowed domains list. The response returns an updated list of allowed email domains.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: EmailDomains_DeleteAllowedEmailDomains
-      parameters:
-        - name: confirmNotAllowedDomain
-          in: query
-          description: If `true`, you cannot sign in using credentials, such as username and password. You can only log in with single sign-on (SSO). To avoid this, add your current email address's domain to allowed domains list.
-          schema:
-            type: boolean
       requestBody:
         content:
           application/json:
             schema:
-              type: string
+              $ref: '#/components/schemas/admin.EmailDomainsDTO'
         required: true
       responses:
         default:
@@ -7679,7 +7667,7 @@ paths:
       summary: Submit Vee feedback
       description: |-
         Give Vee feedback for a previous answer. To submit feedback, include:
-         * The response object from the `/question` response.
+         * The conversation details from the `/question` response.
          * A rating of Vee's answer. If `isApproved` is `true`, Vee answered the question correctly. If `isApproved` is `false`, Vee's answer was incorrect or lacked details.
          * A description of how Vee should have answered the question or how Vee can improve the answer, such as "Expected Headcount metric, but Vee returned Average Headcount".
 
@@ -7788,6 +7776,7 @@ paths:
       description: |-
         Perform operations on all sources. The following operations are supported:
          * `exportSources`: Export a ZIP file that contains a list of all sources in the application.
+         * `cloneFilesIntoSource`: Clone a source's files into a different source.
 
          <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -9250,14 +9239,22 @@ paths:
       parameters:
         - name: startTime
           in: query
-          description: An inclusive date-time to start retrieving Application Logs from.
+          description: An inclusive date-time in milliseconds to start retrieving Application Logs from.
           schema:
             type: string
+          examples:
+            startTime:
+              value: 1738368000000
+              description: The start time 2025-02-01:00:00:00 GTM in milliseconds.
         - name: endTime
           in: query
-          description: An exclusive date-time to stop retrieving Application Logs from.
+          description: An exclusive date-time in milliseconds to stop retrieving Application Logs from.
           schema:
             type: string
+          examples:
+            endTime:
+              value: 1740787200000
+              description: The end time 2025-03-01:00:00:00 GTM in milliseconds.
         - name: tenantCode
           in: query
           description: Specify the tenant to retrieve Application Logs from.
@@ -13320,6 +13317,13 @@ components:
           items:
             type: string
           description: Suggested attributes to look at that are similar or related to your question.
+    analysis.common.VeeConversationDTO:
+      type: object
+      properties:
+        conversationState:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeConversationStateDTO'
+          description: The conversation's details. To submit feedback about Vee's answer, copy the entire conversation state from the `/question` response into your `/feedback` call.
     analysis.common.VeeConversationStateDTO:
       type: object
       properties:
@@ -13362,10 +13366,10 @@ components:
     analysis.common.VeeFeedbackDTO:
       type: object
       properties:
-        response:
+        conversation:
           allOf:
-            - $ref: '#/components/schemas/analysis.common.VeeResponseDTO'
-          description: Your feedback about Vee's answer. Include the response object from the `/question` call that you want to provide feedback about.
+            - $ref: '#/components/schemas/analysis.common.VeeConversationDTO'
+          description: Details of the Vee conversation you want to provide feedback about.
         isApproved:
           type: boolean
           description: If `true`, Vee answered the question correctly. If `false`, Vee's answer was incorrect or lacked details.
@@ -15456,11 +15460,15 @@ components:
              the calculation itself. Default is TENANT_CALENDAR.
           format: enum
         currencyConversionMode:
+          deprecated: true
           enum:
             - TENANT_CURRENCY_CONVERSION
             - VISIER_CURRENCY_CONVERSION
           type: string
-          description: This option is deprecated. Use `currencyConversionCode` instead.
+          description: |-
+            This will be removed as of Winter 2026. Use `currencyConversionCode` instead.
+
+             The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION.
           format: enum
         currencyConversionDate:
           type: string
@@ -15822,11 +15830,12 @@ components:
              the calculation itself. Default is TENANT_CALENDAR.
           format: enum
         currencyConversionMode:
+          deprecated: true
           enum:
             - TENANT_CURRENCY_CONVERSION
             - VISIER_CURRENCY_CONVERSION
           type: string
-          description: This option is deprecated. Use `currencyConversionCode` instead.
+          description: "This will be removed as of Winter 2026. Use `currencyConversionCode` instead. \n\n The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION."
           format: enum
         currencyConversionDate:
           type: string
@@ -17558,7 +17567,7 @@ components:
         accessToken:
           type: string
           description: Authentication using an access token.
-      description: The credentials to authenticate calls to the webhook endpoint. Must be one of `basicAuth` or `accessToken`.
+      description: The credentials to authenticate calls to the webhook endpoint. Must be one of `basicAuth` or `accessToken`. Not required if your endpoint doesn't have authentication.
     designer.webhook.WebhookDTO:
       type: object
       properties:
@@ -17581,7 +17590,7 @@ components:
           description: The target URL to call when an event occurs.
         isActive:
           type: boolean
-          description: If `true`, the webhook is active. Default is `true`.
+          description: If `true`, the webhook is active. Must be `false` when creating webhooks. Default is `false`.
         events:
           type: array
           items:
@@ -17594,7 +17603,7 @@ components:
              - `dvPublish`: A data version published to production.
         keyName:
           type: string
-          description: The display name of the encryption key for the webhook.
+          description: The display name of the encryption key for the webhook. Encryption key must use `HmacSHA256` algorithm.
         displayName:
           type: string
           description: The display name of the webhook.
@@ -17639,7 +17648,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/designer.webhook.WebhookCredentialsDTO'
           description: The webhook's credentials, such as a username and password or access token.
-      description: The details and credentials for a webhook.
+      description: The details and credentials for a webhook. Not required if your endpoint doesn't have authentication.
     designer.webhook.WebhooksDTO:
       type: object
       properties:
@@ -18532,6 +18541,20 @@ components:
         description:
           type: string
           description: A description of the capability.
+    servicing.CloneFilesIntoSourceParametersDTO:
+      type: object
+      properties:
+        originSource:
+          type: string
+          description: The unique identifier of the source to clone files from.
+        targetSource:
+          type: string
+          description: The unique identifier of the source to clone files into.
+        dateRange:
+          allOf:
+            - $ref: '#/components/schemas/servicing.DateRangeDTO'
+          description: The date range of the files to clone. If undefined, clones all files.
+      description: The parameters for the `cloneFilesIntoSource` option, such as the source to clone files from, the source to clone files into, and the date range of the files to clone.
     servicing.CommitAndPublishOperationResponseDTO:
       type: object
       properties:
@@ -18688,6 +18711,16 @@ components:
              * **NoData**: The object exists but doesn't have loaded data.
              * **NotFound**: The object doesn't exist.
           format: enum
+    servicing.DateRangeDTO:
+      type: object
+      properties:
+        start:
+          type: string
+          description: The start date in ISO 8601 format.
+        end:
+          type: string
+          description: The end date in ISO 8601 format. If undefined, the end date is the current date.
+      description: The range of dates for the request.
     servicing.DeletePermissionsRequestDTO:
       type: object
       properties:
@@ -19699,11 +19732,17 @@ components:
           enum:
             - unknownSourcesAPIOperation
             - exportSources
+            - cloneFilesIntoSource
           type: string
           description: |-
             The operation to perform. Valid values:
-             * `exportSources`: Export all sources from the tenant. If successful, a ZIP file is returned containing a compressed JSON file with the sources.
+             * `exportSources`: Export all sources from the tenant. If successful, returns a ZIP file containing a compressed JSON file with the sources.
+             * `cloneFilesIntoSource`: Clone a source's files into a different source. If successful, returns a receiving job ID. Use the job ID to monitor the cloning results.
           format: enum
+        cloneFilesIntoSourceParameters:
+          allOf:
+            - $ref: '#/components/schemas/servicing.CloneFilesIntoSourceParametersDTO'
+          description: The parameters for the `cloneFilesIntoSource` option, such as the source to clone files from, the source to clone files into, and the date range of the files to clone.
     servicing.StaticDimensionFilterDTO:
       type: object
       properties:
@@ -19943,6 +19982,9 @@ components:
         email:
           type: string
           description: The user's email address.
+        username:
+          type: string
+          description: The user's username. This is typically the user's email, such as john@jupiter.com. If a user's username changes, they must authenticate using the new username.
     servicing.UsersAPIErrorMessageDTO:
       type: object
       properties:
@@ -20044,6 +20086,9 @@ components:
         email:
           type: string
           description: The user's email address.
+        username:
+          type: string
+          description: The user's username. This is typically the user's email, such as john@jupiter.com. If a user's username changes, they must authenticate using the new username.
     servicing.VeeQuestionChangeDefinitionDTO:
       type: object
       properties:
@@ -20769,6 +20814,7 @@ components:
             - ProfileManagement
             - UserGroupManagement
             - ProactiveAlertManagement
+            - PermissionManagement
           type: string
           format: enum
         accessLevel:

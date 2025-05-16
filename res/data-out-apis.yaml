@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1905
+  version: 22222222.99201.1906
 paths:
   /v1/data/query/aggregate:
     post:
@@ -704,7 +704,7 @@ paths:
       summary: Submit Vee feedback
       description: |-
         Give Vee feedback for a previous answer. To submit feedback, include:
-         * The response object from the `/question` response.
+         * The conversation details from the `/question` response.
          * A rating of Vee's answer. If `isApproved` is `true`, Vee answered the question correctly. If `isApproved` is `false`, Vee's answer was incorrect or lacked details.
          * A description of how Vee should have answered the question or how Vee can improve the answer, such as "Expected Headcount metric, but Vee returned Average Headcount".
 
@@ -1001,6 +1001,13 @@ components:
           items:
             type: string
           description: Suggested attributes to look at that are similar or related to your question.
+    analysis.common.VeeConversationDTO:
+      type: object
+      properties:
+        conversationState:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeConversationStateDTO'
+          description: The conversation's details. To submit feedback about Vee's answer, copy the entire conversation state from the `/question` response into your `/feedback` call.
     analysis.common.VeeConversationStateDTO:
       type: object
       properties:
@@ -1043,10 +1050,10 @@ components:
     analysis.common.VeeFeedbackDTO:
       type: object
       properties:
-        response:
+        conversation:
           allOf:
-            - $ref: '#/components/schemas/analysis.common.VeeResponseDTO'
-          description: Your feedback about Vee's answer. Include the response object from the `/question` call that you want to provide feedback about.
+            - $ref: '#/components/schemas/analysis.common.VeeConversationDTO'
+          description: Details of the Vee conversation you want to provide feedback about.
         isApproved:
           type: boolean
           description: If `true`, Vee answered the question correctly. If `false`, Vee's answer was incorrect or lacked details.
@@ -1714,11 +1721,15 @@ components:
              the calculation itself. Default is TENANT_CALENDAR.
           format: enum
         currencyConversionMode:
+          deprecated: true
           enum:
             - TENANT_CURRENCY_CONVERSION
             - VISIER_CURRENCY_CONVERSION
           type: string
-          description: This option is deprecated. Use `currencyConversionCode` instead.
+          description: |-
+            This will be removed as of Winter 2026. Use `currencyConversionCode` instead.
+
+             The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION.
           format: enum
         currencyConversionDate:
           type: string
@@ -2080,11 +2091,12 @@ components:
              the calculation itself. Default is TENANT_CALENDAR.
           format: enum
         currencyConversionMode:
+          deprecated: true
           enum:
             - TENANT_CURRENCY_CONVERSION
             - VISIER_CURRENCY_CONVERSION
           type: string
-          description: This option is deprecated. Use `currencyConversionCode` instead.
+          description: "This will be removed as of Winter 2026. Use `currencyConversionCode` instead. \n\n The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION."
           format: enum
         currencyConversionDate:
           type: string

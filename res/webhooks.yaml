@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1905
+  version: 22222222.99201.1906
 paths:
   /v1beta/op/webhooks:
     get:
@@ -301,7 +301,7 @@ components:
         accessToken:
           type: string
           description: Authentication using an access token.
-      description: The credentials to authenticate calls to the webhook endpoint. Must be one of `basicAuth` or `accessToken`.
+      description: The credentials to authenticate calls to the webhook endpoint. Must be one of `basicAuth` or `accessToken`. Not required if your endpoint doesn't have authentication.
     designer.webhook.WebhookDTO:
       type: object
       properties:
@@ -324,7 +324,7 @@ components:
           description: The target URL to call when an event occurs.
         isActive:
           type: boolean
-          description: If `true`, the webhook is active. Default is `true`.
+          description: If `true`, the webhook is active. Must be `false` when creating webhooks. Default is `false`.
         events:
           type: array
           items:
@@ -337,7 +337,7 @@ components:
              - `dvPublish`: A data version published to production.
         keyName:
           type: string
-          description: The display name of the encryption key for the webhook.
+          description: The display name of the encryption key for the webhook. Encryption key must use `HmacSHA256` algorithm.
         displayName:
           type: string
           description: The display name of the webhook.
@@ -382,7 +382,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/designer.webhook.WebhookCredentialsDTO'
           description: The webhook's credentials, such as a username and password or access token.
-      description: The details and credentials for a webhook.
+      description: The details and credentials for a webhook. Not required if your endpoint doesn't have authentication.
     designer.webhook.WebhooksDTO:
       type: object
       properties:
