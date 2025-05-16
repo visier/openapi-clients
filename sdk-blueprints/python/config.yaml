@@ -7,8 +7,6 @@ skipValidateSpec: true
 enablePostProcessFile: true
 additionalProperties:
   packageVersion: $spec_version
-  corePackageModule: visier_api_core
-  corePackageName: visier-api-core
   infoName: Visier
   infoEmail: alpine@visier.com
   licenseInfo: Apache-2.0
