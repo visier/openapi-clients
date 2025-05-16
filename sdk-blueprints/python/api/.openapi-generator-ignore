@@ -2,10 +2,6 @@
 docs/
 .github/
 
-# Ignore core library .py files
-visier_api*/*.py
-!visier_api*/__init__.py
-
 # Ignore broken unit test for DTO
 test/test_sql_like200_response.py
 

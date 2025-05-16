@@ -14,7 +14,7 @@ vserver_dir="$projects_dir/com.visier.vserver"
 python_sdk_repository_dir="$projects_dir/python-sdk/src"
 
 # Before running this script docker image should be build from repository com.visier.containers.openapi
-docker container run -u $UID --rm -v "$vserver_dir":/vserver -e VERSION=$version -e OPENAPI_OUTPUT_ROOT="/vserver/target/openapi" -e GENERATE_API_DESCRIPTIONS=false visier-openapi:latest
+(cd "$vserver_dir" && ./vrun verifyOpenAPI --generate-api-descriptions)
 
 # Copy openapi specifications to res directory
 cp "$vserver_dir/target/openapi"/*.yaml res/
