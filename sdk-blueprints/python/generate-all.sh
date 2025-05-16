@@ -20,4 +20,4 @@ script_dir=$(dirname "$0")
 # Script for py post processing.
 export PYTHON_POST_PROCESS_FILE="python3 $script_dir/post_process.py"
 
-"$script_dir"/generate-package.sh visier_api "$spec_dir/visier-apis.yaml" sdk-blueprints/python/api "$output_dir" "$version_postfix"
+"$script_dir"/generate-package.sh visier_platform_sdk "$spec_dir/visier-apis.yaml" sdk-blueprints/python/api "$output_dir" "$version_postfix"
