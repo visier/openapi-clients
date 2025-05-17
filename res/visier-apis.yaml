@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1910
+  version: 22222222.99201.1914
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -14114,18 +14114,26 @@ components:
           type: array
           items:
             type: string
-          description: A comma-separated list of ISO-8601 time strings such as `"2001-10-25T13:45:35.999"` representing the upload time of each data upload to exclude.
+          description: A comma-separated list of ISO 8601 time strings such as `"2001-10-25T13:45:35.999"` representing the upload time of each data upload to exclude.
         minUploadTime:
           type: string
-          description: An ISO-8601 time such as `"2001-10-25T13:45:35.999"` for the earliest upload time. If defined, omit `uploadTimes`. If omitted and `maxUploadTime` is defined, excludes files up to earliest time available.
+          description: An ISO 8601 time  for the earliest upload time. If defined, omit `uploadTimes`. If omitted and `maxUploadTime` is defined, excludes files up to earliest time available.
         maxUploadTime:
           type: string
-          description: An ISO-8601 time such as `"2001-10-25T13:45:35.999"` for the latest upload time. If defined, omit `uploadTimes`. If omitted and `minUploadTime` is defined, excludes files up to latest time available.
+          description: An ISO 8601 time for the latest upload time. If defined, omit `uploadTimes`. If omitted and `minUploadTime` is defined, excludes files up to latest time available.
         sources:
           type: array
           items:
             type: string
           description: A comma-separated list of strings representing the object name of each source to exclude. If `uploadTimes` is omitted, excludes files for the given sources for all `uploadTimes`.
+        fileNameRegex:
+          type: string
+          description: A regular expression to match the file names of the data uploads to exclude.
+        fileIdentifiers:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings representing the file identifiers of the data uploads to exclude. To get a data upload's file identifier, see `GET /v1/op/data/uploads`.
     data_in.UploadToInclude:
       type: object
       properties:
@@ -14139,18 +14147,26 @@ components:
           type: array
           items:
             type: string
-          description: A comma-separated list of ISO-8601 time strings such as `"2001-10-25T13:45:35.999"` representing the upload time of each data upload to include.
+          description: A comma-separated list of ISO 8601 time strings such as `"2001-10-25T13:45:35.999"` representing the upload time of each data upload to include.
         minUploadTime:
           type: string
-          description: An ISO-8601 time such as `"2001-10-25T13:45:35.999"` for the earliest upload time. If defined, omit `uploadTimes`. If omitted and `maxUploadTime` is defined, includes files up to earliest time available.
+          description: An ISO 8601 time for the earliest upload time. If defined, omit `uploadTimes`. If omitted and `maxUploadTime` is defined, includes files up to earliest time available.
         maxUploadTime:
           type: string
-          description: An ISO-8601 time such as `"2001-10-25T13:45:35.999"` for the latest upload time. If defined, omit `uploadTimes`. If omitted and `minUploadTime` is defined, includes files up to latest time available.
+          description: An ISO 8601 time for the latest upload time. If defined, omit `uploadTimes`. If omitted and `minUploadTime` is defined, includes files up to latest time available.
         sources:
           type: array
           items:
             type: string
           description: A comma-separated list of strings representing the object name of each source to include. If `uploadTimes` is omitted, includes files for the given sources for all `uploadTimes`.
+        fileNameRegex:
+          type: string
+          description: A regular expression to match the file names of the data uploads to include.
+        fileIdentifiers:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of strings representing the file identifiers of the data uploads to include. To get a data upload's file identifier, see `GET /v1/op/data/uploads`.
     data_out.ListResponse:
       type: object
       properties:
