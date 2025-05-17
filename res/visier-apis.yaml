@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1906
+  version: 22222222.99201.1910
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -17247,6 +17247,13 @@ components:
           type: string
         serviceName:
           type: string
+    designer.PairDTO:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
     designer.PushDataColumnDefinitionDTO:
       type: object
       properties:
@@ -17505,8 +17512,10 @@ components:
           $ref: '#/components/schemas/designer.WorkdayRefreshTokenParamsDTO'
         integrationSystemId:
           type: string
-        apiKey:
-          type: string
+        additionalHeaderParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.PairDTO'
     designer.WorkdayOAuthParamsDTO:
       type: object
       properties:
