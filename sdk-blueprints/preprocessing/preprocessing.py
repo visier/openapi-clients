@@ -19,6 +19,35 @@ METHODS = ['get', 'post', 'put', 'delete', 'patch']
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+SCHEMA_COMPONENT_MAP = {
+    # Top-level namespaces
+    "google": "Goo_",
+    "protobuf": "Proto_",
+    "admin": "Adm_",
+    "data": "Dat_",
+    "jobs": "Job_",
+    "analysis": "Anls_",
+    "common": "Cmn_",
+    "authentication": "Auth_",
+    "data_in": "DIn_",
+    "data_out": "DOut_",
+    "dataservices": "DSvc_",
+    "datamodel": "DMod_",
+    "query": "Qry_",
+    "designer": "Design_",
+    "api": "Api_",
+    "crypto": "Crypt_",
+    "webhook": "WHook_",
+    "dp": "Dp_",
+    "dp_automation": "DpAuto_",
+    "planning": "Plan_",
+    "servicing": "Svc_",
+    "objectconfiguration": "ObjCfg_",
+    "v2": "V2_",
+    "systemstatus": "SysSt_",
+}
+
+
 def load_yaml(file_path):
     with open(file_path, 'r') as file:
         return yaml.safe_load(file)
@@ -64,6 +93,62 @@ def update_operation_ids(spec):
     return updated_spec
 
 
+def get_updated_schema_name(qualified_name, schema_map):
+    parts = qualified_name.split('.')
+    for i, part in enumerate(parts):
+        if part in schema_map:
+            parts[i] = schema_map[part]
+    return ''.join(parts)
+
+
+def get_schema_update_map(spec: dict):
+    schemas = spec['components']['schemas']
+    schema_name_mapping = {}
+    for schema_name in schemas:
+        # Get the updated schema name
+        updated_schema_name = get_updated_schema_name(schema_name, SCHEMA_COMPONENT_MAP)
+        schema_name_mapping[schema_name] = updated_schema_name
+    return schema_name_mapping
+
+
+def update_refs_recursively(spec, schema_name_mapping):
+    if isinstance(spec, dict):
+        # Check if this is a $ref object
+        if '$ref' in spec and spec['$ref'].startswith('#/components/schemas/'):
+            # Extract the schema name from the reference
+            ref_parts = spec['$ref'].split('/')
+            schema_name = ref_parts[-1]
+
+            # If this schema name is in our mapping, update the reference
+            if schema_name in schema_name_mapping:
+                new_schema_name = schema_name_mapping[schema_name]
+                spec['$ref'] = f'#/components/schemas/{new_schema_name}'
+
+        # Recursively process all dictionary values
+        for key, value in spec.items():
+            spec[key] = update_refs_recursively(value, schema_name_mapping)
+
+    elif isinstance(spec, list):
+        # Recursively process all list items
+        for i, item in enumerate(spec):
+            spec[i] = update_refs_recursively(item, schema_name_mapping)
+
+    return spec
+
+
+def update_schema_names(orig_spec):
+    spec = copy.deepcopy(orig_spec)
+    update_schema_map = get_schema_update_map(spec)        
+    update_refs_recursively(spec, update_schema_map)
+    for schema_name in update_schema_map:
+        # Update the schema name in the components section
+        spec['components']['schemas'][update_schema_map[schema_name]] = spec['components']['schemas'][schema_name]
+        del spec['components']['schemas'][schema_name]
+        logging.info(f"Updated schema name from {schema_name} to {update_schema_map[schema_name]}")
+        
+    return spec
+
+
 def process_directory(input_dir, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -83,6 +168,7 @@ def process_directory(input_dir, output_dir):
                 error_code = 1
 
             updated_spec = update_operation_ids(spec)
+            updated_spec = update_schema_names(updated_spec)
             save_yaml(updated_spec, output_file_path)
             logging.info(f"Processed {filename} and saved updated specification to {output_file_path}")
 
