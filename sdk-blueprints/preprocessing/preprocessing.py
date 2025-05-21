@@ -1,10 +1,23 @@
 import argparse
 import copy
+import enum
 import logging
 import os
+import sys
+from typing import Dict, List, Tuple, Union, Any, Optional
 
 import yaml
+from yaml.representer import SafeRepresenter
 
+# This is to ensure that multi-line strings are represented correctly in YAML
+# "|" will be used for multi-line strings as it is in original YAML file
+def represent_multiline_str(dumper, data):
+    if '\n' in data:
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+yaml.SafeDumper.add_representer(str, represent_multiline_str)
+
+# Special operations mapping
 special_operations = {
     'Authentication_ASIDTokenAuthentication': 'asid_token_authentication',
     'OAuth2_OAuth2Authorize': 'oauth2_authorize'
@@ -15,6 +28,24 @@ PATHS = 'paths'
 OPERATION_ID = 'operationId'
 TAGS = 'tags'
 METHODS = ['get', 'post', 'put', 'delete', 'patch']
+COMPONENTS = 'components'
+SCHEMAS = 'schemas'
+REF = '$ref'
+COMPONENTS_SCHEMAS_REF = '#/components/schemas/'
+REQUEST_BODY = 'requestBody'
+CONTENT = 'content'
+APPLICATION_JSON = 'application/json'
+SCHEMA = 'schema'
+
+# File extensions
+YAML_EXT = '.yaml'
+YML_EXT = '.yml'
+
+# Error codes
+class ErrorCode(enum.Enum):
+    SUCCESS_CODE = 0
+    NULL_SCHEMA_ERROR = 10
+    SCHEMA_QUALIFIED_NAME_ERROR = 20
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -34,7 +65,7 @@ SCHEMA_COMPONENT_MAP = {
     "dataservices": "DSvc_",
     "datamodel": "DMod_",
     "query": "Qry_",
-    "designer": "Design_",
+    "designer": "Dsgn_",
     "api": "Api_",
     "crypto": "Crypt_",
     "webhook": "WHook_",
@@ -48,30 +79,30 @@ SCHEMA_COMPONENT_MAP = {
 }
 
 
-def load_yaml(file_path):
+def load_yaml(file_path: str) -> Dict[str, Any]:
     with open(file_path, 'r') as file:
         return yaml.safe_load(file)
 
-
-def save_yaml(data, file_path):
+def save_yaml(data: Dict[str, Any], file_path: str) -> None:
     with open(file_path, 'w') as file:
-        yaml.safe_dump(data, file, sort_keys=False)
+        yaml.dump(data, file, Dumper=yaml.SafeDumper, sort_keys=False, default_flow_style=False)
 
 
-def find_null_schemas(spec):
+
+def find_null_schemas(spec: Dict[str, Any]) -> List[str]:
     null_schemas = []
-    for path, methods in spec.get('paths', {}).items():
+    for path, methods in spec.get(PATHS, {}).items():
         for method, details in methods.items():
-            if 'requestBody' in details:
-                content = details['requestBody'].get('content', {})
-                if 'application/json' in content:
-                    schema = content['application/json'].get('schema')
+            if REQUEST_BODY in details:
+                content = details[REQUEST_BODY].get(CONTENT, {})
+                if APPLICATION_JSON in content:
+                    schema = content[APPLICATION_JSON].get(SCHEMA)
                     if schema is None:
                         null_schemas.append(f"Null schema found in endpoint: {method.upper()} {path}")
     return null_schemas
 
 
-def update_operation_ids(spec):
+def update_operation_ids(spec: Dict[str, Any]) -> Dict[str, Any]:
     updated_spec = copy.deepcopy(spec)
     for path, methods in spec.get(PATHS, {}).items():
         for method in methods:
@@ -93,7 +124,7 @@ def update_operation_ids(spec):
     return updated_spec
 
 
-def get_updated_schema_name(qualified_name, schema_map):
+def get_updated_schema_name(qualified_name: str, schema_map: Dict[str, str]) -> str:
     parts = qualified_name.split('.')
     for i, part in enumerate(parts):
         if part in schema_map:
@@ -102,30 +133,28 @@ def get_updated_schema_name(qualified_name, schema_map):
 
 
 def get_schema_update_map(spec: dict):
-    schemas = spec['components']['schemas']
+    schemas = spec[COMPONENTS][SCHEMAS]
     schema_name_mapping = {}
     for schema_name in schemas:
-        # Get the updated schema name
-        updated_schema_name = get_updated_schema_name(schema_name, SCHEMA_COMPONENT_MAP)
-        schema_name_mapping[schema_name] = updated_schema_name
+        # Check if the schema name contains multiple components
+        if '.' in schema_name:
+            updated_schema_name = get_updated_schema_name(schema_name, SCHEMA_COMPONENT_MAP)
+            schema_name_mapping[schema_name] = updated_schema_name
     return schema_name_mapping
 
 
-def update_refs_recursively(spec, schema_name_mapping):
+def update_refs_recursively(spec: Union[Dict[str, Any], List[Any]], schema_name_mapping: Dict[str, str]) -> Union[Dict[str, Any], List[Any]]:
     if isinstance(spec, dict):
-        # Check if this is a $ref object
-        if '$ref' in spec and spec['$ref'].startswith('#/components/schemas/'):
-            # Extract the schema name from the reference
-            ref_parts = spec['$ref'].split('/')
+        if REF in spec and spec[REF].startswith(COMPONENTS_SCHEMAS_REF):
+            # Extract the schema name from the $ref
+            ref_parts = spec[REF].split('/')
             schema_name = ref_parts[-1]
-
-            # If this schema name is in our mapping, update the reference
             if schema_name in schema_name_mapping:
                 new_schema_name = schema_name_mapping[schema_name]
-                spec['$ref'] = f'#/components/schemas/{new_schema_name}'
+                spec[REF] = f'{COMPONENTS_SCHEMAS_REF}{new_schema_name}'
 
-        # Recursively process all dictionary values
         for key, value in spec.items():
+            # Recursively process all dictionary values
             spec[key] = update_refs_recursively(value, schema_name_mapping)
 
     elif isinstance(spec, list):
@@ -136,54 +165,72 @@ def update_refs_recursively(spec, schema_name_mapping):
     return spec
 
 
-def update_schema_names(orig_spec):
+def update_schema_names(orig_spec: Dict[str, Any]) -> Tuple[Dict[str, Any], ErrorCode]:
     spec = copy.deepcopy(orig_spec)
-    update_schema_map = get_schema_update_map(spec)        
+    update_schema_map = get_schema_update_map(spec)
+    schema_errors = []
+    for schema_name in list(spec[COMPONENTS][SCHEMAS].keys()):
+        if '.' in schema_name:
+            parts = schema_name.split('.')
+            # Check that all parts except the last one are in SCHEMA_COMPONENT_MAP
+            namespace_parts = parts[:-1]
+            for part in namespace_parts:
+                if part not in SCHEMA_COMPONENT_MAP:
+                    schema_errors.append(f"Schema part '{part}' in '{schema_name}' not found in SCHEMA_COMPONENT_MAP")
+                    
+    if schema_errors:
+        for error in schema_errors:
+            logging.error(error)
+        return spec, ErrorCode.SCHEMA_QUALIFIED_NAME_ERROR
+    
     update_refs_recursively(spec, update_schema_map)
     for schema_name in update_schema_map:
         # Update the schema name in the components section
-        spec['components']['schemas'][update_schema_map[schema_name]] = spec['components']['schemas'][schema_name]
-        del spec['components']['schemas'][schema_name]
+        spec[COMPONENTS][SCHEMAS][update_schema_map[schema_name]] = spec[COMPONENTS][SCHEMAS][schema_name]
+        del spec[COMPONENTS][SCHEMAS][schema_name]
         logging.info(f"Updated schema name from {schema_name} to {update_schema_map[schema_name]}")
-        
-    return spec
+    
+    return spec, ErrorCode.SUCCESS_CODE
 
 
-def process_directory(input_dir, output_dir):
-    if not os.path.exists(output_dir):
+def process_file(input_file_path: str, output_file_path: str) -> ErrorCode:
+    # Create output directory if it doesn't exist
+    output_dir = os.path.dirname(output_file_path)
+    if output_dir and not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    error_code = 0
-    for filename in os.listdir(input_dir):
-        if filename.endswith('.yaml') or filename.endswith('.yml'):
-            input_file_path = os.path.join(input_dir, filename)
-            output_file_path = os.path.join(output_dir, filename)
+    spec = load_yaml(input_file_path)
+    errors = find_null_schemas(spec)
+    
+    if len(errors) > 0:
+        logging.error(f"File: {os.path.basename(input_file_path)}")
+        for log in errors:
+            logging.error(log)
+        return ErrorCode.NULL_SCHEMA_ERROR
 
-            spec = load_yaml(input_file_path)
-            errors = find_null_schemas(spec)
-            if len(errors) > 0:
-                logging.error(f"File: {filename}")
-                for log in errors:
-                    logging.error(log)
-                error_code = 1
+    updated_spec = update_operation_ids(spec)
+    updated_spec, schema_error_code = update_schema_names(updated_spec)
+    
+    # Update error code if schema errors were found
+    if schema_error_code != ErrorCode.SUCCESS_CODE:
+        logging.error(f"Schema validation errors found in {os.path.basename(input_file_path)}")
+        return schema_error_code
 
-            updated_spec = update_operation_ids(spec)
-            updated_spec = update_schema_names(updated_spec)
-            save_yaml(updated_spec, output_file_path)
-            logging.info(f"Processed {filename} and saved updated specification to {output_file_path}")
-
-    return error_code
+    save_yaml(updated_spec, output_file_path)
+    logging.info(f"Processed {os.path.basename(input_file_path)} and saved updated specification to {output_file_path}")
+    return ErrorCode.SUCCESS_CODE
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Update OpenAPI specifications by removing the first tag from operationId.")
-    parser.add_argument("input_dir", help="Directory containing the YAML files to process.")
-    parser.add_argument("output_dir", help="Directory to save the updated YAML files.")
+    parser.add_argument("input_file", help="Path to the YAML file to process.")
+    parser.add_argument("output_file", help="Path where the updated YAML file will be saved.")
 
     args = parser.parse_args()
 
-    process_directory(args.input_dir, args.output_dir)
+    error_code = process_file(args.input_file, args.output_file)
+    sys.exit(error_code.value)
 
 
 if __name__ == "__main__":
