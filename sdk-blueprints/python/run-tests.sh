@@ -13,14 +13,18 @@ error_code=0
 # Path to search for directories
 SEARCH_PATH=$1
 
-# Find directories matching the pattern and run tox tests
-while IFS= read -r dir; do
-  cd "$dir"
+dir="$SEARCH_PATH/visier_platform_sdk"
+# Check if the visier_platform_sdk directory exists
+if [ -d "$dir" ]; then
+  cd "$dir" || exit 10
   if ! tox -p 2; then
-    error_code=1
+    error_code=20
   fi
-  cd - > /dev/null
-done < <(find "$SEARCH_PATH" -type d -name "visier_api*" -print)
+  cd - > /dev/null || exit 30
+else
+  echo "Error: Directory visier_platform_sdk not found in $SEARCH_PATH"
+  error_code=40
+fi
 
 # Exit with the error code
 echo "Error code: $error_code"

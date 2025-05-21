@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1905
+  version: 22222222.99201.1914
 paths:
   /v1/admin/capabilities:
     get:
@@ -3097,22 +3097,16 @@ paths:
         - EmailDomains
       summary: Add domains to the list of allowed domains
       description: |-
-        Add email address domains to the allowed domains list.
+        Add email address domains to the allowed domains list. The response returns an updated list of allowed email domains.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: EmailDomains_AddAllowedEmailDomains
-      parameters:
-        - name: confirmNotAllowedDomain
-          in: query
-          description: If `true`, you cannot sign in using credentials, such as username and password. You can only log in with single sign-on (SSO). To avoid this, add your current email address's domain to allowed domains list.
-          schema:
-            type: boolean
       requestBody:
         content:
           application/json:
             schema:
-              type: string
+              $ref: '#/components/schemas/admin.EmailDomainsDTO'
         required: true
       responses:
         default:
@@ -3132,22 +3126,16 @@ paths:
         - EmailDomains
       summary: Remove domains from the list of allowed domains
       description: |-
-        Delete email address domains from the allowed domains list.
+        Delete email address domains from the allowed domains list. The response returns an updated list of allowed email domains.
 
          <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
       operationId: EmailDomains_DeleteAllowedEmailDomains
-      parameters:
-        - name: confirmNotAllowedDomain
-          in: query
-          description: If `true`, you cannot sign in using credentials, such as username and password. You can only log in with single sign-on (SSO). To avoid this, add your current email address's domain to allowed domains list.
-          schema:
-            type: boolean
       requestBody:
         content:
           application/json:
             schema:
-              type: string
+              $ref: '#/components/schemas/admin.EmailDomainsDTO'
         required: true
       responses:
         default:
@@ -3333,6 +3321,7 @@ paths:
       description: |-
         Perform operations on all sources. The following operations are supported:
          * `exportSources`: Export a ZIP file that contains a list of all sources in the application.
+         * `cloneFilesIntoSource`: Clone a source's files into a different source.
 
          <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
          If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
@@ -4102,14 +4091,22 @@ paths:
       parameters:
         - name: startTime
           in: query
-          description: An inclusive date-time to start retrieving Application Logs from.
+          description: An inclusive date-time in milliseconds to start retrieving Application Logs from.
           schema:
             type: string
+          examples:
+            startTime:
+              value: 1738368000000
+              description: The start time 2025-02-01:00:00:00 GTM in milliseconds.
         - name: endTime
           in: query
-          description: An exclusive date-time to stop retrieving Application Logs from.
+          description: An exclusive date-time in milliseconds to stop retrieving Application Logs from.
           schema:
             type: string
+          examples:
+            endTime:
+              value: 1740787200000
+              description: The end time 2025-03-01:00:00:00 GTM in milliseconds.
         - name: tenantCode
           in: query
           description: Specify the tenant to retrieve Application Logs from.
@@ -5930,6 +5927,20 @@ components:
         description:
           type: string
           description: A description of the capability.
+    servicing.CloneFilesIntoSourceParametersDTO:
+      type: object
+      properties:
+        originSource:
+          type: string
+          description: The unique identifier of the source to clone files from.
+        targetSource:
+          type: string
+          description: The unique identifier of the source to clone files into.
+        dateRange:
+          allOf:
+            - $ref: '#/components/schemas/servicing.DateRangeDTO'
+          description: The date range of the files to clone. If undefined, clones all files.
+      description: The parameters for the `cloneFilesIntoSource` option, such as the source to clone files from, the source to clone files into, and the date range of the files to clone.
     servicing.CommitAndPublishOperationResponseDTO:
       type: object
       properties:
@@ -6068,6 +6079,16 @@ components:
              * **NoData**: The object exists but doesn't have loaded data.
              * **NotFound**: The object doesn't exist.
           format: enum
+    servicing.DateRangeDTO:
+      type: object
+      properties:
+        start:
+          type: string
+          description: The start date in ISO 8601 format.
+        end:
+          type: string
+          description: The end date in ISO 8601 format. If undefined, the end date is the current date.
+      description: The range of dates for the request.
     servicing.DeletePermissionsRequestDTO:
       type: object
       properties:
@@ -6863,11 +6884,17 @@ components:
           enum:
             - unknownSourcesAPIOperation
             - exportSources
+            - cloneFilesIntoSource
           type: string
           description: |-
             The operation to perform. Valid values:
-             * `exportSources`: Export all sources from the tenant. If successful, a ZIP file is returned containing a compressed JSON file with the sources.
+             * `exportSources`: Export all sources from the tenant. If successful, returns a ZIP file containing a compressed JSON file with the sources.
+             * `cloneFilesIntoSource`: Clone a source's files into a different source. If successful, returns a receiving job ID. Use the job ID to monitor the cloning results.
           format: enum
+        cloneFilesIntoSourceParameters:
+          allOf:
+            - $ref: '#/components/schemas/servicing.CloneFilesIntoSourceParametersDTO'
+          description: The parameters for the `cloneFilesIntoSource` option, such as the source to clone files from, the source to clone files into, and the date range of the files to clone.
     servicing.StaticDimensionFilterDTO:
       type: object
       properties:
@@ -7032,6 +7059,9 @@ components:
         email:
           type: string
           description: The user's email address.
+        username:
+          type: string
+          description: The user's username. This is typically the user's email, such as john@jupiter.com. If a user's username changes, they must authenticate using the new username.
     servicing.UsersAPIErrorMessageDTO:
       type: object
       properties:
@@ -7133,6 +7163,9 @@ components:
         email:
           type: string
           description: The user's email address.
+        username:
+          type: string
+          description: The user's username. This is typically the user's email, such as john@jupiter.com. If a user's username changes, they must authenticate using the new username.
     systemstatus.SystemStatusDTO:
       type: object
       properties:
