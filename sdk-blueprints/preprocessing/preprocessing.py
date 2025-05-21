@@ -4,7 +4,7 @@ import enum
 import logging
 import os
 import sys
-from typing import Dict, List, Tuple, Union, Any
+from typing import Dict, List, Tuple, Union, Any, cast
 
 import yaml
 
@@ -37,7 +37,7 @@ APPLICATION_JSON = 'application/json'
 SCHEMA = 'schema'
 
 # Error codes
-class ErrorCode(enum.Enum):
+class ErrorCode(enum.IntEnum):
     SUCCESS_CODE = 0
     NULL_SCHEMA_ERROR = 10
     SCHEMA_DTO_DUPLICATION = 20
@@ -65,8 +65,6 @@ def load_yaml(file_path: str) -> Dict[str, Any]:
 def save_yaml(data: Dict[str, Any], file_path: str) -> None:
     with open(file_path, 'w') as file:
         yaml.dump(data, file, Dumper=yaml.SafeDumper, sort_keys=False, default_flow_style=False)
-
-
 
 def find_null_schemas(spec: Dict[str, Any]) -> List[str]:
     null_schemas = []
@@ -102,41 +100,65 @@ def update_operation_ids(spec: Dict[str, Any]) -> Dict[str, Any]:
                         updated_spec[PATHS][path][method][OPERATION_ID] = new_operation_id
     return updated_spec
 
+def get_all_schema_mappings(spec: Dict[str, Any], schema_component_map: Dict[str, str]) -> Dict[str, str]:
+    schema_mappings = {}
+    for schema_name in spec[COMPONENTS][SCHEMAS]:
+        # If the schema name is in our mapping, add it to the result
+        if schema_name in schema_component_map:
+            schema_mappings[schema_name] = schema_component_map[schema_name]
+        else:
+            # Otherwise, just use the last part of the schema name
+            schema_mappings[schema_name] = schema_name.split('.')[-1]
 
-def replace_schema_refs_recursively(
-    spec: Union[Dict[str, Any], List[Any]],
+    return schema_mappings
+
+def update_schema_refs_recursively(
+    update_spec: Union[Dict[str, Any], List[Any], Any],
     schema_name_mapping: Dict[str, str]
-    ) -> Union[Dict[str, Any], List[Any]]:
-    """Recursively replace $ref values in the spec with their mapped names."""
-    if isinstance(spec, dict):
-        if REF in spec and spec[REF].startswith(COMPONENTS_SCHEMAS_REF):
-            ref_parts = spec[REF].split('/')
-            schema_name = ref_parts[-1]
-            if schema_name in schema_name_mapping:
-                new_schema_name = schema_name_mapping[schema_name]
-                spec[REF] = f'{COMPONENTS_SCHEMAS_REF}{new_schema_name}'
+) -> Union[Dict[str, Any], List[Any], Any]:
+    """Recursively replace schema names in the spec with their mapped names."""
+    if isinstance(update_spec, dict):
+        result = {}
+        for key, value in update_spec.items():
+            if key == REF and isinstance(value, str) and value.startswith(COMPONENTS_SCHEMAS_REF):
+                # Extract the schema name from the reference
+                ref_parts = value.split('/')
+                schema_name = ref_parts[-1]
+                if schema_name in schema_name_mapping:
+                    new_schema_name = schema_name_mapping[schema_name]
+                    result[key] = f'{COMPONENTS_SCHEMAS_REF}{new_schema_name}'
+                else:
+                    # Keep the original reference if no mapping exists
+                    result[key] = value
+            else:
+                # Recursively process nested structures
+                result[key] = update_schema_refs_recursively(value, schema_name_mapping)
+        return result
+    elif isinstance(update_spec, list):
+        return [update_schema_refs_recursively(item, schema_name_mapping) for item in update_spec]
+    else:
+        # Return primitive values as is
+        return update_spec
 
-        for key, value in spec.items():
-            spec[key] = replace_schema_refs_recursively(value, schema_name_mapping)
 
-    elif isinstance(spec, list):
-        for i, item in enumerate(spec):
-            spec[i] = replace_schema_refs_recursively(item, schema_name_mapping)
-
-    return spec
-
-
-def replace_schema_names(orig_spec: Dict[str, Any]) -> Dict[str, Any]:
+def update_schema_names(orig_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Replace schema names in the components section with their mapped names."""
-    spec = copy.deepcopy(orig_spec)
-    replace_schema_refs_recursively(spec, SCHEMA_COMPONENT_MAP)
-    for schema_name in orig_spec[COMPONENTS][SCHEMAS]:
-        if schema_name in SCHEMA_COMPONENT_MAP:
-            # Update the schema name in the components section
-            spec[COMPONENTS][SCHEMAS][SCHEMA_COMPONENT_MAP[schema_name]] = spec[COMPONENTS][SCHEMAS][schema_name]
-            del spec[COMPONENTS][SCHEMAS][schema_name]
-            logging.info(f"Replaced schema `{schema_name}` with `{SCHEMA_COMPONENT_MAP[schema_name]}`")
-    return spec
+    schema_mappings = get_all_schema_mappings(orig_spec, SCHEMA_COMPONENT_MAP)
+    update_spec_result = update_schema_refs_recursively(copy.deepcopy(orig_spec), schema_mappings)
+    # Casting to Dict[str, Any] to avoid linter errors
+    update_spec = cast(Dict[str, Any], update_spec_result)
+    update_schemas = update_spec[COMPONENTS][SCHEMAS]
+    
+    for orig_schema_name in list(update_schemas.keys()):
+        if orig_schema_name in schema_mappings:
+            new_schema_name = schema_mappings[orig_schema_name]
+            if new_schema_name != orig_schema_name:
+                # Update the schema name in the components section
+                schema_content = update_schemas[orig_schema_name]
+                del update_schemas[orig_schema_name]
+                update_schemas[new_schema_name] = schema_content
+                logging.info(f"Replaced schema `{orig_schema_name}` with `{new_schema_name}`")
+    return update_spec
 
 
 def has_duplicated_dto_names(spec: Dict[str, Any]) -> bool:
@@ -165,7 +187,7 @@ def update_specification(spec: Dict[str, Any]) -> Tuple[Dict[str, Any], ErrorCod
         return {}, ErrorCode.NULL_SCHEMA_ERROR
 
     updated_spec = update_operation_ids(spec)
-    updated_spec = replace_schema_names(updated_spec)
+    updated_spec = update_schema_names(updated_spec)
     
     if has_duplicated_dto_names(updated_spec):
         return {}, ErrorCode.SCHEMA_DTO_DUPLICATION
