@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: Schema Mapping Test API
+  version: 1.0.0
+paths:
+  /endpoint-with-mapped-schema:
+    post:
+      tags:
+        - DataService
+      operationId: DataService_GetAnalyticObject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dataservices.datamodel.AnalyticObjectDTO'
+  /endpoint-with-nested-refs:
+    get:
+      tags:
+        - Designer
+      operationId: Designer_GetDimension
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dimension:
+                    $ref: '#/components/schemas/designer.api.DimensionFilterDTO'
+                  selection:
+                    $ref: '#/components/schemas/designer.api.SelectionConceptDTO'
+components:
+  schemas:
+    'dataservices.datamodel.AnalyticObjectDTO':
+      type: object
+      properties:
+        id:
+          type: string
+        objects:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.datamodel.AnalyticObjectDTOs'
+    'dataservices.datamodel.AnalyticObjectDTOs':
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: string
+    'designer.api.DimensionFilterDTO':
+      type: object
+      properties:
+        name:
+          type: string
+    'designer.api.SelectionConceptDTO':
+      type: object
+      properties:
+        id:
+          type: string
+    'servicing.DirectDataUploadFileResponseDTO':
+      type: object
+      properties:
+        fileId:
+          type: string

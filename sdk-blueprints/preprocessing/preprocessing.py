@@ -8,14 +8,6 @@ from typing import Dict, List, Tuple, Union, Any, cast
 
 import yaml
 
-# This is to ensure that multi-line strings are represented correctly in YAML
-# "|" will be used for multi-line strings as it is in original YAML file
-def represent_multiline_str(dumper, data):
-    if '\n' in data:
-        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
-    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
-yaml.SafeDumper.add_representer(str, represent_multiline_str)
-
 # Special operations mapping
 special_operations = {
     'Authentication_ASIDTokenAuthentication': 'asid_token_authentication',
@@ -36,11 +28,13 @@ CONTENT = 'content'
 APPLICATION_JSON = 'application/json'
 SCHEMA = 'schema'
 
+
 # Error codes
 class ErrorCode(enum.IntEnum):
     SUCCESS_CODE = 0
     NULL_SCHEMA_ERROR = 10
     SCHEMA_DTO_DUPLICATION = 20
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -58,15 +52,45 @@ SCHEMA_COMPONENT_MAP = {
 }
 
 
+def represent_multiline_str(dumper, data):
+    """
+    Preserves multi-line string formatting in YAML output.
+    
+    Args:
+        dumper: YAML dumper instance
+        data: String data to be represented
+        
+    Returns:
+        YAML scalar with '|' style for multi-line strings
+    """
+    if '\n' in data:
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+
+yaml.SafeDumper.add_representer(str, represent_multiline_str)
+
+
 def load_yaml(file_path: str) -> Dict[str, Any]:
     with open(file_path, 'r') as file:
         return yaml.safe_load(file)
+
 
 def save_yaml(data: Dict[str, Any], file_path: str) -> None:
     with open(file_path, 'w') as file:
         yaml.dump(data, file, Dumper=yaml.SafeDumper, sort_keys=False, default_flow_style=False)
 
+
 def find_null_schemas(spec: Dict[str, Any]) -> List[str]:
+    """
+    Identifies endpoints with missing schema definitions in request bodies.
+    
+    Args:
+        spec: OpenAPI specification dictionary
+        
+    Returns:
+        List of error messages for endpoints with null schemas
+    """
     null_schemas = []
     for path, methods in spec.get(PATHS, {}).items():
         for method, details in methods.items():
@@ -80,6 +104,15 @@ def find_null_schemas(spec: Dict[str, Any]) -> List[str]:
 
 
 def update_operation_ids(spec: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Removes service name prefixes from operation IDs for improved readability.
+    
+    Args:
+        spec: OpenAPI specification dictionary
+        
+    Returns:
+        Updated specification with cleaner operation IDs
+    """
     updated_spec = copy.deepcopy(spec)
     for path, methods in spec.get(PATHS, {}).items():
         for method in methods:
@@ -100,7 +133,18 @@ def update_operation_ids(spec: Dict[str, Any]) -> Dict[str, Any]:
                         updated_spec[PATHS][path][method][OPERATION_ID] = new_operation_id
     return updated_spec
 
+
 def get_all_schema_mappings(spec: Dict[str, Any], schema_component_map: Dict[str, str]) -> Dict[str, str]:
+    """
+    Creates mappings for schema names to make them more concise.
+    
+    Args:
+        spec: OpenAPI specification dictionary
+        schema_component_map: Predefined mappings for specific schema names
+        
+    Returns:
+        Dictionary mapping original schema names to simplified names
+    """
     schema_mappings = {}
     for schema_name in spec[COMPONENTS][SCHEMAS]:
         # If the schema name is in our mapping, add it to the result
@@ -112,11 +156,21 @@ def get_all_schema_mappings(spec: Dict[str, Any], schema_component_map: Dict[str
 
     return schema_mappings
 
+
 def update_schema_refs_recursively(
-    update_spec: Union[Dict[str, Any], List[Any], Any],
-    schema_name_mapping: Dict[str, str]
+        update_spec: Union[Dict[str, Any], List[Any], Any],
+        schema_name_mapping: Dict[str, str]
 ) -> Union[Dict[str, Any], List[Any], Any]:
-    """Recursively replace schema names in the spec with their mapped names."""
+    """
+    Recursively updates schema references throughout the specification.
+    
+    Args:
+        update_spec: Part of OpenAPI spec being processed (dict, list or primitive)
+        schema_name_mapping: Mapping of original schema names to new names
+        
+    Returns:
+        Updated specification part with replaced references
+    """
     if isinstance(update_spec, dict):
         result = {}
         for key, value in update_spec.items():
@@ -142,13 +196,21 @@ def update_schema_refs_recursively(
 
 
 def update_schema_names(orig_spec: Dict[str, Any]) -> Dict[str, Any]:
-    """Replace schema names in the components section with their mapped names."""
+    """
+    Updates schema names and references throughout the specification.
+    
+    Args:
+        orig_spec: Original OpenAPI specification dictionary
+        
+    Returns:
+        Updated specification with renamed schemas and updated references
+    """
     schema_mappings = get_all_schema_mappings(orig_spec, SCHEMA_COMPONENT_MAP)
     update_spec_result = update_schema_refs_recursively(copy.deepcopy(orig_spec), schema_mappings)
     # Casting to Dict[str, Any] to avoid linter errors
     update_spec = cast(Dict[str, Any], update_spec_result)
     update_schemas = update_spec[COMPONENTS][SCHEMAS]
-    
+
     for orig_schema_name in list(update_schemas.keys()):
         if orig_schema_name in schema_mappings:
             new_schema_name = schema_mappings[orig_schema_name]
@@ -162,12 +224,21 @@ def update_schema_names(orig_spec: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def has_duplicated_dto_names(spec: Dict[str, Any]) -> bool:
+    """
+    Checks for duplicate DTO names in the specification.
+    
+    Args:
+        spec: OpenAPI specification dictionary
+        
+    Returns:
+        True if duplicates exist, False otherwise
+    """
     dto_names: Dict[str, List[str]] = {}
     for schema_name in spec.get(COMPONENTS, {}).get(SCHEMAS, {}):
         # Extract the DTO name from the qualified schema name
         dto_name = schema_name.split('.')[-1]
         dto_names.setdefault(dto_name, []).append(schema_name)
-    
+
     has_duplicates = False
     for dto_name, schemas in dto_names.items():
         if len(schemas) > 1:
@@ -180,6 +251,17 @@ def has_duplicated_dto_names(spec: Dict[str, Any]) -> bool:
 
 
 def update_specification(spec: Dict[str, Any]) -> Tuple[Dict[str, Any], ErrorCode]:
+    """
+    Validates and transforms the OpenAPI specification.
+    
+    Args:
+        spec: Original OpenAPI specification dictionary
+        
+    Returns:
+        Tuple containing:
+        - Updated specification (or empty dict if validation fails)
+        - Error code indicating success or specific failure reason
+    """
     errors = find_null_schemas(spec)
     if len(errors) > 0:
         for log in errors:
@@ -188,7 +270,7 @@ def update_specification(spec: Dict[str, Any]) -> Tuple[Dict[str, Any], ErrorCod
 
     updated_spec = update_operation_ids(spec)
     updated_spec = update_schema_names(updated_spec)
-    
+
     if has_duplicated_dto_names(updated_spec):
         return {}, ErrorCode.SCHEMA_DTO_DUPLICATION
 
@@ -197,34 +279,37 @@ def update_specification(spec: Dict[str, Any]) -> Tuple[Dict[str, Any], ErrorCod
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Update OpenAPI specifications by removing the first tag from operationId.")
+        description="Processes OpenAPI specifications by: 1) removing service name prefixes from operation IDs, 2) replacing schema names with more readable values, 3) validating specifications for null schemas and duplicate DTO names. Can either validate specifications without modification or save the updated version."
+
+    )
     parser.add_argument("-i", "--input", dest="input_file", required=True,
                         help="Path to the YAML file to process.")
     output_group = parser.add_mutually_exclusive_group(required=True)
     output_group.add_argument("-o", "--output", dest="output_file",
-                        help="Path where the updated YAML file will be saved.")
+                              help="Path where the updated YAML file will be saved.")
     output_group.add_argument("-v", "--validate", action="store_true",
-                        help="Only validate the schema without saving it.")
+                              help="Only validate the schema without saving it.")
 
     args = parser.parse_args()
 
     spec = load_yaml(args.input_file)
     updated_spec, error_code = update_specification(spec)
-    
+
     if error_code != ErrorCode.SUCCESS_CODE:
         logging.error(f"Validation failed with error code: {error_code}")
         sys.exit(error_code.value)
-    
+
     if args.validate:
         logging.info(f"Validation successful for {args.input_file}")
-    else:        
+    else:
         output_dir = os.path.dirname(args.output_file)
         # Create output directory if it doesn't exist
         if output_dir and not os.path.exists(output_dir):
             os.makedirs(output_dir)
         save_yaml(updated_spec, args.output_file)
-        logging.info(f"Processed {os.path.basename(args.input_file)} and saved updated specification to {args.output_file}")
-    
+        logging.info(
+            f"Processed {os.path.basename(args.input_file)} and saved updated specification to {args.output_file}")
+
     sys.exit(error_code.value)
 
 

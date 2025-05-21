@@ -1,0 +1,21 @@
+openapi: 3.0.3
+info:
+  title: Null Schema Test API
+  version: 1.0.0
+paths:
+  /null-schema-endpoint:
+    post:
+      tags:
+        - Service2
+      operationId: Service2_NullSchemaOperation
+      requestBody:
+        content:
+          application/json:
+            schema: null
+components:
+  schemas:
+    'service2.api.SampleDTO':
+      type: object
+      properties:
+        id:
+          type: string

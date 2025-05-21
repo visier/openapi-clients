@@ -1,0 +1,51 @@
+openapi: 3.0.3
+info:
+  title: Duplicate DTO Test API
+  version: 1.0.0
+paths:
+  /endpoint-with-duplicate-dto:
+    post:
+      tags:
+        - Service4
+      operationId: Service4_Operation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom.dto.UserDTO'
+  /another-endpoint:
+    get:
+      tags:
+        - Service5
+      operationId: Service5_Operation
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/another.package.UserDTO'
+components:
+  schemas:
+    'custom.dto.UserDTO':
+      type: object
+      properties:
+        value:
+          type: string
+    'another.package.UserDTO':
+      type: object
+      properties:
+        value:
+          type: string
+    'service1.dto.UserDTO':
+      type: object
+      properties:
+        name:
+          type: string
+    'service1.api.UserDTO':
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
