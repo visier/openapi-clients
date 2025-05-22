@@ -20,7 +20,7 @@ python_sdk_repository_dir="$projects_dir/python-sdk/src"
 cp "$vserver_dir/target/openapi"/*.yaml res/
 
 # Run preprocessing openapi specs script
-python3 "sdk-blueprints/preprocessing/preprocessing.py" res "sdk-generation-test/specs"
+python3 "sdk-blueprints/preprocessing/preprocessing.py" -i "res/visier-apis.yaml" -o "sdk-generation-test/specs/visier-apis.yaml"
 
 # Run python SDK generation script
 ./sdk-blueprints/python/generate-all.sh "$python_sdk_repository_dir" "sdk-generation-test/specs"

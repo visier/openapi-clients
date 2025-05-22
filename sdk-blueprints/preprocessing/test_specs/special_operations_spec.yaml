@@ -1,0 +1,27 @@
+openapi: 3.0.3
+info:
+  title: Special Operations Test API
+  version: 1.0.0
+paths:
+  /special-operation-1:
+    post:
+      tags:
+        - Authentication
+      operationId: Authentication_ASIDTokenAuthentication
+  /special-operation-2:
+    get:
+      tags:
+        - OAuth2
+      operationId: OAuth2_OAuth2Authorize
+  /regular-operation:
+    get:
+      tags:
+        - Service3
+      operationId: Service3_RegularOperation
+components:
+  schemas:
+    'auth.api.TokenDTO':
+      type: object
+      properties:
+        token:
+          type: string
