@@ -1,0 +1,28 @@
+name: Test Preprocessing Script - OpenAPI Transformation
+on:
+  pull_request:
+    paths:
+      - 'sdk-blueprints/preprocessing/**'
+
+jobs:
+  test-preprocessing:
+    name: Run Preprocessing Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5.2.0
+        with:
+          python-version: '3.8'
+          
+      - name: Install dependencies
+        run: |
+          pip install -r sdk-blueprints/preprocessing/requirements.txt
+          
+      - name: Run preprocessing unit tests
+        working-directory: sdk-blueprints/preprocessing
+        run: |
+          python -m pytest test_preprocessing.py -v
