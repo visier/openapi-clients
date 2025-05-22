@@ -45,7 +45,7 @@ jobs:
         id: preprocess
         run: |
           python3 -m pip install -r $PREPROCESSING_DIR/requirements.txt
-          python3 $PREPROCESSING_DIR/preprocessing.py $ORIG_SPEC_DIR $SPEC_DIR
+          python3 $PREPROCESSING_DIR/preprocessing.py -i $ORIG_SPEC_DIR/visier-apis.yaml -o $SPEC_DIR/visier-apis.yaml
 
       - name: Sanitize artifact name
         id: sanitize

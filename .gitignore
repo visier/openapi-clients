@@ -15,3 +15,6 @@ openapitools.json
 
 # Directory for local debugging
 /sdk-generation-test
+
+# Ignore vscode settings
+/.vscode

@@ -1,0 +1,22 @@
+openapi: 3.0.3
+info:
+  title: Basic Test API
+  version: 1.0.0
+paths:
+  /valid-endpoint:
+    post:
+      tags:
+        - Service1
+      operationId: Service1_ValidOperation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/service1.api.ValidRequestDTO'
+components:
+  schemas:
+    'service1.api.ValidRequestDTO':
+      type: object
+      properties:
+        name:
+          type: string
