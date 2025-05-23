@@ -218,7 +218,7 @@ paths:
           schema:
             type: boolean
           description: |
-            If `true`, similar job titles for a job member are included in the lexical search for matches. Ensure the parameters 'lexicalOnly' is set to 'true' and 'semanticOnly' is set to 'false'.
+            If `true`, similar job titles for a job member are included in the lexical search for matches.
             Default is `false`.
       responses:
         "200":
@@ -1389,7 +1389,7 @@ components:
         typicalTitlesSearch:
           type: boolean
           description: |
-            If `true`, similar job titles for a job member are included in the lexical search for matches. Ensure the parameters 'lexicalOnly' is set to 'true' and 'semanticOnly' is set to 'false'.
+            If `true`, similar job titles for a job member are included in the lexical search for matches.
             Default is `false`.
           default: False
       required:
