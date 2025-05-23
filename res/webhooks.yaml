@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1925
+  version: 22222222.99201.1926
 paths:
   /v1beta/op/webhooks:
     get:
