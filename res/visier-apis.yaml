@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1925
+  version: 22222222.99201.1926
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -17724,6 +17724,12 @@ components:
         isInherited:
           type: boolean
           description: If true, the source is inherited by all analytic tenants.
+        objectName:
+          type: string
+          description: The unique object name associated with the source.
+        fileNameRegex:
+          type: string
+          description: A regular expression to match the file names for the source.
       description: Details of each existing source.
     designer.PushDataSourceDefinitionsDTO:
       type: object
