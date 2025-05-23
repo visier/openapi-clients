@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1914
+  version: 22222222.99201.1925
 paths:
   /v1/api/pgpkey:
     get:
@@ -894,6 +894,13 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: dataCategory
+          in: query
+          description: |-
+            The object name of the data category. Default is the primary data category.
+             For administrating tenants, the data category must exist in the requesting tenant; that is, the administrating tenant or the tenant specified in `TargetTenantID`.
+          schema:
+            type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -1068,7 +1075,7 @@ paths:
         Retrieve the data uploads and whether they're included in one of:
          - A list of analytic tenants managed by you.
          - A single specified analytic tenant.
-         - An upload job.
+         - A receiving job.
       operationId: DataAndJobHandling_RetrieveDataUploads
       parameters:
         - name: uploadJobId
@@ -1229,7 +1236,7 @@ paths:
         - DataAndJobHandling
       summary: Cancel a list of jobs
       description: |-
-        Cancel a list of processing jobs, upload jobs, receiving jobs, and extraction jobs.
+        Cancel a list of processing jobs, receiving jobs, and extraction jobs.
 
          **Note:** Receiving jobs with the Running status cannot be cancelled.
       operationId: DataAndJobHandling_CancelJobs
@@ -2542,6 +2549,11 @@ components:
           description: |-
             The data version to disable for a particular analytic tenant.
              If not specified, disables the latest enabled data version for the analytic tenant.
+        dataCategory:
+          type: string
+          description: |-
+            The object name of the data category. Default is the primary data category.
+             For administrating tenants, the data category must exist in the requesting tenant; that is, the administrating tenant or the tenant specified in `TargetTenantID`.
     data_in.DisableDVModel:
       type: object
       properties:
