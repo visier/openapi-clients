@@ -5,6 +5,9 @@ inputSpec: $spec_file
 packageName: $package_name
 skipValidateSpec: true
 enablePostProcessFile: true
+gitHost: github.com
+gitUserId: visier
+gitRepoId: python-sdk
 additionalProperties:
   packageVersion: $spec_version
   infoName: Visier
