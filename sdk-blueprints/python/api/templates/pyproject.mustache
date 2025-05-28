@@ -2,17 +2,19 @@
 name = "{{{packageName}}}"
 version = "{{{packageVersion}}}"
 description = "{{{appName}}}"
-authors = ["{{infoName}}{{^infoName}}OpenAPI Generator Community{{/infoName}} <{{infoEmail}}{{^infoEmail}}team@openapitools.org{{/infoEmail}}>"]
+authors = ["{{infoName}}{{^infoName}}Visier{{/infoName}} <{{infoEmail}}{{^infoEmail}}alpine@visier.com{{/infoEmail}}>"]
 license = "{{{licenseInfo}}}{{^licenseInfo}}NoLicense{{/licenseInfo}}"
 readme = "README.md"
 repository = "https://{{{gitHost}}}/{{{gitUserId}}}/{{{gitRepoId}}}"
-keywords = ["OpenAPI", "OpenAPI-Generator", "{{{appName}}}"]
+keywords = ["Visier", "Visier-SDK", "{{{appName}}}"]
 include = ["{{packageName}}/py.typed"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 
-urllib3 = ">= 2.1.0, < 3.0.0"
+# Workaround to fix urllib3 version conflict with `vcrpy` while using `uv` and `poetry`
+urllib3 = ">= 2.1.0, < 3.0.0; platform_python_implementation !='PyPy'"
+urllib3 = "<2; platform_python_implementation =='PyPy'"
 python-dateutil = ">= 2.8.2"
 {{#asyncio}}
 aiohttp = ">= 3.8.4"
@@ -27,6 +29,7 @@ pycryptodome = ">= 3.9.0"
 {{/hasHttpSignatureMethods}}
 pydantic = ">= 2"
 typing-extensions = ">= 4.7.1"
+Flask = ">= 3.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = ">= 7.2.1"
