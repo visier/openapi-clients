@@ -13,8 +13,10 @@ include = ["{{packageName}}/py.typed"]
 python = "^3.10"
 
 # Workaround to fix urllib3 version conflict with `vcrpy` while using `uv` and `poetry`
-urllib3 = ">= 2.1.0, < 3.0.0; platform_python_implementation !='PyPy'"
-urllib3 = "<2; platform_python_implementation =='PyPy'"
+urllib3 = [
+    { version = ">= 2.1.0, < 3.0.0", markers = "platform_python_implementation != 'PyPy'" },
+    { version = "<2", markers = "platform_python_implementation == 'PyPy'" }
+]
 python-dateutil = ">= 2.8.2"
 {{#asyncio}}
 aiohttp = ">= 3.8.4"
