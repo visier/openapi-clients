@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1926
+  version: 22222222.99201.1949
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -478,10 +478,8 @@ paths:
           in: query
           description: |-
             The order of the members in the response. Valid values:
-             - **configured**: Sorts the members according to their configuration; for example, the configured order of dimension members in the studio experience.
-             - **natural**: Sorts the members by their natural order; for example, sorted in ascending order by level in a parent-child dimension.
-
-             Default is `natural`.
+             - `configured`: Sorts the members according to their configuration. For parent-child dimensions, sorts members by name in ascending order. For other dimensions, sorts members by their configured order in Studio.
+             - `natural`: Does not sort the members. This is the default.
           schema:
             type: string
         - name: TargetTenantID
@@ -2020,12 +2018,14 @@ paths:
             The level of information to retrieve for the dimension. Valid values:
              - `basic`: Retrieves the dimension's UUID, object name, and basic information. This is the default.
              - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: objectName
@@ -2102,12 +2102,14 @@ paths:
             The level of information to retrieve for the concept. Valid values:
              - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.
              - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: objectName
@@ -2178,12 +2180,14 @@ paths:
             The level of information to retrieve for the concept. Valid values:
              - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.
              - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: objectName
@@ -2417,12 +2421,14 @@ paths:
             The level of information to retrieve for the concept. Valid values:
              - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.
              - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: TargetTenantID
@@ -2481,12 +2487,14 @@ paths:
             The level of information to retrieve for the dimension. Valid values:
              - `basic`: Retrieves the dimension's UUID, object name, and basic information. This is the default.
              - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: analyticObjectName
@@ -2734,12 +2742,14 @@ paths:
             The level of information to retrieve for the dimension. Valid values:
              - `basic`: Retrieves the dimension's UUID, object name, and basic information.
              - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings. This is the default.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: TargetTenantID
@@ -4592,6 +4602,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptTypeDetailsDTO'
           description: The concept type and its details.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the concept, such as its UUID and concept type.
     servicing.v2.objectconfiguration.ConceptDeleteRequestDTO:
       type: object
@@ -4678,6 +4692,10 @@ components:
         includeWithVee:
           type: boolean
           description: If `true`, the object is available in Vee's responses.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the dimension.
     servicing.v2.objectconfiguration.DimensionDeleteRequestDTO:
       type: object
@@ -5187,6 +5205,34 @@ components:
             $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceDTO'
           description: A list of tags assigned to the object.
       description: The tags assigned to the object.
+    servicing.v2.objectconfiguration.VersionInformationDTO:
+      type: object
+      properties:
+        versionType:
+          enum:
+            - Unknown
+            - BP
+            - Tenant
+            - TenantOverride
+            - TenantShared
+            - Draft
+          type: string
+          description: |-
+            Indicates where the object originates from and whether the object has been modified. Valid values:
+             - `Unknown`: The source is not known.
+             - `BP`: The object originates from Visier's Blueprint and is not changed at the tenant level.
+             - `Tenant`: The object only exists in the tenant and doesn't exist in Visier's Blueprint.
+             - `TenantOverride`: The object originates from Visier's Blueprint and is changed at the tenant level.
+             - `TenantShared`: The object is non-versioned, only exists in the tenant and doesn’t exist in Visier's Blueprint, and is shareable with other users in the tenant.
+             - `Draft`: The object only exists in the specified draft project.
+          format: enum
+        edited:
+          type: string
+          description: The UTC time of the latest change in ISO 8601 format. For example, `2023-10-01T12:00:00Z`.
+        editor:
+          type: string
+          description: The user who made the latest change.
+      description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
     Status:
       type: object
       properties:
