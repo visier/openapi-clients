@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1926
+  version: 22222222.99201.1949
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -3378,10 +3378,8 @@ paths:
           in: query
           description: |-
             The order of the members in the response. Valid values:
-             - **configured**: Sorts the members according to their configuration; for example, the configured order of dimension members in the studio experience.
-             - **natural**: Sorts the members by their natural order; for example, sorted in ascending order by level in a parent-child dimension.
-
-             Default is `natural`.
+             - `configured`: Sorts the members according to their configuration. For parent-child dimensions, sorts members by name in ascending order. For other dimensions, sorts members by their configured order in Studio.
+             - `natural`: Does not sort the members. This is the default.
           schema:
             type: string
         - name: TargetTenantID
@@ -8891,12 +8889,14 @@ paths:
             The level of information to retrieve for the dimension. Valid values:
              - `basic`: Retrieves the dimension's UUID, object name, and basic information. This is the default.
              - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: objectName
@@ -8973,12 +8973,14 @@ paths:
             The level of information to retrieve for the concept. Valid values:
              - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.
              - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: objectName
@@ -9049,12 +9051,14 @@ paths:
             The level of information to retrieve for the concept. Valid values:
              - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.
              - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: objectName
@@ -9288,12 +9292,14 @@ paths:
             The level of information to retrieve for the concept. Valid values:
              - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.
              - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: TargetTenantID
@@ -9352,12 +9358,14 @@ paths:
             The level of information to retrieve for the dimension. Valid values:
              - `basic`: Retrieves the dimension's UUID, object name, and basic information. This is the default.
              - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: analyticObjectName
@@ -9605,12 +9613,14 @@ paths:
             The level of information to retrieve for the dimension. Valid values:
              - `basic`: Retrieves the dimension's UUID, object name, and basic information.
              - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings. This is the default.
+             - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
             items:
               enum:
                 - basic
                 - details
+                - version
               type: string
               format: enum
         - name: TargetTenantID
@@ -10609,7 +10619,7 @@ paths:
           required: false
           schema:
             type: string
-          description: "The input search term. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. \nYour search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.\n\nThe minimum length is 3 characters and the maximum length is 100 characters.\n\n***The search term must be URL encoded.***\n"
+          description: "The input search term. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. \nYour search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.\n\nThe minimum length is 2 characters and the maximum length is 100 characters.\n\n***The search term must be URL encoded.***\n"
         - name: naicsCode
           in: query
           required: false
@@ -10698,7 +10708,7 @@ paths:
 
           By default, both semantic and lexical search are used to find matches. If you want to use a specific search method, set one of the parameters `semanticOnly` or `lexicalOnly` to `true`. Default for `semanticOnly` and `lexicalOnly` are `false`.
 
-          The minimum custom job title length is 3 characters and the maximum length is 100 characters. You can submit up to 30 custom job titles per request.
+          The minimum custom job title length is 2 characters and the maximum length is 100 characters. You can submit up to 30 custom job titles per request.
 
           The default number of top matches returned is 5.
         content:
@@ -10854,7 +10864,7 @@ paths:
       summary: Send feedback to help improve the quality of the job match results
       tags: [Dimensions]
       operationId: "SubmitJobsFeedback"
-      description: "This API allows you to submit feedback on the quality of the job match results returned by the Get jobs endpoint. \n\nYou must include the search term (job title you entered) in the request body. You can include the optional `naicsCode` if it was used as part of the search in the Get jobs endpoint.\n\nYou can also submit additional comments by providing values for `additionalComments`, along with `term` and `naicsCode`.\n\n**Note:**\n\nFor `term`, the minimum is 3 characters and the maximum is 100 characters.\n\nFor `additionalComments`, the maximum is 150 characters.\n"
+      description: "This API allows you to submit feedback on the quality of the job match results returned by the Get jobs endpoint. \n\nYou must include the search term (job title you entered) in the request body. You can include the optional `naicsCode` if it was used as part of the search in the Get jobs endpoint.\n\nYou can also submit additional comments by providing values for `additionalComments`, along with `term` and `naicsCode`.\n\n**Note:**\n\nFor `term`, the minimum is 2 characters and the maximum is 100 characters.\n\nFor `additionalComments`, the maximum is 150 characters.\n"
       requestBody:
         description: |
           The feedback you want to submit for.
@@ -20790,6 +20800,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptTypeDetailsDTO'
           description: The concept type and its details.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the concept, such as its UUID and concept type.
     servicing.v2.objectconfiguration.ConceptDeleteRequestDTO:
       type: object
@@ -20876,6 +20890,10 @@ components:
         includeWithVee:
           type: boolean
           description: If `true`, the object is available in Vee's responses.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the dimension.
     servicing.v2.objectconfiguration.DimensionDeleteRequestDTO:
       type: object
@@ -21385,6 +21403,34 @@ components:
             $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceDTO'
           description: A list of tags assigned to the object.
       description: The tags assigned to the object.
+    servicing.v2.objectconfiguration.VersionInformationDTO:
+      type: object
+      properties:
+        versionType:
+          enum:
+            - Unknown
+            - BP
+            - Tenant
+            - TenantOverride
+            - TenantShared
+            - Draft
+          type: string
+          description: |-
+            Indicates where the object originates from and whether the object has been modified. Valid values:
+             - `Unknown`: The source is not known.
+             - `BP`: The object originates from Visier's Blueprint and is not changed at the tenant level.
+             - `Tenant`: The object only exists in the tenant and doesn't exist in Visier's Blueprint.
+             - `TenantOverride`: The object originates from Visier's Blueprint and is changed at the tenant level.
+             - `TenantShared`: The object is non-versioned, only exists in the tenant and doesn’t exist in Visier's Blueprint, and is shareable with other users in the tenant.
+             - `Draft`: The object only exists in the specified draft project.
+          format: enum
+        edited:
+          type: string
+          description: The UTC time of the latest change in ISO 8601 format. For example, `2023-10-01T12:00:00Z`.
+        editor:
+          type: string
+          description: The user who made the latest change.
+      description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
     servicing.CapabilityGroupDTO:
       type: object
       properties:
@@ -21631,6 +21677,9 @@ components:
           type: string
         assertion:
           description: The SAML assertion. Applicable only for saml2-bearer grant type.
+          type: string
+        refresh_token:
+          description: The refresh token. Applicable only for refresh_token grant type.
           type: string
       description: |-
         Token request body definition.
@@ -22286,7 +22335,7 @@ components:
           type: string
           description: |
             The search term (job title) you entered when using the Get jobs endpoint. You're providing feedback on the quality of the search results for this term. This field is required.
-            The minimum is 3 characters and the maximum is 100 characters.
+            The minimum is 2 characters and the maximum is 100 characters.
         naicsCode:
           type: string
           description: If provided, the naicsCode entered when using the Get jobs endpoint. You're providing feedback on the quality of the results for the search term and code.
@@ -22302,7 +22351,7 @@ components:
       properties:
         terms:
           type: "array"
-          description: "A list of input search terms. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. \nYour search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.\n\nThe maximum number of search terms is 30.\n\nFor the individual search term, the minimum length is 3 characters and the maximum length is 100 characters.\n"
+          description: "A list of input search terms. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. \nYour search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.\n\nThe maximum number of search terms is 30.\n\nFor the individual search term, the minimum length is 2 characters and the maximum length is 100 characters.\n"
           items:
             type: "string"
         naicsCode:

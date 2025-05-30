@@ -182,7 +182,7 @@ paths:
           required: false
           schema:
             type: string
-          description: "The input search term. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. \nYour search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.\n\nThe minimum length is 3 characters and the maximum length is 100 characters.\n\n***The search term must be URL encoded.***\n"
+          description: "The input search term. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. \nYour search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.\n\nThe minimum length is 2 characters and the maximum length is 100 characters.\n\n***The search term must be URL encoded.***\n"
         - name: naicsCode
           in: query
           required: false
@@ -271,7 +271,7 @@ paths:
 
           By default, both semantic and lexical search are used to find matches. If you want to use a specific search method, set one of the parameters `semanticOnly` or `lexicalOnly` to `true`. Default for `semanticOnly` and `lexicalOnly` are `false`.
 
-          The minimum custom job title length is 3 characters and the maximum length is 100 characters. You can submit up to 30 custom job titles per request.
+          The minimum custom job title length is 2 characters and the maximum length is 100 characters. You can submit up to 30 custom job titles per request.
 
           The default number of top matches returned is 5.
         content:
@@ -427,7 +427,7 @@ paths:
       summary: Send feedback to help improve the quality of the job match results
       tags: [Dimensions]
       operationId: "SubmitJobsFeedback"
-      description: "This API allows you to submit feedback on the quality of the job match results returned by the Get jobs endpoint. \n\nYou must include the search term (job title you entered) in the request body. You can include the optional `naicsCode` if it was used as part of the search in the Get jobs endpoint.\n\nYou can also submit additional comments by providing values for `additionalComments`, along with `term` and `naicsCode`.\n\n**Note:**\n\nFor `term`, the minimum is 3 characters and the maximum is 100 characters.\n\nFor `additionalComments`, the maximum is 150 characters.\n"
+      description: "This API allows you to submit feedback on the quality of the job match results returned by the Get jobs endpoint. \n\nYou must include the search term (job title you entered) in the request body. You can include the optional `naicsCode` if it was used as part of the search in the Get jobs endpoint.\n\nYou can also submit additional comments by providing values for `additionalComments`, along with `term` and `naicsCode`.\n\n**Note:**\n\nFor `term`, the minimum is 2 characters and the maximum is 100 characters.\n\nFor `additionalComments`, the maximum is 150 characters.\n"
       requestBody:
         description: |
           The feedback you want to submit for.
@@ -1344,7 +1344,7 @@ components:
           type: string
           description: |
             The search term (job title) you entered when using the Get jobs endpoint. You're providing feedback on the quality of the search results for this term. This field is required.
-            The minimum is 3 characters and the maximum is 100 characters.
+            The minimum is 2 characters and the maximum is 100 characters.
         naicsCode:
           type: string
           description: If provided, the naicsCode entered when using the Get jobs endpoint. You're providing feedback on the quality of the results for the search term and code.
@@ -1360,7 +1360,7 @@ components:
       properties:
         terms:
           type: "array"
-          description: "A list of input search terms. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. \nYour search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.\n\nThe maximum number of search terms is 30.\n\nFor the individual search term, the minimum length is 3 characters and the maximum length is 100 characters.\n"
+          description: "A list of input search terms. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. \nYour search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.\n\nThe maximum number of search terms is 30.\n\nFor the individual search term, the minimum length is 2 characters and the maximum length is 100 characters.\n"
           items:
             type: "string"
         naicsCode:
