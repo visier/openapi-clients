@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1949
+  version: 22222222.99200.21494
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2087,13 +2087,15 @@ paths:
         - name: type
           in: query
           description: |-
-            The type of the concept to retrieve. Valid values:
-             - `process`: Retrieves all process concepts. This is the default.
+            The type of the concept to retrieve. Omit to retrieve all supported concept types. Valid values:
+             - `process`: Retrieves all process concepts.
+             - `selection`: Retrieves all member selection concepts and calculated selection concepts.
           schema:
             type: array
             items:
               enum:
                 - process
+                - selection
               type: string
               format: enum
         - name: with
@@ -2165,13 +2167,15 @@ paths:
         - name: type
           in: query
           description: |-
-            The type of the concept to retrieve. Valid values:
-             - `process`: Retrieves all process concepts. This is the default.
+            The type of the concept to retrieve. Omit to retrieve all supported concept types. Valid values:
+             - `process`: Retrieves all process concepts.
+             - `selection`: Retrieves all member selection concepts and calculated selection concepts.
           schema:
             type: array
             items:
               enum:
                 - process
+                - selection
               type: string
               format: enum
         - name: with
@@ -2419,8 +2423,8 @@ paths:
           in: query
           description: |-
             The level of information to retrieve for the concept. Valid values:
-             - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.
-             - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.
+             - `basic`: Retrieves the concept's UUID, object name, and basic information.
+             - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`. This is the default.
              - `version`: Retrieves the object's version information, such as version type and last edited details.
           schema:
             type: array
@@ -2855,9 +2859,7 @@ components:
       properties:
         id:
           type: string
-          description: |-
-            The unique ID of the analytic object.
-             Note: See `AnalyticObjects` to get the ID.
+          description: The unique ID of the analytic object.
         displayName:
           type: string
           description: The localized display name of the analytic object.
@@ -2870,7 +2872,7 @@ components:
             - EVENT
             - OVERLAY
           type: string
-          description: 'The analytic object type: SUBJECT, EVENT, or OVERLAY.'
+          description: 'The analytic object type: `SUBJECT`, `EVENT`, or `OVERLAY`.'
           format: enum
         dataStartDate:
           type: string
@@ -3057,7 +3059,7 @@ components:
           description: memberMapId == dimensionMapId
         analyticObject:
           type: string
-          description: the analytic object associated with the dimension map
+          description: The analytic object associated with the dimension map.
       description: Instruction to execute a mapping validation query
     dataservices.datamodel.DimensionReferenceDTO:
       type: object
@@ -3162,7 +3164,7 @@ components:
       properties:
         id:
           type: string
-          description: 'The unique ID of the metric. Note: See `Metrics` to get the ID.'
+          description: The unique ID of the metric.
         displayName:
           type: string
           description: The localized display name of the metric.
@@ -3201,7 +3203,7 @@ components:
           format: enum
         visibleInApp:
           type: boolean
-          description: // `true` if this metric is set to be visible in your solution.
+          description: // If `true`, the metric is visible to end users in the solution.
       description: A metric is a calculation based on one or more attribute values of analytic objects.
     dataservices.datamodel.MetricsDTO:
       type: object
@@ -3334,9 +3336,7 @@ components:
       properties:
         id:
           type: string
-          description: |-
-            The unique identifier of the planning model.
-             Note: See `PlanningModels` to get the ID.
+          description: The unique identifier of the planning model.
         displayName:
           type: string
           description: The localized display name of the planning model.
@@ -3369,9 +3369,7 @@ components:
       properties:
         id:
           type: string
-          description: |-
-            The unique identifier of the plan.
-             Note: See `PlanningPlans` to get the ID.
+          description: The unique identifier of the plan.
         name:
           type: string
           description: The name of the plan.
@@ -3434,9 +3432,7 @@ components:
       properties:
         id:
           type: string
-          description: |-
-            The unique ID of the prediction.
-             Note: See `Predictions` to get the ID.
+          description: The unique ID of the prediction.
         displayName:
           type: string
           description: The localized display name of the prediction.
@@ -3541,9 +3537,7 @@ components:
       properties:
         id:
           type: string
-          description: |-
-            The unique ID of the property.
-             **Note:** See `Properties` to get the ID.
+          description: The unique ID of the property.
         displayName:
           type: string
           description: The localized display name of the property.
@@ -3575,7 +3569,7 @@ components:
       properties:
         name:
           type: string
-          description: The ID of the property. See `Properties` to get the ID.
+          description: The ID of the property.
         qualifyingPath:
           type: string
           description: |-
@@ -3597,9 +3591,7 @@ components:
       properties:
         id:
           type: string
-          description: |-
-            The unique ID of the selection concept
-             Note: See `SelectionConcepts` to get the ID.
+          description: The unique ID of the selection concept.
         displayName:
           type: string
           description: The localized display name of the selection concept.
@@ -3608,7 +3600,7 @@ components:
           description: The localized description of the selection concept.
         visibleInApp:
           type: boolean
-          description: '`true` if this selection concept is set to be visible in your solution.'
+          description: If `true`, the selection concept is visible to end users in the solution.
         tags:
           type: array
           items:
@@ -4494,6 +4486,35 @@ components:
              - `revertToBP`: Undo any tenant overrides and revert the object back to its Blueprint state.
           format: enum
       description: Information about the analytic object, such as its UUID and object name.
+    servicing.v2.objectconfiguration.AnalyticObjectFilterDTO:
+      type: object
+      properties:
+        analyticObjectName:
+          type: string
+          description: The analytic object name to which the dimension applies.
+        dimensionFilterList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.DimensionFilterListDTO'
+          description: The dimensions associated with the selection concept.
+      description: The analytic objects associated with the object.
+    servicing.v2.objectconfiguration.AnalyticObjectFilterListDTO:
+      type: object
+      properties:
+        analyticObjectFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectFilterDTO'
+          description: The list of analytic object associated with the dimension.
+      description: The analytic objects associated with the object.
+    servicing.v2.objectconfiguration.AnalyticObjectNamesDTO:
+      type: object
+      properties:
+        objectNames:
+          type: array
+          items:
+            type: string
+          description: The object names of the analytic objects associated with the object.
+      description: The analytic objects associated with the object.
     servicing.v2.objectconfiguration.AnalyticObjectReferenceDTO:
       type: object
       properties:
@@ -4585,6 +4606,27 @@ components:
           type: string
           description: The property's formula written in Visier Formula Language (VFL).
       description: A calculated property that takes a value that comes directly from the data and creates a new value through a formula.
+    servicing.v2.objectconfiguration.CalculatedSelectionConceptDTO:
+      type: object
+      properties:
+        formula:
+          type: string
+          description: The calculation concept formula.
+        analyticObjectNames:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectNamesDTO'
+          description: The object name of the analytic object associated with the concept.
+        tagList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+          description: The tags assigned to the object.
+        visibleInAnalytics:
+          type: boolean
+          description: If `true`, the object is visible to end users in the solution.
+        includeWithVee:
+          type: boolean
+          description: If `true`, the object is available in Vee's responses.
+      description: Information about the concept.
     servicing.v2.objectconfiguration.ConceptDefinitionDTO:
       type: object
       properties:
@@ -4653,6 +4695,14 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptDefinitionDTO'
           description: The process concept's associated objects, such as its analytic object and status dimension.
+        memberSelection:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.MemberSelectionConceptDTO'
+          description: The member selection concept's configuration, such as its dimension members.
+        calculatedSelection:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.CalculatedSelectionConceptDTO'
+          description: The calculated selection concept's configuration, such as its formula.
     servicing.v2.objectconfiguration.ConceptWithContextDTO:
       type: object
       properties:
@@ -4730,6 +4780,30 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ParentChildDetailsDTO'
           description: The parent-child dimension's configuration, such as its levels and name property.
       description: The dimension type and its details.
+    servicing.v2.objectconfiguration.DimensionFilterDTO:
+      type: object
+      properties:
+        dimensionName:
+          type: string
+          description: The display name of the dimension.
+        qualifyingPath:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.QualifyingPathDTO'
+          description: The objects that qualify the path to the dimension from its parent analytic object. For example, let's say the analytic object is `Applicant` and the dimension is `Location`. To get from `Location` to `Applicant` there are multiple paths, one of which is to follow references `Requisition` and then `Hiring Manager` to `Location`. `Location` is available on `Hiring_Manager` because a hiring manager is an `Employee`. In this example, the qualifying path is `Requisition.Hiring_Manager`.
+        memberSelectionList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.MemberSelectionListDTO'
+          description: The dimension members in a member selection concept.
+      description: A dimension associated with the selection concept.
+    servicing.v2.objectconfiguration.DimensionFilterListDTO:
+      type: object
+      properties:
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.DimensionFilterDTO'
+          description: The dimensions associated with the selection concept.
+      description: The dimensions associated with the selection concept.
     servicing.v2.objectconfiguration.DimensionRequestDTO:
       type: object
       properties:
@@ -4841,6 +4915,45 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectReferenceListDTO'
           description: The analytic objects associated with the dimension.
       description: The leveled dimension's configuration, such as its levels and settings.
+    servicing.v2.objectconfiguration.MemberSelectionConceptDTO:
+      type: object
+      properties:
+        analyticObjectFilterList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectFilterListDTO'
+          description: The list of analytic object associated with the concept.
+        tagList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+          description: The tags assigned to the object.
+        visibleInAnalytics:
+          type: boolean
+          description: If `true`, the object is visible to end users in the solution.
+        includeWithVee:
+          type: boolean
+          description: If `true`, the object is available in Vee's responses.
+      description: Information about the concept.
+    servicing.v2.objectconfiguration.MemberSelectionDTO:
+      type: object
+      properties:
+        namePath:
+          type: array
+          items:
+            type: string
+          description: The members in the object's qualifying path. For example, `["Requisition", "Hiring Manager"]`.
+        isExcluded:
+          type: boolean
+          description: If `true`, the member is excluded from the concept. Default is `false`.
+      description: A dimension member in a member selection concept.
+    servicing.v2.objectconfiguration.MemberSelectionListDTO:
+      type: object
+      properties:
+        memberSelections:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.MemberSelectionDTO'
+          description: The dimension members in a member selection concept.
+      description: The population members that the concept selects.
     servicing.v2.objectconfiguration.MetricDefinitionDTO:
       type: object
       properties:
@@ -5149,6 +5262,15 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptPropertyTypeDTO'
           description: The process concept property type, which describes the relationship between subject member properties and a subject member in the process pipeline.
       description: The property type.
+    servicing.v2.objectconfiguration.QualifyingPathDTO:
+      type: object
+      properties:
+        namePath:
+          type: array
+          items:
+            type: string
+          description: The members in the object's qualifying path. For example, `["Requisition", "Hiring Manager"]`.
+      description: The objects that qualify the path to the dimension from its parent analytic object. For example, let's say the analytic object is `Applicant` and the dimension is `Location`. To get to `Location` from `Applicant` there are multiple paths, one of which is to follow references `Requisition` and then `Hiring Manager` to `Location`. `Location` is available on `Hiring_Manager` because a hiring manager is an `Employee`. In this example, the qualifying path is `Requisition.Hiring_Manager`.
     servicing.v2.objectconfiguration.SimplePropertyTypeDTO:
       type: object
       properties:

@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1949
+  version: 22222222.99200.21494
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1290,7 +1290,7 @@ components:
       properties:
         name:
           type: string
-          description: The ID of the property. See `Properties` to get the ID.
+          description: The ID of the property.
         qualifyingPath:
           type: string
           description: |-
@@ -1302,7 +1302,7 @@ components:
       properties:
         name:
           type: string
-          description: The ID of the selection concept. See `SelectionConcepts` to get the ID.
+          description: The ID of the selection concept.
         qualifyingPath:
           type: string
           description: |-
@@ -1366,7 +1366,7 @@ components:
              See the formula dictionary in Visier to find functions and objects you can use in a formula.
         metric:
           type: string
-          description: The ID of an existing metric in your Visier solution. See `Metrics` to get the ID.
+          description: The ID of an existing metric in your Visier solution.
         metrics:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregationQuerySourceMetricsDTO'
@@ -1374,8 +1374,7 @@ components:
             The IDs of metrics to aggregate. All metrics in the query must reference the same analytic object.
              For example, you cannot query Headcount and Applicant Count because one uses the Employee subject and
              the other uses the Applicant subject. You can query Headcount and Employee Count for Women because both
-             reference the Employee subject. Only available when the Accept header is text/csv. For more information,
-             see `Aggregate`.
+             reference the Employee subject. Only available when the Accept header is `text/csv`.
       description: An AggregationQuerySource defines the source data to query in an aggregation query.
     dataservices.query.AggregationQuerySourceMetricDTO:
       type: object
@@ -1386,8 +1385,8 @@ components:
         id:
           type: string
           description: |-
-            The unique ID of the metric. Note: See `Metrics` to get the ID.
-             If columnName is omitted, id is the column name in the CSV file.
+            The unique ID of the metric.
+             If `columnName` is omitted, `id` is the column name in the CSV file.
         formula:
           type: string
           description: |-
@@ -1455,7 +1454,7 @@ components:
         The IDs and column names of multiple metrics.
 
          **Note:**
-         Only available when the `Accept` header is text/csv. For more information, see `Aggregate`
+         Only available when the `Accept` header is `text/csv`.
     dataservices.query.AggregationTypeParameterValueDTO:
       type: object
       properties:

@@ -8,15 +8,15 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1949
+  version: 22222222.99200.21494
 paths:
-  /v1/api/pgpkey:
+  /v1/api/pgp-keys:
     get:
       tags:
-        - PGPKey
+        - PGPKeys
       summary: Retrieve all PGP public keys
       description: Retrieve a list of all PGP public keys in your tenant.
-      operationId: PGPKey_GetAllPGPPublicKeys
+      operationId: PGPKeys_GetAllPGPPublicKeys
       parameters:
         - name: TargetTenantID
           in: header
@@ -38,10 +38,10 @@ paths:
                 $ref: '#/components/schemas/designer.crypto.PublicKeysDTO'
     post:
       tags:
-        - PGPKey
+        - PGPKeys
       summary: Download a public encryption key
       description: "Generate a key pair and retrieve the public key that you can use to encrypt your data to send to Visier. \n \n In the request body, optionally set the UTC expiration date for the key pair in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years."
-      operationId: PGPKey_GeneratePGPKeyPair
+      operationId: PGPKeys_GeneratePGPKeyPair
       parameters:
         - name: TargetTenantID
           in: header
@@ -67,13 +67,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/designer.crypto.PublicKeyDTO'
-  /v1/api/pgpkey/{keyID}:
+  /v1/api/pgp-keys/{keyID}:
     get:
       tags:
-        - PGPKey
+        - PGPKeys
       summary: Retrieve a PGP public key using the key ID
       description: If you know your PGP key ID, use it to retrieve the PGP public key. To get a list of all key IDs, see `Retrieve all PGP public keys`.
-      operationId: PGPKey_GetPGPPublicKey
+      operationId: PGPKeys_GetPGPPublicKey
       parameters:
         - name: keyID
           in: path
@@ -101,10 +101,10 @@ paths:
                 $ref: '#/components/schemas/designer.crypto.PublicKeyDTO'
     delete:
       tags:
-        - PGPKey
+        - PGPKeys
       summary: Delete a PGP key pair
       description: Delete a PGP key pair using a key ID.
-      operationId: PGPKey_DeletePGPKeyPair
+      operationId: PGPKeys_DeletePGPKeyPair
       parameters:
         - name: keyID
           in: path
@@ -1030,11 +1030,11 @@ paths:
          With the job ID, you can also call the next two APIs to retrieve the status of the receiving job and the status
          list of all related processing jobs.
 
-         **Prerequisite:** You must first obtain Visier's public encryption key and upload the source data files to Visier's
+         **Prerequisite:** You must first obtain a PGP public encryption key and upload the source data files to Visier's
          SFTP server. Files must have a .zip.gpg extension, meaning the files are encrypted using the PGP protocol and compressed.
 
-         Visier provides SFTP server credentials and instructions. You can find the encryption key at https://www.visier.com/pgp/visier.public.pgp.asc.
-         After downloading the file, open the file in a text editor or by dragging it into your browser.
+         Visier provides ways to generate PGP key pairs and download the public key to encrypt your data files. You can either use
+         the PGP Keys API or, in Visier, navigate to **Settings > Manage PGP Keys**.
 
          **Note:**
           - To see the full status of all analytic tenant data loads, navigate to the Jobs room in a project.
@@ -1072,10 +1072,9 @@ paths:
         - DataAndJobHandling
       summary: Retrieve data uploads
       description: |-
-        Retrieve the data uploads and whether they're included in one of:
-         - A list of analytic tenants managed by you.
-         - A single specified analytic tenant.
-         - A receiving job.
+        Retrieve the data uploads that are connected to a source for either:
+         - An analytic tenant.
+         - A receiving job ID.
       operationId: DataAndJobHandling_RetrieveDataUploads
       parameters:
         - name: uploadJobId
@@ -1085,28 +1084,33 @@ paths:
             type: string
         - name: tenantCode
           in: query
-          description: The tenant code of a specific analytic tenant that you want to retrieve the data uploads for.
+          description: This will be removed as of Spring 2026. Use `TargetTenantID` header instead. The tenant code of a specific analytic tenant that you want to retrieve the data uploads for.
           schema:
             type: integer
             format: int32
         - name: limit
           in: query
-          description: The limit of analytic tenants to retrieve data uploads for. This parameter is not used if the tenantCode parameter is specified. Default is 1000.
+          description: The limit of data uploads to retrieve across tenants. Default is 500. The maximum allowed value is 1000.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The index to start retrieving data uploads from, also known as offset. The index begins at 0.
           schema:
             type: integer
             format: int32
         - name: numberOfDataUploads
           in: query
-          description: The maximum number of latest enabled data uploads to retrieve for each analytic tenant. The maximum value is 5. Default is 1.
+          description: This will be removed as of Spring 2026. Use `limit` instead. The maximum number of latest enabled data uploads to retrieve for each analytic tenant. The maximum value is 5. Default is 1.
           schema:
             type: integer
             format: int32
+        - name: fileNameRegex
+          in: query
+          description: The regular expression to match the file names of the data uploads to retrieve. The regex must be URL-encoded; for example, `fileNameRegex=Employee%5C_%5Cw%7B3%7D%5C.csv`.
+          schema:
+            type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -3894,7 +3898,10 @@ components:
         id:
           type: string
           description: The UUID of the data category.
-      description: The data category's UUID and display name.
+        objectName:
+          type: string
+          description: The object name of the data category.
+      description: The data category's details.
     servicing.DirectDataJobConfigDTO:
       type: object
       properties:
@@ -4039,6 +4046,18 @@ components:
         included:
           type: boolean
           description: If "true", the data upload is included.
+        filename:
+          type: string
+          description: The name of the uploaded file.
+        identifier:
+          type: string
+          description: The unique identifier of the file.
+        sourceId:
+          type: string
+          description: The UUID of the source that the file is associated with.
+        sourceObjectName:
+          type: string
+          description: The object name of the source that the file is associated with.
     servicing.TenantDataUploadUpdateStatusResponseDTO:
       type: object
       properties:
@@ -4255,10 +4274,10 @@ tags:
     x-displayName: Data and Job Handling
     description: |-
       Initiate and manage jobs, included or excluded data, and data connector credentials. Administrating tenant users can manage jobs and data for their analytic tenants.
-  - name: PGPKey
-    x-displayName: PGP Key
+  - name: PGPKeys
+    x-displayName: PGP Keys
     description: |-
-      The Pretty Good Privacy (PGP) Key API generates key pairs and provides a public key to encrypt data that you send to Visier. PGP encryption adds an additional layer of security against data disclosure.
+      The Pretty Good Privacy (PGP) Keys API generates key pairs and provides a public key to encrypt data that you send to Visier. PGP encryption adds an additional layer of security against data disclosure.
       <br><br>After you generate a key pair and retrieve the public encryption key, you can encrypt your data files before sending them to Visier. When Visier receives files encrypted with the public key, we retrieve the associated private key to decrypt and process the file.
   - name: PlanningDataLoad
     x-displayName: Planning Data Load
@@ -4281,6 +4300,6 @@ x-tagGroups:
       - DirectDataIntake
       - DataIntake
       - DataAndJobHandling
-      - PGPKey
+      - PGPKeys
       - PlanningDataLoad
       - DataUpload
