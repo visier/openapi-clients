@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99200.21494
+  version: 22222222.99201.1974
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -5195,9 +5195,10 @@ paths:
         - DataAndJobHandling
       summary: Retrieve data uploads
       description: |-
-        Retrieve the data uploads that are connected to a source for either:
-         - An analytic tenant.
-         - A receiving job ID.
+        Retrieve the data uploads and whether they're included in one of:
+         - A list of analytic tenants managed by you.
+         - A single specified analytic tenant.
+         - A receiving job.
       operationId: DataAndJobHandling_RetrieveDataUploads
       parameters:
         - name: uploadJobId
@@ -5207,33 +5208,28 @@ paths:
             type: string
         - name: tenantCode
           in: query
-          description: This will be removed as of Spring 2026. Use `TargetTenantID` header instead. The tenant code of a specific analytic tenant that you want to retrieve the data uploads for.
+          description: The tenant code of a specific analytic tenant that you want to retrieve the data uploads for.
           schema:
             type: integer
             format: int32
         - name: limit
           in: query
-          description: The limit of data uploads to retrieve across tenants. Default is 500. The maximum allowed value is 1000.
+          description: The limit of analytic tenants to retrieve data uploads for. This parameter is not used if the tenantCode parameter is specified. Default is 1000.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving data uploads from, also known as offset. The index begins at 0.
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
           schema:
             type: integer
             format: int32
         - name: numberOfDataUploads
           in: query
-          description: This will be removed as of Spring 2026. Use `limit` instead. The maximum number of latest enabled data uploads to retrieve for each analytic tenant. The maximum value is 5. Default is 1.
+          description: The maximum number of latest enabled data uploads to retrieve for each analytic tenant. The maximum value is 5. Default is 1.
           schema:
             type: integer
             format: int32
-        - name: fileNameRegex
-          in: query
-          description: The regular expression to match the file names of the data uploads to retrieve. The regex must be URL-encoded; for example, `fileNameRegex=Employee%5C_%5Cw%7B3%7D%5C.csv`.
-          schema:
-            type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -20273,18 +20269,6 @@ components:
         included:
           type: boolean
           description: If "true", the data upload is included.
-        filename:
-          type: string
-          description: The name of the uploaded file.
-        identifier:
-          type: string
-          description: The unique identifier of the file.
-        sourceId:
-          type: string
-          description: The UUID of the source that the file is associated with.
-        sourceObjectName:
-          type: string
-          description: The object name of the source that the file is associated with.
     servicing.TenantDataUploadUpdateStatusResponseDTO:
       type: object
       properties:
