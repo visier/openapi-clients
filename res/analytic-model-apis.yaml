@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1974
+  version: 22222222.99200.21550
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -4293,6 +4293,7 @@ components:
           items:
             $ref: '#/components/schemas/servicing.QuestionCategoryAPIResponseDTO'
           description: A list of available categories for Vee sample questions.
+      description: The Vee question categories.
     servicing.QuestionCategoryAPIResponseDTO:
       type: object
       properties:
@@ -4302,6 +4303,7 @@ components:
         displayName:
           type: string
           description: An identifiable name to display within Visier. For example, "About individuals".
+      description: Information about the Vee question category.
     servicing.SampleQuestionAPIResponseDTO:
       type: object
       properties:
@@ -4321,6 +4323,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.UserGroupAssignmentDTO'
           description: The user group IDs assigned to the sample question.
+      description: Information about the sample question.
     servicing.SampleQuestionsAPIResponseDTO:
       type: object
       properties:
@@ -4329,6 +4332,7 @@ components:
           items:
             $ref: '#/components/schemas/servicing.SampleQuestionAPIResponseDTO'
           description: A list of sample questions to help your users start using Vee.
+      description: The list of Vee sample questions.
     servicing.UserGroupAssignmentDTO:
       type: object
       properties:
@@ -4337,6 +4341,7 @@ components:
           items:
             type: string
           description: A list of user group IDs assigned to the sample question.
+      description: The Vee sample question's assigned user groups.
     servicing.VeeQuestionChangeDefinitionDTO:
       type: object
       properties:
@@ -4356,6 +4361,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.UserGroupAssignmentDTO'
           description: The user group IDs assigned to the sample question.
+      description: The Vee sample question details.
     servicing.VeeQuestionChangeDefinitionsByTenantDTO:
       type: object
       properties:
@@ -4370,6 +4376,7 @@ components:
           items:
             $ref: '#/components/schemas/servicing.VeeQuestionChangeDefinitionDTO'
           description: The list of sample questions to update.
+      description: Information about the sample question and the context of the API request, such as the tenant code and project ID.
     servicing.VeeQuestionChangeFailureDTO:
       type: object
       properties:
@@ -4398,6 +4405,7 @@ components:
         projectId:
           type: string
           description: The project that the object was not successfully changed in.
+      description: The list of failed changes.
     servicing.VeeQuestionChangeSuccessDTO:
       type: object
       properties:
@@ -4423,6 +4431,7 @@ components:
         projectId:
           type: string
           description: The project that the sample question was changed in.
+      description: The list of successful changes.
     servicing.VeeQuestionDeleteDefinitionsByTenantDTO:
       type: object
       properties:
@@ -4431,12 +4440,13 @@ components:
           description: The code of the tenant to delete sample questions from. Default is the current tenant.
         projectId:
           type: string
-          description: The project in which to delete sample questions. If omitted and the ProjectID request header is not defined, the change is published to production immediately.
+          description: The project in which to delete sample questions. If omitted and the `ProjectID` request header is not defined, the change is published to production immediately.
         questionIds:
           type: array
           items:
             type: string
           description: The IDs of the sample questions to delete for a specific tenant.
+      description: Information about the sample question and the context of the API request, such as the tenant code and project ID.
     servicing.VeeQuestionsBulkChangeResponseDTO:
       type: object
       properties:
@@ -4450,6 +4460,7 @@ components:
           items:
             $ref: '#/components/schemas/servicing.VeeQuestionChangeFailureDTO'
           description: The sample questions that were not successfully changed.
+      description: The results of the bulk change operation.
     servicing.VeeQuestionsChangeDefinitionsDTO:
       type: object
       properties:
@@ -4458,6 +4469,7 @@ components:
           items:
             $ref: '#/components/schemas/servicing.VeeQuestionChangeDefinitionsByTenantDTO'
           description: The Vee sample question updates to make in each tenant.
+      description: The changes to Vee sample questions.
     servicing.VeeQuestionsDeleteDefinitionsDTO:
       type: object
       properties:
@@ -4466,6 +4478,7 @@ components:
           items:
             $ref: '#/components/schemas/servicing.VeeQuestionDeleteDefinitionsByTenantDTO'
           description: The sample questions to delete for each tenant.
+      description: The Vee sample question to delete.
     servicing.v2.objectconfiguration.AnalyticObjectDefinitionDTO:
       type: object
       properties:

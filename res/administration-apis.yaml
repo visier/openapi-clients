@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1974
+  version: 22222222.99200.21550
 paths:
   /v1/admin/capabilities:
     get:
@@ -255,6 +255,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.GetDataAccessSetsAPIResponseDTO'
+    put:
+      tags:
+        - Permissions
+      summary: Update shareable data access sets
+      description: |-
+        Update shareable data access sets. Shareable data access sets let you reuse common data access configurations in multiple permissions.
+
+         To specify the project in which to update shareable data access sets, provide a project UUID in the `ProjectID` request header.
+      operationId: Permissions_UpdateDataAccessSets
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.BulkDataAccessSetRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.BulkDataAccessSetResponseDTO'
     post:
       tags:
         - Permissions
@@ -285,7 +330,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/servicing.CreateDataAccessSetRequestDTO'
+              $ref: '#/components/schemas/servicing.BulkDataAccessSetRequestDTO'
         required: true
       responses:
         default:
@@ -5890,6 +5935,14 @@ components:
             $ref: '#/components/schemas/servicing.AssignRevokePermissionByTenantDTO'
           description: A list of objects representing the users that were assigned permissions, organized by the tenants the users belong to.
       description: The results of the permission assignment or removal.
+    servicing.BulkDataAccessSetRequestDTO:
+      type: object
+      properties:
+        shareablePropertyAccessConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.DataAccessSetDTO'
+          description: The data access sets to be created or updated.
     servicing.BulkDataAccessSetResponseDTO:
       type: object
       properties:
@@ -5972,14 +6025,6 @@ components:
         description:
           type: string
           description: A description of the content package.
-    servicing.CreateDataAccessSetRequestDTO:
-      type: object
-      properties:
-        shareablePropertyAccessConfigs:
-          type: array
-          items:
-            $ref: '#/components/schemas/servicing.DataAccessSetDTO'
-          description: The data access sets to be created.
     servicing.DataAccessSetDTO:
       type: object
       properties:
