@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99200.21550
+  version: 22222222.99201.1993
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -12645,9 +12645,9 @@ components:
         industryCode:
           type: integer
           description: |-
-            The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 0.
+            The North American Industry Classification System (NAICS) code for the industry in which the business unit operates. Type 0 to use the business unit's industry code or if the industry code is unknown. We highly recommend that you provide an industry code to take advantage of all of Visier's features.
 
-             For 2-digit codes, add trailing zeros at the end to reach 6 digits, such as 620000. Required if creating new tenants.
+             Required if creating new tenants.
           format: uint32
         primaryBusinessLocation:
           allOf:
@@ -12790,6 +12790,9 @@ components:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter. This is optional.
     admin.TenantProvisionAPIDTO:
+      required:
+        - tenantCode
+        - tenantDisplayName
       type: object
       properties:
         tenantCode:
@@ -12805,10 +12808,7 @@ components:
           description: A comma-separated list of strings that represent the Visier modules assigned to the analytic tenant.
         industryCode:
           type: integer
-          description: |-
-            The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 0.
-
-             For 2-digit codes, add trailing zeros at the end to reach 6 digits, such as 620000.
+          description: The North American Industry Classification System (NAICS) code for the industry in which the business unit operates. Type 0 to use the business unit's industry code or if the industry code is unknown. We highly recommend that you provide an industry code to take advantage of all of Visier's features.
           format: uint32
         embeddableDomains:
           type: array
@@ -16003,7 +16003,7 @@ components:
           type: string
           description: |-
             The ID of an existing text concept in your Visier solution.
-             A concept that defines the text properties of an analytic object and includes filters to enforce aggregate thresholds.
+             A concept that defines how long text data can be analyzed. It links to a property with the Large Text data type and contains required filters and optional filters to enforce threshold requirements.
              <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       description: A ListQuerySource defines the source data to query in a list query.
     dataservices.query.MemberFilterDTO:
@@ -20743,17 +20743,46 @@ components:
              - `unspecified`: Do not update the object.
              - `revertToBP`: Undo any tenant overrides and revert the object back to its Blueprint state.
           format: enum
-      description: Information about the analytic object, such as its UUID and object name.
+        basicInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+          description: Fields that identify and describe the analytic object, such as its display name, description, and explanation.
+        details:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectDetailsDTO'
+          description: The analytic object type and its details.
+        tagList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+          description: A list of tags assigned to the object.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
+      description: Information about the analytic object.
+    servicing.v2.objectconfiguration.AnalyticObjectDetailsDTO:
+      type: object
+      properties:
+        subject:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.SubjectDetailsDTO'
+          description: Information about the subject, such as its caption, default metric, and attributes.
+        event:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.EventDetailsDTO'
+          description: Information about the event, such as its subject, default metric, and attributes.
+      description: Information about the analytic objects.
     servicing.v2.objectconfiguration.AnalyticObjectFilterDTO:
       type: object
       properties:
         analyticObjectName:
           type: string
           description: The analytic object name to which the dimension applies.
-        dimensionFilterList:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.DimensionFilterListDTO'
-          description: The dimensions associated with the selection concept.
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.DimensionFilterDTO'
+          description: The dimension filters defined for this analytic object.
       description: The analytic objects associated with the object.
     servicing.v2.objectconfiguration.AnalyticObjectFilterListDTO:
       type: object
@@ -20885,6 +20914,27 @@ components:
           type: boolean
           description: If `true`, the object is available in Vee's responses.
       description: Information about the concept.
+    servicing.v2.objectconfiguration.CaptionDTO:
+      type: object
+      properties:
+        analyticObjects:
+          type: array
+          items:
+            type: string
+          description: The analytic object associated with the caption.
+        property:
+          type: string
+          description: The property to use as a caption.
+      description: A property to identify a subject member or event occurrence. For example, the Employee subject uses the captions Full Name and Job Name to identify specific employees.
+    servicing.v2.objectconfiguration.CaptionListDTO:
+      type: object
+      properties:
+        captions:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.CaptionDTO'
+          description: The list of captions for the subject or event.
+      description: A collection of captions used to identify subject members or event occurrences. Each caption specifies the analytic object and the property used for identification.
     servicing.v2.objectconfiguration.ConceptDefinitionDTO:
       type: object
       properties:
@@ -20928,6 +20978,22 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ObjectIdDTO'
           description: Information identifying the concept to delete.
       description: Information about the concept to delete and the context of the API request, such as the tenant code and project ID.
+    servicing.v2.objectconfiguration.ConceptReferenceDTO:
+      type: object
+      properties:
+        objectName:
+          type: string
+          description: The object name of the concept.
+      description: A reference to a concept.
+    servicing.v2.objectconfiguration.ConceptReferenceListDTO:
+      type: object
+      properties:
+        concepts:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptReferenceDTO'
+          description: The list of concept references.
+      description: The concepts referenced by the object.
     servicing.v2.objectconfiguration.ConceptRequestDTO:
       type: object
       properties:
@@ -21043,25 +21109,31 @@ components:
       properties:
         dimensionName:
           type: string
-          description: The display name of the dimension.
+          description: The dimension object name.
         qualifyingPath:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.QualifyingPathDTO'
-          description: The objects that qualify the path to the dimension from its parent analytic object. For example, let's say the analytic object is `Applicant` and the dimension is `Location`. To get from `Location` to `Applicant` there are multiple paths, one of which is to follow references `Requisition` and then `Hiring Manager` to `Location`. `Location` is available on `Hiring_Manager` because a hiring manager is an `Employee`. In this example, the qualifying path is `Requisition.Hiring_Manager`.
-        memberSelectionList:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.MemberSelectionListDTO'
-          description: The dimension members in a member selection concept.
-      description: A dimension associated with the selection concept.
-    servicing.v2.objectconfiguration.DimensionFilterListDTO:
-      type: object
-      properties:
-        filters:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.v2.objectconfiguration.DimensionFilterDTO'
-          description: The dimensions associated with the selection concept.
-      description: The dimensions associated with the selection concept.
+            type: string
+          description: |-
+            The objects that qualify the path to the dimension from its parent analytic object. For example, let's say the analytic object is `Applicant` and the dimension is `Location`.
+             To get to `Location` from `Applicant` there are multiple paths, one of which is to follow references `Requisition` and then `Hiring Manager` to `Location`.
+             `Location` is available on `Hiring_Manager` because a hiring manager is an `Employee`. In this example, the qualifying path is `[ "Applicant.Requisition" , "Requisition.Hiring_Manager" ]`.
+        memberSelections:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.MemberSelectionDTO'
+          description: The dimension members in a member selection concept.
+        isExcluded:
+          type: boolean
+          description: If `true`, the member is excluded from the concept. Default is `false`.
+      description: A dimension associated with the selection concept.
+    servicing.v2.objectconfiguration.DimensionReferenceDTO:
+      type: object
+      properties:
+        objectName:
+          type: string
+          description: The object name of the dimension.
+      description: A reference to a shared dimension associated with the analytic object. Shared dimensions can be associated with more than one analytic object.
     servicing.v2.objectconfiguration.DimensionRequestDTO:
       type: object
       properties:
@@ -21092,6 +21164,52 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.DimensionDTO'
           description: Information about the dimension.
       description: Information about the dimension and the context of the API request, such as the tenant code and project ID.
+    servicing.v2.objectconfiguration.EventDetailsDTO:
+      type: object
+      properties:
+        occurrenceCaption:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.CaptionDTO'
+          description: The property that labels occurrences. The occurrence caption displays the property in Detailed View and makes the event available in the Compare room.
+        secondaryCaptionList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.CaptionListDTO'
+          description: Secondary captions for additional identification of event occurrences.
+        subject:
+          type: string
+          description: The subject that the event is associated with. Subjects are entities that evolve over time with attributes captured over time.
+        enableEndingEvent:
+          type: boolean
+          description: If `true`, this event causes the record to become nonactive.
+        defaultMetric:
+          type: string
+          description: The default metric associated with an analytic object for system alerts and preventing empty chart states.
+        dataCategory:
+          type: string
+          description: The data category for this analytic object. Options include Tenant (default) and Usage (processes Visier usage information).
+        enableEndData:
+          type: boolean
+          description: If `true`, the event's end date corresponds with the event table's metadata. If `false`, the event's end date is inherited from its associated subject.
+        includeWithVee:
+          type: boolean
+          description: If `true`, the object is available in Vee's responses.
+        propertyList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.PropertyDefinitionListDTO'
+          description: The event's properties, such as event ID, name, and date.
+        dimensionList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.LocalOrSharedDimensionListDTO'
+          description: The event's dimensions, such as event type, location, and time.
+        conceptList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptReferenceListDTO'
+          description: The event's concepts, such as process stages and their stages or outcomes.
+        subjectReferenceList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.SubjectReferenceListDTO'
+          description: The analytic object's references.
+      description: Information about the event, such as its subject, default metric, and attributes.
     servicing.v2.objectconfiguration.ExecutionContextDTO:
       type: object
       properties:
@@ -21173,6 +21291,27 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectReferenceListDTO'
           description: The analytic objects associated with the dimension.
       description: The leveled dimension's configuration, such as its levels and settings.
+    servicing.v2.objectconfiguration.LocalOrSharedDimensionDTO:
+      type: object
+      properties:
+        local:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.DimensionDTO'
+          description: A local (not shared) dimension that is associated with one analytic object and cannot be shared with other objects.
+        shared:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.DimensionReferenceDTO'
+          description: A reference to a shared dimension that is associated with one or more objects.
+      description: Whether a dimension is local (not shared) or shared. Shared dimensions can be associated with more than one analytic object. Local dimensions can only be associated with one analytic object.
+    servicing.v2.objectconfiguration.LocalOrSharedDimensionListDTO:
+      type: object
+      properties:
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.LocalOrSharedDimensionDTO'
+          description: A list of local (not shared) or shared dimensions.
+      description: A list of dimensions associated with an analytic object. Dimensions can be local (not shared) or shared.
     servicing.v2.objectconfiguration.MemberSelectionConceptDTO:
       type: object
       properties:
@@ -21198,20 +21337,8 @@ components:
           type: array
           items:
             type: string
-          description: The members in the object's qualifying path. For example, `["Requisition", "Hiring Manager"]`.
-        isExcluded:
-          type: boolean
-          description: If `true`, the member is excluded from the concept. Default is `false`.
+          description: The name path for a given dimension member. For example, `["North America", "United States", "California", "San Francisco"]`.
       description: A dimension member in a member selection concept.
-    servicing.v2.objectconfiguration.MemberSelectionListDTO:
-      type: object
-      properties:
-        memberSelections:
-          type: array
-          items:
-            $ref: '#/components/schemas/servicing.v2.objectconfiguration.MemberSelectionDTO'
-          description: The dimension members in a member selection concept.
-      description: The population members that the concept selects.
     servicing.v2.objectconfiguration.MetricDefinitionDTO:
       type: object
       properties:
@@ -21250,6 +21377,13 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptMetricDefinitionDTO'
           description: Information about the metric, such as its formula and data type.
+    servicing.v2.objectconfiguration.MultiValuePropertyTypeDTO:
+      type: object
+      properties:
+        dataType:
+          type: string
+          description: The data type associated with the multi-value property.
+      description: A property type for a single attribute that can have several valid values at the same time. For example, Employee Education may have values for year, school, and certification.
     servicing.v2.objectconfiguration.ObjectIdDTO:
       type: object
       properties:
@@ -21485,6 +21619,15 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.PropertyTypeDetailsDTO'
           description: The property type and its details.
+    servicing.v2.objectconfiguration.PropertyDefinitionListDTO:
+      type: object
+      properties:
+        propertyList:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.PropertyDefinitionDTO'
+          description: The list of properties.
+      description: The list of properties.
     servicing.v2.objectconfiguration.PropertyDependencyDTO:
       type: object
       properties:
@@ -21519,16 +21662,11 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptPropertyTypeDTO'
           description: The process concept property type, which describes the relationship between subject member properties and a subject member in the process pipeline.
+        multiValue:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.MultiValuePropertyTypeDTO'
+          description: A property type for a single attribute that can have several valid values at the same time. For example, Employee Education may have values for year, school, and certification.
       description: The property type.
-    servicing.v2.objectconfiguration.QualifyingPathDTO:
-      type: object
-      properties:
-        namePath:
-          type: array
-          items:
-            type: string
-          description: The members in the object's qualifying path. For example, `["Requisition", "Hiring Manager"]`.
-      description: The objects that qualify the path to the dimension from its parent analytic object. For example, let's say the analytic object is `Applicant` and the dimension is `Location`. To get to `Location` from `Applicant` there are multiple paths, one of which is to follow references `Requisition` and then `Hiring Manager` to `Location`. `Location` is available on `Hiring_Manager` because a hiring manager is an `Employee`. In this example, the qualifying path is `Requisition.Hiring_Manager`.
     servicing.v2.objectconfiguration.SimplePropertyTypeDTO:
       type: object
       properties:
@@ -21544,6 +21682,98 @@ components:
           type: string
           description: The primitive data type, such as String, Integer, or Boolean.
       description: A simple property that provides single-level detail to an analytic object and contains one value at a time.
+    servicing.v2.objectconfiguration.SubjectDetailsDTO:
+      type: object
+      properties:
+        conceptionEvent:
+          type: string
+          description: The conception event defines the start of the validity interval for a subject.
+        terminationEvent:
+          type: string
+          description: The termination event defines the end of the validity interval for a subject.
+        instanceCaption:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.CaptionDTO'
+          description: The property that labels members. The instance caption displays the property in Detailed View and makes the subject available in the Compare room.
+        secondaryCaptionList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.CaptionListDTO'
+          description: Additional properties for more identification of subject members or event occurrences.
+        enablePrimaryKeyDimension:
+          type: boolean
+          description: If `true`, the subject's primary key or caption can be used as a group by and filter.
+        enableLargeDimensionSearch:
+          type: boolean
+          description: If `true`, you can search for members in a dimension with more than 300,000 members. Default is `false` to help with performance.
+        defaultMetric:
+          type: string
+          description: The default metric associated with an analytic object for system alerts and preventing empty chart states.
+        dataCategory:
+          type: string
+          description: The data category for this analytic object. Options include Tenant (default) and Usage (processes Visier usage information).
+        includeWithVee:
+          type: boolean
+          description: If `true`, the object is available in Vee's responses.
+        propertyList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.PropertyDefinitionListDTO'
+          description: The subject's properties, such as employee ID, name, and location.
+        dimensionList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.LocalOrSharedDimensionListDTO'
+          description: The subject's dimensions, such as department, job title, and location.
+        conceptList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptReferenceListDTO'
+          description: The subject's concepts, such as process concepts and their stages or outcomes.
+        subjectReferenceList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.SubjectReferenceListDTO'
+          description: The analytic object's references.
+      description: Information about the subject, such as its caption, default metric, and attributes.
+    servicing.v2.objectconfiguration.SubjectReferenceDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The UUID of the reference.
+        objectName:
+          type: string
+          description: The object name of the reference.
+        basicInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+          description: Fields that identify and describe the analytic object, such as its display name, description, and explanation.
+        tagList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+          description: A list of tags assigned to the object.
+        direction:
+          enum:
+            - forward
+            - reverse
+          type: string
+          description: |-
+            The direction of the reference between analytic objects.
+             - `reverse`: The reference direction is `reverse`. For example, the object reference comes from Employee.
+             - `forward`: The reference direction is `forward`. For example, the object references to Employee.
+          format: enum
+        subject:
+          type: string
+          description: The subject that the reference is associated with.
+        binding:
+          type: boolean
+          description: If `true`, the reference is binding. A binding reference requires a value in the reference subject; for example, the reference between Applicant and Requisition is binding, meaning that applicants must always have an associated Requisition ID. If `false`, the reference is non-binding. A non-binding reference doesn't require a value in the reference subject; for example, the reference between Employee and Applicant is non-binding, meaning that an employee does not require an associated Applicant ID. This is the default and expected behavior for most references.
+      description: Information about forward or reverse references between analytic objects.
+    servicing.v2.objectconfiguration.SubjectReferenceListDTO:
+      type: object
+      properties:
+        subjectReferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.SubjectReferenceDTO'
+          description: The analytic object's references.
+      description: The analytic object's references.
     servicing.v2.objectconfiguration.SuccessfulChangeDTO:
       type: object
       properties:
