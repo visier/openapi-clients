@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99200.21550
+  version: 22222222.99201.1993
 paths:
   /v1/admin/capabilities:
     get:
@@ -4732,9 +4732,9 @@ components:
         industryCode:
           type: integer
           description: |-
-            The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 0.
+            The North American Industry Classification System (NAICS) code for the industry in which the business unit operates. Type 0 to use the business unit's industry code or if the industry code is unknown. We highly recommend that you provide an industry code to take advantage of all of Visier's features.
 
-             For 2-digit codes, add trailing zeros at the end to reach 6 digits, such as 620000. Required if creating new tenants.
+             Required if creating new tenants.
           format: uint32
         primaryBusinessLocation:
           allOf:
@@ -4877,6 +4877,9 @@ components:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter. This is optional.
     admin.TenantProvisionAPIDTO:
+      required:
+        - tenantCode
+        - tenantDisplayName
       type: object
       properties:
         tenantCode:
@@ -4892,10 +4895,7 @@ components:
           description: A comma-separated list of strings that represent the Visier modules assigned to the analytic tenant.
         industryCode:
           type: integer
-          description: |-
-            The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 0.
-
-             For 2-digit codes, add trailing zeros at the end to reach 6 digits, such as 620000.
+          description: The North American Industry Classification System (NAICS) code for the industry in which the business unit operates. Type 0 to use the business unit's industry code or if the industry code is unknown. We highly recommend that you provide an industry code to take advantage of all of Visier's features.
           format: uint32
         embeddableDomains:
           type: array

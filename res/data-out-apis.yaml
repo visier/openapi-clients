@@ -8,7 +8,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99200.21550
+  version: 22222222.99201.1993
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1788,7 +1788,7 @@ components:
           type: string
           description: |-
             The ID of an existing text concept in your Visier solution.
-             A concept that defines the text properties of an analytic object and includes filters to enforce aggregate thresholds.
+             A concept that defines how long text data can be analyzed. It links to a property with the Large Text data type and contains required filters and optional filters to enforce threshold requirements.
              <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
       description: A ListQuerySource defines the source data to query in a list query.
     dataservices.query.MemberFilterDTO:
