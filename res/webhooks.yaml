@@ -1,6 +1,3 @@
-# Generated with protoc-gen-openapi
-# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
-
 openapi: 3.0.3
 info:
   title: Visier Webhooks APIs
@@ -8,18 +5,14 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1993
+  version: 22222222.99201.2010
 paths:
   /v1beta/op/webhooks:
     get:
       tags:
         - Webhooks
       summary: Retrieve a list of webhooks
-      description: |-
-        Retrieve a list of all webhooks. The response returns each webhook's definition, such as its endpoint URL, active status, and event types.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve a list of all webhooks. The response returns each webhook's definition, such as its endpoint URL, active status, and event types.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Webhooks_GetAllWebhooks
       parameters:
         - name: event
@@ -39,7 +32,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -49,11 +42,7 @@ paths:
       tags:
         - Webhooks
       summary: Create a webhook
-      description: |-
-        Create a new webhook with Visier. You must specify the webhook's endpoint URL, its active status, the event types to listen for, and the credentials to authenticate calls to the webhook endpoint.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Create a new webhook with Visier. You must specify the webhook's endpoint URL, its active status, the event types to listen for, and the credentials to authenticate calls to the webhook endpoint.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Webhooks_CreateWebhook
       requestBody:
         content:
@@ -68,7 +57,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -79,11 +68,7 @@ paths:
       tags:
         - Webhooks
       summary: Retrieve a webhook's details
-      description: |-
-        Retrieve the details of a specific webhook. You must know the ID of the webhook to retrieve its details. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve the details of a specific webhook. You must know the ID of the webhook to retrieve its details. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Webhooks_GetWebhook
       parameters:
         - name: webhookId
@@ -99,7 +84,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -109,13 +94,7 @@ paths:
       tags:
         - Webhooks
       summary: Update a webhook's details
-      description: |-
-        Update the details of an existing webhook, such as its URL and active status. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`. To update a webhook's credentials, see `PUT /v1beta/op/webhooks/{webhookId}/credentials`.
-
-         When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Update the details of an existing webhook, such as its URL and active status. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`. To update a webhook's credentials, see `PUT /v1beta/op/webhooks/{webhookId}/credentials`.\n\n When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Webhooks_UpdateWebhook
       parameters:
         - name: webhookId
@@ -137,7 +116,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -147,11 +126,7 @@ paths:
       tags:
         - Webhooks
       summary: Delete a webhook
-      description: |-
-        Delete a specific webhook. You must know the ID of the webhook to delete it. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Delete a specific webhook. You must know the ID of the webhook to delete it. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Webhooks_DeleteWebhook
       parameters:
         - name: webhookId
@@ -167,7 +142,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -178,13 +153,7 @@ paths:
       tags:
         - Webhooks
       summary: Update a webhook's credentials
-      description: |-
-        Update the credentials to authenticate calls to the webhook endpoint. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`. To update a webhook's details, see `PUT /v1beta/op/webhooks/{webhookId}`.
-
-         When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Update the credentials to authenticate calls to the webhook endpoint. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`. To update a webhook's details, see `PUT /v1beta/op/webhooks/{webhookId}`.\n\n When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Webhooks_UpdateWebhookCredentials
       parameters:
         - name: webhookId
@@ -206,7 +175,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -216,11 +185,7 @@ paths:
       tags:
         - Webhooks
       summary: Delete a webhook's credentials
-      description: |-
-        Delete the credentials for a webhook. You must know the ID of the webhook to delete its credentials. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Delete the credentials for a webhook. You must know the ID of the webhook to delete its credentials. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Webhooks_DeleteWebhookCredentials
       parameters:
         - name: webhookId
@@ -236,7 +201,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -247,11 +212,7 @@ paths:
       tags:
         - Webhooks
       summary: Test a webhook
-      description: |-
-        Send a test event to an existing webhook. This validates whether the webhook works. You must specify the webhook ID and an event type.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Send a test event to an existing webhook. This validates whether the webhook works. You must specify the webhook ID and an event type.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Webhooks_SendTestEvent
       parameters:
         - name: webhookId
@@ -273,7 +234,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -329,12 +290,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
-          description: |-
-            The events that the webhook is listening for. Valid values:
-             - `jobResultSuccess`: A job completed successfully.
-             - `jobResultFailure`: A job failed to complete.
-             - `jobReschedule`: A job was rescheduled.
-             - `dvPublish`: A data version published to production.
+          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production."
         keyName:
           type: string
           description: The display name of the encryption key for the webhook. Encryption key must use `HmacSHA256` algorithm.
@@ -347,12 +303,7 @@ components:
       properties:
         eventType:
           type: string
-          description: |-
-            The possible event types to listen for. Valid values:
-             - `jobResultSuccess`: A job completed successfully.
-             - `jobResultFailure`: A job failed to complete.
-             - `jobReschedule`: A job was rescheduled.
-             - `dvPublish`: A data version published to production.
+          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production."
       description: The possible event types for Visier webhooks.
     designer.webhook.WebhookMessageResponseDTO:
       type: object
@@ -440,11 +391,12 @@ components:
 tags:
   - name: Webhooks
     x-displayName: Webhooks
-    description: |-
-      Create, manage, and retrieve webhook definitions. Use webhooks to register your own HTTPS endpoints with Visier and listen for specific events. When these events occur, Visier sends an API request to your registered endpoint. For example, you can create a webhook to monitor job status events with Visier. Visier sends you a success or failure notification to your registered endpoint after the job completes.
+    description: 'Create, manage, and retrieve webhook definitions. Use webhooks to register your own HTTPS endpoints with Visier and listen for specific events. When these events occur, Visier sends an API request to your registered endpoint. For example, you can create a webhook to monitor job status events with Visier. Visier sends you a success or failure notification to your registered endpoint after the job completes.
+
 
       <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
 security:
   - ApiKeyAuth: []
     BearerAuth: []

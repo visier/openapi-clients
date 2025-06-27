@@ -1,6 +1,3 @@
-# Generated with protoc-gen-openapi
-# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
-
 openapi: 3.0.3
 info:
   title: Visier Data Out APIs
@@ -8,17 +5,14 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1993
+  version: 22222222.99201.2010
 paths:
   /v1/data/query/aggregate:
     post:
       tags:
         - DataQuery
       summary: Query aggregate data
-      description: |-
-        To retrieve aggregated values from your data in Visier, you can perform an aggregation. Usually, an aggregation
-         retrieves values over a period of time, such as multiple months. You can also group and filter your data in an
-         aggregation query to retrieve detailed information.
+      description: "To retrieve aggregated values from your data in Visier, you can perform an aggregation. Usually, an aggregation\n retrieves values over a period of time, such as multiple months. You can also group and filter your data in an\n aggregation query to retrieve detailed information."
       operationId: DataQuery_Aggregate
       parameters:
         - name: TargetTenantID
@@ -39,7 +33,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: Aggregate query response
           content:
             application/json:
@@ -56,10 +50,7 @@ paths:
       tags:
         - DataQuery
       summary: Query a list of details
-      description: |-
-        To retrieve a list of values for specific objects, you can perform a list query. A list query provides information
-         about values for selected data points, and is not an aggregated value. In Visier's interface, a list query is
-         comparable to View Details for a specific data point in a visualization.
+      description: "To retrieve a list of values for specific objects, you can perform a list query. A list query provides information\n about values for selected data points, and is not an aggregated value. In Visier's interface, a list query is\n comparable to View Details for a specific data point in a visualization."
       operationId: DataQuery_List
       parameters:
         - name: TargetTenantID
@@ -80,7 +71,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: List query response
           content:
             application/json:
@@ -97,32 +88,7 @@ paths:
       tags:
         - DataQuery
       summary: Query a series of detailed snapshots
-      description: |-
-        To retrieve a collection of `list` query-style snapshots taken at the defined intervals, execute a `snapshot` query.
-         Each snapshot in the result is associated with a timestamp, or the "effective date" at which date snapshot data was valid.
-         This API allows you to request a detailed time series from Visier.
-
-         Structurally, a `snapshot` query is similar to a `list` query, but has the following differences:
-         * The `snapshot` query may contain a column, `effectiveDateProperty`, that specifies the time for each snapshot. To include the `effectiveDateProperty` column, add the following object to the columns array:
-            ```json
-            {
-                "columnName": "Snapshot_Date",
-                "columnDefinition": {
-                    "effectiveDateProperty": {}
-                }
-            }
-            ```
-         * The `snapshot` query uses `timeIntervals` (like an `aggregate` query) instead of `timeInterval` (like a `list` query) because the `snapshot` query
-            must specify the number of snapshots to generate. To specify the number of snapshots to generate, use the `intervalCount` property in the `timeIntervals` object, as shown next.
-            ```json
-            {
-                "timeIntervals": {
-                "fromDateTime": "2022-01-01",
-                "intervalPeriodType": "MONTH",
-                "intervalPeriodCount": 6,
-                "intervalCount": 4
-            }
-            ```
+      description: "To retrieve a collection of `list` query-style snapshots taken at the defined intervals, execute a `snapshot` query.\n Each snapshot in the result is associated with a timestamp, or the \"effective date\" at which date snapshot data was valid.\n This API allows you to request a detailed time series from Visier.\n\n Structurally, a `snapshot` query is similar to a `list` query, but has the following differences:\n * The `snapshot` query may contain a column, `effectiveDateProperty`, that specifies the time for each snapshot. To include the `effectiveDateProperty` column, add the following object to the columns array:\n    ```json\n    {\n        \"columnName\": \"Snapshot_Date\",\n        \"columnDefinition\": {\n            \"effectiveDateProperty\": {}\n        }\n    }\n    ```\n * The `snapshot` query uses `timeIntervals` (like an `aggregate` query) instead of `timeInterval` (like a `list` query) because the `snapshot` query\n    must specify the number of snapshots to generate. To specify the number of snapshots to generate, use the `intervalCount` property in the `timeIntervals` object, as shown next.\n    ```json\n    {\n        \"timeIntervals\": {\n        \"fromDateTime\": \"2022-01-01\",\n        \"intervalPeriodType\": \"MONTH\",\n        \"intervalPeriodCount\": 6,\n        \"intervalCount\": 4\n    }\n    ```"
       operationId: Query_Snapshot
       parameters:
         - name: TargetTenantID
@@ -143,7 +109,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: List query response
           content:
             application/json:
@@ -160,31 +126,7 @@ paths:
       tags:
         - DataQuery
       summary: Query aggregate or list data using SQL-like syntax
-      description: |-
-        To retrieve a list of values for specific objects or aggregate values from metrics, you can write queries using SQL-like syntax.
-         The response format matches the query type whether aggregate or list. If requested, aggregate query results may be flattened into tabular format.
-
-         A SQL-like query is an aggregate if it contains at least one metric. Aggregate queries must specify a time interval divided into periods; for example:
-         ```sql
-         SELECT
-           employeeCount() AS "Employee Count",
-           level(Gender, "Gender") AS Gender
-         FROM
-           Employee
-         WHERE
-          Visier_Time IN periods(date("2023-01-01"), 4, period(3, Month));
-         ```
-
-         A SQL-like query is a list if it does not contain any metrics. List queries define time intervals as simple intervals; for example:
-         ```sql
-         SELECT
-           EmployeeID AS "Employee ID",
-           level(Gender, "Gender") AS Gender
-         FROM
-           Employee
-         WHERE
-          Visier_Time BETWEEN date("2022-01-01") AND date("2023-01-01");
-         ```
+      description: "To retrieve a list of values for specific objects or aggregate values from metrics, you can write queries using SQL-like syntax.\n The response format matches the query type whether aggregate or list. If requested, aggregate query results may be flattened into tabular format.\n\n A SQL-like query is an aggregate if it contains at least one metric. Aggregate queries must specify a time interval divided into periods; for example:\n ```sql\n SELECT\n   employeeCount() AS \"Employee Count\",\n   level(Gender, \"Gender\") AS Gender\n FROM\n   Employee\n WHERE\n  Visier_Time IN periods(date(\"2023-01-01\"), 4, period(3, Month));\n ```\n\n A SQL-like query is a list if it does not contain any metrics. List queries define time intervals as simple intervals; for example:\n ```sql\n SELECT\n   EmployeeID AS \"Employee ID\",\n   level(Gender, \"Gender\") AS Gender\n FROM\n   Employee\n WHERE\n  Visier_Time BETWEEN date(\"2022-01-01\") AND date(\"2023-01-01\");\n ```"
       operationId: DataQuery_SqlLike
       parameters:
         - name: TargetTenantID
@@ -205,7 +147,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: List query response
           content:
             application/json:
@@ -224,12 +166,7 @@ paths:
       tags:
         - Vee
       summary: Check the overall current status of Vee
-      description: |-
-        Check the current overall status of Vee.
-
-         The overall status is one of:
-         * `UP` :  Vee is operational.
-         * `DOWN`: Vee is not operational.
+      description: "Check the current overall status of Vee.\n\n The overall status is one of:\n * `UP` :  Vee is operational.\n * `DOWN`: Vee is not operational."
       operationId: Vee_VeeStatus
       parameters:
         - name: TargetTenantID
@@ -244,7 +181,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -255,11 +192,7 @@ paths:
       tags:
         - DataVersionExport
       summary: Retrieve a list of all data versions
-      description: |-
-        Retrieve a list of all data versions in the tenant.
-
-         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve a list of all data versions in the tenant.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataVersionExport_GetAvailableDataVersions
       parameters:
         - name: TargetTenantID
@@ -274,7 +207,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -285,12 +218,7 @@ paths:
       tags:
         - DataVersionExport
       summary: Retrieve the details of all data version exports
-      description: |-
-        Retrieve the information for all available data version exports.
-         **Note:** Data version exports are available for 14 days after export job completes.
-
-         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve the information for all available data version exports.\n **Note:** Data version exports are available for 14 days after export job completes.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataVersionExport_GetAvailableExports
       parameters:
         - name: TargetTenantID
@@ -305,7 +233,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -316,12 +244,7 @@ paths:
       tags:
         - DataVersionExport
       summary: Retrieve the details of a data version export
-      description: |-
-        Retrieve information for a specific data version export.
-         **Note:** Data version exports are available for 14 days after export job completes.
-
-         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve information for a specific data version export.\n **Note:** Data version exports are available for 14 days after export job completes.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataVersionExport_GetExport
       parameters:
         - name: exportUuid
@@ -342,7 +265,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -353,13 +276,7 @@ paths:
       tags:
         - DataVersionExport
       summary: Schedule a data version export job
-      description: |-
-        Schedule a data version export job. The job schedules immediately and will begin when resources are available. The response returns a `jobUuid` that you can use to check the export job status.
-
-         **Note:** There is a limit of 10 export jobs per tenant per day.
-
-         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Schedule a data version export job. The job schedules immediately and will begin when resources are available. The response returns a `jobUuid` that you can use to check the export job status.\n\n **Note:** There is a limit of 10 export jobs per tenant per day.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataVersionExport_ScheduleExportJob
       parameters:
         - name: TargetTenantID
@@ -380,7 +297,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -391,11 +308,7 @@ paths:
       tags:
         - DataVersionExport
       summary: Retrieve a data version export job's status
-      description: |-
-        Retrieve the status of a data version export job. After the job completes successfully, this endpoint returns an `exportUuid` that you can use to retrieve the export information and download export files.
-
-         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve the status of a data version export job. After the job completes successfully, this endpoint returns an `exportUuid` that you can use to retrieve the export information and download export files.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataVersionExport_GetExportJobStatus
       parameters:
         - name: jobUuid
@@ -416,7 +329,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DvExportStatus'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -427,15 +340,7 @@ paths:
       tags:
         - SourceFilesDownload
       summary: Download source files
-      description: |-
-        Download a tenant's source files. You can download all included source files or specify a list of sources to download. Use object names or unique identifiers to specify the list of sources. Excluded source files will not be downloaded.
-
-         If `minTimestamp` and `maxTimestamp` are defined, downloads the source files uploaded within the specified time range for all sources or the specified sources.
-
-         Administrating tenants can specify the tenant from which to download sources using the `TargetTenantID` header.
-
-         **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Download a tenant's source files. You can download all included source files or specify a list of sources to download. Use object names or unique identifiers to specify the list of sources. Excluded source files will not be downloaded.\n\n If `minTimestamp` and `maxTimestamp` are defined, downloads the source files uploaded within the specified time range for all sources or the specified sources.\n\n Administrating tenants can specify the tenant from which to download sources using the `TargetTenantID` header.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: SourceFilesDownload_DownloadSourceFiles
       parameters:
         - name: TargetTenantID
@@ -456,7 +361,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/designer.DownloadSourceFilesResponseDTO'
-        "200":
+        '200':
           description: File contents
           content:
             application/json:
@@ -471,11 +376,7 @@ paths:
       tags:
         - Reporting
       summary: Retrieve a list of reports
-      description: |-
-        Retrieve a list of reports. The response returns information such as the unique ID, title, description, owner, and the allowed actions you can take on the report.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve a list of reports. The response returns information such as the unique ID, title, description, owner, and the allowed actions you can take on the report.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Reporting_GetReports
       parameters:
         - name: limit
@@ -502,7 +403,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -512,11 +413,7 @@ paths:
       tags:
         - Reporting
       summary: Create a report
-      description: |-
-        Create a new report with a title and description. To edit other contents of the report, such as columns and group bys, navigate to the Reports room in Visier.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Create a new report with a title and description. To edit other contents of the report, such as columns and group bys, navigate to the Reports room in Visier.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Reporting_CreateReport
       parameters:
         - name: TargetTenantID
@@ -537,7 +434,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -548,11 +445,7 @@ paths:
       tags:
         - Reporting
       summary: Retrieve a report's details
-      description: |-
-        Retrieve the details of a specific report. The response returns information such as title, description, owner, and the allowed actions you can take on the report. You must know the ID of the report to retrieve its details. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve the details of a specific report. The response returns information such as title, description, owner, and the allowed actions you can take on the report. You must know the ID of the report to retrieve its details. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Reporting_GetReport
       parameters:
         - name: reportId
@@ -573,7 +466,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -583,11 +476,7 @@ paths:
       tags:
         - Reporting
       summary: Duplicate a report
-      description: |-
-        Make a copy of an existing report. You must know the ID of the report to copy it. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Make a copy of an existing report. You must know the ID of the report to copy it. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Reporting_DuplicateReport
       parameters:
         - name: reportId
@@ -608,7 +497,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -618,11 +507,7 @@ paths:
       tags:
         - Reporting
       summary: Delete a report
-      description: |-
-        Delete a report in the tenant. You must know the ID of the report to delete it. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Delete a report in the tenant. You must know the ID of the report to delete it. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Reporting_DeleteReport
       parameters:
         - name: reportId
@@ -643,7 +528,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -654,12 +539,7 @@ paths:
       tags:
         - Search
       summary: Perform a simple search for Visier document headers
-      description: |-
-        Perform a simple search for Visier document headers, such as analysis titles. Simple search doesn't support keywords, Boolean expressions, or any other advanced search features.
-         Example: `GET /v1alpha/search/simple/document-headers?q=My+Query&limit=10` returns the first 10 document headers that best match the query string `My Query`.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Perform a simple search for Visier document headers, such as analysis titles. Simple search doesn't support keywords, Boolean expressions, or any other advanced search features.\n Example: `GET /v1alpha/search/simple/document-headers?q=My+Query&limit=10` returns the first 10 document headers that best match the query string `My Query`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Search_SimpleSearchDocumentHeaders
       parameters:
         - name: q
@@ -691,7 +571,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -702,14 +582,7 @@ paths:
       tags:
         - Vee
       summary: Submit Vee feedback
-      description: |-
-        Give Vee feedback for a previous answer. To submit feedback, include:
-         * The conversation details from the `/question` response.
-         * A rating of Vee's answer. If `isApproved` is `true`, Vee answered the question correctly. If `isApproved` is `false`, Vee's answer was incorrect or lacked details.
-         * A description of how Vee should have answered the question or how Vee can improve the answer, such as "Expected Headcount metric, but Vee returned Average Headcount".
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Give Vee feedback for a previous answer. To submit feedback, include:\n * The conversation details from the `/question` response.\n * A rating of Vee's answer. If `isApproved` is `true`, Vee answered the question correctly. If `isApproved` is `false`, Vee's answer was incorrect or lacked details.\n * A description of how Vee should have answered the question or how Vee can improve the answer, such as \"Expected Headcount metric, but Vee returned Average Headcount\".\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Vee_VeeFeedback
       parameters:
         - name: TargetTenantID
@@ -730,7 +603,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -741,13 +614,7 @@ paths:
       tags:
         - Vee
       summary: Ask Vee a question
-      description: |-
-        Use plain language to ask Vee a people question. Use body parameters to specify how Vee should respond, such as returning a visualization, data, or rewording the question.
-
-         The response always returns a `conversationState` object containing a unique ID for the conversation. To ask a follow-up question or continue the conversation with Vee, include the `conversationState` from the response in your next `/question` call. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Use plain language to ask Vee a people question. Use body parameters to specify how Vee should respond, such as returning a visualization, data, or rewording the question.\n\n The response always returns a `conversationState` object containing a unique ID for the conversation. To ask a follow-up question or continue the conversation with Vee, include the `conversationState` from the response in your next `/question` call. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Vee_VeeQuestionRequest
       parameters:
         - name: TargetTenantID
@@ -768,7 +635,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -779,12 +646,7 @@ paths:
       tags:
         - Vee
       summary: Retrieve a list of sample questions to ask Vee
-      description: |-
-        Get a list of sample questions to help you start using Vee. The response returns a list of questions that you can ask Vee, such as "What is the turnover rate?".
-         You may occasionally encounter a sample question that can't be answered due to data availability or your data access
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Get a list of sample questions to help you start using Vee. The response returns a list of questions that you can ask Vee, such as \"What is the turnover rate?\".\n You may occasionally encounter a sample question that can't be answered due to data availability or your data access\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Vee_VeeSampleQuestions
       parameters:
         - name: TargetTenantID
@@ -799,7 +661,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -810,9 +672,9 @@ paths:
       tags:
         - DataVersionExport
       summary: Download a file from a data version export
-      description: |-
-        This API allows you to download a file from a data version export.
-        Data version export files are in CSV format, compressed with gzip.
+      description: 'This API allows you to download a file from a data version export.
+
+        Data version export files are in CSV format, compressed with gzip.'
       operationId: DataVersionExportV1Alpha_DownloadFile
       parameters:
         - name: exportUuid
@@ -833,7 +695,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: File contents
           content:
             application/gzip:
@@ -851,11 +713,7 @@ paths:
       tags:
         - Reporting
       summary: Download a report
-      description: |-
-        Download a report as a CSV file. The returned CSV file contains the data in the report. You must know the ID of the report to download it. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Download a report as a CSV file. The returned CSV file contains the data in the report. You must know the ID of the report to download it. To retrieve report IDs, see `GET /v1alpha/reporting/reports`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Reporting_DownloadReport
       parameters:
         - name: reportId
@@ -870,7 +728,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Report data response
           content:
             text/csv:
@@ -941,15 +799,7 @@ components:
               - share
             type: string
             format: enum
-          description: |-
-            The actions that you can perform on the report.
-
-             Valid values are:
-             - `duplicate`: The user can make their own copy of this report.
-             - `delete`: The user can delete this report.
-             - `edit`: The user can edit this report directly.
-             - `download`: The user can download this report as a CSV.
-             - `share`: The user can share this report with other users or user groups.
+          description: "The actions that you can perform on the report.\n\n Valid values are:\n - `duplicate`: The user can make their own copy of this report.\n - `delete`: The user can delete this report.\n - `edit`: The user can edit this report directly.\n - `download`: The user can download this report as a CSV.\n - `share`: The user can share this report with other users or user groups."
         link:
           type: string
           description: The link to the report.
@@ -1247,9 +1097,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            A list of strings representing the members within a dimension path. For example, a dimension for Location
-             may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
+          description: "A list of strings representing the members within a dimension path. For example, a dimension for Location\n may have the paths \"Canada, BC, Vancouver\" and \"US, California, San Francisco\"."
         memberId:
           type: string
           description: The unique identifier of the dimension member. Use `memberId` if the dimension member doesn't have a path, such as SD groups.
@@ -1267,12 +1115,7 @@ components:
           items:
             $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
           description: The unique IDs of members to exclude when evaluating the metric.
-      description: |-
-        Member filter values are discrete member references in a dimension filter. You can define
-         included and excluded members simultaneously. This is typically done with filtering applied on
-         dimensions with multiple levels. For example, a Location parameter may include "South
-         America" and exclude "Brazil" which results in the metric being evaluated for all South American
-         countries except Brazil.
+      description: "Member filter values are discrete member references in a dimension filter. You can define\n included and excluded members simultaneously. This is typically done with filtering applied on\n dimensions with multiple levels. For example, a Location parameter may include \"South\n America\" and exclude \"Brazil\" which results in the metric being evaluated for all South American\n countries except Brazil."
     dataservices.datamodel.DimensionReferenceDTO:
       type: object
       properties:
@@ -1281,9 +1124,7 @@ components:
           description: The ID of the dimension. To get a dimension's ID, call the Data Model API.
         qualifyingPath:
           type: string
-          description: |-
-            The qualifying path to the dimension in Visier, such as the analytic object or event the dimension is
-             associated with. If the path has multiple objects, each object is separated by a period.
+          description: "The qualifying path to the dimension in Visier, such as the analytic object or event the dimension is\n associated with. If the path has multiple objects, each object is separated by a period."
       description: The name and qualifying path of a dimension to query.
     dataservices.datamodel.PropertyReferenceDTO:
       type: object
@@ -1293,9 +1134,7 @@ components:
           description: The ID of the property.
         qualifyingPath:
           type: string
-          description: |-
-            The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.
-             If the path has multiple objects, each object is separated by a period.
+          description: "The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.\n If the path has multiple objects, each object is separated by a period."
       description: The name and qualifying path of a property to query.
     dataservices.datamodel.SelectionConceptReferenceDTO:
       type: object
@@ -1305,9 +1144,7 @@ components:
           description: The ID of the selection concept.
         qualifyingPath:
           type: string
-          description: |-
-            The qualifying path to the selection concept in Visier, such as the analytic object or event the selection
-             concept is associated with. If the path has multiple objects, each object is separated by a period.
+          description: "The qualifying path to the selection concept in Visier, such as the analytic object or event the selection\n concept is associated with. If the path has multiple objects, each object is separated by a period."
       description: The name and qualifying path of a selection concept to query.
     dataservices.query.AggregationQueryDTO:
       type: object
@@ -1320,16 +1157,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/dataservices.query.QueryFilterDTO'
-          description: |-
-            The objects by which to filter the query, such as dimensions or concepts.
-             A filter defines the population to retrieve data from. Omit `filters` if no filtering is required.
+          description: "The objects by which to filter the query, such as dimensions or concepts.\n A filter defines the population to retrieve data from. Omit `filters` if no filtering is required."
         axes:
           type: array
           items:
             $ref: '#/components/schemas/dataservices.query.QueryAxisDTO'
-          description: |-
-            The objects by which to group the query. An axis defines the groups that the data belongs to.
-             Omit `axes` if no grouping is required.
+          description: "The objects by which to group the query. An axis defines the groups that the data belongs to.\n Omit `axes` if no grouping is required."
         timeIntervals:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryTimeIntervalsDTO'
@@ -1339,18 +1172,14 @@ components:
           items:
             $ref: '#/components/schemas/dataservices.query.QueryParameterValueDTO'
           description: The values associated with parameters, if defined.
-      description: |-
-        An AggregationQuery defines the data to query in an aggregation query and returns a `cell set` calculated from
-         the selected data points.
+      description: "An AggregationQuery defines the data to query in an aggregation query and returns a `cell set` calculated from\n the selected data points."
     dataservices.query.AggregationQueryExecutionDTO:
       type: object
       properties:
         query:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregationQueryDTO'
-          description: |-
-            The data to perform an aggregation on, such as a metric or formula. The query must include a time interval,
-             and may optionally include filters and axes.
+          description: "The data to perform an aggregation on, such as a metric or formula. The query must include a time interval,\n and may optionally include filters and axes."
         options:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryExecutionOptionsDTO'
@@ -1361,20 +1190,14 @@ components:
       properties:
         formula:
           type: string
-          description: |-
-            An ad-hoc metric formula. The response returns the results of the aggregate.
-             See the formula dictionary in Visier to find functions and objects you can use in a formula.
+          description: "An ad-hoc metric formula. The response returns the results of the aggregate.\n See the formula dictionary in Visier to find functions and objects you can use in a formula."
         metric:
           type: string
           description: The ID of an existing metric in your Visier solution.
         metrics:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregationQuerySourceMetricsDTO'
-          description: |-
-            The IDs of metrics to aggregate. All metrics in the query must reference the same analytic object.
-             For example, you cannot query Headcount and Applicant Count because one uses the Employee subject and
-             the other uses the Applicant subject. You can query Headcount and Employee Count for Women because both
-             reference the Employee subject. Only available when the Accept header is `text/csv`.
+          description: "The IDs of metrics to aggregate. All metrics in the query must reference the same analytic object.\n For example, you cannot query Headcount and Applicant Count because one uses the Employee subject and\n the other uses the Applicant subject. You can query Headcount and Employee Count for Women because both\n reference the Employee subject. Only available when the Accept header is `text/csv`."
       description: An AggregationQuerySource defines the source data to query in an aggregation query.
     dataservices.query.AggregationQuerySourceMetricDTO:
       type: object
@@ -1384,63 +1207,13 @@ components:
           description: The column name in the CSV file. Default is to use id as the column name.
         id:
           type: string
-          description: |-
-            The unique ID of the metric.
-             If `columnName` is omitted, `id` is the column name in the CSV file.
+          description: "The unique ID of the metric.\n If `columnName` is omitted, `id` is the column name in the CSV file."
         formula:
           type: string
-          description: |-
-            An ad-hoc metric formula. The response returns the results of the aggregate.
-             See the formula dictionary in Visier to find functions and objects you can use in a formula.
+          description: "An ad-hoc metric formula. The response returns the results of the aggregate.\n See the formula dictionary in Visier to find functions and objects you can use in a formula."
         qualifyingPath:
           type: string
-          description: |-
-            The base qualifying path to prefix the axes and filters' qualifying paths with.
-             You must specify the qualifying path on a metric if the convergent analytic object of the metric doesn't match the
-             starting object in the qualifying paths of the axes and filters.
-
-             For example, consider a multi-metric query that contains metrics that count the number of applicants and requisitions,
-             grouped by the country of the recruiter's direct manager. The following sample shows how to use qualifyingPath to specify
-             the object reference traversal path from each metric's convergent analytic object to the start of the path for the axes.
-             In this example, there is only one convergent analytic object.
-             ```
-             "source": {
-                 "metrics": {
-                    "columns": [
-                        {
-                            "id": "employeeCount"
-                        },
-                        {
-                            "id": "applicantCount",
-                            "qualifyingPath": "Applicant.Requisition.Recruiter"
-                        },
-                        {
-                            "id": "requisitionCount",
-                            "qualifyingPath": "Requisition.Recruiter"
-                        }
-                    ]
-                }
-             },
-             "axes": [
-                {
-                    "dimensionLevelSelection": {
-                        "dimension": {
-                            "name": "Location",
-                            "qualifyingPath": "Employee.Direct_Manager"
-                        },
-                        "levelIds": [
-                            "Location_1"
-                        ]
-                    }
-                }
-             ]
-             ```
-             **Note:**
-             * `employeeCount` doesn't need a `qualifyingPath` because it's already convergent with the start of the axis path.
-             * The metrics' qualifying paths must provide the reference name that resolves to the first object of the axis' qualifying path as their last path segment. In this case, Recruiter is a named reference pointing to Employee. The final qualifying paths for the metrics are:
-                 * `employeeCount`: Employee.Direct_Manager
-                 * `applicantCount`: Applicant.Requisition.Recruiter.Direct_Manager
-                 * `requisitionCount`: Requisition.Recruiter.Direct_Manager
+          description: "The base qualifying path to prefix the axes and filters' qualifying paths with.\n You must specify the qualifying path on a metric if the convergent analytic object of the metric doesn't match the\n starting object in the qualifying paths of the axes and filters.\n\n For example, consider a multi-metric query that contains metrics that count the number of applicants and requisitions,\n grouped by the country of the recruiter's direct manager. The following sample shows how to use qualifyingPath to specify\n the object reference traversal path from each metric's convergent analytic object to the start of the path for the axes.\n In this example, there is only one convergent analytic object.\n ```\n \"source\": {\n     \"metrics\": {\n        \"columns\": [\n            {\n                \"id\": \"employeeCount\"\n            },\n            {\n                \"id\": \"applicantCount\",\n                \"qualifyingPath\": \"Applicant.Requisition.Recruiter\"\n            },\n            {\n                \"id\": \"requisitionCount\",\n                \"qualifyingPath\": \"Requisition.Recruiter\"\n            }\n        ]\n    }\n },\n \"axes\": [\n    {\n        \"dimensionLevelSelection\": {\n            \"dimension\": {\n                \"name\": \"Location\",\n                \"qualifyingPath\": \"Employee.Direct_Manager\"\n            },\n            \"levelIds\": [\n                \"Location_1\"\n            ]\n        }\n    }\n ]\n ```\n **Note:**\n * `employeeCount` doesn't need a `qualifyingPath` because it's already convergent with the start of the axis path.\n * The metrics' qualifying paths must provide the reference name that resolves to the first object of the axis' qualifying path as their last path segment. In this case, Recruiter is a named reference pointing to Employee. The final qualifying paths for the metrics are:\n     * `employeeCount`: Employee.Direct_Manager\n     * `applicantCount`: Applicant.Requisition.Recruiter.Direct_Manager\n     * `requisitionCount`: Requisition.Recruiter.Direct_Manager"
       description: The column definition for a single metric within a `metrics` query.
     dataservices.query.AggregationQuerySourceMetricsDTO:
       type: object
@@ -1450,11 +1223,7 @@ components:
           items:
             $ref: '#/components/schemas/dataservices.query.AggregationQuerySourceMetricDTO'
           description: An array of metric columns.
-      description: |-
-        The IDs and column names of multiple metrics.
-
-         **Note:**
-         Only available when the `Accept` header is `text/csv`.
+      description: "The IDs and column names of multiple metrics.\n\n **Note:**\n Only available when the `Accept` header is `text/csv`."
     dataservices.query.AggregationTypeParameterValueDTO:
       type: object
       properties:
@@ -1484,9 +1253,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/dataservices.query.CellDistributionBinDTO'
-          description: |-
-            The optional distribution of this cell.
-             This will be populated if distribution calculation is requested, and supported by the query.
+          description: "The optional distribution of this cell.\n This will be populated if distribution calculation is requested, and supported by the query."
       description: An individual value in a cell set.
     dataservices.query.CellDistributionBinDTO:
       type: object
@@ -1495,9 +1262,7 @@ components:
           type: string
         support:
           type: string
-      description: |-
-        A cell distribution bin.
-         Each bin has a metric value (of the bin) and the number of observations contributing to the bin.
+      description: "A cell distribution bin.\n Each bin has a metric value (of the bin) and the number of observations contributing to the bin."
     dataservices.query.CellDistributionOptionsDTO:
       type: object
       properties:
@@ -1505,9 +1270,7 @@ components:
           type: integer
           description: The number of bins to return, minimum of 2, and a maximum of 100.
           format: int32
-      description: |-
-        Cell distribution options for queries.
-         Include with aggregation queries to enable distribution calculation per cell.
+      description: "Cell distribution options for queries.\n Include with aggregation queries to enable distribution calculation per cell."
     dataservices.query.CellSetAxisDTO:
       type: object
       properties:
@@ -1528,9 +1291,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            A list of strings representing the members within a dimension path. For example,
-             a dimension for Location may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
+          description: "A list of strings representing the members within a dimension path. For example,\n a dimension for Location may have the paths \"Canada, BC, Vancouver\" and \"US, California, San Francisco\"."
         displayName:
           type: string
           description: The display name of the position. This is optional and is omitted if unavailable or not requested.
@@ -1557,9 +1318,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.LineageDTO'
           description: Lineage information for this cell set. This can be omitted if the cell has no lineage or the user did not request lineage information.
-      description: |-
-        The set of cells returned from executing an aggregation query.
-         A CellSet represents a structured, multidimensional array of values.
+      description: "The set of cells returned from executing an aggregation query.\n A CellSet represents a structured, multidimensional array of values."
     dataservices.query.CellSetOrErrorDTO:
       type: object
       properties:
@@ -1586,13 +1345,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryTimeIntervalDTO'
           description: The time at which to apply the key group, such as a specific day or period of months.
-      description: |-
-        Use a cohort filter to define a population as it existed during a specific time period.
-         Cohort filters allow you to define a population in terms of a collection of filters, known as a key group.
-         The cohort's defined time interval is independent of the query's time. The cohort's time interval is the
-         time at which the key group should be applied.
-         Cohorts are typically used to follow populations and understand changes to the population over time,
-         such as promotion and resignation rates.
+      description: "Use a cohort filter to define a population as it existed during a specific time period.\n Cohort filters allow you to define a population in terms of a collection of filters, known as a key group.\n The cohort's defined time interval is independent of the query's time. The cohort's time interval is the\n time at which the key group should be applied.\n Cohorts are typically used to follow populations and understand changes to the population over time,\n such as promotion and resignation rates."
     dataservices.query.InternalQueryExecutionOptionsDTO:
       type: object
       properties:
@@ -1605,16 +1358,7 @@ components:
           format: enum
         alignTimeAxisToPeriodEnd:
           type: boolean
-          description: |-
-            If true, shifts the time axis members back by one millisecond.
-             Shifting the time axis members back by one millisecond makes them valid at the end of the period instead of at the start of the next period.
-             This aligns the returned data timestamps with the timestamps in the Visier application.
-
-             Example: If the timestamps are originally [`2019-06-01T00:00:00.000Z`, `2019-05-01T00:00:00.000Z`],
-             then `alignTimeAxisPeriodEnd` turns the timestamps into [`2019-05-31T23:59:59.999Z`, `2019-04-30T23:59:59.999Z`].
-
-             Example: If the timestamps are originally [`2019-05-01T00:00:00.000Z/2019-06-01T00:00:00.000Z`, `2019-04-01T00:00:00.000Z/2019-05-01T00:00:00.000Z`],
-             then `alignTimeAxisPeriodEnd` turns the timestamps into [`2019-05-01T00:00:00.000Z/2019-05-31T23:59:59.999Z`, `2019-04-01T00:00:00.000Z/2019-04-30T23:59:59.999Z`].
+          description: "If true, shifts the time axis members back by one millisecond.\n Shifting the time axis members back by one millisecond makes them valid at the end of the period instead of at the start of the next period.\n This aligns the returned data timestamps with the timestamps in the Visier application.\n\n Example: If the timestamps are originally [`2019-06-01T00:00:00.000Z`, `2019-05-01T00:00:00.000Z`],\n then `alignTimeAxisPeriodEnd` turns the timestamps into [`2019-05-31T23:59:59.999Z`, `2019-04-30T23:59:59.999Z`].\n\n Example: If the timestamps are originally [`2019-05-01T00:00:00.000Z/2019-06-01T00:00:00.000Z`, `2019-04-01T00:00:00.000Z/2019-05-01T00:00:00.000Z`],\n then `alignTimeAxisPeriodEnd` turns the timestamps into [`2019-05-01T00:00:00.000Z/2019-05-31T23:59:59.999Z`, `2019-04-01T00:00:00.000Z/2019-04-30T23:59:59.999Z`]."
       description: Internal options - not to be documented or used by external parties
     dataservices.query.KeyGroupFilterDTO:
       type: object
@@ -1692,9 +1436,7 @@ components:
       properties:
         limit:
           type: integer
-          description: |-
-            The maximum number of entries to return. Default is to return all entries. If `page` is defined but
-             limit is not defined, limit will be set to a default value of 1000.
+          description: "The maximum number of entries to return. Default is to return all entries. If `page` is defined but\n limit is not defined, limit will be set to a default value of 1000."
           format: int32
         queryMode:
           enum:
@@ -1706,18 +1448,13 @@ components:
           format: enum
         omitHeader:
           type: boolean
-          description: |-
-            Option to omit the header from the result.
-             If true, queryMode must be either FILL or FAIL.
-             Default is false.
+          description: "Option to omit the header from the result.\n If true, queryMode must be either FILL or FAIL.\n Default is false."
         calendarType:
           enum:
             - TENANT_CALENDAR
             - GREGORIAN_CALENDAR
           type: string
-          description: |-
-            The calendar type to use. This will be used for all time calculations unless explicitly overridden in
-             the calculation itself. Default is TENANT_CALENDAR.
+          description: "The calendar type to use. This will be used for all time calculations unless explicitly overridden in\n the calculation itself. Default is TENANT_CALENDAR."
           format: enum
         currencyConversionMode:
           deprecated: true
@@ -1725,26 +1462,18 @@ components:
             - TENANT_CURRENCY_CONVERSION
             - VISIER_CURRENCY_CONVERSION
           type: string
-          description: |-
-            This will be removed as of Winter 2026. Use `currencyConversionCode` instead.
-
-             The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION.
+          description: "This will be removed as of Winter 2026. Use `currencyConversionCode` instead.\n\n The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION."
           format: enum
         currencyConversionDate:
           type: string
           description: The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.
         page:
           type: integer
-          description: |-
-            A page defines a subset of the overall result set. The number of rows per page is equal to limit
-             with the exception of the last page in the result set which may contain fewer rows. `Page` is an index
-             that begins at 0. The index to start retrieving results is calculated by multiplying `page` by `limit`.
+          description: "A page defines a subset of the overall result set. The number of rows per page is equal to limit\n with the exception of the last page in the result set which may contain fewer rows. `Page` is an index\n that begins at 0. The index to start retrieving results is calculated by multiplying `page` by `limit`."
           format: int32
         multipleTables:
           type: boolean
-          description: |-
-            Option to return multiple table files as zipped archive for derived metrics.
-             Default is false. If false, one table is returned for the drill-through metric.
+          description: "Option to return multiple table files as zipped archive for derived metrics.\n Default is false. If false, one table is returned for the drill-through metric."
         currencyConversionCode:
           type: string
           description: Overrides the tenant's default currency for currency conversions.
@@ -1753,21 +1482,14 @@ components:
             - NORMAL
             - CHANGES
           type: string
-          description: |-
-            Influences the type of records used to build the result set, such as whether to return
-             one record per entity that is valid in the provided time range or each change record
-             falls in the time frame.
+          description: "Influences the type of records used to build the result set, such as whether to return\n one record per entity that is valid in the provided time range or each change record\n falls in the time frame."
           format: enum
         dateTimeDisplayMode:
           enum:
             - EPOCH
             - DATETIME
           type: string
-          description: |-
-            Control how date-time values are displayed in the result set.
-             Supported values:
-             * `EPOCH`: The number of elapsed milliseconds since January 1, 1970 in UTC timezone. This is the default.
-             * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format.
+          description: "Control how date-time values are displayed in the result set.\n Supported values:\n * `EPOCH`: The number of elapsed milliseconds since January 1, 1970 in UTC timezone. This is the default.\n * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format."
           format: enum
       description: A ListQueryExecutionOptions provides additional instructions to perform a list query.
     dataservices.query.ListQuerySourceDTO:
@@ -1781,15 +1503,10 @@ components:
           description: The ID of an existing metric in your Visier solution.
         analyticObject:
           type: string
-          description: |-
-            The ID of an existing analytic object in your Visier solution.
-             An analytic object source cannot have filters or time handling.
+          description: "The ID of an existing analytic object in your Visier solution.\n An analytic object source cannot have filters or time handling."
         textConcept:
           type: string
-          description: |-
-            The ID of an existing text concept in your Visier solution.
-             A concept that defines how long text data can be analyzed. It links to a property with the Large Text data type and contains required filters and optional filters to enforce threshold requirements.
-             <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: "The ID of an existing text concept in your Visier solution.\n A concept that defines how long text data can be analyzed. It links to a property with the Large Text data type and contains required filters and optional filters to enforce threshold requirements.\n <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>"
       description: A ListQuerySource defines the source data to query in a list query.
     dataservices.query.MemberFilterDTO:
       type: object
@@ -1802,10 +1519,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.common.MemberValuesDTO'
           description: The dimension members to filter by.
-      description: |-
-        Member filters are dimension member values to filter by in your query. The member filters are
-         defined within the filters section of a query definition. You can filter by dimension members in
-         aggregate and list queries.
+      description: "Member filters are dimension member values to filter by in your query. The member filters are\n defined within the filters section of a query definition. You can filter by dimension members in\n aggregate and list queries."
     dataservices.query.MemberParameterValueDTO:
       type: object
       properties:
@@ -1824,9 +1538,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.common.MemberValuesDTO'
           description: The included and excluded member references in a dimension filter.
-      description: |-
-        The member value of a parameter, including the parameter ID, dimension that the parameter is based on,
-         and the included and excluded members for the parameter.
+      description: "The member value of a parameter, including the parameter ID, dimension that the parameter is based on,\n and the included and excluded members for the parameter."
     dataservices.query.NumericParameterValueDTO:
       type: object
       properties:
@@ -1859,9 +1571,7 @@ components:
       properties:
         columnName:
           type: string
-          description: |-
-            The name of the column. This is optional.
-             If not specified, the name of the property is used, or a generic column name if the property is unnamed.
+          description: "The name of the column. This is optional.\n If not specified, the name of the property is used, or a generic column name if the property is unnamed."
         columnDefinition:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryPropertyDTO'
@@ -1876,9 +1586,7 @@ components:
         selectionConcept:
           allOf:
             - $ref: '#/components/schemas/dataservices.datamodel.SelectionConceptReferenceDTO'
-          description: |-
-            An axis that uses an existing selection concept in Visier.
-             The resulting axis consists of 3 positions: True, False, and Unknown.
+          description: "An axis that uses an existing selection concept in Visier.\n The resulting axis consists of 3 positions: True, False, and Unknown."
         dimensionMemberSelection:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryDimensionMemberSelectionDTO'
@@ -1923,20 +1631,12 @@ components:
             - DISPLAY
             - MDX
           type: string
-          description: |-
-            Options to override the display mode for the axis. This overrides the query-level `memberDisplayMode` options value in the query.
-             Only available for non-time axes. Use the QueryAxisMemberDisplayMode `memberDisplayMode` to apply different display modes to different axes.
-             For example, let's say your query has the `memberDisplayMode` as `DISPLAY` but you want to fetch the object name for a specific dimension.
-             With QueryAxisMemberDisplayMode `memberDisplayMode`, you can override that dimension's `memberDisplayMode` to `DEFAULT` instead of `DISPLAY`.
-
-             Valid values are `UNCHANGED`, `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `UNCHANGED`.
+          description: "Options to override the display mode for the axis. This overrides the query-level `memberDisplayMode` options value in the query.\n Only available for non-time axes. Use the QueryAxisMemberDisplayMode `memberDisplayMode` to apply different display modes to different axes.\n For example, let's say your query has the `memberDisplayMode` as `DISPLAY` but you want to fetch the object name for a specific dimension.\n With QueryAxisMemberDisplayMode `memberDisplayMode`, you can override that dimension's `memberDisplayMode` to `DEFAULT` instead of `DISPLAY`.\n\n Valid values are `UNCHANGED`, `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `UNCHANGED`."
           format: enum
         columnName:
           type: string
           description: If specified, returns the column name of the axis in the response.
-      description: |-
-        QueryAxisOptions allows you to customize an axis in the query, such as changing the display mode for its cell set values or providing a custom column name.
-         Only available when the Accept header is a table format, such as text/csv or application/jsonlines.
+      description: "QueryAxisOptions allows you to customize an axis in the query, such as changing the display mode for its cell set values or providing a custom column name.\n Only available when the Accept header is a table format, such as text/csv or application/jsonlines."
     dataservices.query.QueryDimensionDataMemberSelectionDTO:
       type: object
       properties:
@@ -1944,10 +1644,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
           description: A dimension and its qualifying path to query.
-      description: |-
-        A QueryDimensionLeafSelection allows you to define a member set consisting exclusively
-         of leaf-level, including data, members for the given dimension. Leaf members are those members that have
-         no descendents. A member may be a leaf member regardless of the level it is positioned at.
+      description: "A QueryDimensionLeafSelection allows you to define a member set consisting exclusively\n of leaf-level, including data, members for the given dimension. Leaf members are those members that have\n no descendents. A member may be a leaf member regardless of the level it is positioned at."
     dataservices.query.QueryDimensionLeafSelectionDTO:
       type: object
       properties:
@@ -1955,11 +1652,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
           description: A dimension and its qualifying path to query.
-      description: |-
-        A QueryDimensionLeafSelection allows you to define a member set consisting exclusively
-         of leaf-level members for the given dimension. Leaf members are those members that have
-         no descendents. A member may be a leaf member regardless of the level it is positioned at.
-         This member selection option, excludes data members.
+      description: "A QueryDimensionLeafSelection allows you to define a member set consisting exclusively\n of leaf-level members for the given dimension. Leaf members are those members that have\n no descendents. A member may be a leaf member regardless of the level it is positioned at.\n This member selection option, excludes data members."
     dataservices.query.QueryDimensionLevelPropertyDTO:
       type: object
       properties:
@@ -1972,13 +1665,7 @@ components:
             - NAME
             - PATH
           type: string
-          description: |-
-            Controls how to display member values.
-
-             Valid values are `NAME`, `PATH`.
-
-             * `NAME`: Returns the member's display name. This is the default.
-             * `PATH`: Returns the member's name path.
+          description: "Controls how to display member values.\n\n Valid values are `NAME`, `PATH`.\n\n * `NAME`: Returns the member's display name. This is the default.\n * `PATH`: Returns the member's name path."
           format: enum
         levelId:
           type: string
@@ -2006,9 +1693,7 @@ components:
             type: integer
             format: int32
           description: A list of level depths for the dimension levels that you want to query. For a parent-child dimension, depth must be greater than 0. For example, [1, 2]. To get a dimension's level depths, call the Data Model API.
-      description: |-
-        A QueryDimensionLevelSelection allows you to select a dimension level and its members without
-         explicitly listing each member.
+      description: "A QueryDimensionLevelSelection allows you to select a dimension level and its members without\n explicitly listing each member."
     dataservices.query.QueryDimensionMemberSelectionDTO:
       type: object
       properties:
@@ -2040,10 +1725,7 @@ components:
           items:
             $ref: '#/components/schemas/dataservices.query.QueryExecutionErrorsDTO'
           description: All errors
-      description: |-
-        An error that occurred during query execution. A QueryExecutionError returns as part of a
-         successful batch aggregation query for any queries that failed. This is different from errors,
-         which return for failed requests.
+      description: "An error that occurred during query execution. A QueryExecutionError returns as part of a\n successful batch aggregation query for any queries that failed. This is different from errors,\n which return for failed requests."
     dataservices.query.QueryExecutionErrorDetailsDTO:
       type: object
       properties:
@@ -2085,9 +1767,7 @@ components:
             - TENANT_CALENDAR
             - GREGORIAN_CALENDAR
           type: string
-          description: |-
-            The calendar type to use. This will be used for all time calculations unless explicitly overridden in
-             the calculation itself. Default is TENANT_CALENDAR.
+          description: "The calendar type to use. This will be used for all time calculations unless explicitly overridden in\n the calculation itself. Default is TENANT_CALENDAR."
           format: enum
         currencyConversionMode:
           deprecated: true
@@ -2099,11 +1779,7 @@ components:
           format: enum
         currencyConversionDate:
           type: string
-          description: |-
-            The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.
-             Default is the exchange rate at the end of the query time interval. Format is the number of milliseconds since
-             midnight 01 January, 1970 UTC as a string. Note: Epochs are expressed as 64-bit integers and represented as
-             stringified longs in JSON due to JSON's inherent limitation in representing large numbers.
+          description: "The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.\n Default is the exchange rate at the end of the query time interval. Format is the number of milliseconds since\n midnight 01 January, 1970 UTC as a string. Note: Epochs are expressed as 64-bit integers and represented as\n stringified longs in JSON due to JSON's inherent limitation in representing large numbers."
         lineageDepth:
           type: integer
           description: The max number of levels of nesting to unwind when determining the lineage for a derived metric value.
@@ -2135,9 +1811,7 @@ components:
           format: enum
         enableSparseResults:
           type: boolean
-          description: |-
-            Retrieve sparse cell sets. Sparse results only retrieve non-zero and non-null cells. Whether a result is truly sparse
-             or not is determined by the Visier server.
+          description: "Retrieve sparse cell sets. Sparse results only retrieve non-zero and non-null cells. Whether a result is truly sparse\n or not is determined by the Visier server."
         internal:
           $ref: '#/components/schemas/dataservices.query.InternalQueryExecutionOptionsDTO'
         enableDescendingSpace:
@@ -2154,27 +1828,7 @@ components:
             - MDX
             - COMPACT_DISPLAY
           type: string
-          description: |-
-            Control how member values are displayed. You can override the `memberDisplayMode` on a per-axis basis, if required.
-
-             Valid values are `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `DEFAULT`.
-
-             * `DEFAULT`: The default member name representation. For non-time members, this returns the technical member name path.
-               For time members, this includes a bracketed member index.
-               For example, Time instant member: `2019-06-01T00:00:00.000Z - [0]`
-               For example, Time interval member: `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`
-             * `COMPACT`: Shortens the member name representation. For time intervals, the member name is the end time of the interval.
-                For example, Time instant member: `2019-06-01T00:00:00.000Z`
-                For example, Time interval member: `2022-07-01T00:00:00.000Z` where the interval member name was `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`
-             * `DISPLAY`: Emits the members' display names whenever possible. When combined with `axisVisibility = VERBOSE`, the full display name path will be emitted.
-             * `MDX`: Emits member name paths where each element is enclosed in square brackets, `[]`. Multidimensional expression (MDX) display mode automatically encloses time members in square brackets and puts them in `COMPACT` format.
-               For example, Location member `North America.United States.California` becomes `[North America].[United States].[California]` in MDX display mode.
-               For example, Time instant member `2019-06-01T00:00:00.000Z - [0]` becomes `[2019-06-01T00:00:00.000Z]` in MDX display mode.
-             * `COMPACT_DISPLAY`: Emit the members' display names after compacting. This applies primarily to time members for event-based metrics. Compact display is required when
-               running multi-metric queries containing both event-based and subject-based metrics. Multi-metric queries with `DISPLAY` mode are changed
-               automatically to `COMPACT_DISPLAY`.
-               For example, Time interval member `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]` becomes `Jun 30, 2022` in `COMPACT_DISPLAY` mode.
-               The exact format of the compacted time member display name depends on the the user's locale.
+          description: "Control how member values are displayed. You can override the `memberDisplayMode` on a per-axis basis, if required.\n\n Valid values are `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `DEFAULT`.\n\n * `DEFAULT`: The default member name representation. For non-time members, this returns the technical member name path.\n   For time members, this includes a bracketed member index.\n   For example, Time instant member: `2019-06-01T00:00:00.000Z - [0]`\n   For example, Time interval member: `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`\n * `COMPACT`: Shortens the member name representation. For time intervals, the member name is the end time of the interval.\n    For example, Time instant member: `2019-06-01T00:00:00.000Z`\n    For example, Time interval member: `2022-07-01T00:00:00.000Z` where the interval member name was `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`\n * `DISPLAY`: Emits the members' display names whenever possible. When combined with `axisVisibility = VERBOSE`, the full display name path will be emitted.\n * `MDX`: Emits member name paths where each element is enclosed in square brackets, `[]`. Multidimensional expression (MDX) display mode automatically encloses time members in square brackets and puts them in `COMPACT` format.\n   For example, Location member `North America.United States.California` becomes `[North America].[United States].[California]` in MDX display mode.\n   For example, Time instant member `2019-06-01T00:00:00.000Z - [0]` becomes `[2019-06-01T00:00:00.000Z]` in MDX display mode.\n * `COMPACT_DISPLAY`: Emit the members' display names after compacting. This applies primarily to time members for event-based metrics. Compact display is required when\n   running multi-metric queries containing both event-based and subject-based metrics. Multi-metric queries with `DISPLAY` mode are changed\n   automatically to `COMPACT_DISPLAY`.\n   For example, Time interval member `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]` becomes `Jun 30, 2022` in `COMPACT_DISPLAY` mode.\n   The exact format of the compacted time member display name depends on the the user's locale."
           format: enum
         axesOverallValueMode:
           enum:
@@ -2230,11 +1884,7 @@ components:
           items:
             $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
           description: A collection of the selected dimension members from the `targetDimension`. This must contain at least one member.
-      description: |-
-        A QueryMemberMapSelection groups data in a query by dimension members in a member map.
-         This allows grouping by a dimension that isn't typically valid on the analytic object being
-         queried by selecting a valid member map on the analytic object.
-         Note: This is unique to the data query API and cannot be reproduced in Visier's interface.
+      description: "A QueryMemberMapSelection groups data in a query by dimension members in a member map.\n This allows grouping by a dimension that isn't typically valid on the analytic object being\n queried by selecting a valid member map on the analytic object.\n Note: This is unique to the data query API and cannot be reproduced in Visier's interface."
     dataservices.query.QueryNumericRangesDTO:
       type: object
       properties:
@@ -2305,32 +1955,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryDimensionLevelPropertyDTO'
           description: A dimension-based property that returns the member values of the dimension level.
-      description: |-
-        A QueryProperty defines a property of a data point returned from a query.
-         This is not the same as a `property` in Visier's data mode.
+      description: "A QueryProperty defines a property of a data point returned from a query.\n This is not the same as a `property` in Visier's data mode."
     dataservices.query.QueryTimeIntervalDTO:
       type: object
       properties:
-        fromInstant:
-          type: string
-          description: |-
-            The instant from which to extend in the specified `direction`, in milliseconds since 1970-01-01T00:00:00Z.
-             Events that occur on this date are excluded. Subject-based data that ends on this date is included.
-             Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to
-             JSON's inherent limitation in representing large numbers.
-        fromDateTime:
-          type: string
-          description: |-
-            The instant from which to extend in the specified `direction`, as an ISO-8601 formatted date time string.
-             Valid formats: yyyy-MM-dd, yyyy-MM-dd'T'HH:mm:ss, yyyy-MM-dd'T'HH:mm:ss.SSS.
-             Events that occur on this date are excluded. Subject-based data that ends on this date is included.
-        dynamicDateFrom:
-          enum:
-            - SOURCE
-            - COMPLETE_PERIOD
-          type: string
-          description: "Dynamically select the date from which to extend in the specified `direction`. Valid values are `SOURCE` or `COMPLETE_PERIOD`. Both options determine the date using the request's `source` field. Whether the source is a metric, formula, or metrics, each source has earliest and latest data available dates to use. The `direction` determines whether the earliest or latest date is used.\n\n * If `dynamicDateFrom` is `SOURCE`, the query returns data from a date determined by the `source` query definition element. If `dynamicDateFrom` is `COMPLETE_PERIOD`, the query returns data starting from the latest or earliest date with a complete period of data. `COMPLETE_PERIOD` returns periods defined by `intervalPeriodType`. If the period type is MONTH, it returns full months of data. If the period type is YEAR, it returns full years of data. When `dynamicDateFrom` is specified:\n * If `source` is `metric`, then `dynamicDateFrom` considers the date range of available data for the metric.\n * If `source` is `formula`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n * If `source` is `analyticObject`, then `dynamicDateFrom` considers the date range of available data for the analytic object.\n Then, if `direction` is `BACKWARD`, query backward from the data **end** date and if `direction` is `FORWARD`, query forward from the data **start** date.\n This allows you to keep getting the latest or earliest data without changing your query every time there's new or updated data. \n\n Example: If a tenant has Headcount metric data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD`\n means the query will retrieve data backward from 2024-01-01. The effect is the same as if specifying a `fromDateTime` of 2024-01-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-01-01. The effect is the same as if specifying a `fromDateTime` of 2023-01-01'T'00:00:00.000.\n\n Example: If a tenant has Employee subject data available from 2023-01-10 to 2023-04-01 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-02-01. The effect is the same as if specifying a `fromDateTime` of 2023-02-01'T'00:00:00.000.\n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2023-03-15 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2023-03-01. The effect is the same as if specifying a `fromDateTime` of 2023-03-01'T'00:00:00.000.\n\n Example: Retrieve a list of EmployeeIDs for the formula extending 1 month backward from the dynamic source date\n      {\n          \"source\": {\n              \"formula\": \"on Employee validUntil instant filterBy(isActiveEmployee) aggregate count(Employee.EmployeeID)\"\n          }, \n          \"columns\": [\n               {\n                  \"columnDefinition\": {\n                      \"property\": {\n                          \"name\": \"Employee.EmployeeID\",\n                          \"qualifyingPath\": \"Employee\"\n                      }\n                  }\n               },\n               {\n                  \"columnDefinition\": {\n                      \"effectiveDateProperty\": {}\n                  }\n               }\n          ],\n          \"timeInterval\": {\n              \"dynamicDateFrom\": \"SOURCE\",\n              \"intervalPeriodType\": \"MONTH\",\n              \"intervalPeriodCount\": 1,\n              \"direction\": \"BACKWARD\"\n          }\n      }"
-          format: enum
         intervalPeriodType:
           enum:
             - MONTH
@@ -2356,32 +1984,36 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.TimeShiftDTO'
           description: The amount of time to shift the time interval by, such as backward by one year. Default is none.
-      description: |-
-        A QueryTimeInterval defines the time interval to query, including the "from" time, period type,
-         period count, time direction, and shift to apply
+      description: "A QueryTimeInterval defines the time interval to query, including the \"from\" time, period type,\n period count, time direction, and shift to apply"
+      oneOf:
+        - title: QueryTimeIntervalDTO with fromInstant
+          required:
+            - fromInstant
+          properties:
+            fromInstant:
+              type: string
+              description: "The instant from which to extend in the specified `direction`, in milliseconds since 1970-01-01T00:00:00Z.\n Events that occur on this date are excluded. Subject-based data that ends on this date is included.\n Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to\n JSON's inherent limitation in representing large numbers."
+        - title: QueryTimeIntervalDTO with fromDatetime
+          required:
+            - fromDateTime
+          properties:
+            fromDateTime:
+              type: string
+              description: "The instant from which to extend in the specified `direction`, as an ISO-8601 formatted date time string.\n Valid formats: yyyy-MM-dd, yyyy-MM-dd'T'HH:mm:ss, yyyy-MM-dd'T'HH:mm:ss.SSS.\n Events that occur on this date are excluded. Subject-based data that ends on this date is included."
+        - title: QueryTimeIntervalDTO with dynamicDateFrom
+          required:
+            - dynamicDateFrom
+          properties:
+            dynamicDateFrom:
+              enum:
+                - SOURCE
+                - COMPLETE_PERIOD
+              type: string
+              description: "Dynamically select the date from which to extend in the specified `direction`. Valid values are `SOURCE` or `COMPLETE_PERIOD`. Both options determine the date using the request's `source` field. Whether the source is a metric, formula, or metrics, each source has earliest and latest data available dates to use. The `direction` determines whether the earliest or latest date is used.\n\n * If `dynamicDateFrom` is `SOURCE`, the query returns data from a date determined by the `source` query definition element. If `dynamicDateFrom` is `COMPLETE_PERIOD`, the query returns data starting from the latest or earliest date with a complete period of data. `COMPLETE_PERIOD` returns periods defined by `intervalPeriodType`. If the period type is MONTH, it returns full months of data. If the period type is YEAR, it returns full years of data. When `dynamicDateFrom` is specified:\n * If `source` is `metric`, then `dynamicDateFrom` considers the date range of available data for the metric.\n * If `source` is `formula`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n * If `source` is `analyticObject`, then `dynamicDateFrom` considers the date range of available data for the analytic object.\n Then, if `direction` is `BACKWARD`, query backward from the data **end** date and if `direction` is `FORWARD`, query forward from the data **start** date.\n This allows you to keep getting the latest or earliest data without changing your query every time there's new or updated data. \n\n Example: If a tenant has Headcount metric data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD`\n means the query will retrieve data backward from 2024-01-01. The effect is the same as if specifying a `fromDateTime` of 2024-01-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-01-01. The effect is the same as if specifying a `fromDateTime` of 2023-01-01'T'00:00:00.000.\n\n Example: If a tenant has Employee subject data available from 2023-01-10 to 2023-04-01 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-02-01. The effect is the same as if specifying a `fromDateTime` of 2023-02-01'T'00:00:00.000.\n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2023-03-15 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2023-03-01. The effect is the same as if specifying a `fromDateTime` of 2023-03-01'T'00:00:00.000.\n\n Example: Retrieve a list of EmployeeIDs for the formula extending 1 month backward from the dynamic source date\n\n ```\n {\n   \"source\": {\n     \"formula\": \"on Employee validUntil instant filterBy(isActiveEmployee) aggregate count(Employee.EmployeeID)\"\n   },\n   \"columns\": [\n     {\n       \"columnDefinition\": {\n         \"property\": {\n           \"name\": \"Employee.EmployeeID\",\n           \"qualifyingPath\": \"Employee\"\n         }\n       }\n     },\n     {\n       \"columnDefinition\": {\n         \"effectiveDateProperty\": {}\n       }\n     }\n   ],\n   \"timeInterval\": {\n     \"dynamicDateFrom\": \"SOURCE\",\n     \"intervalPeriodType\": \"MONTH\",\n     \"intervalPeriodCount\": 1,\n     \"direction\": \"BACKWARD\"\n   }\n }\n ```"
+              format: enum
     dataservices.query.QueryTimeIntervalsDTO:
       type: object
       properties:
-        fromInstant:
-          type: string
-          description: |-
-            The instant from which to extend, in milliseconds since 1970-01-01T00:00:00Z.
-             Events that occur on this date are excluded. Subject-based data that ends on this date is included.
-             Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's
-             inherent limitation in representing large numbers.
-        fromDateTime:
-          type: string
-          description: |-
-            The instant from which to extend, as an ISO-8601 formatted date time string. This value is exclusive.
-             Valid formats: yyyy-MM-dd, yyyy-MM-dd'T'HH:mm:ss, yyyy-MM-dd'T'HH:mm:ss.SSS.
-             Events that occur on this date are excluded. Subject-based data that ends on this date is included.
-        dynamicDateFrom:
-          enum:
-            - SOURCE
-            - COMPLETE_PERIOD
-          type: string
-          description: "Dynamically select the date from which to extend. Valid values are `SOURCE` or `COMPLETE_PERIOD`. Both options use the `source` query definition element to determine the date.\n\n If `dynamicDateFrom` is `SOURCE`, the query returns data from a date determined by the `source` query definition element. If `dynamicDateFrom` is `COMPLETE_PERIOD`, the query returns data starting from the latest or earliest date with a complete period of data. When `dynamicDateFrom` is specified:\n * If `source` is `metric`, then `dynamicDateFrom` considers the date range of available data for the metric.\n * If `source` is `formula`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n * If `source` is `metrics`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n Then, if `direction` is `BACKWARD`, query backward from the data **end** date and if `direction` is `FORWARD`, query forward from the data **start** date. \n This allows you to keep getting the latest or earliest data without changing your query every time there's new or updated data.\n\n Note: For multi-metric queries, if `direction` is `BACKWARD`, query backward from the earliest data end date of all metrics and if `direction` is `FORWARD`, query forward from the latest data start date of all metrics. \n This ensures that all metrics have data in the specified time range.\n\n Example: If a tenant has Headcount metric data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2024-01-01. The effect is the same as if specifying a `fromDateTime` of 2024-01-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-10 to 2023-04-01 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-02-01. The effect is the same as if specifying a `fromDateTime` of 2023-02-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2023-03-15 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2023-03-01. The effect is the same as if specifying a `fromDateTime` of 2023-03-01'T'00:00:00.000. \n\n Example: If a tenant has Headcount data available from 2023-01-01 to 2024-09-01 and Exit Count data available from 2023-01-01 to 2024-01-01, specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD` means the query will retrieve data backward from 2024-01-01. \n Exit Count has an earlier data end date than Headcount, so `dynamicDateFrom` retrieves data backward from Exit Count's data end date to ensure both metrics have data in the specified time range.\n\n Example: Retrieve Headcount (employeeCount) extending 1 month backward from Headcount's dynamic source date\n      {\n          \"query\": {\n              \"source\": {\n                  \"metric\": \"employeeCount\"\n              },\n              \"timeIntervals\": {\n                  \"dynamicDateFrom\": \"SOURCE\",\n                  \"intervalPeriodType\": \"MONTH\",\n                  \"intervalCount\": 1,\n                  \"direction\": \"BACKWARD\"\n              }\n          }\n      }"
-          format: enum
         intervalPeriodType:
           enum:
             - MONTH
@@ -2419,20 +2051,39 @@ components:
             - QUARTER
             - YEAR
           type: string
-          description: |-
-            The time period type for each trailing period. If `trailingPeriodCount` is defined and `trailingPeriodType` is undefined, the default trailing period type is `MONTH`.
-             If both `trailingPeriodType` and `trailingPeriodCount` are undefined, `intervalPeriodCount` is used as the trailing period count.
-             Note: This parameter is only applicable to metrics that can calculate trailing time. If defined on a metric that doesn't have trailing time, the platform ignores the parameter.
+          description: "The time period type for each trailing period. If `trailingPeriodCount` is defined and `trailingPeriodType` is undefined, the default trailing period type is `MONTH`.\n If both `trailingPeriodType` and `trailingPeriodCount` are undefined, `intervalPeriodCount` is used as the trailing period count.\n Note: This parameter is only applicable to metrics that can calculate trailing time. If defined on a metric that doesn't have trailing time, the platform ignores the parameter."
           format: enum
         trailingPeriodCount:
           type: integer
-          description: |-
-            The number of time periods per trailing period. If `trailingPeriodType` is defined and `trailingPeriodCount` is undefined, the default trailing period count is 1.
-             Note: This parameter is only applicable to metrics that can calculate trailing time. If defined on a metric that doesn't have trailing time, the platform ignores the parameter.
+          description: "The number of time periods per trailing period. If `trailingPeriodType` is defined and `trailingPeriodCount` is undefined, the default trailing period count is 1.\n Note: This parameter is only applicable to metrics that can calculate trailing time. If defined on a metric that doesn't have trailing time, the platform ignores the parameter."
           format: int32
-      description: |-
-        A QueryTimeIntervals defines a series of time intervals to query, including the "from" time, period type, period count,
-         number of intervals, time direction, and shift to apply to each time interval.
+      description: "A QueryTimeIntervals defines a series of time intervals to query, including the \"from\" time, period type, period count,\n number of intervals, time direction, and shift to apply to each time interval."
+      oneOf:
+        - title: QueryTimeIntervalsDTO with fromInstant
+          required:
+            - fromInstant
+          properties:
+            fromInstant:
+              type: string
+              description: "The instant from which to extend, in milliseconds since 1970-01-01T00:00:00Z.\n Events that occur on this date are excluded. Subject-based data that ends on this date is included.\n Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's\n inherent limitation in representing large numbers."
+        - title: QueryTimeIntervalsDTO with fromDatetime
+          required:
+            - fromDateTime
+          properties:
+            fromDateTime:
+              type: string
+              description: "The instant from which to extend, as an ISO-8601 formatted date time string. This value is exclusive.\n Valid formats: yyyy-MM-dd, yyyy-MM-dd'T'HH:mm:ss, yyyy-MM-dd'T'HH:mm:ss.SSS.\n Events that occur on this date are excluded. Subject-based data that ends on this date is included."
+        - title: QueryTimeIntervalsDTO with dynamicDateFrom
+          required:
+            - dynamicDateFrom
+          properties:
+            dynamicDateFrom:
+              enum:
+                - SOURCE
+                - COMPLETE_PERIOD
+              type: string
+              description: "Dynamically select the date from which to extend. Valid values are `SOURCE` or `COMPLETE_PERIOD`. Both options use the `source` query definition element to determine the date.\n\n If `dynamicDateFrom` is `SOURCE`, the query returns data from a date determined by the `source` query definition element. If `dynamicDateFrom` is `COMPLETE_PERIOD`, the query returns data starting from the latest or earliest date with a complete period of data. When `dynamicDateFrom` is specified:\n * If `source` is `metric`, then `dynamicDateFrom` considers the date range of available data for the metric.\n * If `source` is `formula`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n * If `source` is `metrics`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n Then, if `direction` is `BACKWARD`, query backward from the data **end** date and if `direction` is `FORWARD`, query forward from the data **start** date. \n This allows you to keep getting the latest or earliest data without changing your query every time there's new or updated data.\n\n Note: For multi-metric queries, if `direction` is `BACKWARD`, query backward from the earliest data end date of all metrics and if `direction` is `FORWARD`, query forward from the latest data start date of all metrics. \n This ensures that all metrics have data in the specified time range.\n\n Example: If a tenant has Headcount metric data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2024-01-01. The effect is the same as if specifying a `fromDateTime` of 2024-01-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-10 to 2023-04-01 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-02-01. The effect is the same as if specifying a `fromDateTime` of 2023-02-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2023-03-15 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2023-03-01. The effect is the same as if specifying a `fromDateTime` of 2023-03-01'T'00:00:00.000. \n\n Example: If a tenant has Headcount data available from 2023-01-01 to 2024-09-01 and Exit Count data available from 2023-01-01 to 2024-01-01, specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD` means the query will retrieve data backward from 2024-01-01. \n Exit Count has an earlier data end date than Headcount, so `dynamicDateFrom` retrieves data backward from Exit Count's data end date to ensure both metrics have data in the specified time range.\n\n Example: Retrieve Headcount (employeeCount) extending 1 month backward from Headcount's dynamic source date\n\n ```\n {\n   \"query\": {\n     \"source\": {\n       \"metric\": \"employeeCount\"\n     },\n     \"timeIntervals\": {\n       \"dynamicDateFrom\": \"SOURCE\",\n       \"intervalPeriodType\": \"MONTH\",\n       \"intervalCount\": 1,\n       \"direction\": \"BACKWARD\"\n     }\n   }\n }\n ```"
+              format: enum
     dataservices.query.SnapshotQueryExecutionDTO:
       type: object
       properties:
@@ -2473,9 +2124,7 @@ components:
       properties:
         limit:
           type: integer
-          description: |-
-            The maximum number of entries to return. Default is to return all entries. If `page` is defined but
-             limit is not defined, limit will be set to a default value of 1000.
+          description: "The maximum number of entries to return. Default is to return all entries. If `page` is defined but\n limit is not defined, limit will be set to a default value of 1000."
           format: int32
         queryMode:
           enum:
@@ -2487,49 +2136,33 @@ components:
           format: enum
         omitHeader:
           type: boolean
-          description: |-
-            Option to omit the header from the result.
-             If true, queryMode must be either FILL or FAIL.
-             Default is false.
+          description: "Option to omit the header from the result.\n If true, queryMode must be either FILL or FAIL.\n Default is false."
         calendarType:
           enum:
             - TENANT_CALENDAR
             - GREGORIAN_CALENDAR
           type: string
-          description: |-
-            The calendar type to use. This will be used for all time calculations unless explicitly overridden in
-             the calculation itself. Default is TENANT_CALENDAR.
+          description: "The calendar type to use. This will be used for all time calculations unless explicitly overridden in\n the calculation itself. Default is TENANT_CALENDAR."
           format: enum
         currencyConversionDate:
           type: string
           description: The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.
         page:
           type: integer
-          description: |-
-            A page defines a subset of the overall result set. The number of rows per page is equal to limit
-             with the exception of the last page in the result set which may contain fewer rows. `Page` is an index
-             that begins at 0. The index to start retrieving results is calculated by multiplying `page` by `limit`.
+          description: "A page defines a subset of the overall result set. The number of rows per page is equal to limit\n with the exception of the last page in the result set which may contain fewer rows. `Page` is an index\n that begins at 0. The index to start retrieving results is calculated by multiplying `page` by `limit`."
           format: int32
         multipleTables:
           type: boolean
-          description: |-
-            Option to return multiple table files as zipped archive for derived metrics.
-             Default is false. If false, one table is returned for the drill-through metric.
+          description: "Option to return multiple table files as zipped archive for derived metrics.\n Default is false. If false, one table is returned for the drill-through metric."
         currencyConversionCode:
           type: string
-          description: |-
-            The optional target currency for all currency conversions.
-             If not specified, the tenant default currency will be used.
+          description: "The optional target currency for all currency conversions.\n If not specified, the tenant default currency will be used."
         dateTimeDisplayMode:
           enum:
             - EPOCH
             - DATETIME
           type: string
-          description: |-
-            Control how date-time values are displayed in the result set.
-             Supported values:
-             * `EPOCH`: The number of elapsed milliseconds since January 1, 1970 in UTC timezone. This is the default.
-             * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format.
+          description: "Control how date-time values are displayed in the result set.\n Supported values:\n * `EPOCH`: The number of elapsed milliseconds since January 1, 1970 in UTC timezone. This is the default.\n * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format."
           format: enum
       description: A SnapshotQueryExecutionOptions provides additional instructions to perform a snapshot query.
     dataservices.query.SortOptionDTO:
@@ -2557,9 +2190,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryExecutionOptionsDTO'
           description: Optional options that currently that cannot be expressed in SQL-like
-      description: |-
-        *
-         Request body for SQL-like query executions
+      description: "*\n Request body for SQL-like query executions"
     dataservices.query.TimeShiftDTO:
       type: object
       properties:
@@ -2696,11 +2327,7 @@ components:
           description: The data version number to generate an export for.
         baseDataVersionNumber:
           type: string
-          description: |-
-            Optional. The baseline data version number to use to generate a delta export.
-             Delta exports contain the differences between `baseDataVersionNumber` and
-             `dataVersionNumber`, such as anything updated, added, or removed in `dataVersionNumber`.
-             If `baseDataVersionNumber` is not provided, a full export generates for `dataVersionNumber`.
+          description: "Optional. The baseline data version number to use to generate a delta export.\n Delta exports contain the differences between `baseDataVersionNumber` and\n `dataVersionNumber`, such as anything updated, added, or removed in `dataVersionNumber`.\n If `baseDataVersionNumber` is not provided, a full export generates for `dataVersionNumber`."
     designer.DataVersionExportScheduleJobResponseDTO:
       type: object
       properties:
@@ -2720,9 +2347,7 @@ components:
         newColumns:
           allOf:
             - $ref: '#/components/schemas/designer.DataVersionExportFileDTO'
-          description: |-
-            Information about new columns and files in the data version.
-             If full export, lists all columns. If delta export, lists columns that exist in `dataVersionNumber` but not in `baseDataVersionNumber`.
+          description: "Information about new columns and files in the data version.\n If full export, lists all columns. If delta export, lists columns that exist in `dataVersionNumber` but not in `baseDataVersionNumber`."
         deletedColumns:
           type: array
           items:
@@ -2901,36 +2526,41 @@ components:
 tags:
   - name: DataQuery
     x-displayName: Data Query
-    description: |-
-      Query against your data in Visier to get aggregate and list data.
+    description: Query against your data in Visier to get aggregate and list data.
   - name: DataVersionExport
     x-displayName: Data Version Export
-    description: |-
-      Export Visier data version information, such as tables, columns, and file information, in CSV format.
+    description: 'Export Visier data version information, such as tables, columns, and file information, in CSV format.
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: Vee
-    description: |-
-      Use Vee through Visier APIs, such as asking questions, submitting feedback, and getting sample questions.
+    description: 'Use Vee through Visier APIs, such as asking questions, submitting feedback, and getting sample questions.
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: Search
-    description: |-
-      Search for documents, such as analyses, in Visier.
+    description: 'Search for documents, such as analyses, in Visier.
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: SourceFilesDownload
     x-displayName: Source Files Download
-    description: |-
-      Download a tenants source files.
+    description: 'Download a tenants source files.
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: Reporting
-    description: |-
-      Create, retrieve, delete, copy, and download reports.
+    description: 'Create, retrieve, delete, copy, and download reports.
+
       <br>**Note**: This API is available for Embedded Partners.
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
 security:
   - ApiKeyAuth: []
     BearerAuth: []

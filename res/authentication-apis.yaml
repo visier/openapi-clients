@@ -1,6 +1,3 @@
-# Generated with protoc-gen-openapi
-# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
-
 openapi: 3.0.3
 info:
   title: Visier Authentication APIs
@@ -8,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1993
+  version: 22222222.99201.2010
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -30,7 +27,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -50,7 +47,7 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: "#/components/schemas/AuthenticationRequest"
+              $ref: '#/components/schemas/AuthenticationRequest'
         required: true
       responses:
         default:
@@ -58,8 +55,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Status"
-        "200":
+                $ref: '#/components/schemas/Status'
+        '200':
           description: Authentication token response
           content:
             text/plain:
@@ -85,7 +82,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GenerateImpersonationTokenRequest"
+              $ref: '#/components/schemas/GenerateImpersonationTokenRequest'
         required: true
       responses:
         default:
@@ -93,8 +90,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Status"
-        "200":
+                $ref: '#/components/schemas/Status'
+        '200':
           description: Impersonation token response
           content:
             text/plain:
@@ -141,8 +138,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Status"
-        "3XX":
+                $ref: '#/components/schemas/Status'
+        3XX:
           description: Redirect to authorization page.
       security:
         - {}
@@ -157,7 +154,7 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: "#/components/schemas/TokenRequestBody"
+              $ref: '#/components/schemas/TokenRequestBody'
         required: true
       responses:
         default:
@@ -165,13 +162,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Status"
-        "200":
+                $ref: '#/components/schemas/Status'
+        '200':
           description: Returns access and refresh tokens along with the expiration time.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TokenResponse"
+                $ref: '#/components/schemas/TokenResponse'
       security:
         - {}
 components:
@@ -218,12 +215,7 @@ components:
             - Restricted
             - None
           type: string
-          description: |-
-            The type of subnet access granted to the user. Possible values are:
-             * `Unknown`: Could not determine subnet access details.
-             * `All`: No subnet restrictions.
-             * `Restricted`: Access is only granted to requests originating from the specified `subnets`.
-             * `None`: Access is denied. Only applicable to the Data Export API.
+          description: "The type of subnet access granted to the user. Possible values are:\n * `Unknown`: Could not determine subnet access details.\n * `All`: No subnet restrictions.\n * `Restricted`: Access is only granted to requests originating from the specified `subnets`.\n * `None`: Access is denied. Only applicable to the Data Export API."
           format: enum
         subnets:
           type: array
@@ -418,12 +410,15 @@ components:
       type: object
       properties:
         grant_type:
-          description: |-
-            The grant type. Supported values:
+          description: 'The grant type. Supported values:
+
             - `authorization_code`: The authorization code grant type.
+
             - `password`: The password grant type.
+
             - `urn:ietf:params:oauth:grant-type:saml2-bearer`: The saml2-bearer grant type.
-            - `urn:visier:params:oauth:grant-type:asid-token`: The ASID token grant type.
+
+            - `urn:visier:params:oauth:grant-type:asid-token`: The ASID token grant type.'
           type: string
         client_id:
           description: The ID of the pre-registered client application.
@@ -452,8 +447,7 @@ components:
         refresh_token:
           description: The refresh token. Applicable only for refresh_token grant type.
           type: string
-      description: |-
-        Token request body definition.
+      description: Token request body definition.
     Status:
       type: object
       properties:
@@ -502,8 +496,7 @@ components:
 tags:
   - name: BasicAuthentication
     x-displayName: Basic Authentication
-    description: |-
-      Request an authentication token through basic authentication. With basic authentication, use your username and password to request a secure token. The response returns an ASID token that you can use in your API calls.
+    description: Request an authentication token through basic authentication. With basic authentication, use your username and password to request a secure token. The response returns an ASID token that you can use in your API calls.
   - name: OAuth2
     x-displayName: OAuth 2.0
     description: "Request an authentication token through OAuth 2.0 with Open ID Connect (OIDC). With OAuth 2.0 with OIDC, use an OAuth 2.0 grant to request an authentication token. \nThe response returns a JSON Web Token (JWT) that you can use in your API calls."

@@ -1,6 +1,3 @@
-# Generated with protoc-gen-openapi
-# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
-
 openapi: 3.0.3
 info:
   title: Visier Analytic Model APIs
@@ -8,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1993
+  version: 22222222.99201.2010
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -30,7 +27,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -62,7 +59,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -73,12 +70,7 @@ paths:
       tags:
         - ObjectConfiguration
       summary: Map dimension members to nodes in a calculation concept
-      description: |-
-        Map dimension members to nodes in a calculation concept.
-         The changes are applied in a new project and published to production.
-
-         The body of this API is the source of truth for dimension members mapped to the concept. For example, if a node in
-         the body does not have any dimension members, all existing dimension members mapped to that node will be removed.
+      description: "Map dimension members to nodes in a calculation concept.\n The changes are applied in a new project and published to production.\n\n The body of this API is the source of truth for dimension members mapped to the concept. For example, if a node in\n the body does not have any dimension members, all existing dimension members mapped to that node will be removed."
       operationId: ObjectConfiguration_MapCalculationConcept
       parameters:
         - name: conceptId
@@ -105,7 +97,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -131,7 +123,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -163,7 +155,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -174,12 +166,7 @@ paths:
       tags:
         - ObjectConfiguration
       summary: Map dimension members to a selection concept
-      description: |-
-        Map dimension members to a selection concept.
-         The changes are applied to a new project and published to production.
-
-         The body of this API is the source of truth for dimension members mapped to the concept. For example, if a node in
-         the body does not have any dimension members, all existing dimension members mapped to that node will be removed.
+      description: "Map dimension members to a selection concept.\n The changes are applied to a new project and published to production.\n\n The body of this API is the source of truth for dimension members mapped to the concept. For example, if a node in\n the body does not have any dimension members, all existing dimension members mapped to that node will be removed."
       operationId: ObjectConfiguration_MapSelectionConcept
       parameters:
         - name: conceptId
@@ -206,7 +193,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -244,7 +231,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -276,7 +263,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -308,7 +295,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -347,7 +334,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -391,7 +378,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -402,18 +389,7 @@ paths:
       tags:
         - DataModel
       summary: Retrieve a list of dimension members
-      description: |-
-        If you know the ID of a dimension, use this API to retrieve the members of that dimension specifically. You must
-         also know the analytic object's ID. Dimension members exist in a hierarchy. The levels in the hierarchy may be
-         fixed or non-uniform. Leveled dimensions have fixed hierarchies, while parent-child dimensions have non-uniform
-         levels. When you retrieve dimension members with this API, the response returns the level of the dimension and the
-         path to get to that level. For example, in a Location dimension, Vancouver is 3 levels deep:
-
-         - All > Canada > British Columbia > Vancouver
-
-         Parent-child hierarchies are non-uniform and exhibit distinct characteristics such as time dependence and data
-         attributes. These traits reflect the dynamic nature of hierarchies, for example, organizational hierarchies. The API
-         response includes elements that express the validity ranges for retrieved members.
+      description: "If you know the ID of a dimension, use this API to retrieve the members of that dimension specifically. You must\n also know the analytic object's ID. Dimension members exist in a hierarchy. The levels in the hierarchy may be\n fixed or non-uniform. Leveled dimensions have fixed hierarchies, while parent-child dimensions have non-uniform\n levels. When you retrieve dimension members with this API, the response returns the level of the dimension and the\n path to get to that level. For example, in a Location dimension, Vancouver is 3 levels deep:\n\n - All > Canada > British Columbia > Vancouver\n\n Parent-child hierarchies are non-uniform and exhibit distinct characteristics such as time dependence and data\n attributes. These traits reflect the dynamic nature of hierarchies, for example, organizational hierarchies. The API\n response includes elements that express the validity ranges for retrieved members."
       operationId: DataModel_Members
       parameters:
         - name: objectId
@@ -448,13 +424,7 @@ paths:
             type: string
         - name: field
           in: query
-          description: |-
-            Indicates the aspect of the member to apply the filter to. Possible values are:
-             - **id**: Match the filter to the member ID.
-             - **display**: Match the filter to the member's display name.
-             - **either**: Match the filter to the member ID or display name.
-
-             Default is `id`.
+          description: "Indicates the aspect of the member to apply the filter to. Possible values are:\n - **id**: Match the filter to the member ID.\n - **display**: Match the filter to the member's display name.\n - **either**: Match the filter to the member ID or display name.\n\n Default is `id`."
           schema:
             type: string
         - name: includeDataMembers
@@ -476,10 +446,7 @@ paths:
             format: int32
         - name: sortType
           in: query
-          description: |-
-            The order of the members in the response. Valid values:
-             - `configured`: Sorts the members according to their configuration. For parent-child dimensions, sorts members by name in ascending order. For other dimensions, sorts members by their configured order in Studio.
-             - `natural`: Does not sort the members. This is the default.
+          description: "The order of the members in the response. Valid values:\n - `configured`: Sorts the members according to their configuration. For parent-child dimensions, sorts members by name in ascending order. For other dimensions, sorts members by their configured order in Studio.\n - `natural`: Does not sort the members. This is the default."
           schema:
             type: string
         - name: TargetTenantID
@@ -494,7 +461,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -542,7 +509,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -580,7 +547,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -619,7 +586,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -659,7 +626,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -698,7 +665,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -736,7 +703,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -762,7 +729,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -794,7 +761,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -805,9 +772,7 @@ paths:
       tags:
         - DataModel
       summary: Retrieve all exchange rates for a currency
-      description: |-
-        Retrieve exchange rates for a specific currency from Visier.
-         You can optionally specify query parameter options for the returned rates, such as the number of decimals to round the exchange rate to.
+      description: "Retrieve exchange rates for a specific currency from Visier.\n You can optionally specify query parameter options for the returned rates, such as the number of decimals to round the exchange rate to."
       operationId: DataModel_CurrencyRates
       parameters:
         - name: id
@@ -843,7 +808,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -854,9 +819,7 @@ paths:
       tags:
         - DataModel
       summary: Retrieve exchange rates from one currency to another currency
-      description: |-
-        Retrieve exchange rates from a specific currency to another specific currency.
-         You can optionally specify query parameter options for the returned rates, such as the number of decimals to round the exchange rate to.
+      description: "Retrieve exchange rates from a specific currency to another specific currency.\n You can optionally specify query parameter options for the returned rates, such as the number of decimals to round the exchange rate to."
       operationId: DataModel_CurrencyRatesWithToCurrency
       parameters:
         - name: id
@@ -898,7 +861,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -909,9 +872,7 @@ paths:
       tags:
         - DataModel
       summary: Update dimensions
-      description: |-
-        Change the display name, short display name, and description of one or more dimensions. This API supports updating leveled dimensions.
-         In each API request, update up to 10 dimensions per tenant with a maximum of 500 tenants.
+      description: "Change the display name, short display name, and description of one or more dimensions. This API supports updating leveled dimensions.\n In each API request, update up to 10 dimensions per tenant with a maximum of 500 tenants."
       operationId: DataModel_UpdateDimensions
       parameters:
         - name: TargetTenantID
@@ -938,7 +899,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -976,7 +937,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1008,7 +969,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1047,7 +1008,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1086,7 +1047,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1119,7 +1080,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1151,7 +1112,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1183,7 +1144,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1222,7 +1183,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1260,7 +1221,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1293,7 +1254,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1325,7 +1286,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1336,11 +1297,7 @@ paths:
       tags:
         - DataModel
       summary: Replace properties
-      description: |-
-        Update existing properties by replacing their entire definition. The definition in your API call replaces the property's prior definition. You must provide the entire definition in the PUT call. If you omit values from the update request, those values are removed from the property. We recommend that you retrieve a property's details before you update the property with new values. This operation does not create new properties if they do not exist.
-         In each API request, update up to 10 properties per tenant with a maximum of 500 tenants.
-         To specify the tenant in which to update a property, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each property in the request body.
-         To specify the project in which to update properties, provide a project UUID in the `ProjectID` request header or `projectId` for each property in the request body.
+      description: "Update existing properties by replacing their entire definition. The definition in your API call replaces the property's prior definition. You must provide the entire definition in the PUT call. If you omit values from the update request, those values are removed from the property. We recommend that you retrieve a property's details before you update the property with new values. This operation does not create new properties if they do not exist.\n In each API request, update up to 10 properties per tenant with a maximum of 500 tenants.\n To specify the tenant in which to update a property, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each property in the request body.\n To specify the project in which to update properties, provide a project UUID in the `ProjectID` request header or `projectId` for each property in the request body."
       operationId: DataModel_PutProperties
       parameters:
         - name: TargetTenantID
@@ -1367,7 +1324,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1404,7 +1361,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1414,9 +1371,7 @@ paths:
       tags:
         - DataModel
       summary: Delete properties
-      description: |-
-        Delete existing properties. Administrating tenant users can specify the tenant in which to delete the properties.
-         In each API request, delete up to 10 properties per tenant with a maximum of 500 tenants.
+      description: "Delete existing properties. Administrating tenant users can specify the tenant in which to delete the properties.\n In each API request, delete up to 10 properties per tenant with a maximum of 500 tenants."
       operationId: DataModel_DeleteProperties
       parameters:
         - name: TargetTenantID
@@ -1443,7 +1398,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1480,7 +1435,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1491,11 +1446,7 @@ paths:
       tags:
         - DataModel
       summary: Retrieve a list of all Vee question categories
-      description: |-
-        Get a list of all categories for Vee sample questions. Administrating tenants can specify the tenant from which to retrieve categories using the `TargetTenantID` header.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Get a list of all categories for Vee sample questions. Administrating tenants can specify the tenant from which to retrieve categories using the `TargetTenantID` header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_GetVeeSampleQuestionCategories
       parameters:
         - name: TargetTenantID
@@ -1510,7 +1461,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1521,11 +1472,7 @@ paths:
       tags:
         - DataModel
       summary: Retrieve a Vee question category's details
-      description: |-
-        Get the details of a specific Vee sample question category where the ID is the `categoryID` returned by `GET /v1alpha/data/model/vee/sample-question-categories`.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Get the details of a specific Vee sample question category where the ID is the `categoryID` returned by `GET /v1alpha/data/model/vee/sample-question-categories`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_GetVeeSampleQuestionCategory
       parameters:
         - name: questionCategoryId
@@ -1546,7 +1493,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1557,11 +1504,7 @@ paths:
       tags:
         - DataModel
       summary: Retrieve a list of all Vee sample questions
-      description: |-
-        Get a list of all Vee sample questions for a tenant, including sample questions that are not available to end users. Administrating tenants can specify the tenant from which to retrieve sample questions using the `TargetTenantID` header.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Get a list of all Vee sample questions for a tenant, including sample questions that are not available to end users. Administrating tenants can specify the tenant from which to retrieve sample questions using the `TargetTenantID` header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_GetVeeSampleQuestions
       parameters:
         - name: TargetTenantID
@@ -1582,7 +1525,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1592,12 +1535,7 @@ paths:
       tags:
         - DataModel
       summary: Update Vee sample questions
-      description: |-
-        Update existing sample questions, such as its question category or whether the question is visible in Vee. Administrating tenants can specify the tenant in which to update sample questions using the `TargetTenantID` header.
-         When updating sample questions, the question definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values for optional fields from the update request, the values reset to their respective default value. We recommend that you retrieve a question's details before you update the question with new values.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Update existing sample questions, such as its question category or whether the question is visible in Vee. Administrating tenants can specify the tenant in which to update sample questions using the `TargetTenantID` header.\n When updating sample questions, the question definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values for optional fields from the update request, the values reset to their respective default value. We recommend that you retrieve a question's details before you update the question with new values.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_PutVeeSampleQuestions
       parameters:
         - name: TargetTenantID
@@ -1624,7 +1562,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1661,7 +1599,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1671,11 +1609,7 @@ paths:
       tags:
         - DataModel
       summary: Delete Vee sample questions
-      description: |-
-        Delete existing sample questions. Administrating tenants can specify the tenant in which to delete questions using the `TargetTenantID` header.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Delete existing sample questions. Administrating tenants can specify the tenant in which to delete questions using the `TargetTenantID` header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_DeleteVeeSampleQuestions
       parameters:
         - name: TargetTenantID
@@ -1702,7 +1636,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1712,12 +1646,7 @@ paths:
       tags:
         - DataModel
       summary: Patch Vee sample questions
-      description: |-
-        Make partial changes to Vee sample questions. Administrating tenants can specify the tenant in which to patch questions using the `TargetTenantID` header.
-         Unlike a `PUT` call, which completely replaces the sample question definition, use `PATCH` to change specific fields in the question without affecting omitted fields.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Make partial changes to Vee sample questions. Administrating tenants can specify the tenant in which to patch questions using the `TargetTenantID` header.\n Unlike a `PUT` call, which completely replaces the sample question definition, use `PATCH` to change specific fields in the question without affecting omitted fields.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_UpdateVeeSampleQuestions
       parameters:
         - name: TargetTenantID
@@ -1744,7 +1673,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1755,11 +1684,7 @@ paths:
       tags:
         - DataModel
       summary: Retrieve a Vee sample question's details
-      description: |-
-        Get the details of a specific Vee sample question where the ID is the `questionID` returned by `GET /v1alpha/data/model/vee/sample-questions`.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Get the details of a specific Vee sample question where the ID is the `questionID` returned by `GET /v1alpha/data/model/vee/sample-questions`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_GetVeeSampleQuestion
       parameters:
         - name: questionId
@@ -1786,7 +1711,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1797,11 +1722,7 @@ paths:
       tags:
         - DataModel
       summary: Retrieve a list of plans
-      description: |-
-        Retrieve all the plans you have access to. The response returns plan information you can use to call the Planning Data Load API.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve all the plans you have access to. The response returns plan information you can use to call the Planning Data Load API.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_PlanDataLoadlList
       parameters:
         - name: displayName
@@ -1816,14 +1737,7 @@ paths:
             type: string
         - name: planStatus
           in: query
-          description: |-
-            Returns plans with the specified plan status. Valid values:
-             - **ASSIGNED**: The subplan has been assigned to a subplanner.
-             - **IN_PROGRESS**: The subplanner has opened the subplan.
-             - **OVERDUE**: The subplan was not completed on time.
-             - **SUBMITTED**: The subplan has been submitted for review.
-             - **SENT_BACK**: The subplan was rejected and returned to the subplanner for editing.
-             - **CONSOLIDATED**: The subplan has been accepted and combined into the primary plan.
+          description: "Returns plans with the specified plan status. Valid values:\n - **ASSIGNED**: The subplan has been assigned to a subplanner.\n - **IN_PROGRESS**: The subplanner has opened the subplan.\n - **OVERDUE**: The subplan was not completed on time.\n - **SUBMITTED**: The subplan has been submitted for review.\n - **SENT_BACK**: The subplan was rejected and returned to the subplanner for editing.\n - **CONSOLIDATED**: The subplan has been accepted and combined into the primary plan."
           schema:
             type: string
         - name: createdStart
@@ -1848,11 +1762,7 @@ paths:
             type: string
         - name: orderBy
           in: query
-          description: |-
-            Orders plan results by the specified value. Valid values:
-             - **LAST_EDITED_DATE**: Orders plans by the last edited date. This is the default.
-             - **CREATED_DATE**: Orders plans by the creation date.
-             - **PLAN_MODEL**: Orders plans alphabetically by planning model.
+          description: "Orders plan results by the specified value. Valid values:\n - **LAST_EDITED_DATE**: Orders plans by the last edited date. This is the default.\n - **CREATED_DATE**: Orders plans by the creation date.\n - **PLAN_MODEL**: Orders plans alphabetically by planning model."
           schema:
             type: string
         - name: sortOrder
@@ -1887,7 +1797,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1898,11 +1808,7 @@ paths:
       tags:
         - DataModel
       summary: Retrieve a plan's details
-      description: |-
-        Retrieve the details of a specific plan. The response returns plan information you can use to call the Planning Data Load API.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve the details of a specific plan. The response returns plan information you can use to call the Planning Data Load API.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_PlanInfoWithSchema
       parameters:
         - name: id
@@ -1933,7 +1839,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1944,16 +1850,7 @@ paths:
       tags:
         - DataModel
       summary: Update analytic objects
-      description: |-
-        Update the details of an analytic object. Supports reverting subjects, events, and internal comparisons to Blueprint.
-
-         You can revert tenant override objects to Blueprint. If you execute the `revertToBP` operation on a:
-         - Blueprint object: Nothing happens. The object is already the Blueprint version!
-         - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.
-         - Tenant object: The API request fails. The object is unique to your tenant and no Blueprint version exists.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Update the details of an analytic object. Supports reverting subjects, events, and internal comparisons to Blueprint.\n\n You can revert tenant override objects to Blueprint. If you execute the `revertToBP` operation on a:\n - Blueprint object: Nothing happens. The object is already the Blueprint version!\n - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.\n - Tenant object: The API request fails. The object is unique to your tenant and no Blueprint version exists.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_UpdateAnalyticObjects
       parameters:
         - name: TargetTenantID
@@ -1974,7 +1871,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1985,11 +1882,7 @@ paths:
       tags:
         - DimensionsV2
       summary: Retrieve a list of dimensions by analytic object
-      description: |-
-        Retrieve all the dimensions for a specific analytic object. The response returns the details of all dimensions for the analytic object, including object names, dimension types, and descriptions.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve all the dimensions for a specific analytic object. The response returns the details of all dimensions for the analytic object, including object names, dimension types, and descriptions.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DimensionsV2_GetAnalyticObjectDimensions
       parameters:
         - name: analyticObjectId
@@ -2000,10 +1893,7 @@ paths:
             type: string
         - name: type
           in: query
-          description: |-
-            The type of the dimension to retrieve. Valid values:
-             - `leveled`: Retrieves leveled dimensions.
-             - `parentChild`: Retrieves parent-child dimensions.
+          description: "The type of the dimension to retrieve. Valid values:\n - `leveled`: Retrieves leveled dimensions.\n - `parentChild`: Retrieves parent-child dimensions."
           schema:
             type: array
             items:
@@ -2014,11 +1904,7 @@ paths:
               format: enum
         - name: with
           in: query
-          description: |-
-            The level of information to retrieve for the dimension. Valid values:
-             - `basic`: Retrieves the dimension's UUID, object name, and basic information. This is the default.
-             - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings.
-             - `version`: Retrieves the object's version information, such as version type and last edited details.
+          description: "The level of information to retrieve for the dimension. Valid values:\n - `basic`: Retrieves the dimension's UUID, object name, and basic information. This is the default.\n - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
           schema:
             type: array
             items:
@@ -2060,7 +1946,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2071,11 +1957,7 @@ paths:
       tags:
         - ConceptsV2
       summary: Retrieve a list of concepts by analytic object
-      description: |-
-        Retrieve all the concepts for a specific analytic object. The response returns the details of all concepts for the analytic object, including object names, concept types, and descriptions.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve all the concepts for a specific analytic object. The response returns the details of all concepts for the analytic object, including object names, concept types, and descriptions.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConceptsV2_GetAnalyticObjectConcepts
       parameters:
         - name: analyticObjectName
@@ -2086,10 +1968,7 @@ paths:
             type: string
         - name: type
           in: query
-          description: |-
-            The type of the concept to retrieve. Omit to retrieve all supported concept types. Valid values:
-             - `process`: Retrieves all process concepts.
-             - `selection`: Retrieves all member selection concepts and calculated selection concepts.
+          description: "The type of the concept to retrieve. Omit to retrieve all supported concept types. Valid values:\n - `process`: Retrieves all process concepts.\n - `selection`: Retrieves all member selection concepts and calculated selection concepts."
           schema:
             type: array
             items:
@@ -2100,11 +1979,7 @@ paths:
               format: enum
         - name: with
           in: query
-          description: |-
-            The level of information to retrieve for the concept. Valid values:
-             - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.
-             - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.
-             - `version`: Retrieves the object's version information, such as version type and last edited details.
+          description: "The level of information to retrieve for the concept. Valid values:\n - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.\n - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
           schema:
             type: array
             items:
@@ -2146,7 +2021,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2157,19 +2032,12 @@ paths:
       tags:
         - ConceptsV2
       summary: Retrieve a list of concepts
-      description: |-
-        Retrieve a list of all concepts in your Visier tenant.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve a list of all concepts in your Visier tenant.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConceptsV2_GetAllConcepts
       parameters:
         - name: type
           in: query
-          description: |-
-            The type of the concept to retrieve. Omit to retrieve all supported concept types. Valid values:
-             - `process`: Retrieves all process concepts.
-             - `selection`: Retrieves all member selection concepts and calculated selection concepts.
+          description: "The type of the concept to retrieve. Omit to retrieve all supported concept types. Valid values:\n - `process`: Retrieves all process concepts.\n - `selection`: Retrieves all member selection concepts and calculated selection concepts."
           schema:
             type: array
             items:
@@ -2180,11 +2048,7 @@ paths:
               format: enum
         - name: with
           in: query
-          description: |-
-            The level of information to retrieve for the concept. Valid values:
-             - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.
-             - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.
-             - `version`: Retrieves the object's version information, such as version type and last edited details.
+          description: "The level of information to retrieve for the concept. Valid values:\n - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.\n - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
           schema:
             type: array
             items:
@@ -2226,7 +2090,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2236,13 +2100,7 @@ paths:
       tags:
         - ConceptsV2
       summary: Update concepts
-      description: |-
-        Update existing concepts. The response returns whether each concept was successfully updated or not. When updating objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PUT` request definition.
-
-         In `PUT` calls, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the concept. To partially update a concept, see the `PATCH` method.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Update existing concepts. The response returns whether each concept was successfully updated or not. When updating objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PUT` request definition.\n\n In `PUT` calls, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the concept. To partially update a concept, see the `PATCH` method.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConceptsV2_PutConcepts
       parameters:
         - name: TargetTenantID
@@ -2269,7 +2127,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2279,12 +2137,7 @@ paths:
       tags:
         - ConceptsV2
       summary: Create concepts
-      description: |-
-        Create new concepts. The response returns whether each concept was successfully created or not.
-         When creating objects, assign a unique object name but don't set a UUID. Visier generates UUIDs for new objects.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Create new concepts. The response returns whether each concept was successfully created or not.\n When creating objects, assign a unique object name but don't set a UUID. Visier generates UUIDs for new objects.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConceptsV2_CreateConcepts
       parameters:
         - name: TargetTenantID
@@ -2311,7 +2164,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2321,11 +2174,7 @@ paths:
       tags:
         - ConceptsV2
       summary: Delete concepts
-      description: |-
-        Delete existing concepts. The response returns whether each concept was successfully deleted or not.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Delete existing concepts. The response returns whether each concept was successfully deleted or not.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConceptsV2_DeleteConcepts
       parameters:
         - name: TargetTenantID
@@ -2352,7 +2201,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2362,13 +2211,7 @@ paths:
       tags:
         - ConceptsV2
       summary: Partially update concepts
-      description: |-
-        Make partial changes to existing concepts. The response returns whether each concept was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition.
-
-         Unlike `PUT`, which completely replaces the concept definition, use `PATCH` to change specific fields in the concept without affecting omitted fields. To replace a concept's entire definition, see the `PUT` method.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Make partial changes to existing concepts. The response returns whether each concept was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition.\n\n Unlike `PUT`, which completely replaces the concept definition, use `PATCH` to change specific fields in the concept without affecting omitted fields. To replace a concept's entire definition, see the `PUT` method.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConceptsV2_PatchConcepts
       parameters:
         - name: TargetTenantID
@@ -2395,7 +2238,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2406,11 +2249,7 @@ paths:
       tags:
         - ConceptsV2
       summary: Retrieve a concept's details
-      description: |-
-        Retrieve the details of a specific concept, such as its concept type and description.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve the details of a specific concept, such as its concept type and description.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConceptsV2_GetOneConcept
       parameters:
         - name: conceptId
@@ -2421,11 +2260,7 @@ paths:
             type: string
         - name: with
           in: query
-          description: |-
-            The level of information to retrieve for the concept. Valid values:
-             - `basic`: Retrieves the concept's UUID, object name, and basic information.
-             - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`. This is the default.
-             - `version`: Retrieves the object's version information, such as version type and last edited details.
+          description: "The level of information to retrieve for the concept. Valid values:\n - `basic`: Retrieves the concept's UUID, object name, and basic information.\n - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`. This is the default.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
           schema:
             type: array
             items:
@@ -2453,7 +2288,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2464,19 +2299,12 @@ paths:
       tags:
         - DimensionsV2
       summary: Retrieve a list of dimensions
-      description: |-
-        Retrieve a list of all dimensions in your Visier tenant. You can optionally filter dimensions by dimension type or analytic object.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve a list of all dimensions in your Visier tenant. You can optionally filter dimensions by dimension type or analytic object.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DimensionsV2_GetAllDimensions
       parameters:
         - name: type
           in: query
-          description: |-
-            The type of the dimension to retrieve. If undefined, retrieves all dimension types. Valid values:
-             - `leveled`: Retrieves leveled dimensions.
-             - `parentChild`: Retrieves parent-child dimensions.
+          description: "The type of the dimension to retrieve. If undefined, retrieves all dimension types. Valid values:\n - `leveled`: Retrieves leveled dimensions.\n - `parentChild`: Retrieves parent-child dimensions."
           schema:
             type: array
             items:
@@ -2487,11 +2315,7 @@ paths:
               format: enum
         - name: with
           in: query
-          description: |-
-            The level of information to retrieve for the dimension. Valid values:
-             - `basic`: Retrieves the dimension's UUID, object name, and basic information. This is the default.
-             - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings.
-             - `version`: Retrieves the object's version information, such as version type and last edited details.
+          description: "The level of information to retrieve for the dimension. Valid values:\n - `basic`: Retrieves the dimension's UUID, object name, and basic information. This is the default.\n - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
           schema:
             type: array
             items:
@@ -2547,7 +2371,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2557,13 +2381,7 @@ paths:
       tags:
         - DimensionsV2
       summary: Update dimensions
-      description: |-
-        Update existing dimensions. The response returns whether each dimension was successfully updated or not. When updating objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PUT` request definition.
-
-         In `PUT` calls, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the dimension. To partially update a dimension, see the `PATCH` method.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Update existing dimensions. The response returns whether each dimension was successfully updated or not. When updating objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PUT` request definition.\n\n In `PUT` calls, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the dimension. To partially update a dimension, see the `PATCH` method.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DimensionsV2_PutDimensions
       parameters:
         - name: TargetTenantID
@@ -2590,7 +2408,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2600,12 +2418,7 @@ paths:
       tags:
         - DimensionsV2
       summary: Create dimensions
-      description: |-
-        Create new dimensions. The response returns whether each dimension was successfully created or not.
-         When creating objects, assign a unique object name but don't set a UUID. Visier generates UUIDs for new objects.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Create new dimensions. The response returns whether each dimension was successfully created or not.\n When creating objects, assign a unique object name but don't set a UUID. Visier generates UUIDs for new objects.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DimensionsV2_CreateDimensions
       parameters:
         - name: TargetTenantID
@@ -2632,7 +2445,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2642,11 +2455,7 @@ paths:
       tags:
         - DimensionsV2
       summary: Delete dimensions
-      description: |-
-        Delete existing dimensions. The response returns whether each dimension was successfully deleted or not.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Delete existing dimensions. The response returns whether each dimension was successfully deleted or not.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DimensionsV2_DeleteDimensions
       parameters:
         - name: TargetTenantID
@@ -2673,7 +2482,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2683,13 +2492,7 @@ paths:
       tags:
         - DimensionsV2
       summary: Partially update dimensions
-      description: |-
-        Make partial changes to existing dimensions. The response returns whether each dimension was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition.
-
-         Unlike `PUT`, which completely replaces the dimension definition, use `PATCH` to change specific fields in the dimension without affecting omitted fields. To replace a dimension's entire definition, see the `PUT` method.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Make partial changes to existing dimensions. The response returns whether each dimension was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition.\n\n Unlike `PUT`, which completely replaces the dimension definition, use `PATCH` to change specific fields in the dimension without affecting omitted fields. To replace a dimension's entire definition, see the `PUT` method.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DimensionsV2_PatchDimensions
       parameters:
         - name: TargetTenantID
@@ -2716,7 +2519,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2727,11 +2530,7 @@ paths:
       tags:
         - DimensionsV2
       summary: Retrieve a dimension's details
-      description: |-
-        Retrieve the details of a specific dimension, such as its dimension type and description.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve the details of a specific dimension, such as its dimension type and description.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DimensionsV2_GetOneDimension
       parameters:
         - name: dimensionId
@@ -2742,11 +2541,7 @@ paths:
             type: string
         - name: with
           in: query
-          description: |-
-            The level of information to retrieve for the dimension. Valid values:
-             - `basic`: Retrieves the dimension's UUID, object name, and basic information.
-             - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings. This is the default.
-             - `version`: Retrieves the object's version information, such as version type and last edited details.
+          description: "The level of information to retrieve for the dimension. Valid values:\n - `basic`: Retrieves the dimension's UUID, object name, and basic information.\n - `details`: Retrieves the `basic` details and additional configurations, such as levels and settings. This is the default.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
           schema:
             type: array
             items:
@@ -2774,7 +2569,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2789,9 +2584,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            A list of strings representing the members within a dimension path. For example, a dimension for Location
-             may have the paths "Canada, BC, Vancouver" and "US, California, San Francisco".
+          description: "A list of strings representing the members within a dimension path. For example, a dimension for Location\n may have the paths \"Canada, BC, Vancouver\" and \"US, California, San Francisco\"."
         memberId:
           type: string
           description: The unique identifier of the dimension member. Use `memberId` if the dimension member doesn't have a path, such as SD groups.
@@ -2809,12 +2602,7 @@ components:
           items:
             $ref: '#/components/schemas/dataservices.common.DimensionMemberReferenceDTO'
           description: The unique IDs of members to exclude when evaluating the metric.
-      description: |-
-        Member filter values are discrete member references in a dimension filter. You can define
-         included and excluded members simultaneously. This is typically done with filtering applied on
-         dimensions with multiple levels. For example, a Location parameter may include "South
-         America" and exclude "Brazil" which results in the metric being evaluated for all South American
-         countries except Brazil.
+      description: "Member filter values are discrete member references in a dimension filter. You can define\n included and excluded members simultaneously. This is typically done with filtering applied on\n dimensions with multiple levels. For example, a Location parameter may include \"South\n America\" and exclude \"Brazil\" which results in the metric being evaluated for all South American\n countries except Brazil."
     dataservices.datamodel.AggregationTypeOptionDTO:
       type: object
       properties:
@@ -2851,9 +2639,7 @@ components:
           items:
             $ref: '#/components/schemas/dataservices.datamodel.AggregationTypeOptionDTO'
           description: The options defined for the parameter.
-      description: |-
-        The definition of an aggregation parameter. These parameters resolve metrics that use aggregation parameters.
-         For example, Visier Benchmarks metrics often use aggregation parameters to enable callers to aggregate metric values according to their average or different percentiles.
+      description: "The definition of an aggregation parameter. These parameters resolve metrics that use aggregation parameters.\n For example, Visier Benchmarks metrics often use aggregation parameters to enable callers to aggregate metric values according to their average or different percentiles."
     dataservices.datamodel.AnalyticObjectDTO:
       type: object
       properties:
@@ -2876,18 +2662,10 @@ components:
           format: enum
         dataStartDate:
           type: string
-          description: |-
-            The date from which data becomes available for this analytic object.
-             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
-             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
-             limitation in representing large numbers.
+          description: "The date from which data becomes available for this analytic object.\n Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.\n Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent\n limitation in representing large numbers."
         dataEndDate:
           type: string
-          description: |-
-            The date from which data is no longer available for this analytic object.
-             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
-             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
-             limitation in representing large numbers.
+          description: "The date from which data is no longer available for this analytic object.\n Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.\n Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent\n limitation in representing large numbers."
         propertyIds:
           type: array
           items:
@@ -2902,24 +2680,16 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            A list of strings representing IDs of the selection concepts that belong to this analytic object.
-             Note: If there are no selection concepts, this field is omitted.
+          description: "A list of strings representing IDs of the selection concepts that belong to this analytic object.\n Note: If there are no selection concepts, this field is omitted."
         objectReferences:
           type: array
           items:
             $ref: '#/components/schemas/dataservices.datamodel.ObjectReferenceDTO'
-          description: |-
-            A list of references from this analytic object to other analytic objects.
-             Note: If there are no references, this field is omitted.
+          description: "A list of references from this analytic object to other analytic objects.\n Note: If there are no references, this field is omitted."
         populationConfiguration:
           allOf:
             - $ref: '#/components/schemas/dataservices.datamodel.PopulationConfigurationDTO'
-          description: |-
-            A set of property and dimension references configured by Visier or an administrator to tell the platform what
-             properties and dimensions to use when doing population insight calculations. These are the distinguishing
-             properties, change history properties, and grouping dimensions to use in AI insights. This field is optional and
-             is only available for subjects.
+          description: "A set of property and dimension references configured by Visier or an administrator to tell the platform what\n properties and dimensions to use when doing population insight calculations. These are the distinguishing\n properties, change history properties, and grouping dimensions to use in AI insights. This field is optional and\n is only available for subjects."
       description: Analytic objects are the various items that users can analyze in Visier. Analytic objects include subjects, events, and overlays.
     dataservices.datamodel.AnalyticObjectsDTO:
       type: object
@@ -2951,41 +2721,27 @@ components:
           description: The symbol name for the currency.
         shortSymbol:
           type: string
-          description: |-
-            The shortened symbol name for the currency.
-             Removes all alphabetic characters. If **symbol** only has alphabetic characters, **shortSymbol** is empty.
-             If **symbol** contains only non-alphabetic characters, **shortSymbol** is the same as **symbol**.
-             For example, if **symbol** is CA$, **shortSymbol** is $. If **symbol** is $, then **shortSymbol** is $.
+          description: "The shortened symbol name for the currency.\n Removes all alphabetic characters. If **symbol** only has alphabetic characters, **shortSymbol** is empty.\n If **symbol** contains only non-alphabetic characters, **shortSymbol** is the same as **symbol**.\n For example, if **symbol** is CA$, **shortSymbol** is $. If **symbol** is $, then **shortSymbol** is $."
       description: Information about a currency type.
     dataservices.datamodel.CurrencyRateDTO:
       type: object
       properties:
         fromCurrencyCode:
           type: string
-          description: |-
-            The currency to convert **from**.
-             **Note:** If USD is the `fromCurrencyCode`, you are retrieving the exchange rates from USD to a different currency.
+          description: "The currency to convert **from**.\n **Note:** If USD is the `fromCurrencyCode`, you are retrieving the exchange rates from USD to a different currency."
         toCurrencyCode:
           type: string
-          description: |-
-            The currency to convert **to**.
-             **Note:** If USD is the `toCurrencyCode`, you are retrieving the exchange rates from a different currency to USD.
+          description: "The currency to convert **to**.\n **Note:** If USD is the `toCurrencyCode`, you are retrieving the exchange rates from a different currency to USD."
         rate:
           type: number
-          description: |-
-            The numeric value of the exchange rate.
-             **Note:** If **decimals** is specified, rate rounds to that value. If **decimals** is undefined, **rate** rounds to 2 significant figures after the decimal point.
+          description: "The numeric value of the exchange rate.\n **Note:** If **decimals** is specified, rate rounds to that value. If **decimals** is undefined, **rate** rounds to 2 significant figures after the decimal point."
           format: double
         startTime:
           type: string
-          description: |-
-            The earliest time instant to retrieve exchange rates from.
-             **Note:** Format is the number of milliseconds since Jan 1, 1970 12:00 AM UTC.
+          description: "The earliest time instant to retrieve exchange rates from.\n **Note:** Format is the number of milliseconds since Jan 1, 1970 12:00 AM UTC."
         endTime:
           type: string
-          description: |-
-            The latest time instant to retrieve exchange rates from.
-             **Note:** Format is the number of milliseconds since Jan 1, 1970 12:00 AM UTC.
+          description: "The latest time instant to retrieve exchange rates from.\n **Note:** Format is the number of milliseconds since Jan 1, 1970 12:00 AM UTC."
       description: Information about a currency exchange rate.
     dataservices.datamodel.CurrencyRatesDTO:
       type: object
@@ -2994,10 +2750,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/dataservices.datamodel.CurrencyRateDTO'
-      description: |-
-        A collection of currency exchange rates.
-         Note: Currencies may have different exchange rates in different time intervals, depending what rate data is stored in Visier.
-         For example, USD:CAD can be 1.2 between January 1 - March 1, while USD:EUR can be 0.92 between January 1 - February 1, but 0.88 between February  1 - March 1.
+      description: "A collection of currency exchange rates.\n Note: Currencies may have different exchange rates in different time intervals, depending what rate data is stored in Visier.\n For example, USD:CAD can be 1.2 between January 1 - March 1, while USD:EUR can be 0.92 between January 1 - February 1, but 0.88 between February  1 - March 1."
     dataservices.datamodel.DimensionDTO:
       type: object
       properties:
@@ -3069,9 +2822,7 @@ components:
           description: The ID of the dimension. To get a dimension's ID, call the Data Model API.
         qualifyingPath:
           type: string
-          description: |-
-            The qualifying path to the dimension in Visier, such as the analytic object or event the dimension is
-             associated with. If the path has multiple objects, each object is separated by a period.
+          description: "The qualifying path to the dimension in Visier, such as the analytic object or event the dimension is\n associated with. If the path has multiple objects, each object is separated by a period."
       description: The name and qualifying path of a dimension to query.
     dataservices.datamodel.DimensionsDTO:
       type: object
@@ -3123,9 +2874,7 @@ components:
           items:
             type: string
           description: The display names for each level in the member's ancestral path.
-      description: |-
-        A member is an element of a dimension. Dimension members are organized hierarchically. For example, Argentina is
-         a member of the Location dimension at the Country level of the hierarchy Region > Country > Province > City.
+      description: "A member is an element of a dimension. Dimension members are organized hierarchically. For example, Argentina is\n a member of the Location dimension at the Country level of the hierarchy Region > Country > Province > City."
     dataservices.datamodel.MemberParameterDefinitionDTO:
       type: object
       properties:
@@ -3173,18 +2922,10 @@ components:
           description: The localized description of the metric.
         dataStartDate:
           type: string
-          description: |-
-            The date from which data becomes available for this metric.
-             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
-             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
-             limitation in representing large numbers.
+          description: "The date from which data becomes available for this metric.\n Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.\n Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent\n limitation in representing large numbers."
         dataEndDate:
           type: string
-          description: |-
-            The date from which data is no longer available for this metric.
-             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
-             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
-             limitation in representing large numbers.
+          description: "The date from which data is no longer available for this metric.\n Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.\n Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent\n limitation in representing large numbers."
         analyticObjectId:
           type: string
           description: The unique ID of the analytic object.
@@ -3266,9 +3007,7 @@ components:
         isStrongReference:
           type: boolean
           description: True if this is a strong reference.
-      description: |-
-        A link between one analytic object and another. An ObjectReference allows you to discover the relationships between
-         analytic objects. In some queries, you may need to provide a qualifyingPath, which is built from ObjectReference information.
+      description: "A link between one analytic object and another. An ObjectReference allows you to discover the relationships between\n analytic objects. In some queries, you may need to provide a qualifyingPath, which is built from ObjectReference information."
     dataservices.datamodel.ParameterDefinitionDTO:
       type: object
       properties:
@@ -3304,9 +3043,7 @@ components:
         modelName:
           type: string
           description: The name of the planning model to which the parameter applies.
-      description: |-
-        The definition of a plan parameter. These parameters resolve planning model metrics to a specific plan and scenario
-         or snapshot values at query runtime.
+      description: "The definition of a plan parameter. These parameters resolve planning model metrics to a specific plan and scenario\n or snapshot values at query runtime."
     dataservices.datamodel.PlanningConceptFilterContextDTO:
       type: object
       properties:
@@ -3423,10 +3160,7 @@ components:
           items:
             $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
           description: Dimensions to use for grouping and clustering the population.
-      description: |-
-        A set of property and dimension references configured by Visier or an administrator to tell the platform what
-         properties and dimensions to use when doing population insight calculations. These are the distinguishing properties,
-         change history properties, and grouping dimensions to use in AI insights.
+      description: "A set of property and dimension references configured by Visier or an administrator to tell the platform what\n properties and dimensions to use when doing population insight calculations. These are the distinguishing properties,\n change history properties, and grouping dimensions to use in AI insights."
     dataservices.datamodel.PredictionDTO:
       type: object
       properties:
@@ -3447,21 +3181,13 @@ components:
           description: The unique ID of the subject's property that the prediction applies to. For example, Employee.EmployeeID.
         subjectParentKey:
           type: string
-          description: |-
-            The unique ID of the reference that connects a subject member to other members. For example, Employee.Direct_Manager.
-             Note: The `subjectParentKey` defines parent, child, and peer relationships between subject members.
+          description: "The unique ID of the reference that connects a subject member to other members. For example, Employee.Direct_Manager.\n Note: The `subjectParentKey` defines parent, child, and peer relationships between subject members."
         subjectFilter:
           type: string
-          description: |-
-            The object name of a selection concept to filter the subject population. Filtering the population selects
-             specific subject members in the prediction's training data. For example, using the isHighPerformer concept will
-             filter the prediction to only high performing employees.
+          description: "The object name of a selection concept to filter the subject population. Filtering the population selects\n specific subject members in the prediction's training data. For example, using the isHighPerformer concept will\n filter the prediction to only high performing employees."
         event:
           type: string
-          description: |-
-            The object name of the event to predict. The prediction's training data uses past occurrences of the event to
-             make predictions. For example, the Predicted Risk of Resignation model uses the Employee_Exit event to estimate
-             likelihood of exit from the organization.
+          description: "The object name of the event to predict. The prediction's training data uses past occurrences of the event to\n make predictions. For example, the Predicted Risk of Resignation model uses the Employee_Exit event to estimate\n likelihood of exit from the organization."
         eventFilter:
           type: string
           description: The object name of a selection concept to filter event occurrences in the prediction's training data.
@@ -3472,13 +3198,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            The list of unique IDs of the properties used as prediction factors.
-             Note: Factors are conditions used as part of a Visier prediction. For example, Compensation might be a factor in
-             predicting an individual's risk of resignation. Factors are chosen based on:
-             - Availability in tenants.
-             - Prediction impact, such as salary.
-             - Reducing bias.
+          description: "The list of unique IDs of the properties used as prediction factors.\n Note: Factors are conditions used as part of a Visier prediction. For example, Compensation might be a factor in\n predicting an individual's risk of resignation. Factors are chosen based on:\n - Availability in tenants.\n - Prediction impact, such as salary.\n - Reducing bias."
         factorDimensions:
           type: array
           items:
@@ -3491,18 +3211,10 @@ components:
           description: The list of unique IDs of the concepts used as prediction factors.
         dataStartDate:
           type: string
-          description: |-
-            The date from which data becomes available for this prediction.
-             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
-             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
-             limitation in representing large numbers.
+          description: "The date from which data becomes available for this prediction.\n Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.\n Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent\n limitation in representing large numbers."
         dataEndDate:
           type: string
-          description: |-
-            The date from which data is no longer available for this prediction.
-             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
-             Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
-             limitation in representing large numbers.
+          description: "The date from which data is no longer available for this prediction.\n Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.\n Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent\n limitation in representing large numbers."
         scoreName:
           type: string
           description: The unique name of the score property.  The prediction's formula references the score property as an object. This is automatically generated.
@@ -3572,9 +3284,7 @@ components:
           description: The ID of the property.
         qualifyingPath:
           type: string
-          description: |-
-            The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.
-             If the path has multiple objects, each object is separated by a period.
+          description: "The qualifying path to the property in Visier, such as the analytic object or event the property is associated with.\n If the path has multiple objects, each object is separated by a period."
       description: The name and qualifying path of a property to query.
     dataservices.datamodel.ScenarioOrSnapshotDTO:
       type: object
@@ -3633,19 +3343,11 @@ components:
       properties:
         start:
           type: string
-          description: |-
-            The date from which data becomes available.
-             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+          description: "The date from which data becomes available.\n Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string."
         end:
           type: string
-          description: |-
-            The date from which data is no longer available.
-             Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
-      description: |-
-        A pair of values that represent the time interval to which the data is valid.
-         The validity range is defined in Unix epoch format and UTC timezone.
-         Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent
-         limitation in representing large numbers.
+          description: "The date from which data is no longer available.\n Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string."
+      description: "A pair of values that represent the time interval to which the data is valid.\n The validity range is defined in Unix epoch format and UTC timezone.\n Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent\n limitation in representing large numbers."
     designer.api.AnalyticObjectFilterDTO:
       type: object
       properties:
@@ -3723,10 +3425,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.api.DimensionMemberDTO'
-          description: |-
-            A list of dimension members to map to the perspective node.
-
-             Note: If this array is empty, all dimension members will be removed for the node.
+          description: "A list of dimension members to map to the perspective node.\n\n Note: If this array is empty, all dimension members will be removed for the node."
     designer.api.DimensionMemberDTO:
       type: object
       properties:
@@ -3734,9 +3433,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            A list of strings representing the dimension members. Dimension members in a hierarchical dimension
-             will have an array with multiple strings.
+          description: "A list of strings representing the dimension members. Dimension members in a hierarchical dimension\n will have an array with multiple strings."
     designer.api.PerspectiveConfigurationDTO:
       type: object
       properties:
@@ -3780,11 +3477,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.api.AnalyticObjectFilterDTO'
-          description: |-
-            A list of analytic object filters indicating the analytic object and dimension members used
-             for the selection concept.
-
-             Note: If this array is empty, all filters will be removed for the concept.
+          description: "A list of analytic object filters indicating the analytic object and dimension members used\n for the selection concept.\n\n Note: If this array is empty, all filters will be removed for the concept."
     designer.api.SelectionConceptDTO:
       type: object
       properties:
@@ -3874,12 +3567,7 @@ components:
             - decimal
             - rate
           type: string
-          description: |-
-            The data type of the plan item. The data types are:
-             - **rate**: Converts values into a percentage in the planning grid. The provided value is multiplied by 100 to get the display value. For example, a provided value of 0.5 is displayed as 50% in the grid.
-             - **number**: Displays values as whole numbers. Decimal values are rounded to a whole number when displayed in the planning grid.
-             - **currency**: Displays values as a currency. Values must not contain thousand separators, currency codes, or currency symbols.
-             - **decimal**: Displays values with decimals.
+          description: "The data type of the plan item. The data types are:\n - **rate**: Converts values into a percentage in the planning grid. The provided value is multiplied by 100 to get the display value. For example, a provided value of 0.5 is displayed as 50% in the grid.\n - **number**: Displays values as whole numbers. Decimal values are rounded to a whole number when displayed in the planning grid.\n - **currency**: Displays values as a currency. Values must not contain thousand separators, currency codes, or currency symbols.\n - **decimal**: Displays values with decimals."
           format: enum
       description: A plan item is a metric in your plan. The available plan items depend on the planning model.
     planning.PlanSchemaDTO:
@@ -3904,9 +3592,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/planning.PlanSegmentLevelMemberListDTO'
-          description: |-
-            A collection of members grouped by their dimension and level.
-             The combination of these member IDs points to a specific row in the plan.
+          description: "A collection of members grouped by their dimension and level.\n The combination of these member IDs points to a specific row in the plan."
       description: Information about a plan's schema.
     planning.PlanSegmentLevelDTO:
       type: object
@@ -4493,10 +4179,7 @@ components:
             - unspecified
             - revertToBP
           type: string
-          description: |-
-            Update the analytic object. Required for `PUT` requests. Valid values:
-             - `unspecified`: Do not update the object.
-             - `revertToBP`: Undo any tenant overrides and revert the object back to its Blueprint state.
+          description: "Update the analytic object. Required for `PUT` requests. Valid values:\n - `unspecified`: Do not update the object.\n - `revertToBP`: Undo any tenant overrides and revert the object back to its Blueprint state."
           format: enum
         basicInformation:
           allOf:
@@ -4635,12 +4318,7 @@ components:
       properties:
         dataType:
           type: string
-          description: |-
-            The property's data type. Valid values:
-
-             `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,
-             `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,
-             `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`.
+          description: "The property's data type. Valid values:\n\n `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
         primitiveType:
           type: string
           description: The primitive data type, such as String, Integer, or Boolean.
@@ -4869,10 +4547,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            The objects that qualify the path to the dimension from its parent analytic object. For example, let's say the analytic object is `Applicant` and the dimension is `Location`.
-             To get to `Location` from `Applicant` there are multiple paths, one of which is to follow references `Requisition` and then `Hiring Manager` to `Location`.
-             `Location` is available on `Hiring_Manager` because a hiring manager is an `Employee`. In this example, the qualifying path is `[ "Applicant.Requisition" , "Requisition.Hiring_Manager" ]`.
+          description: "The objects that qualify the path to the dimension from its parent analytic object. For example, let's say the analytic object is `Applicant` and the dimension is `Location`.\n To get to `Location` from `Applicant` there are multiple paths, one of which is to follow references `Requisition` and then `Hiring Manager` to `Location`.\n `Location` is available on `Hiring_Manager` because a hiring manager is an `Employee`. In this example, the qualifying path is `[ \"Applicant.Requisition\" , \"Requisition.Hiring_Manager\" ]`."
         memberSelections:
           type: array
           items:
@@ -5118,11 +4793,7 @@ components:
             - nonAdditive
             - unknown
           type: string
-          description: |-
-            How to sum the metric's values. Valid values:
-             - `fullyAdditive`: Sums the metric over any dimension, concept, or time period.
-             - `balance`: Sums the metric over any dimension or concept, but not time period.
-             - `nonAdditive`: Metric values are not additive.
+          description: "How to sum the metric's values. Valid values:\n - `fullyAdditive`: Sums the metric over any dimension, concept, or time period.\n - `balance`: Sums the metric over any dimension or concept, but not time period.\n - `nonAdditive`: Metric values are not additive."
           format: enum
       description: Information about the metric, such as its object name, basic information, and additive type.
     servicing.v2.objectconfiguration.MetricTypeDetailsDTO:
@@ -5247,12 +4918,7 @@ components:
           description: The metric's formula written in Visier Formula Language (VFL).
         dataType:
           type: string
-          description: |-
-            The metric's data type. Valid values:
-
-             `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,
-             `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,
-             `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`.
+          description: "The metric's data type. Valid values:\n\n `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
         visibleInAnalytics:
           type: boolean
           description: If `true`, the object is visible to end users in the solution. Default is `true`.
@@ -5284,10 +4950,7 @@ components:
             - Success
             - Fail
           type: string
-          description: |-
-            The end result of the process. Valid values:
-             - `Success`: The outcome is considered successful; for example, Hired. This is the default.
-             - `Fail`: The outcome is considered a failure; for example, Rejected.
+          description: "The end result of the process. Valid values:\n - `Success`: The outcome is considered successful; for example, Hired. This is the default.\n - `Fail`: The outcome is considered a failure; for example, Rejected."
           format: enum
         mappedMemberList:
           allOf:
@@ -5317,12 +4980,7 @@ components:
       properties:
         dataType:
           type: string
-          description: |-
-            The property's data type. Valid values:
-
-             `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,
-             `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,
-             `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`.
+          description: "The property's data type. Valid values:\n\n `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
         primitiveType:
           type: string
           description: The primitive data type, such as String, Integer, or Boolean.
@@ -5427,12 +5085,7 @@ components:
       properties:
         dataType:
           type: string
-          description: |-
-            The property's data type. Valid values:
-
-             `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,
-             `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,
-             `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`.
+          description: "The property's data type. Valid values:\n\n `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
         primitiveType:
           type: string
           description: The primitive data type, such as String, Integer, or Boolean.
@@ -5508,10 +5161,7 @@ components:
             - forward
             - reverse
           type: string
-          description: |-
-            The direction of the reference between analytic objects.
-             - `reverse`: The reference direction is `reverse`. For example, the object reference comes from Employee.
-             - `forward`: The reference direction is `forward`. For example, the object references to Employee.
+          description: "The direction of the reference between analytic objects.\n - `reverse`: The reference direction is `reverse`. For example, the object reference comes from Employee.\n - `forward`: The reference direction is `forward`. For example, the object references to Employee."
           format: enum
         subject:
           type: string
@@ -5582,14 +5232,7 @@ components:
             - TenantShared
             - Draft
           type: string
-          description: |-
-            Indicates where the object originates from and whether the object has been modified. Valid values:
-             - `Unknown`: The source is not known.
-             - `BP`: The object originates from Visier's Blueprint and is not changed at the tenant level.
-             - `Tenant`: The object only exists in the tenant and doesn't exist in Visier's Blueprint.
-             - `TenantOverride`: The object originates from Visier's Blueprint and is changed at the tenant level.
-             - `TenantShared`: The object is non-versioned, only exists in the tenant and doesn’t exist in Visier's Blueprint, and is shareable with other users in the tenant.
-             - `Draft`: The object only exists in the specified draft project.
+          description: "Indicates where the object originates from and whether the object has been modified. Valid values:\n - `Unknown`: The source is not known.\n - `BP`: The object originates from Visier's Blueprint and is not changed at the tenant level.\n - `Tenant`: The object only exists in the tenant and doesn't exist in Visier's Blueprint.\n - `TenantOverride`: The object originates from Visier's Blueprint and is changed at the tenant level.\n - `TenantShared`: The object is non-versioned, only exists in the tenant and doesn’t exist in Visier's Blueprint, and is shareable with other users in the tenant.\n - `Draft`: The object only exists in the specified draft project."
           format: enum
         edited:
           type: string
@@ -5646,32 +5289,24 @@ components:
 tags:
   - name: DataModel
     x-displayName: Data Model
-    description: |-
-      Discover the objects that make up your Visier solution and provide detailed information on the object's schema.
-      You can retrieve detailed information about objects in Visier by retrieving a list of all objects or retrieving information about an object by object ID.
-      The types of objects you can retrieve using the data model API are:
-        * Analytic objects
-        * Properties
-        * Dimensions
-        * Selection concepts
-        * Metrics
-        * Predictions
+    description: "Discover the objects that make up your Visier solution and provide detailed information on the object's schema.\nYou can retrieve detailed information about objects in Visier by retrieving a list of all objects or retrieving information about an object by object ID.\nThe types of objects you can retrieve using the data model API are:\n  * Analytic objects\n  * Properties\n  * Dimensions\n  * Selection concepts\n  * Metrics\n  * Predictions"
   - name: ObjectConfiguration
     x-displayName: Object Configuration
-    description: |-
-      Manage objects in your analytic model.
+    description: Manage objects in your analytic model.
   - name: ConceptsV2
     x-displayName: Concepts V2
-    description: |-
-      Create, retrieve, update, and delete concepts in your analytic model. You can create, update, and delete one or more concepts in an API call.
+    description: 'Create, retrieve, update, and delete concepts in your analytic model. You can create, update, and delete one or more concepts in an API call.
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: DimensionsV2
     x-displayName: Dimensions V2
-    description: |-
-      Create, retrieve, update, and delete dimensions in your analytic model. You can create, update, and delete one or more dimensions in an API call.
+    description: 'Create, retrieve, update, and delete dimensions in your analytic model. You can create, update, and delete one or more dimensions in an API call.
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
 security:
   - ApiKeyAuth: []
     BearerAuth: []

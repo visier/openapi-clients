@@ -1,6 +1,3 @@
-# Generated with protoc-gen-openapi
-# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
-
 openapi: 3.0.3
 info:
   title: Visier Administration APIs
@@ -8,18 +5,14 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1993
+  version: 22222222.99201.2010
 paths:
   /v1/admin/capabilities:
     get:
       tags:
         - Permissions
       summary: Retrieve a list of all permission capabilities
-      description: |-
-        Retrieve all the permission capabilities in your tenant.
-         You can use the returned capabilities in other API calls when creating or updating permissions to assign the capability to the permission.
-
-         To specify the project in which to retrieve the permission capabilities, provide a project UUID in the `ProjectID` request header.
+      description: "Retrieve all the permission capabilities in your tenant.\n You can use the returned capabilities in other API calls when creating or updating permissions to assign the capability to the permission.\n\n To specify the project in which to retrieve the permission capabilities, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_GetCapabilities
       parameters:
         - name: tenantCode
@@ -45,7 +38,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -56,10 +49,7 @@ paths:
       tags:
         - Permissions
       summary: Retrieve a permission capability's details
-      description: |-
-        Retrieve the details of a specific capability.
-
-         To specify the project in which to retrieve the permission capability, provide a project UUID in the `ProjectID` request header.
+      description: "Retrieve the details of a specific capability.\n\n To specify the project in which to retrieve the permission capability, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_GetCapability
       parameters:
         - name: capabilityId
@@ -91,7 +81,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -102,11 +92,7 @@ paths:
       tags:
         - Permissions
       summary: Retrieve a list of all content packages
-      description: |-
-        Retrieve the list of available content packages.
-         You can use the returned content packages in other API calls when creating or updating permissions to add the content package to the permission.
-
-         To specify the project in which to retrieve the available content packages, provide a project UUID in the `ProjectID` request header.
+      description: "Retrieve the list of available content packages.\n You can use the returned content packages in other API calls when creating or updating permissions to add the content package to the permission.\n\n To specify the project in which to retrieve the available content packages, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_GetContentPackages
       parameters:
         - name: tenantCode
@@ -116,9 +102,7 @@ paths:
             type: string
         - name: searchString
           in: query
-          description: |-
-            Optional search string to return only content packages whose display name or description contains that search string.
-             If searchString is empty or not provided, the response returns a list of all content packages.
+          description: "Optional search string to return only content packages whose display name or description contains that search string.\n If searchString is empty or not provided, the response returns a list of all content packages."
           schema:
             type: string
         - name: TargetTenantID
@@ -139,7 +123,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -150,10 +134,7 @@ paths:
       tags:
         - Permissions
       summary: Retrieve a content package's details
-      description: |-
-        Retrieve the details of a specific content package.
-
-         To specify the project in which to retrieve a content package, provide a project UUID in the `ProjectID` request header.
+      description: "Retrieve the details of a specific content package.\n\n To specify the project in which to retrieve a content package, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_GetContentPackage
       parameters:
         - name: contentPackageId
@@ -185,7 +166,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -196,13 +177,7 @@ paths:
       tags:
         - Permissions
       summary: Retrieve a list of all data access sets
-      description: |-
-        Retrieve a list of all shareable data access sets. Data access sets define the level of access that users have to properties and property values for the analytic object in a permission. Data access sets also grant access to properties of subjects that are referenced by the analytic object in the permission.
-         You can assign data access sets to a permission when creating or updating permissions.
-
-         To specify the project in which to retrieve the shareable data access sets, provide a project UUID in the `ProjectID` request header.
-
-         **Note:** If the number of valid data access sets exceeds the default limit of 100, the response status code is 206. To retrieve more than 100 data access sets, set `limit` to a higher number.
+      description: "Retrieve a list of all shareable data access sets. Data access sets define the level of access that users have to properties and property values for the analytic object in a permission. Data access sets also grant access to properties of subjects that are referenced by the analytic object in the permission.\n You can assign data access sets to a permission when creating or updating permissions.\n\n To specify the project in which to retrieve the shareable data access sets, provide a project UUID in the `ProjectID` request header.\n\n **Note:** If the number of valid data access sets exceeds the default limit of 100, the response status code is 206. To retrieve more than 100 data access sets, set `limit` to a higher number."
       operationId: Permissions_GetDataAccessSets
       parameters:
         - name: analyticObjectId
@@ -212,10 +187,7 @@ paths:
             type: string
         - name: with
           in: query
-          description: |-
-            The information about the data access set to include in the request response.
-             * If empty, returns basic information for the data access set, including its unique ID, display name, description, and analytic object ID.
-             * If `details`, returns basic information and property data access information (`propertyAccessConfigs`).
+          description: "The information about the data access set to include in the request response.\n * If empty, returns basic information for the data access set, including its unique ID, display name, description, and analytic object ID.\n * If `details`, returns basic information and property data access information (`propertyAccessConfigs`)."
           schema:
             type: array
             items:
@@ -249,7 +221,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -259,10 +231,7 @@ paths:
       tags:
         - Permissions
       summary: Update shareable data access sets
-      description: |-
-        Update shareable data access sets. Shareable data access sets let you reuse common data access configurations in multiple permissions.
-
-         To specify the project in which to update shareable data access sets, provide a project UUID in the `ProjectID` request header.
+      description: "Update shareable data access sets. Shareable data access sets let you reuse common data access configurations in multiple permissions.\n\n To specify the project in which to update shareable data access sets, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_UpdateDataAccessSets
       parameters:
         - name: TargetTenantID
@@ -294,7 +263,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -304,10 +273,7 @@ paths:
       tags:
         - Permissions
       summary: Create shareable data access sets
-      description: |-
-        Create shareable data access sets. Shareable data access sets let you reuse common data access configurations in multiple permissions.
-
-         To specify the project in which to create shareable data access sets, provide a project UUID in the `ProjectID` request header.
+      description: "Create shareable data access sets. Shareable data access sets let you reuse common data access configurations in multiple permissions.\n\n To specify the project in which to create shareable data access sets, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_CreateDataAccessSets
       parameters:
         - name: TargetTenantID
@@ -339,7 +305,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -350,10 +316,7 @@ paths:
       tags:
         - Permissions
       summary: Retrieve a data access set's details
-      description: |-
-        Retrieve the details of a specific shareable data access set. You must know the ID of the data access set to retrieve its details. To retrieve data access set IDs, see `GET v1/admin/data-access-sets`.
-
-         To specify the project in which to retrieve the shareable data access set, provide a project UUID in the `ProjectID` request header.
+      description: "Retrieve the details of a specific shareable data access set. You must know the ID of the data access set to retrieve its details. To retrieve data access set IDs, see `GET v1/admin/data-access-sets`.\n\n To specify the project in which to retrieve the shareable data access set, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_GetDataAccessSet
       parameters:
         - name: dataAccessSetId
@@ -385,7 +348,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -396,29 +359,19 @@ paths:
       tags:
         - Permissions
       summary: Retrieve a list of data security objects
-      description: |-
-        Retrieve the list of available data security objects.
-         Data security objects are analytic objects and their related objects that are available to define
-         permissions' data security profiles.
-
-         To specify the project in which to retrieve the available data security objects, provide a project UUID in the `ProjectID` request header.
+      description: "Retrieve the list of available data security objects.\n Data security objects are analytic objects and their related objects that are available to define\n permissions' data security profiles.\n\n To specify the project in which to retrieve the available data security objects, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_GetDataSecurityObjects
       parameters:
         - name: id
           in: query
-          description: |-
-            The unique identifiers of the data security objects (analytic objects) to retrieve.
-             Default is all data security objects.
+          description: "The unique identifiers of the data security objects (analytic objects) to retrieve.\n Default is all data security objects."
           schema:
             type: array
             items:
               type: string
         - name: includeDetails
           in: query
-          description: |-
-            If `true`, the response includes the analytic objects (display name, ID, and object type), related objects,
-             securable properties, and securable dimensions. If `false`, the response only includes analytic objects
-             (display name, ID, and object type). Default is `false`.
+          description: "If `true`, the response includes the analytic objects (display name, ID, and object type), related objects,\n securable properties, and securable dimensions. If `false`, the response only includes analytic objects\n (display name, ID, and object type). Default is `false`."
           schema:
             type: boolean
         - name: tenantCode
@@ -444,7 +397,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -455,10 +408,7 @@ paths:
       tags:
         - Permissions
       summary: Retrieve a list of all permissions
-      description: |-
-        Retrieve the full list of user permissions in your tenant.
-
-         To specify the project in which to retrieve permissions, provide a project UUID in the `ProjectID` request header.
+      description: "Retrieve the full list of user permissions in your tenant.\n\n To specify the project in which to retrieve permissions, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_GetPermissions
       parameters:
         - name: tenantCode
@@ -468,17 +418,12 @@ paths:
             type: string
         - name: includeDetails
           in: query
-          description: |-
-            If `true`, returns the permission's details. If `false`, only returns the permissions' ID, display name,
-             and description. Default is `false`.
+          description: "If `true`, returns the permission's details. If `false`, only returns the permissions' ID, display name,\n and description. Default is `false`."
           schema:
             type: boolean
         - name: includeDetailsWithStatus
           in: query
-          description: |-
-            If `true`, returns the validity statuses for the permission's properties in data access sets and the
-             permission's dimensions, dimension members, and hierarchy properties in member filters. If `false`,
-             doesn't return validity status information. Default is `false`.
+          description: "If `true`, returns the validity statuses for the permission's properties in data access sets and the\n permission's dimensions, dimension members, and hierarchy properties in member filters. If `false`,\n doesn't return validity status information. Default is `false`."
           schema:
             type: boolean
         - name: TargetTenantID
@@ -504,7 +449,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -514,10 +459,7 @@ paths:
       tags:
         - Permissions
       summary: Update permissions
-      description: |-
-        Update existing permissions.
-
-         To specify the project in which to update permissions, provide a project UUID in the `ProjectID` request header.
+      description: "Update existing permissions.\n\n To specify the project in which to update permissions, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_UpdatePermissions
       parameters:
         - name: tenantCode
@@ -554,7 +496,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -564,10 +506,7 @@ paths:
       tags:
         - Permissions
       summary: Create permissions
-      description: |-
-        Create new permissions. Administrating tenant users can specify the tenant in which to add these permissions.
-
-         To specify the project in which to create permissions, provide a project UUID in the `ProjectID` request header.
+      description: "Create new permissions. Administrating tenant users can specify the tenant in which to add these permissions.\n\n To specify the project in which to create permissions, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_CreatePermissions
       parameters:
         - name: tenantCode
@@ -604,7 +543,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -614,10 +553,7 @@ paths:
       tags:
         - Permissions
       summary: Delete permissions
-      description: |-
-        Delete existing permissions.
-
-         To specify the project in which to delete permissions, provide a project UUID in the `ProjectID` request header.
+      description: "Delete existing permissions.\n\n To specify the project in which to delete permissions, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_DeletePermissions
       parameters:
         - name: tenantCode
@@ -649,7 +585,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -660,12 +596,7 @@ paths:
       tags:
         - UsersV1
       summary: Assign permissions to users
-      description: |-
-        This API allows you to assign a permission to specific users. Administrating tenant users can assign permissions
-         to users in the administrating tenant and in the analytic tenants those users belong to.
-
-         To assign permissions to users in a project for the administrating tenant, provide a project UUID in the `ProjectID` request header.
-         Administrating tenants can assign permissions to users in analytic tenants by providing a tenant code and project ID in the request body.
+      description: "This API allows you to assign a permission to specific users. Administrating tenant users can assign permissions\n to users in the administrating tenant and in the analytic tenants those users belong to.\n\n To assign permissions to users in a project for the administrating tenant, provide a project UUID in the `ProjectID` request header.\n Administrating tenants can assign permissions to users in analytic tenants by providing a tenant code and project ID in the request body."
       operationId: UsersV1_AssignPermissions
       parameters:
         - name: ProjectID
@@ -697,7 +628,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -707,12 +638,7 @@ paths:
       tags:
         - UsersV1
       summary: Remove permissions from users
-      description: |-
-        This API allows you to remove a permission from specific users. Administrating tenant users can remove permissions
-         from users in the administrating tenant and in the analytic tenants those users belong to.
-
-         To remove permission from users in a project for the administrating tenant, provide a project UUID in the `ProjectID` request header.
-         Administrating tenants can remove permissions from users in analytic tenants by providing a tenant code and project ID in the request body.
+      description: "This API allows you to remove a permission from specific users. Administrating tenant users can remove permissions\n from users in the administrating tenant and in the analytic tenants those users belong to.\n\n To remove permission from users in a project for the administrating tenant, provide a project UUID in the `ProjectID` request header.\n Administrating tenants can remove permissions from users in analytic tenants by providing a tenant code and project ID in the request body."
       operationId: UsersV1_RemovePermissions
       parameters:
         - name: ProjectID
@@ -744,7 +670,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -755,10 +681,7 @@ paths:
       tags:
         - Permissions
       summary: Retrieve a permission's details
-      description: |-
-        Retrieve the details for a specified permission.
-
-         To specify the project in which to retrieve the permission, provide a project UUID in the `ProjectID` request header.
+      description: "Retrieve the details for a specified permission.\n\n To specify the project in which to retrieve the permission, provide a project UUID in the `ProjectID` request header."
       operationId: Permissions_GetPermission
       parameters:
         - name: permissionId
@@ -774,10 +697,7 @@ paths:
             type: string
         - name: includeDetailsWithStatus
           in: query
-          description: |-
-            If `true`, returns the validity statuses for the permission's properties in data access sets and the
-             permission's dimensions, dimension members, and hierarchy properties in member filters. If `false`,
-             doesn't return validity status information. Default is `false`.
+          description: "If `true`, returns the validity statuses for the permission's properties in data access sets and the\n permission's dimensions, dimension members, and hierarchy properties in member filters. If `false`,\n doesn't return validity status information. Default is `false`."
           schema:
             type: string
         - name: TargetTenantID
@@ -803,7 +723,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -814,12 +734,7 @@ paths:
       tags:
         - UsersV1
       summary: Retrieve users that are assigned a specific permission
-      description: |-
-        This API allows you to retrieve all the users that are assigned a specified permission. You must know the ID
-         of the permission you want to retrieve users for.
-
-         To specify the project in which to retrieve users assigned to a specific permission for the login tenant, provide
-         a project UUID in the `ProjectID` request header. If omitted, the request retrieves users assigned to a specific permission from production.
+      description: "This API allows you to retrieve all the users that are assigned a specified permission. You must know the ID\n of the permission you want to retrieve users for.\n\n To specify the project in which to retrieve users assigned to a specific permission for the login tenant, provide\n a project UUID in the `ProjectID` request header. If omitted, the request retrieves users assigned to a specific permission from production."
       operationId: UsersV1_GetPermissionAssignedUsers
       parameters:
         - name: permissionId
@@ -830,10 +745,7 @@ paths:
             type: string
         - name: includeUserGroups
           in: query
-          description: |-
-            If `true`, the response returns a list of all users that are assigned the permission, including users that are
-             assigned the permission through a user group.
-             If `false`, the response returns a list of the users that are directly assigned the permission.
+          description: "If `true`, the response returns a list of all users that are assigned the permission, including users that are\n assigned the permission through a user group.\n If `false`, the response returns a list of the users that are directly assigned the permission."
           schema:
             type: boolean
         - name: tenantFilter
@@ -876,7 +788,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -914,7 +826,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -945,7 +857,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -956,9 +868,7 @@ paths:
       tags:
         - ProductionVersions
       summary: Perform an operation on a production version
-      description: |-
-        Perform operations on a specific production version. The following operations are supported:
-         * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
+      description: "Perform operations on a specific production version. The following operations are supported:\n * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version."
       operationId: ProductionVersions_PostProductionVersion
       parameters:
         - name: productionVersionId
@@ -985,7 +895,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -996,9 +906,7 @@ paths:
       tags:
         - Profiles
       summary: Retrieve a list of all profiles
-      description: |-
-        Get a list of all available profiles. For administrating tenants,
-         this retrieves all administrating tenant profiles.
+      description: "Get a list of all available profiles. For administrating tenants,\n this retrieves all administrating tenant profiles."
       operationId: Profiles_GetAllProfiles
       parameters:
         - name: TargetTenantID
@@ -1013,7 +921,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1024,10 +932,7 @@ paths:
       tags:
         - Profiles
       summary: Retrieve a list of analytic tenant profiles
-      description: |-
-        Retrieve a list of profiles available for analytic tenants.
-
-         **Note:** Administrating tenants only.
+      description: "Retrieve a list of profiles available for analytic tenants.\n\n **Note:** Administrating tenants only."
       operationId: Profiles_GetAnalyticProfiles
       responses:
         default:
@@ -1036,7 +941,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1047,10 +952,7 @@ paths:
       tags:
         - Profiles
       summary: Retrieve the details of an analytic tenant profile
-      description: |-
-        Get the details of an analytic tenant profile.
-
-         **Note:** Administrating tenants only.
+      description: "Get the details of an analytic tenant profile.\n\n **Note:** Administrating tenants only."
       operationId: Profiles_GetAnalyticProfileDetail
       parameters:
         - name: profileId
@@ -1066,7 +968,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1077,14 +979,7 @@ paths:
       tags:
         - Profiles
       summary: Assign an analytic tenant profile to administrating tenant users
-      description: |-
-        Assign an analytic tenant profile to a list of administrating tenant users
-         for a list of analytic tenants.
-
-         **Note:**
-          - Administrating tenants only.
-          - You can revoke a profile from a user with this request by updating the validityEndTime to be
-            "less than" the current time (that is, in the past).
+      description: "Assign an analytic tenant profile to a list of administrating tenant users\n for a list of analytic tenants.\n\n **Note:**\n  - Administrating tenants only.\n  - You can revoke a profile from a user with this request by updating the validityEndTime to be\n    \"less than\" the current time (that is, in the past)."
       operationId: Profiles_AssignAnalyticProfile
       parameters:
         - name: profileId
@@ -1106,7 +1001,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1117,10 +1012,7 @@ paths:
       tags:
         - Profiles
       summary: Remove an analytic tenant profile from administrating tenant users
-      description: |-
-        Remove an analytic tenant profile from a list of administrating tenant users for a list of analytic tenants.
-
-         **Note:** Administrating tenants only.
+      description: "Remove an analytic tenant profile from a list of administrating tenant users for a list of analytic tenants.\n\n **Note:** Administrating tenants only."
       operationId: Profiles_RemoveAnalyticProfile
       parameters:
         - name: profileId
@@ -1147,7 +1039,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1158,9 +1050,7 @@ paths:
       tags:
         - Profiles
       summary: Retrieve the details of a profile
-      description: |-
-        Get the details of a specific profile. For administrating tenants, this retrieves
-         the details of administrating tenant profiles.
+      description: "Get the details of a specific profile. For administrating tenants, this retrieves\n the details of administrating tenant profiles."
       operationId: Profiles_GetProfileDetail
       parameters:
         - name: profileId
@@ -1181,7 +1071,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1192,9 +1082,7 @@ paths:
       tags:
         - Profiles
       summary: Assign a profile to a list of users
-      description: |-
-        Assign a profile to a list of users. For administrating tenants,
-         this assigns an administrating tenant profile to a list of users.
+      description: "Assign a profile to a list of users. For administrating tenants,\n this assigns an administrating tenant profile to a list of users."
       operationId: Profiles_AssignProfile
       parameters:
         - name: profileId
@@ -1221,7 +1109,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1232,9 +1120,7 @@ paths:
       tags:
         - Profiles
       summary: Remove a profile from a list of users
-      description: |-
-        Remove a profile from a list of users. For administrating tenants, this
-         removes an administrating tenant profile from a list of users.
+      description: "Remove a profile from a list of users. For administrating tenants, this\n removes an administrating tenant profile from a list of users."
       operationId: Profiles_RemoveProfile
       parameters:
         - name: profileId
@@ -1261,7 +1147,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1272,21 +1158,12 @@ paths:
       tags:
         - Projects
       summary: Retrieve a list of draft projects accessible to the user
-      description: |-
-        Get a list of draft projects accessible to the requesting user in the tenant.
-
-         A project is accessible if it is owned by the user or shared to the user.
+      description: "Get a list of draft projects accessible to the requesting user in the tenant.\n\n A project is accessible if it is owned by the user or shared to the user."
       operationId: Projects_GetProjects
       parameters:
         - name: with
           in: query
-          description: |-
-            The types of draft projects to include in the request response.
-             * If empty, returns all the `Open` draft projects.
-             * If `Open`, returns all Open draft projects.
-             * If `Approval`, returns all draft projects in the approval stage. Changes cannot made in Approval projects.
-             * If `Rejected`, returns all draft projects that have been rejected. Changes cannot be committed in Rejected projects.
-             * If `Archived`, returns all draft projects that have been archived. Changes cannot be committed in Archived projects.
+          description: "The types of draft projects to include in the request response.\n * If empty, returns all the `Open` draft projects.\n * If `Open`, returns all Open draft projects.\n * If `Approval`, returns all draft projects in the approval stage. Changes cannot made in Approval projects.\n * If `Rejected`, returns all draft projects that have been rejected. Changes cannot be committed in Rejected projects.\n * If `Archived`, returns all draft projects that have been archived. Changes cannot be committed in Archived projects."
           schema:
             type: array
             items:
@@ -1309,7 +1186,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1340,7 +1217,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1351,10 +1228,7 @@ paths:
       tags:
         - Projects
       summary: Retrieve a draft project's information
-      description: |-
-        Retrieve the details of an accessible draft project. You must know the ID of the project to retrieve its details. To retrieve draft project IDs, see `GET /v1/admin/projects`.
-
-         A project is accessible if it is owned by the user or shared to the user.
+      description: "Retrieve the details of an accessible draft project. You must know the ID of the project to retrieve its details. To retrieve draft project IDs, see `GET /v1/admin/projects`.\n\n A project is accessible if it is owned by the user or shared to the user."
       operationId: Projects_GetProject
       parameters:
         - name: projectId
@@ -1375,7 +1249,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1385,9 +1259,7 @@ paths:
       tags:
         - Projects
       summary: Perform an operation on a draft project
-      description: |-
-        Perform operations on a draft project. The following operations are supported:
-         * `commitAndPublish`: Commits project changes and publishes the project to production.
+      description: "Perform operations on a draft project. The following operations are supported:\n * `commitAndPublish`: Commits project changes and publishes the project to production."
       operationId: Projects_RunProjectOperation
       parameters:
         - name: projectId
@@ -1413,7 +1285,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1444,7 +1316,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1488,7 +1360,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1525,7 +1397,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1536,12 +1408,7 @@ paths:
       tags:
         - SystemStatus
       summary: Check the overall current status of Visier's systems
-      description: |-
-        Check the current overall status of Visier's systems.
-
-         The overall status is one of:
-         * ``UP`` : All systems are operational.
-         * `DOWN`: At least one system is not fully operational.
+      description: "Check the current overall status of Visier's systems.\n\n The overall status is one of:\n * ``UP`` : All systems are operational.\n * `DOWN`: At least one system is not fully operational."
       operationId: SystemStatus_SystemStatus
       parameters:
         - name: TargetTenantID
@@ -1556,7 +1423,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1566,12 +1433,7 @@ paths:
       tags:
         - SystemStatus
       summary: Check the overall current status of Visier's systems
-      description: |-
-        Check the current overall status of Visier's systems.
-
-         The overall status is one of:
-         * ``UP`` : All systems are operational.
-         * `DOWN`: At least one system is not fully operational.
+      description: "Check the current overall status of Visier's systems.\n\n The overall status is one of:\n * ``UP`` : All systems are operational.\n * `DOWN`: At least one system is not fully operational."
       operationId: SystemStatus_PostSystemStatus
       parameters:
         - name: TargetTenantID
@@ -1586,7 +1448,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1597,9 +1459,7 @@ paths:
       tags:
         - TenantsV1
       summary: Retrieve a list of all analytic tenants
-      description: |-
-        Retrieve the full list of analytic tenants managed by you with their current states and the
-         content modules assigned to them, and all other relevant details for the tenants if requested.
+      description: "Retrieve the full list of analytic tenants managed by you with their current states and the\n content modules assigned to them, and all other relevant details for the tenants if requested."
       operationId: TenantsV1_GetTenants
       parameters:
         - name: limit
@@ -1626,7 +1486,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1636,15 +1496,7 @@ paths:
       tags:
         - TenantsV1
       summary: Add an analytic tenant
-      description: |-
-        Prior to processing and loading an analytic tenant's data files, you must provision, or create, that tenant.
-         A provisioned analytic tenant is automatically enabled. If the tenant's data is loaded after provisioning, that
-         data is immediately accessible by their users.
-
-         Create an analytic tenant and identify the applications assigned to the tenant. Visier
-         organizes content under a set of modules.
-
-         Contact Visier Support to determine the list of modules allocated to you.
+      description: "Prior to processing and loading an analytic tenant's data files, you must provision, or create, that tenant.\n A provisioned analytic tenant is automatically enabled. If the tenant's data is loaded after provisioning, that\n data is immediately accessible by their users.\n\n Create an analytic tenant and identify the applications assigned to the tenant. Visier\n organizes content under a set of modules.\n\n Contact Visier Support to determine the list of modules allocated to you."
       operationId: TenantsV1_AddTenant
       requestBody:
         content:
@@ -1659,7 +1511,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1670,14 +1522,7 @@ paths:
       tags:
         - TenantsV1
       summary: Add analytic tenants
-      description: |-
-        Prior to processing and loading an analytic tenant's data files, you must provision, or create, that tenant.
-         A provisioned analytic tenant is automatically enabled. If the tenant's data is loaded after provisioning, that
-         data is immediately accessible by their users.
-
-         Create one or more analytic tenants and identify the applications assigned to the tenants. The maximum number of tenants to create in one request is 200.
-
-         Contact Visier Support to determine the list of modules allocated to you.
+      description: "Prior to processing and loading an analytic tenant's data files, you must provision, or create, that tenant.\n A provisioned analytic tenant is automatically enabled. If the tenant's data is loaded after provisioning, that\n data is immediately accessible by their users.\n\n Create one or more analytic tenants and identify the applications assigned to the tenants. The maximum number of tenants to create in one request is 200.\n\n Contact Visier Support to determine the list of modules allocated to you."
       operationId: TenantsV1_AddTenants
       requestBody:
         content:
@@ -1692,7 +1537,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1703,16 +1548,12 @@ paths:
       tags:
         - TenantsV1
       summary: Retrieve an analytic tenant's details
-      description: |-
-        Retrieve all details for a specified analytic tenant. Doing so allows you to see the current state
-         of the tenant, the content modules assigned to it, and all other relevant details for the tenant.
+      description: "Retrieve all details for a specified analytic tenant. Doing so allows you to see the current state\n of the tenant, the content modules assigned to it, and all other relevant details for the tenant."
       operationId: TenantsV1_GetTenant
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the analytic tenant code."
           required: true
           schema:
             type: string
@@ -1723,7 +1564,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1733,14 +1574,7 @@ paths:
       tags:
         - TenantsV1
       summary: Update an analytic tenant
-      description: |-
-        You may need to update analytic tenants as they grow and as your organization upgrades the content available to
-         them. You may also encounter a scenario where an analytic tenant transitions across different industries.
-
-         To ensure that the analytic tenant receives accurate benchmarks and predictive functionality, update their
-         industry code in the Visier system.
-
-         You can use this API to update any field on an analytic tenant, except `tenantCode`.
+      description: "You may need to update analytic tenants as they grow and as your organization upgrades the content available to\n them. You may also encounter a scenario where an analytic tenant transitions across different industries.\n\n To ensure that the analytic tenant receives accurate benchmarks and predictive functionality, update their\n industry code in the Visier system.\n\n You can use this API to update any field on an analytic tenant, except `tenantCode`."
       operationId: TenantsV1_UpdateTenant
       parameters:
         - name: tenantId
@@ -1762,7 +1596,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1772,22 +1606,12 @@ paths:
       tags:
         - TenantsV1
       summary: Deprovision an analytic tenant
-      description: |-
-        Warning! Deprovisioning an analytic tenant is not reversible.
-         Before deprovisioning, you must disable an analytic tenant. For more information, see **`/v1/admin/tenants/{tenantId}/disable`**.
-
-         This API removes an analytic tenant permanently from the Visier system. If you are unsure whether an analytic tenant
-         may be re-enabled on any of the Visier modules at any time, you may instead want to disable the analytic tenant.
-
-         If successful, the response returns the status "Deprovisioned". This indicates that the tenant is scheduled for
-         deprovisioning, which may take several days to complete.
+      description: "Warning! Deprovisioning an analytic tenant is not reversible.\n Before deprovisioning, you must disable an analytic tenant. For more information, see **`/v1/admin/tenants/{tenantId}/disable`**.\n\n This API removes an analytic tenant permanently from the Visier system. If you are unsure whether an analytic tenant\n may be re-enabled on any of the Visier modules at any time, you may instead want to disable the analytic tenant.\n\n If successful, the response returns the status \"Deprovisioned\". This indicates that the tenant is scheduled for\n deprovisioning, which may take several days to complete."
       operationId: TenantsV1_DeleteTenant
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the analytic tenant code."
           required: true
           schema:
             type: string
@@ -1798,7 +1622,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1809,17 +1633,12 @@ paths:
       tags:
         - TenantsV1
       summary: Disable an analytic tenant
-      description: |-
-        Disable an analytic tenant and remove access to Visier visualizations for the tenant's users.
-
-         You must disable an analytic tenant before deprovisioning, or removing, it from the system.
+      description: "Disable an analytic tenant and remove access to Visier visualizations for the tenant's users.\n\n You must disable an analytic tenant before deprovisioning, or removing, it from the system."
       operationId: TenantsV1_DisableTenant
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the analytic tenant code."
           required: true
           schema:
             type: string
@@ -1830,7 +1649,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1841,18 +1660,12 @@ paths:
       tags:
         - TenantsV1
       summary: Enable an analytic tenant
-      description: |-
-        An analytic tenant is enabled when you provision or create the tenant.
-
-         Use this API to enable a tenant that you have specifically disabled; for example, if you previously did not
-         want that tenant to have access to Visier visualizations, but now do.
+      description: "An analytic tenant is enabled when you provision or create the tenant.\n\n Use this API to enable a tenant that you have specifically disabled; for example, if you previously did not\n want that tenant to have access to Visier visualizations, but now do."
       operationId: TenantsV1_EnableTenant
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the analytic tenant code."
           required: true
           schema:
             type: string
@@ -1863,7 +1676,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1874,10 +1687,7 @@ paths:
       tags:
         - UsersV1
       summary: Retrieve a list of all user groups
-      description: |-
-        This API allows you to retrieve the full list of user groups in a tenant.
-
-         To specify the project in which to retrieve user groups for a tenant, provide a project UUID in the `ProjectID` request header. If omitted, the request retrieves user information from production.
+      description: "This API allows you to retrieve the full list of user groups in a tenant.\n\n To specify the project in which to retrieve user groups for a tenant, provide a project UUID in the `ProjectID` request header. If omitted, the request retrieves user information from production."
       operationId: UsersV1_GetAllUserGroups
       parameters:
         - name: tenantCode
@@ -1915,7 +1725,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1926,10 +1736,7 @@ paths:
       tags:
         - UsersV1
       summary: Assign permissions to user groups
-      description: |-
-        This API allows you to assign a permission to specific user groups. This assigns the permission to all users in the user group.
-
-         To assign permissions to user groups in a project, provide a project UUID in the `ProjectID` request header.
+      description: "This API allows you to assign a permission to specific user groups. This assigns the permission to all users in the user group.\n\n To assign permissions to user groups in a project, provide a project UUID in the `ProjectID` request header."
       operationId: UsersV1_AssignPermissionsToUserGroups
       parameters:
         - name: ProjectID
@@ -1956,7 +1763,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1966,10 +1773,7 @@ paths:
       tags:
         - UsersV1
       summary: Remove permissions from user groups
-      description: |-
-        This API allows you to remove a permission from specific user groups.
-
-         To remove permissions from user groups in a project, provide a project UUID in the `ProjectID` request header.
+      description: "This API allows you to remove a permission from specific user groups.\n\n To remove permissions from user groups in a project, provide a project UUID in the `ProjectID` request header."
       operationId: UsersV1_RevokePermissionsFromUserGroups
       parameters:
         - name: ProjectID
@@ -1996,7 +1800,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2007,13 +1811,7 @@ paths:
       tags:
         - UsersV1
       summary: Assign users to user groups
-      description: |-
-        This API allows you to assign users to specific user groups.
-
-         To assign users to user groups in a project for the administrating tenant, provide a project UUID in the `ProjectID` request header.
-         Administrating tenants can assign users to user groups in multiple analytic tenants by providing a tenant code and project ID in the request body.
-
-         We recommend that administrating tenants set the analytic tenant in which to execute the API call using the `TargetTenantID` request header.
+      description: "This API allows you to assign users to specific user groups.\n\n To assign users to user groups in a project for the administrating tenant, provide a project UUID in the `ProjectID` request header.\n Administrating tenants can assign users to user groups in multiple analytic tenants by providing a tenant code and project ID in the request body.\n\n We recommend that administrating tenants set the analytic tenant in which to execute the API call using the `TargetTenantID` request header."
       operationId: UsersV1_AddUsersToUserGroup
       parameters:
         - name: ProjectID
@@ -2045,7 +1843,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2055,13 +1853,7 @@ paths:
       tags:
         - UsersV1
       summary: Remove users from user groups
-      description: |-
-        This API allows you to remove users from specific user groups.
-
-         To remove users from user groups in a project for the administrating tenant, provide a project UUID in the `ProjectID` request header.
-         Administrating tenants can remove users to user groups in multiple analytic tenants by providing a tenant code and project ID in the request body.
-
-         We recommend that administrating tenants set the analytic tenant in which to execute the API call using the `TargetTenantID` request header.
+      description: "This API allows you to remove users from specific user groups.\n\n To remove users from user groups in a project for the administrating tenant, provide a project UUID in the `ProjectID` request header.\n Administrating tenants can remove users to user groups in multiple analytic tenants by providing a tenant code and project ID in the request body.\n\n We recommend that administrating tenants set the analytic tenant in which to execute the API call using the `TargetTenantID` request header."
       operationId: UsersV1_RemoveUsersFromUserGroup
       parameters:
         - name: ProjectID
@@ -2093,7 +1885,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2104,12 +1896,7 @@ paths:
       tags:
         - UsersV1
       summary: Retrieve a list of user group users
-      description: |-
-        This API allows you to retrieve the list of users explicitly assigned to a user group. Users that are implicitly
-         included in the user group through the user group's dynamic filters are not returned by this endpoint.
-
-         To specify the project in which to retrieve user group users for the login tenant, provide
-         a project UUID in the `ProjectID` request header. If omitted, the request retrieves user group users from production.
+      description: "This API allows you to retrieve the list of users explicitly assigned to a user group. Users that are implicitly\n included in the user group through the user group's dynamic filters are not returned by this endpoint.\n\n To specify the project in which to retrieve user group users for the login tenant, provide\n a project UUID in the `ProjectID` request header. If omitted, the request retrieves user group users from production."
       operationId: UsersV1_GetUserGroupUsers
       parameters:
         - name: userGroupId
@@ -2153,7 +1940,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2164,10 +1951,7 @@ paths:
       tags:
         - UsersV1
       summary: Retrieve a list of all users
-      description: |-
-        This API allows you to retrieve the full list of users and their current states.
-
-         To specify the project in which to retrieve user information, provide a project UUID in the `ProjectID` request header. If omitted, the request retrieves user information from production.
+      description: "This API allows you to retrieve the full list of users and their current states.\n\n To specify the project in which to retrieve user information, provide a project UUID in the `ProjectID` request header. If omitted, the request retrieves user information from production."
       operationId: UsersV1_GetAllUsers
       parameters:
         - name: tenantCode
@@ -2220,7 +2004,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2250,7 +2034,7 @@ paths:
               $ref: '#/components/schemas/servicing.UserCreationAPIRequestDTO'
         required: true
       responses:
-        "201":
+        '201':
           description: OK
           content:
             application/json:
@@ -2267,10 +2051,7 @@ paths:
       tags:
         - UsersV1
       summary: Retrieve a user's details
-      description: |-
-        This API allows you to retrieve all details for a specified user.
-
-         To specify the project in which to retrieve user information, provide a project UUID in the `ProjectID` request header. If omitted, the request retrieves user information from production.
+      description: "This API allows you to retrieve all details for a specified user.\n\n To specify the project in which to retrieve user information, provide a project UUID in the `ProjectID` request header. If omitted, the request retrieves user information from production."
       operationId: UsersV1_GetUserDetail
       parameters:
         - name: userId
@@ -2317,7 +2098,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2359,7 +2140,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2395,7 +2176,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2406,10 +2187,7 @@ paths:
       tags:
         - Profiles
       summary: Retrieve an administrating tenant user's analytic tenant profiles
-      description: |-
-        Retrieve a specified user's assigned profiles for analytic tenants.
-
-         **Note:** Administrating tenants only.
+      description: "Retrieve a specified user's assigned profiles for analytic tenants.\n\n **Note:** Administrating tenants only."
       operationId: Profiles_GetAnalyticUserProfile
       parameters:
         - name: userId
@@ -2425,7 +2203,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2436,9 +2214,7 @@ paths:
       tags:
         - Profiles
       summary: Retrieve a user's profiles
-      description: |-
-        Retrieve a specified user's assigned profiles. For administrating tenants,
-         this retrieves a user's administrating tenant profiles.
+      description: "Retrieve a specified user's assigned profiles. For administrating tenants,\n this retrieves a user's administrating tenant profiles."
       operationId: Profiles_GetUserProfile
       parameters:
         - name: userId
@@ -2459,7 +2235,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2470,17 +2246,7 @@ paths:
       tags:
         - TenantsV1
       summary: Validate metric values for all analytic tenants
-      description: |-
-        As you onboard more analytic tenants, you can validate the data visible to your users to ensure it matches the
-         source systems from which it was exported and that it matches what your expectations are for this data.
-
-         The metric values included in the response are the tenant's configured summary metrics. Administrators can
-         configure summary metrics in a project:
-         - Sign in to Visier as an administrator.
-         - In a project, on the navigation bar, click the **Home** button.
-         - Click **Dashboard**, and then click **Edit Summary Metrics**.
-         - Select the metrics that you want to validate, and then close the **Summary Metrics** dialog.
-         - Publish the project to production.
+      description: "As you onboard more analytic tenants, you can validate the data visible to your users to ensure it matches the\n source systems from which it was exported and that it matches what your expectations are for this data.\n\n The metric values included in the response are the tenant's configured summary metrics. Administrators can\n configure summary metrics in a project:\n - Sign in to Visier as an administrator.\n - In a project, on the navigation bar, click the **Home** button.\n - Click **Dashboard**, and then click **Edit Summary Metrics**.\n - Select the metrics that you want to validate, and then close the **Summary Metrics** dialog.\n - Publish the project to production."
       operationId: TenantsV1_ValidateTenants
       parameters:
         - name: limit
@@ -2507,7 +2273,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2518,21 +2284,12 @@ paths:
       tags:
         - TenantsV1
       summary: Validate an analytic tenant's metric values
-      description: |-
-        Retrieve the metric values for an individual analytic tenant. The metric values included in the
-         response are the tenant's configured summary metrics. Administrators can configure summary metrics in a project:
-         - Sign in to Visier as an administrator.
-         - In a project, on the navigation bar, click the **Home button**.
-         - Click **Dashboard**, and then click **Edit Summary Metrics**.
-         - Select the metrics that you want to validate, and then close the **Summary Metrics** dialog.
-         - Publish the project to production.
+      description: "Retrieve the metric values for an individual analytic tenant. The metric values included in the\n response are the tenant's configured summary metrics. Administrators can configure summary metrics in a project:\n - Sign in to Visier as an administrator.\n - In a project, on the navigation bar, click the **Home button**.\n - Click **Dashboard**, and then click **Edit Summary Metrics**.\n - Select the metrics that you want to validate, and then close the **Summary Metrics** dialog.\n - Publish the project to production."
       operationId: TenantsV1_ValidateTenant
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the analytic tenant code."
           required: true
           schema:
             type: string
@@ -2548,7 +2305,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2559,11 +2316,7 @@ paths:
       tags:
         - NetworkSubnets
       summary: Retrieve a list of API network subnets
-      description: |-
-        Retrieve a list of all IP addresses that can call Visier APIs.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve a list of all IP addresses that can call Visier APIs.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: NetworkSubnets_GetApiSubnets
       parameters:
         - name: TargetTenantID
@@ -2572,7 +2325,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2582,15 +2335,7 @@ paths:
       tags:
         - NetworkSubnets
       summary: Update API network subnets
-      description: |-
-        Overwrite the existing list of IP addresses that can call Visier APIs with a new list. IP addresses must use the Classless Inter-Domain Routing (CIDR) format: xxx.xxx.xxx.xxx/xx.
-
-         When updating allowed network subnets, the definition in your API call replaces the prior definition. You must provide the entire definition in the PUT call. If you omit IP addresses from the update request, those IP addresses are removed from the allowlist We recommend that you retrieve the current list of allowed network subnets before you update the list.
-
-         **Note**: By updating the allowed network subnets, you may remove your current IP address from the allowlist. If this happens, you will lock yourself out from making additional API calls. Visier does not allow lock outs unless you set `confirmLockout` to `true`. Default is `false`.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Overwrite the existing list of IP addresses that can call Visier APIs with a new list. IP addresses must use the Classless Inter-Domain Routing (CIDR) format: xxx.xxx.xxx.xxx/xx.\n\n When updating allowed network subnets, the definition in your API call replaces the prior definition. You must provide the entire definition in the PUT call. If you omit IP addresses from the update request, those IP addresses are removed from the allowlist We recommend that you retrieve the current list of allowed network subnets before you update the list.\n\n **Note**: By updating the allowed network subnets, you may remove your current IP address from the allowlist. If this happens, you will lock yourself out from making additional API calls. Visier does not allow lock outs unless you set `confirmLockout` to `true`. Default is `false`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: NetworkSubnets_SetApiSubnets
       parameters:
         - name: TargetTenantID
@@ -2605,7 +2350,7 @@ paths:
               $ref: '#/components/schemas/admin.NetworkSubnetsMessageRequest'
         required: true
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2615,11 +2360,7 @@ paths:
       tags:
         - NetworkSubnets
       summary: Add API network subnets
-      description: |-
-        Add IP addresses to the list of allowed network subnets that can call Visier APIs. IP addresses must use the Classless Inter-Domain Routing (CIDR) format: xxx.xxx.xxx.xxx/xx.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Add IP addresses to the list of allowed network subnets that can call Visier APIs. IP addresses must use the Classless Inter-Domain Routing (CIDR) format: xxx.xxx.xxx.xxx/xx.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: NetworkSubnets_AddApiSubnets
       requestBody:
         content:
@@ -2628,7 +2369,7 @@ paths:
               $ref: '#/components/schemas/admin.NetworkSubnetsMessageRequest'
         required: true
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2638,15 +2379,7 @@ paths:
       tags:
         - NetworkSubnets
       summary: Delete API network subnets
-      description: |-
-        Remove IP addresses from the list of allowed network subnets that can call Visier APIs. IP addresses must use the Classless Inter-Domain Routing (CIDR) format: xxx.xxx.xxx.xxx/xx.
-
-         When updating allowed network subnets, the definition in your API call replaces the prior definition. You must provide the entire definition in the PUT call. If you omit IP addresses from the update request, those IP addresses are removed from the allowlist We recommend that you retrieve the current list of allowed network subnets before you update the list.
-
-         **Note**: By deleting the allowed network subnets, you may remove your current IP address from the allowlist. If this happens, you will lock yourself out from making additional API calls. Visier does not allow lock outs unless you set `confirmLockout` to `true`. Default is `false`.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Remove IP addresses from the list of allowed network subnets that can call Visier APIs. IP addresses must use the Classless Inter-Domain Routing (CIDR) format: xxx.xxx.xxx.xxx/xx.\n\n When updating allowed network subnets, the definition in your API call replaces the prior definition. You must provide the entire definition in the PUT call. If you omit IP addresses from the update request, those IP addresses are removed from the allowlist We recommend that you retrieve the current list of allowed network subnets before you update the list.\n\n **Note**: By deleting the allowed network subnets, you may remove your current IP address from the allowlist. If this happens, you will lock yourself out from making additional API calls. Visier does not allow lock outs unless you set `confirmLockout` to `true`. Default is `false`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: NetworkSubnets_DeleteApiSubnets
       parameters:
         - name: TargetTenantID
@@ -2661,7 +2394,7 @@ paths:
               $ref: '#/components/schemas/admin.NetworkSubnetsMessageRequest'
         required: true
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2672,11 +2405,7 @@ paths:
       tags:
         - ConsolidatedAnalytics
       summary: Retrieve a list of all consolidated analytics tenants
-      description: |-
-        Retrieve the full list of consolidated analytics tenants in your administrating tenant.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve the full list of consolidated analytics tenants in your administrating tenant.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConsolidatedAnalytics_ListTenants
       parameters:
         - name: limit
@@ -2698,7 +2427,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2708,16 +2437,7 @@ paths:
       tags:
         - ConsolidatedAnalytics
       summary: Create a consolidated analytics tenant
-      description: |-
-        Create a consolidated analytics tenant.
-
-         A new CA tenant has no source tenants and no excluded sources.
-
-         **Note:** CA tenant codes must have a prefix of CA. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
-         is the consolidated analytic tenant code.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Create a consolidated analytics tenant.\n\n A new CA tenant has no source tenants and no excluded sources.\n\n **Note:** CA tenant codes must have a prefix of CA. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the consolidated analytic tenant code.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConsolidatedAnalytics_CreateTenant
       requestBody:
         content:
@@ -2732,7 +2452,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2743,13 +2463,7 @@ paths:
       tags:
         - ConsolidatedAnalytics
       summary: Retrieve the details of all consolidated analytics tenants
-      description: |-
-        Retrieve the full list of consolidated analytics tenants and their details in your administrating tenant.
-
-         **Note:** If your consolidated analytics tenants have thousands of source tenants, we recommend that you use the `GET /admin/consolidated-analytics/tenants` endpoint to get all CA tenants and then use the `GET /admin/consolidated-analytics/tenants/{tenantId}/source-tenants` and `GET /admin/consolidated-analytics/tenants/{tenantId}/excluded-sources` endpoints to retrieve information about specific CA tenants.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve the full list of consolidated analytics tenants and their details in your administrating tenant.\n\n **Note:** If your consolidated analytics tenants have thousands of source tenants, we recommend that you use the `GET /admin/consolidated-analytics/tenants` endpoint to get all CA tenants and then use the `GET /admin/consolidated-analytics/tenants/{tenantId}/source-tenants` and `GET /admin/consolidated-analytics/tenants/{tenantId}/excluded-sources` endpoints to retrieve information about specific CA tenants.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConsolidatedAnalytics_ListTenantsWithDetails
       parameters:
         - name: limit
@@ -2771,7 +2485,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2782,18 +2496,12 @@ paths:
       tags:
         - ConsolidatedAnalytics
       summary: Retrieve a consolidated analytics tenant's excluded sources
-      description: |-
-        Retrieve a CA tenant's excluded sources.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve a CA tenant's excluded sources.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConsolidatedAnalytics_ListExcludedSources
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the consolidated analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the consolidated analytic tenant code."
           required: true
           schema:
             type: string
@@ -2804,7 +2512,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2814,21 +2522,12 @@ paths:
       tags:
         - ConsolidatedAnalytics
       summary: Set a consolidated analytics tenant's excluded sources
-      description: |-
-        Define the excluded sources for a consolidated analytics tenant.
-
-         After you create a CA tenant, you may optionally define a list of excluded sources. The excluded sources are the sources whose data is excluded from the CA tenant.
-         You can also use this API to replace the list of excluded sources for an existing CA tenant.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Define the excluded sources for a consolidated analytics tenant.\n\n After you create a CA tenant, you may optionally define a list of excluded sources. The excluded sources are the sources whose data is excluded from the CA tenant.\n You can also use this API to replace the list of excluded sources for an existing CA tenant.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConsolidatedAnalytics_SetExcludedSources
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the consolidated analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the consolidated analytic tenant code."
           required: true
           schema:
             type: string
@@ -2845,7 +2544,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2855,18 +2554,12 @@ paths:
       tags:
         - ConsolidatedAnalytics
       summary: Remove excluded sources from a consolidated analytics tenants
-      description: |-
-        Remove excluded sources from the list of excluded sources for a consolidated analytics tenant.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Remove excluded sources from the list of excluded sources for a consolidated analytics tenant.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConsolidatedAnalytics_RemoveExcludedSources
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the consolidated analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the consolidated analytic tenant code."
           required: true
           schema:
             type: string
@@ -2883,7 +2576,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2893,18 +2586,12 @@ paths:
       tags:
         - ConsolidatedAnalytics
       summary: Add excluded sources to a consolidated analytics tenant
-      description: |-
-        Add excluded sources to the list of excluded sources for a consolidated analytics tenant.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Add excluded sources to the list of excluded sources for a consolidated analytics tenant.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConsolidatedAnalytics_AddExcludedSources
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the consolidated analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the consolidated analytic tenant code."
           required: true
           schema:
             type: string
@@ -2921,7 +2608,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2932,18 +2619,12 @@ paths:
       tags:
         - ConsolidatedAnalytics
       summary: Retrieve a consolidated analytics tenant's source tenants
-      description: |-
-        Retrieve a CA tenant's source tenants.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve a CA tenant's source tenants.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConsolidatedAnalytics_ListSourceTenants
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the consolidated analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the consolidated analytic tenant code."
           required: true
           schema:
             type: string
@@ -2966,7 +2647,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2976,23 +2657,12 @@ paths:
       tags:
         - ConsolidatedAnalytics
       summary: Set a consolidated analytics tenant's source tenants
-      description: |-
-        Define the source tenants for a consolidated analytics tenant.
-
-         After you create a CA tenant, you must define a list of its source tenants. The source tenants are the tenants whose data is aggregated in the CA tenant.
-         You can also use this API to replace the list of source tenants for an existing CA tenant.
-
-         If successful, the response returns an updated list of source tenants.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Define the source tenants for a consolidated analytics tenant.\n\n After you create a CA tenant, you must define a list of its source tenants. The source tenants are the tenants whose data is aggregated in the CA tenant.\n You can also use this API to replace the list of source tenants for an existing CA tenant.\n\n If successful, the response returns an updated list of source tenants.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConsolidatedAnalytics_SetSourceTenants
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the consolidated analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the consolidated analytic tenant code."
           required: true
           schema:
             type: string
@@ -3015,7 +2685,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3025,20 +2695,12 @@ paths:
       tags:
         - ConsolidatedAnalytics
       summary: Remove source tenants from a consolidated analytics tenants
-      description: |-
-        Remove source tenants from the list of source tenants for a consolidated analytics tenant.
-
-         If successful, the response returns an updated list of source tenants.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Remove source tenants from the list of source tenants for a consolidated analytics tenant.\n\n If successful, the response returns an updated list of source tenants.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConsolidatedAnalytics_RemoveSourceTenants
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the consolidated analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the consolidated analytic tenant code."
           required: true
           schema:
             type: string
@@ -3061,7 +2723,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3071,20 +2733,12 @@ paths:
       tags:
         - ConsolidatedAnalytics
       summary: Add source tenants to a consolidated analytics tenant
-      description: |-
-        Add source tenants to the list of source tenants for a consolidated analytics tenant.
-
-         If successful, the response returns an updated list of source tenants.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Add source tenants to the list of source tenants for a consolidated analytics tenant.\n\n If successful, the response returns an updated list of source tenants.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ConsolidatedAnalytics_AddSourceTenants
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the consolidated analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the consolidated analytic tenant code."
           required: true
           schema:
             type: string
@@ -3107,7 +2761,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3118,11 +2772,7 @@ paths:
       tags:
         - EmailDomains
       summary: Retrieve a list of allowed email domains
-      description: |-
-        Retrieve the full list of allowed email domains.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve the full list of allowed email domains.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: EmailDomains_ListAllowedEmailDomains
       responses:
         default:
@@ -3131,7 +2781,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3141,11 +2791,7 @@ paths:
       tags:
         - EmailDomains
       summary: Add domains to the list of allowed domains
-      description: |-
-        Add email address domains to the allowed domains list. The response returns an updated list of allowed email domains.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Add email address domains to the allowed domains list. The response returns an updated list of allowed email domains.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: EmailDomains_AddAllowedEmailDomains
       requestBody:
         content:
@@ -3160,7 +2806,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3170,11 +2816,7 @@ paths:
       tags:
         - EmailDomains
       summary: Remove domains from the list of allowed domains
-      description: |-
-        Delete email address domains from the allowed domains list. The response returns an updated list of allowed email domains.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Delete email address domains from the allowed domains list. The response returns an updated list of allowed email domains.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: EmailDomains_DeleteAllowedEmailDomains
       requestBody:
         content:
@@ -3189,7 +2831,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3200,11 +2842,7 @@ paths:
       tags:
         - EncryptionKeys
       summary: Retrieve a list of all encryption keys
-      description: |-
-        Retrieve a list of all encryption keys. The response returns information about each key, including the key name, algorithm, user who generated the key, the generation date, and expiration date.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve a list of all encryption keys. The response returns information about each key, including the key name, algorithm, user who generated the key, the generation date, and expiration date.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: EncryptionKeys_ListAllEncryptionKeysMetadata
       responses:
         default:
@@ -3213,7 +2851,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3238,7 +2876,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3249,11 +2887,7 @@ paths:
       tags:
         - EncryptionKeys
       summary: Delete an encryption key
-      description: |-
-        Delete a specific encryption key.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Delete a specific encryption key.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: EncryptionKeys_DeleteEncryptionKeys
       parameters:
         - name: keyName
@@ -3269,7 +2903,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3280,11 +2914,7 @@ paths:
       tags:
         - ReleaseVersionConfiguration
       summary: Retrieve available product releases
-      description: |-
-        Retrieve a list of release versions available for each product. The response returns information such as the unique ID of the product, the latest release version, and when the latest release version of the product will automatically be activated. Sometimes, the previous and latest versions are the same.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve a list of release versions available for each product. The response returns information such as the unique ID of the product, the latest release version, and when the latest release version of the product will automatically be activated. Sometimes, the previous and latest versions are the same.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ReleaseVersionConfiguration_GetAvailableReleases
       responses:
         default:
@@ -3293,7 +2923,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3304,11 +2934,7 @@ paths:
       tags:
         - ReleaseVersionConfiguration
       summary: Retrieve active product release versions
-      description: |-
-        Retrieve the currently active product release versions for a tenant.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Retrieve the currently active product release versions for a tenant.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ReleaseVersionConfiguration_GetReleaseVersions
       parameters:
         - name: TargetTenantID
@@ -3323,7 +2949,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3333,11 +2959,7 @@ paths:
       tags:
         - ReleaseVersionConfiguration
       summary: Activate product release versions
-      description: |-
-        Set the product release version to activate it on the selected tenants. Analytic tenants will automatically inherit the release version from the administrating tenant. You cannot rollback to a previous version.
-
-         <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Set the product release version to activate it on the selected tenants. Analytic tenants will automatically inherit the release version from the administrating tenant. You cannot rollback to a previous version.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: ReleaseVersionConfiguration_SetReleaseVersions
       requestBody:
         content:
@@ -3352,7 +2974,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3363,13 +2985,7 @@ paths:
       tags:
         - Sources
       summary: Perform an operation on all sources
-      description: |-
-        Perform operations on all sources. The following operations are supported:
-         * `exportSources`: Export a ZIP file that contains a list of all sources in the application.
-         * `cloneFilesIntoSource`: Clone a source's files into a different source.
-
-         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-         If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Perform operations on all sources. The following operations are supported:\n * `exportSources`: Export a ZIP file that contains a list of all sources in the application.\n * `cloneFilesIntoSource`: Clone a source's files into a different source.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Sources_RunSourcesOperation
       parameters:
         - name: TargetTenantID
@@ -3390,7 +3006,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3400,11 +3016,12 @@ paths:
       tags:
         - Sources
       summary: Import a list of sources
-      description: |-
-        Import a list of sources in ZIP format. The file must be an export from `POST /v1alpha/admin/sources`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
+      description: 'Import a list of sources in ZIP format. The file must be an export from `POST /v1alpha/admin/sources`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
+
 
         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-        If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+        If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
       operationId: Sources_PutSources
       parameters:
         - name: replaceAllExistingSources
@@ -3425,7 +3042,7 @@ paths:
               type: string
               format: binary
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3442,9 +3059,7 @@ paths:
       tags:
         - TenantsV2
       summary: Retrieve a list of all analytic tenants
-      description: |-
-        Retrieve the full list of analytic tenants managed by you with their current states and the content
-         modules assigned to them, and all other relevant details for the tenants if requested.
+      description: "Retrieve the full list of analytic tenants managed by you with their current states and the content\n modules assigned to them, and all other relevant details for the tenants if requested."
       operationId: TenantsV2_ListTenants
       parameters:
         - name: limit
@@ -3481,7 +3096,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3491,18 +3106,7 @@ paths:
       tags:
         - TenantsV2
       summary: Add an analytic tenant
-      description: |-
-        Prior to processing and loading an analytic tenant's data files, you must provision, or create, that tenant. A
-         provisioned analytic tenant is automatically enabled. If the tenant's data is loaded after provisioning, that data
-         is immediately accessible by their users.
-
-         Create an analytic tenant and identify the
-         applications assigned to the tenant. Visier organizes content under a set of modules.
-
-         Contact Visier Support to determine the list of modules allocated to you.
-
-         **Note:** API requests that contain `homeAnalysisId`, `homeAnalysisByUserGroup`, `clickThroughLink`, or
-         `defaultCurrency` take longer to run because they require publishing a project to production.
+      description: "Prior to processing and loading an analytic tenant's data files, you must provision, or create, that tenant. A\n provisioned analytic tenant is automatically enabled. If the tenant's data is loaded after provisioning, that data\n is immediately accessible by their users.\n\n Create an analytic tenant and identify the\n applications assigned to the tenant. Visier organizes content under a set of modules.\n\n Contact Visier Support to determine the list of modules allocated to you.\n\n **Note:** API requests that contain `homeAnalysisId`, `homeAnalysisByUserGroup`, `clickThroughLink`, or\n `defaultCurrency` take longer to run because they require publishing a project to production."
       operationId: TenantsV2_CreateTenant
       parameters:
         - name: TargetTenantID
@@ -3523,7 +3127,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3534,9 +3138,7 @@ paths:
       tags:
         - TenantsV2
       summary: Retrieve an analytic tenant's details
-      description: |-
-        Retrieve the details for a specified analytic tenant. Doing so allows you to see the current state
-         of the tenant, the content modules assigned to it, and all other relevant details for the tenant.
+      description: "Retrieve the details for a specified analytic tenant. Doing so allows you to see the current state\n of the tenant, the content modules assigned to it, and all other relevant details for the tenant."
       operationId: TenantsV2_TenantInfo
       parameters:
         - name: tenantId
@@ -3562,7 +3164,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3577,18 +3179,7 @@ paths:
       tags:
         - TenantsV2
       summary: Update an analytic tenant
-      description: |-
-        You may need to update analytic tenants as they grow and as your organization upgrades the content available to them.
-         You may also encounter a scenario where an analytic tenant transitions across different industries. To make updates
-         to your tenants, use this API.
-
-         * To ensure that the analytic tenant receives accurate benchmarks and predictive functionality, update their industry code in the Visier system.
-         * To programmatically assign the Home analysis that analytic tenants see at login, use this API to set the default Home analysis for a tenant and specific user groups of that tenant.
-
-         You can use this API to update any field on an analytic tenant, except `tenantCode`.
-
-         **Note:** API requests that contain `homeAnalysisId`, `homeAnalysisByUserGroup`, `clickThroughLink`, or
-         `defaultCurrency` take longer to run because they require publishing a project to production.
+      description: "You may need to update analytic tenants as they grow and as your organization upgrades the content available to them.\n You may also encounter a scenario where an analytic tenant transitions across different industries. To make updates\n to your tenants, use this API.\n\n * To ensure that the analytic tenant receives accurate benchmarks and predictive functionality, update their industry code in the Visier system.\n * To programmatically assign the Home analysis that analytic tenants see at login, use this API to set the default Home analysis for a tenant and specific user groups of that tenant.\n\n You can use this API to update any field on an analytic tenant, except `tenantCode`.\n\n **Note:** API requests that contain `homeAnalysisId`, `homeAnalysisByUserGroup`, `clickThroughLink`, or\n `defaultCurrency` take longer to run because they require publishing a project to production."
       operationId: TenantsV2_UpdateTenant
       parameters:
         - name: tenantId
@@ -3615,7 +3206,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3625,22 +3216,12 @@ paths:
       tags:
         - TenantsV2
       summary: Deprovision an analytic tenant
-      description: |-
-        <em>Warning! Deprovisioning an analytic tenant is not reversible.</em>
-         Before deprovisioning, you must disable an analytic tenant. For more information, see **`/v1/admin/tenants/{tenantId}/disable`**.
-
-         This API removes an analytic tenant permanently from the Visier system. If you are unsure whether an analytic tenant
-         may be re-enabled on any of the Visier modules at any time, you may instead want to disable the analytic tenant.
-
-         If successful, the response returns the status "Deprovisioned". This indicates that the tenant is scheduled for
-         deprovisioning, which may take several days to complete.
+      description: "<em>Warning! Deprovisioning an analytic tenant is not reversible.</em>\n Before deprovisioning, you must disable an analytic tenant. For more information, see **`/v1/admin/tenants/{tenantId}/disable`**.\n\n This API removes an analytic tenant permanently from the Visier system. If you are unsure whether an analytic tenant\n may be re-enabled on any of the Visier modules at any time, you may instead want to disable the analytic tenant.\n\n If successful, the response returns the status \"Deprovisioned\". This indicates that the tenant is scheduled for\n deprovisioning, which may take several days to complete."
       operationId: TenantsV2_DeleteTenant
       parameters:
         - name: tenantId
           in: path
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the analytic tenant code."
           required: true
           schema:
             type: string
@@ -3656,7 +3237,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3667,27 +3248,12 @@ paths:
       tags:
         - UserGroupsV2
       summary: Retrieve a list of user groups
-      description: |-
-        Retrieve a collection of user groups. Use `with` to control the amount of detail returned in the response.
-         `with` supports these values:
-         * **permissions**: Include the user group's permissions.
-         * **users**: Include the users in the user group.
-         * **details**: Include all available information.
-
-         This API can return a maximum of 1000 user groups. The default number of user groups to return is 100.
-
-         To specify the project in which to return user groups, provide a project UUID in the `ProjectID` request header.
-
-         <br>To specify the tenant in which to retrieve user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.
+      description: "Retrieve a collection of user groups. Use `with` to control the amount of detail returned in the response.\n `with` supports these values:\n * **permissions**: Include the user group's permissions.\n * **users**: Include the users in the user group.\n * **details**: Include all available information.\n\n This API can return a maximum of 1000 user groups. The default number of user groups to return is 100.\n\n To specify the project in which to return user groups, provide a project UUID in the `ProjectID` request header.\n\n <br>To specify the tenant in which to retrieve user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header."
       operationId: UserGroupsV2_GetUserGroups
       parameters:
         - name: with
           in: query
-          description: |-
-            Controls the amount of detail to return in the response. Omit to return basic information.
-             * **permissions**: Include the user group's permissions.
-             * **users**: Include the users in the user group.
-             * **details**: Include all available information.
+          description: "Controls the amount of detail to return in the response. Omit to return basic information.\n * **permissions**: Include the user group's permissions.\n * **users**: Include the users in the user group.\n * **details**: Include all available information."
           schema:
             enum:
               - permissions
@@ -3724,7 +3290,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3766,7 +3332,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3776,10 +3342,7 @@ paths:
       tags:
         - UserGroupsV2
       summary: Create multiple user groups
-      description: |-
-        Create new user groups. To specify the tenant in which to add new user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.
-
-         To specify the project in which to create new user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body.
+      description: "Create new user groups. To specify the tenant in which to add new user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.\n\n To specify the project in which to create new user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body."
       operationId: UserGroupsV2_CreateUserGroups
       parameters:
         - name: TargetTenantID
@@ -3811,7 +3374,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3821,10 +3384,7 @@ paths:
       tags:
         - UserGroupsV2
       summary: Delete multiple user groups
-      description: |-
-        Delete user groups in bulk. To specify the tenant in which to delete user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.
-
-         To specify the project in which to delete user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body.
+      description: "Delete user groups in bulk. To specify the tenant in which to delete user groups, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.\n\n To specify the project in which to delete user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body."
       operationId: UserGroupsV2_DeleteUserGroups
       parameters:
         - name: TargetTenantID
@@ -3856,7 +3416,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3866,12 +3426,7 @@ paths:
       tags:
         - UserGroupsV2
       summary: Patch multiple user groups
-      description: |-
-        Make partial changes to user groups. To specify the tenant in which to patch a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each user group in the request body.
-
-         Unlike `PUT`, which completely replaces the user group definition, use `PATCH` to change specific fields in the user group without affecting omitted fields.
-
-         To specify the project in which to patch user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body.
+      description: "Make partial changes to user groups. To specify the tenant in which to patch a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each user group in the request body.\n\n Unlike `PUT`, which completely replaces the user group definition, use `PATCH` to change specific fields in the user group without affecting omitted fields.\n\n To specify the project in which to patch user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body."
       operationId: UserGroupsV2_PatchUserGroups
       parameters:
         - name: TargetTenantID
@@ -3903,7 +3458,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3925,11 +3480,7 @@ paths:
             type: string
         - name: with
           in: query
-          description: |-
-            Controls the amount of detail to return in the response. Omit to return detailed information.
-             * **permissions**: Include the user group's permissions.
-             * **users**: Include the users in the user group.
-             * **details**: Include all available information.
+          description: "Controls the amount of detail to return in the response. Omit to return detailed information.\n * **permissions**: Include the user group's permissions.\n * **users**: Include the users in the user group.\n * **details**: Include all available information."
           schema:
             enum:
               - permissions
@@ -3960,7 +3511,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3970,10 +3521,7 @@ paths:
       tags:
         - UserGroupsV2
       summary: Delete a user group
-      description: |-
-        Delete a specific user group. To specify the tenant in which to delete a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.
-
-         To specify the project in which to delete a user group, provide a project UUID in the `ProjectID` request header.
+      description: "Delete a specific user group. To specify the tenant in which to delete a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header.\n\n To specify the project in which to delete a user group, provide a project UUID in the `ProjectID` request header."
       operationId: UserGroupsV2_DeleteUserGroup
       parameters:
         - name: userGroupId
@@ -4011,7 +3559,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -4048,7 +3596,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -4084,7 +3632,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -4120,7 +3668,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -4163,7 +3711,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: An XLSX file.
           content:
             application/vnd.ms-excel:
@@ -4181,13 +3729,7 @@ paths:
       tags:
         - UsersV1
       summary: Retrieve the Data Security Report
-      description: |-
-        This API allows you to export the data security report of a user. The Data Security Report provides information
-         about a specific user to see which populations and properties that user has access to as a result of the
-         permissions assigned to them.
-
-         Administrating tenant users can export the report for users in the administrating tenant and the analytic
-         tenants those users belong to.
+      description: "This API allows you to export the data security report of a user. The Data Security Report provides information\n about a specific user to see which populations and properties that user has access to as a result of the\n permissions assigned to them.\n\n Administrating tenant users can export the report for users in the administrating tenant and the analytic\n tenants those users belong to."
       operationId: UsersV1_GetDataSecurityReportXLSX
       parameters:
         - name: userId
@@ -4207,7 +3749,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: An XLSX file.
           content:
             application/vnd.ms-excel:
@@ -4225,12 +3767,7 @@ paths:
       tags:
         - UsersV1
       summary: Retrieve user profile assignments in XLSX format
-      description: |-
-        This API allows you to export the profiles assigned to each user. This report details the profiles assigned to
-         each user and the profile validity period.
-
-         Administrating tenant users can export profile assignments for the administrating tenant and the analytic tenants
-         those users belong to.
+      description: "This API allows you to export the profiles assigned to each user. This report details the profiles assigned to\n each user and the profile validity period.\n\n Administrating tenant users can export profile assignments for the administrating tenant and the analytic tenants\n those users belong to."
       operationId: UsersV1_GetProfileAssignmentsXLSX
       parameters:
         - name: tenantCode
@@ -4244,7 +3781,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: An XLSX file.
           content:
             application/vnd.ms-excel:
@@ -4262,13 +3799,7 @@ paths:
       tags:
         - UsersV1
       summary: Retrieve user permissions in XLSX format
-      description: |-
-        This API allows you to export the user permission assignments for a tenant. The permission assignments report
-         provides a summary of the permissions your users have been assigned and how each permission is being used across
-         your user base, as well as the users that do not have any permissions assigned to them.
-
-         Administrating tenant users can export permission assignments for the administrating tenant and the analytic
-         tenants those users belong to.
+      description: "This API allows you to export the user permission assignments for a tenant. The permission assignments report\n provides a summary of the permissions your users have been assigned and how each permission is being used across\n your user base, as well as the users that do not have any permissions assigned to them.\n\n Administrating tenant users can export permission assignments for the administrating tenant and the analytic\n tenants those users belong to."
       operationId: UsersV1_GetUserPermissionsXLSX
       parameters:
         - name: tenantCode
@@ -4282,7 +3813,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: An XLSX file.
           content:
             application/vnd.ms-excel:
@@ -4300,12 +3831,7 @@ paths:
       tags:
         - UsersV1
       summary: Retrieve a list of all permissions in XLSX format
-      description: |-
-        This API allows you to export the list of permissions in a tenant. This report includes the permission name,
-         permission description, and permission ID for all permissions in the tenant.
-
-         Administrating tenant users can export permissions lists for the administrating tenant and the analytic tenants
-         those users belong to.
+      description: "This API allows you to export the list of permissions in a tenant. This report includes the permission name,\n permission description, and permission ID for all permissions in the tenant.\n\n Administrating tenant users can export permissions lists for the administrating tenant and the analytic tenants\n those users belong to."
       operationId: UsersV1_GetAllPermissionsXLSX
       parameters:
         - name: tenantCode
@@ -4319,7 +3845,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: An XLSX file.
           content:
             application/vnd.ms-excel:
@@ -4396,10 +3922,7 @@ components:
           description: A display name that is assigned to the new analytic tenant.
         industryCode:
           type: integer
-          description: |-
-            The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 0.
-
-             For 2-digit codes, add trailing zeros at the end to reach 6 digits, such as 620000.
+          description: "The 6-digit NAICS code for the industry to which the analytic tenant belongs. If the code is unknown, type 0.\n\n For 2-digit codes, add trailing zeros at the end to reach 6 digits, such as 620000."
           format: int32
         purchasedModules:
           type: array
@@ -4410,10 +3933,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            A comma-separated list of strings that represent the URLs, or domains, in which Visier can be embedded. If
-             domains at the administrating tenant level match the domains at the analytic tenant level, you do not need
-             to include a domain for each analytic tenant.
+          description: "A comma-separated list of strings that represent the URLs, or domains, in which Visier can be embedded. If\n domains at the administrating tenant level match the domains at the analytic tenant level, you do not need\n to include a domain for each analytic tenant."
         customProperties:
           type: object
           additionalProperties:
@@ -4586,11 +4106,7 @@ components:
             - SMB_CUSTOMER
             - UNKNOWN
           type: string
-          description: |-
-            The tenant's type. Valid values:
-             * `ENTERPRISE`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.
-             * `PARTNER`: An administrating tenant that manages one or more analytic tenants. Partner tenants are managed by non-Visier administrators, such as an embedded partner or system integration partner.
-             * `PARTNER_CUSTOMER`: An analytic tenant managed by a partner that represents the partner's customer's instance of Visier.
+          description: "The tenant's type. Valid values:\n * `ENTERPRISE`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.\n * `PARTNER`: An administrating tenant that manages one or more analytic tenants. Partner tenants are managed by non-Visier administrators, such as an embedded partner or system integration partner.\n * `PARTNER_CUSTOMER`: An analytic tenant managed by a partner that represents the partner's customer's instance of Visier."
           format: enum
         dataProfileType:
           enum:
@@ -4600,13 +4116,7 @@ components:
             - Cat
             - Test
           type: string
-          description: |-
-            The tenant's data profile, which designates how the tenant's data is used. Valid values:
-             * `Regular`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.
-             * `Integration`: A partner tenant for development, staging, and testing.
-             * `Demo`: A Visier tenant for demonstrations and training.
-             * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.
-             * `Test`: A Visier tenant for development and testing.
+          description: "The tenant's data profile, which designates how the tenant's data is used. Valid values:\n * `Regular`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.\n * `Integration`: A partner tenant for development, staging, and testing.\n * `Demo`: A Visier tenant for demonstrations and training.\n * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.\n * `Test`: A Visier tenant for development and testing."
           format: enum
       description: The tenant's traits, including aggregation rights, tenant type, and data profile type.
     admin.TenantManagementAPIGetResponseDTO:
@@ -4731,10 +4241,7 @@ components:
           description: A new vanity name to assign to the tenant. Omit for new Embedded analytic tenants.
         industryCode:
           type: integer
-          description: |-
-            The North American Industry Classification System (NAICS) code for the industry in which the business unit operates. Type 0 to use the business unit's industry code or if the industry code is unknown. We highly recommend that you provide an industry code to take advantage of all of Visier's features.
-
-             Required if creating new tenants.
+          description: "The North American Industry Classification System (NAICS) code for the industry in which the business unit operates. Type 0 to use the business unit's industry code or if the industry code is unknown. We highly recommend that you provide an industry code to take advantage of all of Visier's features.\n\n Required if creating new tenants."
           format: uint32
         primaryBusinessLocation:
           allOf:
@@ -4744,13 +4251,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            A comma-separated collection of strings that represent the Visier modules assigned to the new analytic tenant. Required if creating new tenants.
-
-             To get the module name:
-             1. In Visier, open a project and navigate to **Model > Modules**.
-             2. Select a module.
-             3. In **Basic Information**, copy the **Object name**. This is the module name.
+          description: "A comma-separated collection of strings that represent the Visier modules assigned to the new analytic tenant. Required if creating new tenants.\n\n To get the module name:\n 1. In Visier, open a project and navigate to **Model > Modules**.\n 2. Select a module.\n 3. In **Basic Information**, copy the **Object name**. This is the module name."
         embeddableDomains:
           type: array
           items:
@@ -4768,12 +4269,7 @@ components:
           description: A comma-separated list of strings that represent the issuers for the SSO providers that can authenticate this tenant. This is optional.
         homeAnalysisId:
           type: string
-          description: |-
-            The unique ID of the analysis to display for this tenant when a user logs in. This is optional. Causes the API request to take longer because it must publish a project to production.
-
-             Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: `https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`.
-
-             The `homeAnalysisID` is `8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`. Alternatively, retrieve the ID by copying the `Analysis ID` or `contentId` found by following the `Embed a Visualization` documentation.
+          description: "The unique ID of the analysis to display for this tenant when a user logs in. This is optional. Causes the API request to take longer because it must publish a project to production.\n\n Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: `https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`.\n\n The `homeAnalysisID` is `8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`. Alternatively, retrieve the ID by copying the `Analysis ID` or `contentId` found by following the `Embed a Visualization` documentation."
         homeAnalysisByUserGroup:
           type: array
           items:
@@ -4784,11 +4280,7 @@ components:
             - MERGE
             - REPLACE
           type: string
-          description: |-
-            Specifies the way you want to update values. Default is MERGE.
-             Valid values:
-             - `MERGE`: Combine the existing values with the new values.
-             - `REPLACE`: Remove existing values and let the new values take their place.
+          description: "Specifies the way you want to update values. Default is MERGE.\n Valid values:\n - `MERGE`: Combine the existing values with the new values.\n - `REPLACE`: Remove existing values and let the new values take their place."
           format: enum
         enabled:
           type: boolean
@@ -4847,13 +4339,7 @@ components:
           description: A comma-separated list of strings that represent the issuers for the SSO providers that can authenticate this tenant.
         homeAnalysisId:
           type: string
-          description: |-
-            The unique ID of the analysis to display for this tenant when a user logs in. This is optional.
-
-             Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/`8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`.
-             The `homeAnalysisID` is `8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`.
-
-             Alternatively, retrieve the ID by copying the `Analysis ID` or `contentId` found by following the `Embed a Visualization` documentation.
+          description: "The unique ID of the analysis to display for this tenant when a user logs in. This is optional.\n\n Retrieve the ID by opening an analysis in the production version of a tenant and copying the string after the last forward slash (/) in the URL. For example: https://jupiter.visier.com/hr/prod/appcontainer?previewId=-eZPm8xvo3SUMpD4Q5pdE-6mCj9CQ9K699XgqRGwtOxagH5x2IzDFawlWn3hYqFEfU7nP0YK9ASEzmrNfAihGg..&previewType=Production#/analytics/myanalyses/`8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`.\n The `homeAnalysisID` is `8a4c1d4f-eb61-4da0-9e5b-55bef757c30e`.\n\n Alternatively, retrieve the ID by copying the `Analysis ID` or `contentId` found by following the `Embed a Visualization` documentation."
         homeAnalysisByUserGroup:
           type: array
           items:
@@ -4901,10 +4387,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            A comma-separated list of strings that represent the URLs, or domains, in which Visier can be embedded. If
-             domains at the administrating tenant level match the domains at the analytic tenant level, you do not need
-             to include a domain for each analytic tenant.
+          description: "A comma-separated list of strings that represent the URLs, or domains, in which Visier can be embedded. If\n domains at the administrating tenant level match the domains at the analytic tenant level, you do not need\n to include a domain for each analytic tenant."
         customProperties:
           type: array
           items:
@@ -4919,9 +4402,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            A comma-separated list of strings that represent the URLs, or domains, which can be used as values for the idp_url
-             OAuth parameter.
+          description: "A comma-separated list of strings that represent the URLs, or domains, which can be used as values for the idp_url\n OAuth parameter."
     admin.TenantStatusAPIDTO:
       type: object
       properties:
@@ -4959,14 +4440,10 @@ components:
           description: The users assigned to the user group. You can define user group members dynamically with `dynamicFilterDefinition` or manually with `includeAllUsers` or `manuallyIncludedIds`.
         tenantCode:
           type: string
-          description: |-
-            The code of the tenant to which the user group belongs or should be created in.
-             Omit if creating or updating user groups in the current tenant.
+          description: "The code of the tenant to which the user group belongs or should be created in.\n Omit if creating or updating user groups in the current tenant."
         projectId:
           type: string
-          description: |-
-            The project ID in which to update or create the user group.
-             If omitted and the ProjectID request header is not defined, the change is published to production immediately.
+          description: "The project ID in which to update or create the user group.\n If omitted and the ProjectID request header is not defined, the change is published to production immediately."
     admin.UserGroupChangeDimensionFilterDTO:
       type: object
       properties:
@@ -4976,9 +4453,7 @@ components:
         subjectReferencePath:
           allOf:
             - $ref: '#/components/schemas/admin.ElementIDsDTO'
-          description: |-
-            A qualifying path if the dimension is from an analytic object that references Employee.
-             For example, use `subjectReferencePath` to create a filter on the `Employment_Start_Type` dimension from the `Employment_Start` object, which references `Employee`: `{ "ids": [ "Employee", "Employment_Start" ] }`.
+          description: "A qualifying path if the dimension is from an analytic object that references Employee.\n For example, use `subjectReferencePath` to create a filter on the `Employment_Start_Type` dimension from the `Employment_Start` object, which references `Employee`: `{ \"ids\": [ \"Employee\", \"Employment_Start\" ] }`."
         memberSelections:
           type: array
           items:
@@ -5060,47 +4535,31 @@ components:
       properties:
         includeAllUsers:
           type: boolean
-          description: |-
-            If `true`, all users are included in the user group. If `true`:
-             * You can manually exclude users with `manuallyExcludedIds`.
-             * Cannot be combined with `manuallyIncludedIds` or `dynamicFilterDefinition`.
+          description: "If `true`, all users are included in the user group. If `true`:\n * You can manually exclude users with `manuallyExcludedIds`.\n * Cannot be combined with `manuallyIncludedIds` or `dynamicFilterDefinition`."
         manuallyIncludedIds:
           allOf:
             - $ref: '#/components/schemas/admin.ElementIDsDTO'
-          description: |-
-            Includes specified user IDs in the user group.
-             * May be combined with `dynamicFilterDefinition`.
-             * Omit if `includeAllUsers` is `true`.
+          description: "Includes specified user IDs in the user group.\n * May be combined with `dynamicFilterDefinition`.\n * Omit if `includeAllUsers` is `true`."
         manuallyExcludedIds:
           allOf:
             - $ref: '#/components/schemas/admin.ElementIDsDTO'
-          description: |-
-            Excludes specified user IDs from the user group.
-             * You can manually exclude users if `includeAllUsers` is `true` or if `dynamicFilterDefinition` is defined.
-             * Excluded IDs must not overlap with user IDs in `manuallyIncludedIds`.
+          description: "Excludes specified user IDs from the user group.\n * You can manually exclude users if `includeAllUsers` is `true` or if `dynamicFilterDefinition` is defined.\n * Excluded IDs must not overlap with user IDs in `manuallyIncludedIds`."
         dynamicFilterDefinition:
           allOf:
             - $ref: '#/components/schemas/admin.UserGroupFiltersDTO'
-          description: |-
-            The filters that dynamically define a population through dimensions or dimensions accessible through references from the analytic object.
-             * Omit if `includeAllUsers` is `true`.
-             * You can combine dynamic filters with manually-assigned users.
+          description: "The filters that dynamically define a population through dimensions or dimensions accessible through references from the analytic object.\n * Omit if `includeAllUsers` is `true`.\n * You can combine dynamic filters with manually-assigned users."
     admin.UserGroupDeleteDTO:
       type: object
       properties:
         tenantCode:
           type: string
-          description: |-
-            The code of the tenant from which to delete the user group.
-             Omit if deleting user groups in the current tenant.
+          description: "The code of the tenant from which to delete the user group.\n Omit if deleting user groups in the current tenant."
         userGroupId:
           type: string
           description: Unique identifier for the user group.
         projectId:
           type: string
-          description: |-
-            The project ID in which to delete the user group.
-             If omitted and the `ProjectID` request header is not defined, the change is published to production immediately.
+          description: "The project ID in which to delete the user group.\n If omitted and the `ProjectID` request header is not defined, the change is published to production immediately."
     admin.UserGroupDeleteFailureDTO:
       type: object
       properties:
@@ -5200,9 +4659,7 @@ components:
       properties:
         tenantCode:
           type: string
-          description: |-
-            The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}
-             is the consolidated analytic tenant code.
+          description: "The ID of the tenant. For example, WFF_{XXX}~CA{YYY} where {XXX} is the administrating tenant code and {YYY}\n is the consolidated analytic tenant code."
     admin.ConsolidatedAnalyticsAPITenantListResponseDTO:
       type: object
       properties:
@@ -5420,9 +4877,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/admin.TargetProjectForTenantDTO'
-          description: |-
-            Administrating tenants can specify the tenants and projects in which to make assignments to users. Specify one `projectId` per `tenantCode`.
-             If omitted, the request is immediately published to production or applied to the `ProjectID` in the request header, if available, for the administrating tenant or TargetTenantID, if available.
+          description: "Administrating tenants can specify the tenants and projects in which to make assignments to users. Specify one `projectId` per `tenantCode`.\n If omitted, the request is immediately published to production or applied to the `ProjectID` in the request header, if available, for the administrating tenant or TargetTenantID, if available."
     admin.TenantAssignmentsDTO:
       type: object
       properties:
@@ -5541,9 +4996,7 @@ components:
         targetProjectForTenantsList:
           allOf:
             - $ref: '#/components/schemas/admin.TargetProjectForTenantsListDTO'
-          description: |-
-            Administrating tenants can specify the tenants and projects in which to assign users to user groups or remove users from user groups. Specify one `projectId` per `tenantCode`.
-             If omitted, the request is immediately published to production or applied to the ProjectID in the request header, if available, for the administrating tenant or TargetTenantID, if available.
+          description: "Administrating tenants can specify the tenants and projects in which to assign users to user groups or remove users from user groups. Specify one `projectId` per `tenantCode`.\n If omitted, the request is immediately published to production or applied to the ProjectID in the request header, if available, for the administrating tenant or TargetTenantID, if available."
     designer.crypto.GenerateKeyRequestDTO:
       type: object
       properties:
@@ -5906,9 +5359,7 @@ components:
           items:
             type: string
           description: A list of strings representing unique user IDs.
-      description: |-
-        Set permission detail
-         permissionId with assign to userIds
+      description: "Set permission detail\n permissionId with assign to userIds"
     servicing.AssignRevokePermissionsRequestDTO:
       type: object
       properties:
@@ -5920,12 +5371,8 @@ components:
         targetProjectForTenantsList:
           allOf:
             - $ref: '#/components/schemas/admin.TargetProjectForTenantsListDTO'
-          description: |-
-            Administrating tenants can specify the tenants and projects in which to assign permissions to users or remove permissions from users. Specify one `projectId` per `tenantCode`.
-             If omitted, the request is immediately published to production or applied to the `ProjectID` in the request header, if available, for the administrating tenant or TargetTenantID, if available.
-      description: |-
-        Set permissions request
-         List of permissionId with assign to user Ids
+          description: "Administrating tenants can specify the tenants and projects in which to assign permissions to users or remove permissions from users. Specify one `projectId` per `tenantCode`.\n If omitted, the request is immediately published to production or applied to the `ProjectID` in the request header, if available, for the administrating tenant or TargetTenantID, if available."
+      description: "Set permissions request\n List of permissionId with assign to user Ids"
     servicing.AssignRevokePermissionsResponseDTO:
       type: object
       properties:
@@ -6085,7 +5532,7 @@ components:
         propertySetConfig:
           allOf:
             - $ref: '#/components/schemas/servicing.PropertySetConfigDTO'
-          description: A list of objects representing the data access for an analytic object’s properties.
+          description: "A list of objects representing the data access for an analytic object’s properties."
         allDataPointAccess:
           type: boolean
           description: If `true`, the permission grants access to the entire population. If `false`, define `memberFilterConfigs` to set custom population access.
@@ -6098,19 +5545,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.InheritedAccessConfigDTO'
-          description: |-
-            The events and related objects inherited from the analytic object.
-             By default, all events and related objects associated with the analytic object will be inherited from the analytic object in a permission.
-             For example, if you assign access to Employee, then access to the Employee Exit event is inherited in the permission.
-             To remove access to an event or related object, add the object to `inheritedAccessConfigs` with `removeAccess`: true.
-             To add custom filters to an event or related object, add the object to `inheritedAccessConfigs` and define `memberFilterConfigs`.
+          description: "The events and related objects inherited from the analytic object.\n By default, all events and related objects associated with the analytic object will be inherited from the analytic object in a permission.\n For example, if you assign access to Employee, then access to the Employee Exit event is inherited in the permission.\n To remove access to an event or related object, add the object to `inheritedAccessConfigs` with `removeAccess`: true.\n To add custom filters to an event or related object, add the object to `inheritedAccessConfigs` and define `memberFilterConfigs`."
         inheritedReferenceMemberFilterConfig:
           allOf:
             - $ref: '#/components/schemas/servicing.InheritedReferenceMemberFilterConfigDTO'
-          description: |-
-            Configures the analytic object to inherit population access filters from. The target analytic object must be assigned population access in the permission and have a binding (strong) reference from the source analytic object.
-             * For example, assume `Applicant` -> `Requisition` is configured to be a binding (strong) reference.
-             For `Applicant` (source analytic object) to inherit population access filters from `Requisition` (target analytic object), in the Applicant `dataSecurityProfile`, set `inheritedReferenceMemberFilterConfig` to `Requisition`. In this example, Applicant will inherit filters from Requisition because Requsition is assigned data security in this permission and there is a binding (strong) reference from Applicant to Requisition.
+          description: "Configures the analytic object to inherit population access filters from. The target analytic object must be assigned population access in the permission and have a binding (strong) reference from the source analytic object.\n * For example, assume `Applicant` -> `Requisition` is configured to be a binding (strong) reference.\n For `Applicant` (source analytic object) to inherit population access filters from `Requisition` (target analytic object), in the Applicant `dataSecurityProfile`, set `inheritedReferenceMemberFilterConfig` to `Requisition`. In this example, Applicant will inherit filters from Requisition because Requsition is assigned data security in this permission and there is a binding (strong) reference from Applicant to Requisition."
         analyticObjectStatus:
           enum:
             - Unset
@@ -6118,11 +5557,7 @@ components:
             - NoData
             - NotFound
           type: string
-          description: |-
-            The analytic object's validity status. Valid values: Valid, NoData, NotFound.
-             * **Valid**: The object exists and has loaded data.
-             * **NoData**: The object exists but doesn't have loaded data.
-             * **NotFound**: The object doesn't exist.
+          description: "The analytic object's validity status. Valid values: Valid, NoData, NotFound.\n * **Valid**: The object exists and has loaded data.\n * **NoData**: The object exists but doesn't have loaded data.\n * **NotFound**: The object doesn't exist."
           format: enum
     servicing.DateRangeDTO:
       type: object
@@ -6172,11 +5607,7 @@ components:
             - NoData
             - NotFound
           type: string
-          description: |-
-            The dimension's validity status. Valid values: Valid, NoData, NotFound.
-             * **Valid**: The object exists and has loaded data.
-             * **NoData**: The object exists but doesn't have loaded data.
-             * **NotFound**: The object doesn't exist.
+          description: "The dimension's validity status. Valid values: Valid, NoData, NotFound.\n * **Valid**: The object exists and has loaded data.\n * **NoData**: The object exists but doesn't have loaded data.\n * **NotFound**: The object doesn't exist."
           format: enum
     servicing.DynamicPropertyMappingDTO:
       type: object
@@ -6195,10 +5626,7 @@ components:
             - NoData
             - NotFound
           type: string
-          description: |-
-            The property's validity status. Valid values: `Valid`, `NotFound`.
-             * **Valid**: The object exists and has loaded data.
-             * **NotFound**: The object doesn't exist.
+          description: "The property's validity status. Valid values: `Valid`, `NotFound`.\n * **Valid**: The object exists and has loaded data.\n * **NotFound**: The object doesn't exist."
           format: enum
     servicing.ErrorDTO:
       type: object
@@ -6367,14 +5795,14 @@ components:
       properties:
         targetAnalyticObjectId:
           type: string
-          description: |-
-            The unique ID of the analytic object that the source
-            analytic object should inherit filters from. The target analytic object must have a binding (strong) reference from the source analytic object.
+          description: 'The unique ID of the analytic object that the source
+
+            analytic object should inherit filters from. The target analytic object must have a binding (strong) reference from the source analytic object.'
         analyticObjectReference:
           type: string
-          description: |-
-            The optional object name of a binding (strong) reference to the target analytic object. If not specified, uses the first binding reference from the source
-            to the target analytic object.
+          description: 'The optional object name of a binding (strong) reference to the target analytic object. If not specified, uses the first binding reference from the source
+
+            to the target analytic object.'
     servicing.LastLoginDTO:
       type: object
       properties:
@@ -6463,10 +5891,7 @@ components:
             - NoData
             - NotFound
           type: string
-          description: |-
-            The dimension member's validity status. Valid values: Valid, NotFound.
-             * **Valid**: The object exists and has loaded data.
-             * **NotFound**: The object doesn't exist.
+          description: "The dimension member's validity status. Valid values: Valid, NotFound.\n * **Valid**: The object exists and has loaded data.\n * **NotFound**: The object doesn't exist."
           format: enum
     servicing.PermissionAssignedByTenantDTO:
       type: object
@@ -6503,13 +5928,7 @@ components:
           description: The user's username. This is typically the user's email, such as john@visier.com.
         permissionFrom:
           type: string
-          description: |-
-            The method through which the user was assigned the permission. The permission may be assigned through
-             the following options:
-              - User: The permission was directly assigned to the user.
-              - UserGroup: The permission was assigned because the user belongs to a user group that is assigned the permission.
-              - UserAndUserGroup: The permission was directly assigned to the user and assigned because the user belongs to
-                a user group that is assigned the permission.
+          description: "The method through which the user was assigned the permission. The permission may be assigned through\n the following options:\n  - User: The permission was directly assigned to the user.\n  - UserGroup: The permission was assigned because the user belongs to a user group that is assigned the permission.\n  - UserAndUserGroup: The permission was directly assigned to the user and assigned because the user belongs to\n    a user group that is assigned the permission."
       description: The user and the method through which the user was assigned the permission.
     servicing.PermissionAssignedUsersDTO:
       type: object
@@ -6605,9 +6024,7 @@ components:
             - unknownProductionVersionAPIOperation
             - rollBackTo
           type: string
-          description: |-
-            The operation to perform. Valid values:
-             * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version.
+          description: "The operation to perform. Valid values:\n * `rollBackTo`: Create a project that rolls back the production version to the specified version. The project contains uncommitted changes that reverse the published versions after the target production version."
           format: enum
     servicing.ProductionVersionAPIOperationResponseDTO:
       type: object
@@ -6624,9 +6041,7 @@ components:
             - unknownProductionVersionsAPIOperation
             - export
           type: string
-          description: |-
-            The operation to perform. Valid values:
-             * `export`: Export the project changes of the requested production versions and their related files, such as any Guidebook images. If successful, a ZIP file is returned containing any relevant image files and a JSON file with the production project changes.
+          description: "The operation to perform. Valid values:\n * `export`: Export the project changes of the requested production versions and their related files, such as any Guidebook images. If successful, a ZIP file is returned containing any relevant image files and a JSON file with the production project changes."
           format: enum
         exportParameters:
           allOf:
@@ -6656,16 +6071,10 @@ components:
           description: If true, the profile is assigned for all the analytic tenants of the administrating tenant.
         validityStartTime:
           type: string
-          description: |-
-            An inclusive date-time when this profile is active.
-
-             Note: Long.Min_Value means that startTime is undefined.
+          description: "An inclusive date-time when this profile is active.\n\n Note: Long.Min_Value means that startTime is undefined."
         validityEndTime:
           type: string
-          description: |-
-            An exclusive date-time when this profile is no longer active.
-
-             Note: Long.Max_Value means that endTime is undefined and is equivalent to permanent access.
+          description: "An exclusive date-time when this profile is no longer active.\n\n Note: Long.Max_Value means that endTime is undefined and is equivalent to permanent access."
     servicing.ProfileAssignedForLocalTenantDTO:
       type: object
       properties:
@@ -6757,13 +6166,7 @@ components:
               - owner
             type: string
             format: enum
-          description: |-
-            The current user's capabilities for the project. Users with `canWrite`, `canShare`, or `owner` capabilities can add and commit changes to the project.
-             **canRead**: The project has been shared to the user with `View` access.
-             **canWrite**: The project has been shared to the user with `Edit` access.
-             **canShare**: The project has been shared to the user with `Share` access.
-             **owner**: The user is the owner of the project.
-             Omit when creating a new project.
+          description: "The current user's capabilities for the project. Users with `canWrite`, `canShare`, or `owner` capabilities can add and commit changes to the project.\n **canRead**: The project has been shared to the user with `View` access.\n **canWrite**: The project has been shared to the user with `Edit` access.\n **canShare**: The project has been shared to the user with `Share` access.\n **owner**: The user is the owner of the project.\n Omit when creating a new project."
     servicing.ProjectOperationRequestDTO:
       type: object
       properties:
@@ -6772,9 +6175,7 @@ components:
             - unknown
             - commitAndPublish
           type: string
-          description: |-
-            The operation to perform on a draft project. Valid values:
-             * `commitAndPublish`: Commits the requesting user's changes and publishes the draft project to production.
+          description: "The operation to perform on a draft project. Valid values:\n * `commitAndPublish`: Commits the requesting user's changes and publishes the draft project to production."
           format: enum
     servicing.ProjectOperationResponseDTO:
       type: object
@@ -6803,10 +6204,7 @@ components:
             - Aggregate
             - Detailed
           type: string
-          description: |-
-            The access level of the property. Valid values are: `Aggregate`, `Detailed`.
-             * **Aggregate**: The property can only be accessed as part of an aggregate.
-             * **Detailed**: The property can be accessed at a detailed level.
+          description: "The access level of the property. Valid values are: `Aggregate`, `Detailed`.\n * **Aggregate**: The property can only be accessed as part of an aggregate.\n * **Detailed**: The property can be accessed at a detailed level."
           format: enum
         propertyStatus:
           enum:
@@ -6815,11 +6213,7 @@ components:
             - NoData
             - NotFound
           type: string
-          description: |-
-            The property's validity status. Valid values: `Valid`, `NoData`, `NotFound`.
-             * **Valid**: The object exists and has loaded data.
-             * **NoData**: The object exists but doesn't have loaded data.
-             * **NotFound**: The object doesn't exist.
+          description: "The property's validity status. Valid values: `Valid`, `NoData`, `NotFound`.\n * **Valid**: The object exists and has loaded data.\n * **NoData**: The object exists but doesn't have loaded data.\n * **NotFound**: The object doesn't exist."
           format: enum
     servicing.PropertySetConfigDTO:
       type: object
@@ -6931,10 +6325,7 @@ components:
             - exportSources
             - cloneFilesIntoSource
           type: string
-          description: |-
-            The operation to perform. Valid values:
-             * `exportSources`: Export all sources from the tenant. If successful, returns a ZIP file containing a compressed JSON file with the sources.
-             * `cloneFilesIntoSource`: Clone a source's files into a different source. If successful, returns a receiving job ID. Use the job ID to monitor the cloning results.
+          description: "The operation to perform. Valid values:\n * `exportSources`: Export all sources from the tenant. If successful, returns a ZIP file containing a compressed JSON file with the sources.\n * `cloneFilesIntoSource`: Clone a source's files into a different source. If successful, returns a receiving job ID. Use the job ID to monitor the cloning results."
           format: enum
         cloneFilesIntoSourceParameters:
           allOf:
@@ -6963,11 +6354,7 @@ components:
             - NoData
             - NotFound
           type: string
-          description: |-
-            The dimension's validity status. Valid values: Valid, NoData, NotFound.
-             * **Valid**: The object exists and has loaded data.
-             * **NoData**: The object exists but doesn't have loaded data.
-             * **NotFound**: The object doesn't exist.
+          description: "The dimension's validity status. Valid values: Valid, NoData, NotFound.\n * **Valid**: The object exists and has loaded data.\n * **NoData**: The object exists but doesn't have loaded data.\n * **NotFound**: The object doesn't exist."
           format: enum
     servicing.SuccessfulAccessibleTenantProfileAssignmentDTO:
       type: object
@@ -7311,84 +6698,81 @@ components:
             write: Grants write access
 tags:
   - name: Projects
-    description: |-
-      Create projects, publish projects, and retrieve project details.
+    description: Create projects, publish projects, and retrieve project details.
   - name: ProductionVersions
     x-displayName: Production Versions
-    description: |-
-      Use this API to retrieve information about data versions that were published to production.
-      In Visier, production is the version of Visier available to your end users.
+    description: 'Use this API to retrieve information about data versions that were published to production.
+
+      In Visier, production is the version of Visier available to your end users.'
   - name: UsersV2
     x-displayName: Users V2
-    description: |-
-      Manage users in bulk, such as creating, updating, and deleting many users.
-      <br>**Tip:** Visier recommends that administrating tenant users focus primarily on managing users at the administrating tenant level. These users likely belong directly to your organization, such as customer support, customer value managers, account executives, and customer success. These users work with clients to manage their day-to-day solution needs.
+    description: 'Manage users in bulk, such as creating, updating, and deleting many users.
+
+      <br>**Tip:** Visier recommends that administrating tenant users focus primarily on managing users at the administrating tenant level. These users likely belong directly to your organization, such as customer support, customer value managers, account executives, and customer success. These users work with clients to manage their day-to-day solution needs.'
   - name: UserGroupsV2
     x-displayName: User Groups V2
-    description: |-
-      Manage user groups in Visier, such as creating, updating, and deleting user groups in bulk.
+    description: Manage user groups in Visier, such as creating, updating, and deleting user groups in bulk.
   - name: UsersV1
     x-displayName: Users V1
-    description: |-
-      Manage users within an organization, such as assigning permissions to users and retrieving user permission assignments and application logs.
-      <br>**Tip:** Visier recommends that administrating tenant users focus primarily on managing users at the administrating tenant level. These users likely belong directly to your organization, such as customer support, customer value managers, account executives, and customer success. These users work with clients to manage their day-to-day solution needs
+    description: 'Manage users within an organization, such as assigning permissions to users and retrieving user permission assignments and application logs.
+
+      <br>**Tip:** Visier recommends that administrating tenant users focus primarily on managing users at the administrating tenant level. These users likely belong directly to your organization, such as customer support, customer value managers, account executives, and customer success. These users work with clients to manage their day-to-day solution needs'
   - name: Profiles
-    description: |-
-      Manage the profiles assigned to users, such as assigning or removing a profile from a list of users and retrieving profile details. Administrating tenant users can manage profiles at the administrating tenant level and analytic tenant level.
+    description: Manage the profiles assigned to users, such as assigning or removing a profile from a list of users and retrieving profile details. Administrating tenant users can manage profiles at the administrating tenant level and analytic tenant level.
   - name: Permissions
-    description: |-
-      Manage permissions in Visier, such as retrieving the details of a permission, content package, or data access set, creating new permissions and data access sets, and updating or deleting permissions. To assign permissions to users, see Users V1.
+    description: Manage permissions in Visier, such as retrieving the details of a permission, content package, or data access set, creating new permissions and data access sets, and updating or deleting permissions. To assign permissions to users, see Users V1.
   - name: TenantsV2
     x-displayName: Tenants V2
-    description: |-
-      Create analytic tenants, deprovision tenants, retrieve tenant information, and update tenant information. Tenants V2 improves upon Tenants V1 in the following ways:
-        * Programmatically assign a Home analysis to your analytic tenants.
-        * Specify whether to merge or replace values when updating the details of an analytic tenant.
-        * Specify the property fields to include in the response for GET requests.
+    description: "Create analytic tenants, deprovision tenants, retrieve tenant information, and update tenant information. Tenants V2 improves upon Tenants V1 in the following ways:\n  * Programmatically assign a Home analysis to your analytic tenants.\n  * Specify whether to merge or replace values when updating the details of an analytic tenant.\n  * Specify the property fields to include in the response for GET requests."
   - name: TenantsV1
     x-displayName: Tenants V1
-    description: |-
-      Create analytic tenants, retrieve tenant information, and validate metric values.
+    description: Create analytic tenants, retrieve tenant information, and validate metric values.
   - name: ConsolidatedAnalytics
     x-displayName: Consolidated Analytics
-    description: |-
-      Manage your consolidated analytics (CA) tenants in Visier, such as retrieving the details of CA tenants, creating CA tenants, adding or deleting source tenants from CA tenants, and excluding sources from CA tenants.
+    description: 'Manage your consolidated analytics (CA) tenants in Visier, such as retrieving the details of CA tenants, creating CA tenants, adding or deleting source tenants from CA tenants, and excluding sources from CA tenants.
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: Sources
-    description: |-
-      Export and import sources in Visier.
+    description: 'Export and import sources in Visier.
+
       <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: SystemStatus
     x-displayName: System Status
-    description: |-
-      Check the health and status of Visier's platform and services.
+    description: Check the health and status of Visier's platform and services.
   - name: EmailDomains
     x-displayName: Email Domains
-    description: |-
-      Manage the list of user email address domains that are allowed in your tenant.
+    description: 'Manage the list of user email address domains that are allowed in your tenant.
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: EncryptionKeys
     x-displayName: Encryption Keys
-    description: |-
-      Manage the encryption keys in your Visier tenant. Administrating tenants can specify the tenant in which to manage keys using the `TargetTenantID` header. For PGP keys, see `/v1/api/pgp-keys`.
+    description: 'Manage the encryption keys in your Visier tenant. Administrating tenants can specify the tenant in which to manage keys using the `TargetTenantID` header. For PGP keys, see `/v1/api/pgp-keys`.
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: NetworkSubnets
     x-displayName: Network Subnets
-    description: |-
-      Manage the IP addresses that can call Visier APIs.
+    description: 'Manage the IP addresses that can call Visier APIs.
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: ReleaseVersionConfiguration
     x-displayName: Release Versions
-    description: |-
-      Manage the Visier product release versions for your tenants.
+    description: 'Manage the Visier product release versions for your tenants.
+
       <br>**Note:** <em>This API is available for Embedded Partners.</em>
+
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
 security:
   - ApiKeyAuth: []
     BearerAuth: []
