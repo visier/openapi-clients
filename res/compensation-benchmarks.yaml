@@ -220,6 +220,14 @@ paths:
           description: |
             If `true`, similar job titles for a job member are included in the lexical search for matches.
             Default is `false`.
+        - name: showHierarchy
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, returns members in a tree structure based on the occupation hierarchy.
+            Default is `false`.
       responses:
         "200":
           description: |
@@ -498,6 +506,14 @@ paths:
             The North American Industry Classification System (NAICS) code.
 
             If provided, the response returns the best matching member associated with the code.
+        - name: showHierarchy
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, returns members in a tree structure based on the industry hierarchy.
+            Default is `false`.
         - name: hasBenchmarkValue
           in: query
           required: false
@@ -577,6 +593,14 @@ paths:
             type: string
           description: |
             Postal code to look up. If `postalCode` is provided, `countryCode` is required. Returns location members that match both the country code and postal code.
+        - name: showHierarchy
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, returns members in a tree structure based on the location hierarchy.
+            Default is `false`.
         - name: hasBenchmarkValue
           in: query
           required: false
@@ -1009,6 +1033,11 @@ components:
         socNames:
           type: object
           description: The detailed occupation names from the Standard Occupational Classification (SOC) system for the job member mapped to career level ids, using SOC version 2018. This optional field is returned if multiple SOC codes map to different career levels of the job member.
+        children:
+          type: array
+          description: The child members of a given member in the hierarchy. This field will be excluded from the response if the member has no children.
+          items:
+            type: object
       required:
         - id
         - name

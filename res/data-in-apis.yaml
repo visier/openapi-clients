@@ -1,6 +1,3 @@
-# Generated with protoc-gen-openapi
-# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
-
 openapi: 3.0.3
 info:
   title: Visier Data In APIs
@@ -8,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.1993
+  version: 22222222.99201.2010
 paths:
   /v1/api/pgp-keys:
     get:
@@ -30,7 +27,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -61,7 +58,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -93,7 +90,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -124,7 +121,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -156,7 +153,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -166,10 +163,7 @@ paths:
       tags:
         - DirectDataIntake
       summary: Update the direct data intake configuration
-      description: |-
-        Configure the data intake settings, such as the direct data intake job type. Only provide values for the configuration options that should change.
-
-         Configuration options that are not present in the PUT request are ignored and left unchanged.
+      description: "Configure the data intake settings, such as the direct data intake job type. Only provide values for the configuration options that should change.\n\n Configuration options that are not present in the PUT request are ignored and left unchanged."
       operationId: DirectDataIntake_PutConfig
       parameters:
         - name: draftId
@@ -196,7 +190,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -207,10 +201,7 @@ paths:
       tags:
         - DirectDataIntake
       summary: Retrieve an object's data load schema
-      description: |-
-        Gets the load schema for a specified object. The object's load schema represents the structure that the data upload file must follow to upload data to the object.
-
-         In the load schema, the listed columns must be present in the data file as column headers and exactly match the load schema (case sensitive), however,  only the columns whose `isMandatory` field is `true` must contain values in the data file.
+      description: "Gets the load schema for a specified object. The object's load schema represents the structure that the data upload file must follow to upload data to the object.\n\n In the load schema, the listed columns must be present in the data file as column headers and exactly match the load schema (case sensitive), however,  only the columns whose `isMandatory` field is `true` must contain values in the data file."
       operationId: DirectDataIntake_ObjectSchema
       parameters:
         - name: draftId
@@ -237,7 +228,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -269,7 +260,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -279,10 +270,7 @@ paths:
       tags:
         - DirectDataIntake
       summary: Start a direct data intake transaction
-      description: |-
-        Create a transaction to contain your data files. To upload files to objects in Visier, you must first start a transaction.
-
-         After starting a transaction and uploading files to the transaction, you can commit the transaction to process the uploaded files or roll back the transaction to discard the uploaded files.
+      description: "Create a transaction to contain your data files. To upload files to objects in Visier, you must first start a transaction.\n\n After starting a transaction and uploading files to the transaction, you can commit the transaction to process the uploaded files or roll back the transaction to discard the uploaded files."
       operationId: DirectDataIntake_StartTransaction
       parameters:
         - name: draftId
@@ -303,7 +291,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -341,7 +329,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -351,10 +339,7 @@ paths:
       tags:
         - DirectDataIntake
       summary: Commit a transaction
-      description: |-
-        Process a transaction and its uploaded data files. This starts a processing job to load the data files into Visier.
-
-         After committing a transaction, you cannot upload additional files to the transaction. Use the `Check transaction status` endpoint to monitor the progress of the processing job.
+      description: "Process a transaction and its uploaded data files. This starts a processing job to load the data files into Visier.\n\n After committing a transaction, you cannot upload additional files to the transaction. Use the `Check transaction status` endpoint to monitor the progress of the processing job."
       operationId: DirectDataIntake_CommitTransaction
       parameters:
         - name: draftId
@@ -381,7 +366,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -391,10 +376,7 @@ paths:
       tags:
         - DirectDataIntake
       summary: Roll back a transaction
-      description: |-
-        Rolls back the specified transaction. This discards all files uploaded within the transaction and deletes the transaction.
-
-         After rolling back a transaction, you cannot use the transaction to upload data files.
+      description: "Rolls back the specified transaction. This discards all files uploaded within the transaction and deletes the transaction.\n\n After rolling back a transaction, you cannot use the transaction to upload data files."
       operationId: DirectDataIntake_RollbackTransaction
       parameters:
         - name: draftId
@@ -421,7 +403,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -452,12 +434,7 @@ paths:
             type: string
         - name: sampleName
           in: query
-          description: |-
-            The name of the target object to load sample data. Sample data is available for:
-             * `employee`: The Employee subject.
-             * `employee_exit`: The Employee Exit event.
-             * `employment_start`: The Employment Start event.
-             * `organization_hierarchy`: The Organization Hierarchy dimension.
+          description: "The name of the target object to load sample data. Sample data is available for:\n * `employee`: The Employee subject.\n * `employee_exit`: The Employee Exit event.\n * `employment_start`: The Employment Start event.\n * `organization_hierarchy`: The Organization Hierarchy dimension."
           schema:
             type: string
         - name: TargetTenantID
@@ -466,7 +443,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -477,9 +454,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a list of all data connector credentials
-      description: |-
-        Retrieve a list of the connector credentials in a specified tenant. Connector credentials allow
-         Visier to retrieve data from your source systems through an integration user in the source system.
+      description: "Retrieve a list of the connector credentials in a specified tenant. Connector credentials allow\n Visier to retrieve data from your source systems through an integration user in the source system."
       operationId: DataAndJobHandling_DataConnectorCredentials
       parameters:
         - name: tenantCode
@@ -511,7 +486,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -547,7 +522,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -558,9 +533,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a list of all data connectors
-      description: |-
-        Retrieve a list of the data connectors in a specified tenant. Data connectors are an alternative
-         to generating flat files and transferring them to Visier via SFTP.
+      description: "Retrieve a list of the data connectors in a specified tenant. Data connectors are an alternative\n to generating flat files and transferring them to Visier via SFTP."
       operationId: DataAndJobHandling_DataConnectors
       parameters:
         - name: tenantCode
@@ -592,7 +565,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -624,7 +597,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -650,7 +623,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -681,7 +654,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -692,12 +665,7 @@ paths:
       tags:
         - DataIntake
       summary: Retrieve a list of sources
-      description: |-
-        Prior to transferring data to Visier, you must identify the sources you want to target. Sources store data for
-         the solution and are used to map data to Visier's data model.
-
-         **Note:** To set up sources in your tenant, contact Visier Customer Success.
-         This API allows you to query the list of available sources, and identify the source schema and required fields.
+      description: "Prior to transferring data to Visier, you must identify the sources you want to target. Sources store data for\n the solution and are used to map data to Visier's data model.\n\n **Note:** To set up sources in your tenant, contact Visier Customer Success.\n This API allows you to query the list of available sources, and identify the source schema and required fields."
       operationId: DataIntake_GetSources
       parameters:
         - name: TargetTenantID
@@ -712,7 +680,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -723,11 +691,7 @@ paths:
       tags:
         - DataIntake
       summary: Start a transfer session
-      description: |-
-        Start a new transfer session. A transfer session can include one or more batches of records to be
-         sent to Visier. Batches of records may be transferred as JSON or file payloads.
-
-         Recommended: For optimal performance, please include all batches of records in a single transfer session.
+      description: "Start a new transfer session. A transfer session can include one or more batches of records to be\n sent to Visier. Batches of records may be transferred as JSON or file payloads.\n\n Recommended: For optimal performance, please include all batches of records in a single transfer session."
       operationId: DataIntake_StartTransfer
       parameters:
         - name: TargetTenantID
@@ -742,7 +706,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -753,18 +717,7 @@ paths:
       tags:
         - DataIntake
       summary: Transfer data to sources via JSON
-      description: |-
-        Transfer data to Visier in batches of records. Each request includes a batch of records
-         formatted as a comma separated array with the first row containing the column headers in the request body. Each
-         subsequent request should also include the first row as a header.
-
-         Each request transfers a batch of records to a single source. Transfer sessions may include one or more batches before completion.
-
-         Each batch is identified by a sequence number. Sequence numbers help identify any batches  that were delivered incorrectly.
-
-         Each batch is limited to the following request size:
-         - Batch size limit: 10 MB
-         - Record count limit: 300,000 rows
+      description: "Transfer data to Visier in batches of records. Each request includes a batch of records\n formatted as a comma separated array with the first row containing the column headers in the request body. Each\n subsequent request should also include the first row as a header.\n\n Each request transfers a batch of records to a single source. Transfer sessions may include one or more batches before completion.\n\n Each batch is identified by a sequence number. Sequence numbers help identify any batches  that were delivered incorrectly.\n\n Each batch is limited to the following request size:\n - Batch size limit: 10 MB\n - Record count limit: 300,000 rows"
       operationId: DataIntake_PushData
       parameters:
         - name: transferSessionId
@@ -807,7 +760,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -818,16 +771,7 @@ paths:
       tags:
         - DataIntake
       summary: Cancel a transfer session
-      description: |-
-        Cancel a transfer session after starting it. If a transfer session is cancelled, all
-         records within the transfer session do not persist in Visier's data store.
-
-         If you cancel a transfer session, please start a new transfer session and resend the complete data set.
-
-         You might cancel a transfer session if:
-         - A request to send a batch of records failed.
-         - The original set of records is incomplete.
-         - An infrastructure error occurs.
+      description: "Cancel a transfer session after starting it. If a transfer session is cancelled, all\n records within the transfer session do not persist in Visier's data store.\n\n If you cancel a transfer session, please start a new transfer session and resend the complete data set.\n\n You might cancel a transfer session if:\n - A request to send a batch of records failed.\n - The original set of records is incomplete.\n - An infrastructure error occurs."
       operationId: DataIntake_PushDataCancel
       parameters:
         - name: transferSessionId
@@ -848,7 +792,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -859,26 +803,17 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve the latest enabled data versions for all analytic tenants
-      description: |-
-        If you discover any inconsistencies after running metric value validation, you may want to find the data versions
-         causing inconsistencies so you can later disable them.
-
-         Retrieve up to five (5) of the latest enabled data versions for all your analytic tenants or a
-         single specified analytic tenant.
+      description: "If you discover any inconsistencies after running metric value validation, you may want to find the data versions\n causing inconsistencies so you can later disable them.\n\n Retrieve up to five (5) of the latest enabled data versions for all your analytic tenants or a\n single specified analytic tenant."
       operationId: DataAndJobHandling_LatestEnabledDV
       parameters:
         - name: tenantCode
           in: query
-          description: |-
-            The tenant code of a specific analytic tenant that you want to retrieve data versions for.
-             Use this if you are only interested in the results for one analytic tenant.
+          description: "The tenant code of a specific analytic tenant that you want to retrieve data versions for.\n Use this if you are only interested in the results for one analytic tenant."
           schema:
             type: string
         - name: limit
           in: query
-          description: |-
-            The limit of analytic tenants to retrieve data versions for.
-             This parameter is not used if the tenantCode parameter is specified.
+          description: "The limit of analytic tenants to retrieve data versions for.\n This parameter is not used if the tenantCode parameter is specified."
           schema:
             type: integer
             format: int32
@@ -896,9 +831,7 @@ paths:
             format: int32
         - name: dataCategory
           in: query
-          description: |-
-            The object name of the data category. Default is the primary data category.
-             For administrating tenants, the data category must exist in the requesting tenant; that is, the administrating tenant or the tenant specified in `TargetTenantID`.
+          description: "The object name of the data category. Default is the primary data category.\n For administrating tenants, the data category must exist in the requesting tenant; that is, the administrating tenant or the tenant specified in `TargetTenantID`."
           schema:
             type: string
         - name: TargetTenantID
@@ -913,7 +846,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -924,14 +857,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Disable data versions for a list of analytic tenants
-      description: |-
-        If you discover that a data version is not what is expected after running metric value validation on a data load,
-         you may want to disable the data version for that processing job.
-
-         Disable the latest enabled data versions for affected analytic tenants or to disable a particular
-         data version for each analytic tenant.
-
-         **Note:** Disabling an older data version may not have an effect on the state of the solution.
+      description: "If you discover that a data version is not what is expected after running metric value validation on a data load,\n you may want to disable the data version for that processing job.\n\n Disable the latest enabled data versions for affected analytic tenants or to disable a particular\n data version for each analytic tenant.\n\n **Note:** Disabling an older data version may not have an effect on the state of the solution."
       operationId: DataAndJobHandling_DisableDV
       parameters:
         - name: TargetTenantID
@@ -952,7 +878,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -978,7 +904,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1010,7 +936,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1021,25 +947,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Start the data load for analytic tenants
-      description: |-
-        This API starts the data load process for all analytic tenants included in the specified data files uploaded
-         to the Visier SFTP server. On success, you receive a job ID that can be filtered and searched for within the
-         Jobs room in Visier. This job ID is associated with the receiving job, and related to all processing jobs that
-         spawn for each analytic tenant.
-
-         With the job ID, you can also call the next two APIs to retrieve the status of the receiving job and the status
-         list of all related processing jobs.
-
-         **Prerequisite:** You must first obtain a PGP public encryption key and upload the source data files to Visier's
-         SFTP server. Files must have a .zip.gpg extension, meaning the files are encrypted using the PGP protocol and compressed.
-
-         Visier provides ways to generate PGP key pairs and download the public key to encrypt your data files. You can either use
-         the PGP Keys API or, in Visier, navigate to **Settings > Manage PGP Keys**.
-
-         **Note:**
-          - To see the full status of all analytic tenant data loads, navigate to the Jobs room in a project.
-          - For performance and efficiency, Visier requires that the uncompressed batch file size is below 5 GB and that no
-            more than 5000 tenants are included in a batch.
+      description: "This API starts the data load process for all analytic tenants included in the specified data files uploaded\n to the Visier SFTP server. On success, you receive a job ID that can be filtered and searched for within the\n Jobs room in Visier. This job ID is associated with the receiving job, and related to all processing jobs that\n spawn for each analytic tenant.\n\n With the job ID, you can also call the next two APIs to retrieve the status of the receiving job and the status\n list of all related processing jobs.\n\n **Prerequisite:** You must first obtain a PGP public encryption key and upload the source data files to Visier's\n SFTP server. Files must have a .zip.gpg extension, meaning the files are encrypted using the PGP protocol and compressed.\n\n Visier provides ways to generate PGP key pairs and download the public key to encrypt your data files. You can either use\n the PGP Keys API or, in Visier, navigate to **Settings > Manage PGP Keys**.\n\n **Note:**\n  - To see the full status of all analytic tenant data loads, navigate to the Jobs room in a project.\n  - For performance and efficiency, Visier requires that the uncompressed batch file size is below 5 GB and that no\n    more than 5000 tenants are included in a batch."
       operationId: DataAndJobHandling_StartLoad
       parameters:
         - name: TargetTenantID
@@ -1060,7 +968,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1071,11 +979,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve data uploads
-      description: |-
-        Retrieve the data uploads and whether they're included in one of:
-         - A list of analytic tenants managed by you.
-         - A single specified analytic tenant.
-         - A receiving job.
+      description: "Retrieve the data uploads and whether they're included in one of:\n - A list of analytic tenants managed by you.\n - A single specified analytic tenant.\n - A receiving job."
       operationId: DataAndJobHandling_RetrieveDataUploads
       parameters:
         - name: uploadJobId
@@ -1119,7 +1023,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1151,7 +1055,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1183,7 +1087,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1224,7 +1128,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1235,10 +1139,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Cancel a list of jobs
-      description: |-
-        Cancel a list of processing jobs, receiving jobs, and extraction jobs.
-
-         **Note:** Receiving jobs with the Running status cannot be cancelled.
+      description: "Cancel a list of processing jobs, receiving jobs, and extraction jobs.\n\n **Note:** Receiving jobs with the Running status cannot be cancelled."
       operationId: DataAndJobHandling_CancelJobs
       parameters:
         - name: TargetTenantID
@@ -1259,7 +1160,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1291,7 +1192,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1302,9 +1203,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a dispatching job's extraction jobs with their statuses
-      description: |-
-        Retrieve the statuses of extraction jobs associated with a dispatching job. The dispatching job
-         is a "parent" to extraction jobs, which retrieve data from your source systems through data connectors.
+      description: "Retrieve the statuses of extraction jobs associated with a dispatching job. The dispatching job\n is a \"parent\" to extraction jobs, which retrieve data from your source systems through data connectors."
       operationId: DataAndJobHandling_ExtractionJobAndStatus
       parameters:
         - name: jobId
@@ -1320,9 +1219,7 @@ paths:
             type: string
         - name: tenantCode
           in: query
-          description: |-
-            The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.
-             Use this if you are only interested in the results for one analytic tenant.
+          description: "The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.\n Use this if you are only interested in the results for one analytic tenant."
           schema:
             type: string
         - name: limit
@@ -1349,7 +1246,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1360,9 +1257,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a dispatching job's processing jobs with their statuses
-      description: |-
-        Retrieve the statuses of processing jobs associated with a dispatching job. The dispatching job
-         is a "parent" to extraction jobs, which in turn generate processing jobs and receiving jobs.
+      description: "Retrieve the statuses of processing jobs associated with a dispatching job. The dispatching job\n is a \"parent\" to extraction jobs, which in turn generate processing jobs and receiving jobs."
       operationId: DataAndJobHandling_ProcessingJobAndStatus
       parameters:
         - name: jobId
@@ -1378,9 +1273,7 @@ paths:
             type: string
         - name: tenantCode
           in: query
-          description: |-
-            The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.
-             Use this if you are only interested in the results for one analytic tenant.
+          description: "The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.\n Use this if you are only interested in the results for one analytic tenant."
           schema:
             type: string
         - name: limit
@@ -1407,7 +1300,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1418,9 +1311,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a dispatching job's receiving jobs with their statuses
-      description: |-
-        Retrieve the statuses of receiving jobs associated with a dispatching job. The dispatching job
-         is a "parent" to extraction jobs, which in turn generate processing jobs and receiving jobs.
+      description: "Retrieve the statuses of receiving jobs associated with a dispatching job. The dispatching job\n is a \"parent\" to extraction jobs, which in turn generate processing jobs and receiving jobs."
       operationId: DataAndJobHandling_ReceivingJobAndStatus
       parameters:
         - name: jobId
@@ -1436,9 +1327,7 @@ paths:
             type: string
         - name: tenantCode
           in: query
-          description: |-
-            The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.
-             Use this if you are only interested in the results for one analytic tenant.
+          description: "The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.\n Use this if you are only interested in the results for one analytic tenant."
           schema:
             type: string
         - name: limit
@@ -1465,7 +1354,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1476,11 +1365,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve processing job statuses by receiving job ID
-      description: |-
-        Retrieve a list of statuses for all processing jobs associated with the given receiving job ID.
-         Processing jobs deal with an individual analytic tenant's data load. A processing job is either triggered through
-         the UI or is one of many processing jobs spawned from a receiving job. When a processing job is triggered as part
-         of a set from an receiving job, it is associated to the receiving job through a Parent ID.
+      description: "Retrieve a list of statuses for all processing jobs associated with the given receiving job ID.\n Processing jobs deal with an individual analytic tenant's data load. A processing job is either triggered through\n the UI or is one of many processing jobs spawned from a receiving job. When a processing job is triggered as part\n of a set from an receiving job, it is associated to the receiving job through a Parent ID."
       operationId: DataAndJobHandling_ProcessingJobStatus
       parameters:
         - name: receivingJobId
@@ -1491,9 +1376,7 @@ paths:
             type: string
         - name: tenantCode
           in: query
-          description: |-
-            The tenant code of the tenant you want to retrieve the processing jobs for.
-             Use this if you are only interested in the results for one analytic tenant.
+          description: "The tenant code of the tenant you want to retrieve the processing jobs for.\n Use this if you are only interested in the results for one analytic tenant."
           schema:
             type: string
         - name: limit
@@ -1520,7 +1403,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1531,11 +1414,7 @@ paths:
       tags:
         - DataIntake
       summary: Complete a transfer session
-      description: |-
-        Complete the specified transfer session by triggering a receiving job. A receiving job
-         validates the transferred data and adds the transferred data to Visier's data store.
-
-         You can set an optional parameter to generate a data version through a processing job immediately after the receiving job completes.
+      description: "Complete the specified transfer session by triggering a receiving job. A receiving job\n validates the transferred data and adds the transferred data to Visier's data store.\n\n You can set an optional parameter to generate a data version through a processing job immediately after the receiving job completes."
       operationId: DataIntake_PushDataComplete
       parameters:
         - name: TargetTenantID
@@ -1556,7 +1435,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1583,9 +1462,7 @@ paths:
             type: boolean
         - name: tenantCode
           in: query
-          description: |-
-            The tenant code of the tenant you want to retrieve the receiving jobs for. Use this if you are only interested
-             in the results for one analytic tenant.
+          description: "The tenant code of the tenant you want to retrieve the receiving jobs for. Use this if you are only interested\n in the results for one analytic tenant."
           schema:
             type: string
         - name: start
@@ -1612,7 +1489,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1644,7 +1521,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1655,9 +1532,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Run a data connector extraction job
-      description: |-
-        Run an extraction job to retrieve data through a Visier data connector and generate a new data version. Administrating tenants can run extraction jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.
-         If running extraction jobs for an administrating tenant or their analytic tenants, this request starts a dispatching job that generates one extraction job per tenant. The response returns the job ID of the extraction job or dispatching job.
+      description: "Run an extraction job to retrieve data through a Visier data connector and generate a new data version. Administrating tenants can run extraction jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.\n If running extraction jobs for an administrating tenant or their analytic tenants, this request starts a dispatching job that generates one extraction job per tenant. The response returns the job ID of the extraction job or dispatching job."
       operationId: DataAndJobHandling_AdhocExtractionJob
       parameters:
         - name: TargetTenantID
@@ -1678,7 +1553,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1689,9 +1564,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Run a processing job
-      description: |-
-        Run a processing job to generate a new data version. Administrating tenants can run processing jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.
-         If running processing jobs for an administrating tenant or their analytic tenants, this request starts a dispatching job that generates one processing job per tenant. The response returns the job ID of the processing job or dispatching job.
+      description: "Run a processing job to generate a new data version. Administrating tenants can run processing jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.\n If running processing jobs for an administrating tenant or their analytic tenants, this request starts a dispatching job that generates one processing job per tenant. The response returns the job ID of the processing job or dispatching job."
       operationId: DataAndJobHandling_AdhocProcessingJobs
       parameters:
         - name: TargetTenantID
@@ -1712,7 +1585,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1723,8 +1596,7 @@ paths:
       tags:
         - DirectDataIntake
       summary: Upload files
-      description: |-
-        Send upload files to a previously-created transaction. Each upload file is associated with a target object in Visier. The files are not processed in Visier until you commit the transaction.
+      description: Send upload files to a previously-created transaction. Each upload file is associated with a target object in Visier. The files are not processed in Visier until you commit the transaction.
       operationId: DirectDataIntake_UploadFile
       parameters:
         - name: draftId
@@ -1741,10 +1613,10 @@ paths:
             type: string
         - name: objectName
           in: path
-          description: |-
-            The name of the object to upload the data to.
+          description: 'The name of the object to upload the data to.
 
-            If uploading data to a multi-value property (MVP), specify the property in `{object}--{property}` format; for example, `Employee--Employee_Budgeted_Compensation`.
+
+            If uploading data to a multi-value property (MVP), specify the property in `{object}--{property}` format; for example, `Employee--Employee_Budgeted_Compensation`.'
           required: true
           schema:
             type: string
@@ -1764,49 +1636,24 @@ paths:
                   format: binary
                   description: The file to upload
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DirectDataUploadFileResponseDTO"
+                $ref: '#/components/schemas/DirectDataUploadFileResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Status"
+                $ref: '#/components/schemas/Status'
   /v1/op/data-transfer-sessions/{transferSessionId}/upload:
     put:
       tags:
         - DataIntake
       summary: Transfer data to sources via file upload
-      description: |-
-        Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the
-         data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make
-         multiple requests within the same transfer session.
-
-         File size limit: 3 GB
-
-         Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.
-
-         If you define a specific source in the request, all files within the request will target the declared source. If
-         a source is not defined, the filenames are matched against the source regex to correctly assign each file to a
-         source. To find out the source regex, please contact Visier Customer Success.
-
-         **Note:** If you include files that should target multiple sources in one ZIP file, do not define a source in the request.
-
-         Analytic tenants: For optimal transfer speed, provide one ZIP file per source.
-         Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.
-         In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:
-
-         File1.zip
-         - Folder1: WFF_tenantCode1
-            - Filename1.csv
-            - Filename2.csv
-         - Folder2: WFF_tenantCode2
-            - Filename3.csv
-            - Filename4.csv
+      description: "Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the\n data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make\n multiple requests within the same transfer session.\n\n File size limit: 3 GB\n\n Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.\n\n If you define a specific source in the request, all files within the request will target the declared source. If\n a source is not defined, the filenames are matched against the source regex to correctly assign each file to a\n source. To find out the source regex, please contact Visier Customer Success.\n\n **Note:** If you include files that should target multiple sources in one ZIP file, do not define a source in the request.\n\n Analytic tenants: For optimal transfer speed, provide one ZIP file per source.\n Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.\n In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:\n\n File1.zip\n - Folder1: WFF_tenantCode1\n    - Filename1.csv\n    - Filename2.csv\n - Folder2: WFF_tenantCode2\n    - Filename3.csv\n    - Filename4.csv"
       operationId: DataIntake_UploadData
       parameters:
         - name: transferSessionId
@@ -1847,7 +1694,7 @@ paths:
                   format: binary
                   description: The file to upload in CSV or ZIP format.
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1864,9 +1711,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Delete a connector credential
-      description: |-
-        Use this API to delete connector credentials from your tenants. Credentials that are no longer valid
-         should be deleted.
+      description: "Use this API to delete connector credentials from your tenants. Credentials that are no longer valid\n should be deleted."
       operationId: DataAndJobHandling_DeleteConnectorCredential
       parameters:
         - name: id
@@ -1886,7 +1731,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1903,9 +1748,9 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a specific job's status
-      description: |-
-        Use this API to retrieve the list of statuses for a specific job with id `jobId`.
-        You can retrieve all job statuses or specify a time period to retrieve statuses from.
+      description: 'Use this API to retrieve the list of statuses for a specific job with id `jobId`.
+
+        You can retrieve all job statuses or specify a time period to retrieve statuses from.'
       operationId: DataAndJobHandling_JobIdStatus
       parameters:
         - name: jobId
@@ -1920,7 +1765,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -1954,12 +1799,12 @@ paths:
             type: string
       requestBody:
         content:
-          "*/*":
+          '*/*':
             schema:
               type: string
               format: binary
       responses:
-        "307":
+        '307':
           description: Redirect to Visier's upload infrastructure.
         default:
           description: Default error response
@@ -1972,14 +1817,7 @@ paths:
       tags:
         - PlanningDataLoad
       summary: Upload plan data
-      description: |-
-        Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.
-        The data file must contain the following columns:
-          - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.
-          - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.
-          - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value.
-
-        <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.\nThe data file must contain the following columns:\n  - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.\n  - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.\n  - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: PlanDataLoad_PlanDataUpload
       parameters:
         - name: planId
@@ -1996,29 +1834,21 @@ paths:
             type: string
         - name: calculation
           in: query
-          description: |-
-            Sets the plan values to rollup, distribute, or neither. Valid values:
-              - **ROLLUP**: Roll up loaded data values to parent and ancestor rows. If the data provides a parent value and its child value, this method prioritizes the loaded value for the child and overwrites the parent.
-              - **DISTRIBUTE**: Distribute loaded data values to their children and descendent rows. If the data provides a parent value and its child value, this method prioritizes the parent values and overrides the loaded child value.
-              - **NONE**: The loaded values are not rolled up or distributed. This is the default.
+          description: "Sets the plan values to rollup, distribute, or neither. Valid values:\n  - **ROLLUP**: Roll up loaded data values to parent and ancestor rows. If the data provides a parent value and its child value, this method prioritizes the loaded value for the child and overwrites the parent.\n  - **DISTRIBUTE**: Distribute loaded data values to their children and descendent rows. If the data provides a parent value and its child value, this method prioritizes the parent values and overrides the loaded child value.\n  - **NONE**: The loaded values are not rolled up or distributed. This is the default."
           required: false
           schema:
             type: string
         - name: currency
           in: query
-          description: |-
-            The 3-digit ISO 4217 currency code of the data.
-            If undefined, default is the plan's consolidation currency. If the currency is different from the plan's consolidation currency, the values are converted to the consolidation currency using the conversion rates loaded for the plan's baseline period.
+          description: 'The 3-digit ISO 4217 currency code of the data.
+
+            If undefined, default is the plan''s consolidation currency. If the currency is different from the plan''s consolidation currency, the values are converted to the consolidation currency using the conversion rates loaded for the plan''s baseline period.'
           required: false
           schema:
             type: string
         - name: method
           in: query
-          description: |-
-            Sets how to validate the data being loaded into Visier. Valid values:
-              - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.
-              - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.
-              - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default.
+          description: "Sets how to validate the data being loaded into Visier. Valid values:\n  - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.\n  - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.\n  - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default."
           required: false
           schema:
             type: string
@@ -2038,7 +1868,7 @@ paths:
                   format: binary
                   description: The CSV file to load into the plan.
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2049,14 +1879,7 @@ paths:
       tags:
         - PlanningDataLoad
       summary: Add or remove plan rows
-      description: |-
-        Send a file to Visier to modify a plan's rows. The file must be in CSV format and contain the following columns:
-        - `Add/Remove`: In the column, use the value "Add" to add the specified row to the plan or "Remove" to remove the specified row from the plan.
-        - A column for each plan segment level using the IDs from `planSegmentLevels`.
-          - To add a row, use the corresponding segment member ID from `planSegmentLevelMembers`. If the member doesn't exist in the schema, provide a display name. The response returns its assigned segment member ID.
-          - To remove a row, use the corresponding segmentId as the column name and the segment member ID from `planSegmentLevelMembers` as the row value.
-
-        <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>
+      description: "Send a file to Visier to modify a plan's rows. The file must be in CSV format and contain the following columns:\n- `Add/Remove`: In the column, use the value \"Add\" to add the specified row to the plan or \"Remove\" to remove the specified row from the plan.\n- A column for each plan segment level using the IDs from `planSegmentLevels`.\n  - To add a row, use the corresponding segment member ID from `planSegmentLevelMembers`. If the member doesn't exist in the schema, provide a display name. The response returns its assigned segment member ID.\n  - To remove a row, use the corresponding segmentId as the column name and the segment member ID from `planSegmentLevelMembers` as the row value.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: PlanDataLoad_PlanRowDataLoad
       parameters:
         - name: planId
@@ -2067,11 +1890,7 @@ paths:
             type: string
         - name: method
           in: query
-          description: |-
-            Sets how to validate the data being loaded into Visier. Valid values:
-              - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.
-              - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.
-              - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default.
+          description: "Sets how to validate the data being loaded into Visier. Valid values:\n  - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.\n  - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.\n  - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default."
           required: false
           schema:
             type: string
@@ -2091,7 +1910,7 @@ paths:
                   format: binary
                   description: The CSV file to load into the plan.
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -2197,21 +2016,14 @@ components:
             - spillStagesAndRecords
             - spillAll
           type: string
-          description: |-
-            The partitioning of debugging info to be generated, if any. Valid values are:
-             - `spillNone`: No debugging info is generated.
-             - `spillStagesAndRecords`: Debugging info is generated for stages and records.
-             - `spillAll`: Debugging info is generated for all partitions.
+          description: "The partitioning of debugging info to be generated, if any. Valid values are:\n - `spillNone`: No debugging info is generated.\n - `spillStagesAndRecords`: Debugging info is generated for stages and records.\n - `spillAll`: Debugging info is generated for all partitions."
           format: enum
         spillDebugInfoDetailLevelDTO:
           enum:
             - fileAndLine
             - mappingName
           type: string
-          description: |-
-            The detail level of the debugging info to be generated. Valid values are:
-             - `fileAndLine`: Debugging info is generated for file and line.
-             - `mappingName`: Debugging info is generated for mapping name.
+          description: "The detail level of the debugging info to be generated. Valid values are:\n - `fileAndLine`: Debugging info is generated for file and line.\n - `mappingName`: Debugging info is generated for mapping name."
           format: enum
         lastExtractionTimeOffsetMonths:
           type: integer
@@ -2242,9 +2054,7 @@ components:
           description: If `true`, runs processing jobs for all accessible analytic tenants. Default is `false`. Only valid for requests from an administrating tenant.
         dataCategoryId:
           type: string
-          description: |-
-            The unique identifier of the data category to run the job. If omitted, runs a job using the primary data category.
-             To retrieve a list of all data categories, see `GET /v1/op/data/categories`.
+          description: "The unique identifier of the data category to run the job. If omitted, runs a job using the primary data category.\n To retrieve a list of all data categories, see `GET /v1/op/data/categories`."
         publishToProduction:
           type: boolean
           description: If `true`, publishes the generated data version to production. Default is `false`.
@@ -2397,9 +2207,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/admin.DataVersionAndDateDTO'
-          description: |-
-            The latest enabled data versions for the given analytic tenant. If the analytic tenant
-             has no enabled data versions, an empty string "" is returned.
+          description: "The latest enabled data versions for the given analytic tenant. If the analytic tenant\n has no enabled data versions, an empty string \"\" is returned."
     admin.MultipleTenantDataVersionsListDTO:
       type: object
       properties:
@@ -2508,10 +2316,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            A comma-separated list of file names.
-             Example:
-             `"files": "/path/to/file1.zip.gpg,/path/to/another/file.zip.gpg"`
+          description: "A comma-separated list of file names.\n Example:\n `\"files\": \"/path/to/file1.zip.gpg,/path/to/another/file.zip.gpg\"`"
         skipDataLoad:
           type: boolean
           description: If `true`, receives the files and skips data loading. Does not generate a data version.
@@ -2546,14 +2351,10 @@ components:
           description: The tenant code for the analytic tenant that you are disabling a data version.
         dataVersion:
           type: string
-          description: |-
-            The data version to disable for a particular analytic tenant.
-             If not specified, disables the latest enabled data version for the analytic tenant.
+          description: "The data version to disable for a particular analytic tenant.\n If not specified, disables the latest enabled data version for the analytic tenant."
         dataCategory:
           type: string
-          description: |-
-            The object name of the data category. Default is the primary data category.
-             For administrating tenants, the data category must exist in the requesting tenant; that is, the administrating tenant or the tenant specified in `TargetTenantID`.
+          description: "The object name of the data category. Default is the primary data category.\n For administrating tenants, the data category must exist in the requesting tenant; that is, the administrating tenant or the tenant specified in `TargetTenantID`."
     data_in.DisableDVModel:
       type: object
       properties:
@@ -2561,9 +2362,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/data_in.DataVersionObject'
-          description: |-
-            A list of objects representing the data version to disable for a particular analytic tenant.
-             The limit of objects to include per request is 1000.
+          description: "A list of objects representing the data version to disable for a particular analytic tenant.\n The limit of objects to include per request is 1000."
     data_in.DisableDVRequest:
       type: object
       properties:
@@ -2622,14 +2421,10 @@ components:
           description: The tenant code of the analytic tenant for the extraction job.
         status:
           type: string
-          description: |-
-            The current state of the job.
-             - Valid values: Pending, Running, Succeeded, Failed, Error, Cancelling, Cancelled, RolledBack, Rescheduling, Rescheduled.
+          description: "The current state of the job.\n - Valid values: Pending, Running, Succeeded, Failed, Error, Cancelling, Cancelled, RolledBack, Rescheduling, Rescheduled."
         currentStage:
           type: string
-          description: |-
-            The current stage of the job. This is not returned if the stage is "Completed".
-             - Valid values: Initialize, Retrieve Main Subject, Retrieve Secondary Subjects, Retrieve Custom Subjects, Process Records, Publish Artifacts, Publish Records, Completed.
+          description: "The current stage of the job. This is not returned if the stage is \"Completed\".\n - Valid values: Initialize, Retrieve Main Subject, Retrieve Secondary Subjects, Retrieve Custom Subjects, Process Records, Publish Artifacts, Publish Records, Completed."
     data_in.ExtractionJobAndStatusResponse:
       type: object
       properties:
@@ -3123,9 +2918,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.SubjectMissingAccessDTO'
-          description: |-
-            The properties that the credential cannot access despite successful authentication.
-             This is only returned for authentications that do not grant access to all data.
+          description: "The properties that the credential cannot access despite successful authentication.\n This is only returned for authentications that do not grant access to all data."
     designer.DataProviderAuthInformationDTO:
       type: object
       properties:
@@ -3913,10 +3706,7 @@ components:
           type: array
           items:
             type: string
-          description: |-
-            The target analytic objects to load using extension tables.
-             You can extend objects if the job type is supplemental and the target objects already contain data from a previous data version.
-             This allows you to load data for objects that already contain data in Visier.
+          description: "The target analytic objects to load using extension tables.\n You can extend objects if the job type is supplemental and the target objects already contain data from a previous data version.\n This allows you to load data for objects that already contain data in Visier."
       description: Whether the direct data intake job is a primary job or a supplemental job.
     servicing.DirectDataJobStatusResponseDTO:
       type: object
@@ -4022,11 +3812,7 @@ components:
         message:
           type: string
           description: Upload response message from the provisioning service
-      description: |-
-        The transaction results.
-
-         If uploading a file, a success response means the upload was successful and doesn't always mean the file
-         was successfully loaded into its target object.
+      description: "The transaction results.\n\n If uploading a file, a success response means the upload was successful and doesn't always mean the file\n was successfully loaded into its target object."
     servicing.JobIdResponse:
       type: object
       properties:
@@ -4112,10 +3898,10 @@ components:
         message:
           type: string
           description: The upload response message from the provisioning service.
-      description: |-
-        The transaction results.
+      description: 'The transaction results.
 
-        If uploading a file, a success response means the upload was successful and doesn't always mean the file was successfully loaded into its target object.
+
+        If uploading a file, a success response means the upload was successful and doesn''t always mean the file was successfully loaded into its target object.'
     PlanDataUploadResponseDTO:
       type: object
       properties:
@@ -4132,11 +3918,13 @@ components:
             $ref: '#/components/schemas/planning.PlanDataLoadErrorDTO'
         changelists:
           type: array
-          description: |-
-            The collection of changes grouped by plan item made during the data load process.
+          description: 'The collection of changes grouped by plan item made during the data load process.
+
             This list only contains the changes specified by the load.
+
             If you indicated in the request that the changes are to be rolled up or distributed,
-            the values modified as a result of the calculations are not listed here.
+
+            the values modified as a result of the calculations are not listed here.'
           items:
             $ref: '#/components/schemas/PlanDataLoadChangeListDTO'
     PlanDataLoadChangeListDTO:
@@ -4242,35 +4030,36 @@ components:
 tags:
   - name: DirectDataIntake
     x-displayName: Direct Data Intake
-    description: |-
-      Use the Direct Data Intake API to load data directly into Visier objects. These objects can be delivered as part of Visier Blueprint, locally modified objects, or even completely custom objects. Objects must be released to production to receive data through the DDI API.
+    description: 'Use the Direct Data Intake API to load data directly into Visier objects. These objects can be delivered as part of Visier Blueprint, locally modified objects, or even completely custom objects. Objects must be released to production to receive data through the DDI API.
+
       You can load data into:
+
       - Subjects
+
       - Events
+
       - Parent-child dimensions
-      - Multi-value properties
+
+      - Multi-value properties'
   - name: DataIntake
     x-displayName: Data Intake
-    description: |-
-      Send raw or untransformed data to Visier. After we receive the data, Visier runs business rules to transform your data into the expected format for the existing mappings.
-      <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+    description: 'Send raw or untransformed data to Visier. After we receive the data, Visier runs business rules to transform your data into the expected format for the existing mappings.
+
+      <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>'
   - name: DataAndJobHandling
     x-displayName: Data and Job Handling
-    description: |-
-      Initiate and manage jobs, included or excluded data, and data connector credentials. Administrating tenant users can manage jobs and data for their analytic tenants.
+    description: Initiate and manage jobs, included or excluded data, and data connector credentials. Administrating tenant users can manage jobs and data for their analytic tenants.
   - name: PGPKeys
     x-displayName: PGP Keys
-    description: |-
-      The Pretty Good Privacy (PGP) Keys API generates key pairs and provides a public key to encrypt data that you send to Visier. PGP encryption adds an additional layer of security against data disclosure.
-      <br><br>After you generate a key pair and retrieve the public encryption key, you can encrypt your data files before sending them to Visier. When Visier receives files encrypted with the public key, we retrieve the associated private key to decrypt and process the file.
+    description: 'The Pretty Good Privacy (PGP) Keys API generates key pairs and provides a public key to encrypt data that you send to Visier. PGP encryption adds an additional layer of security against data disclosure.
+
+      <br><br>After you generate a key pair and retrieve the public encryption key, you can encrypt your data files before sending them to Visier. When Visier receives files encrypted with the public key, we retrieve the associated private key to decrypt and process the file.'
   - name: PlanningDataLoad
     x-displayName: Planning Data Load
-    description: |-
-      Send data directly to your plan's scenario and optionally add or remove rows from your plan.
+    description: Send data directly to your plan's scenario and optionally add or remove rows from your plan.
   - name: DataUpload
     x-displayName: Data Upload
-    description: |-
-      Send data files to Visier. After we receive the data, Visier starts a receiving job and a processing job to process the data.
+    description: Send data files to Visier. After we receive the data, Visier starts a receiving job and a processing job to process the data.
 security:
   - ApiKeyAuth: []
     BearerAuth: []
