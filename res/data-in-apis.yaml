@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2010
+  version: 22222222.99201.2027
 paths:
   /v1/api/pgp-keys:
     get:
@@ -1495,6 +1495,98 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/data_in.ReceivingJobStatusResponse'
+  /v1alpha/op/data/receiving-jobs/{jobId}/files:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a receiving job's files
+      description: Retrieve all the files transferred to Visier by a specific receiving job. To retrieve receiving job files, you must know the receiving job ID. To get receiving job IDs, see `GET /v1/op/job-status/jobs`. The response returns the details of uploaded files by tenant.
+      operationId: DataAndJobHandling_RetrieveReceivingJobExtractedFiles
+      parameters:
+        - name: jobId
+          in: path
+          description: The job ID of the receiving job.
+          required: true
+          schema:
+            type: string
+        - name: fileNameRegex
+          in: query
+          description: The regular expression to match the file names of the files to retrieve. The regex must be URL-encoded; for example, the regular expression `Employee[0-9]+\.csv` becomes `fileNameRegex=Employee%5B0-9%5D%2B%5C.csv`.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The limit of file to retrieve across tenants. Default is 500. Maximum is 1000.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving files from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.ReceivingJobExtractedFilesListResponseDTO'
+  /v1alpha/op/data/uploaded-files:
+    get:
+      tags:
+        - DataAndJobHandling
+      summary: Retrieve a list of analytic tenant source files
+      description: "Retrieve the list of all uploaded files for your analytic tenant's sources. Default is to return all analytic tenants' sources. To retrieve a specific analytic tenant’s uploaded files, use the `TargetTenantID` header. Optionally, specify a filename regex to a retrieve a particular set of uploaded files. The response returns details of each source's files, including upload time, filename, and whether the file is included during data version generation."
+      operationId: DataAndJobHandling_RetrieveTenantSourceFiles
+      parameters:
+        - name: fileNameRegex
+          in: query
+          description: The regular expression to match the file names of the source files to retrieve. The regex must be URL-encoded; for example, the regular expression `Employee[0-9]+\.csv` becomes `fileNameRegex=Employee%5B0-9%5D%2B%5C.csv`.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The limit of source files to retrieve. Default is 500. Maximum is 1000.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving source files from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.TenantSourceFilesListResponseDTO'
   /v1alpha/op/jobs/consolidated-analytics-jobs:
     post:
       tags:
@@ -3819,6 +3911,74 @@ components:
         jobId:
           type: string
       description: The unique identifier of the returned job.
+    servicing.ReceivingJobExtractedFileResponseDTO:
+      type: object
+      properties:
+        uploadTime:
+          type: string
+          description: The upload time of the file.
+        filename:
+          type: string
+          description: The name of the file.
+        identifier:
+          type: string
+          description: The unique identifier of the file.
+        sourceId:
+          type: string
+          description: The UUID of the source associated with the file. If the file isn't connected to a source, the UUID is a placeholder value.
+        sourceObjectName:
+          type: string
+          description: The object name of the source associated with the file. If the file isn't connected to a source, the object name is empty.
+        included:
+          type: boolean
+          description: If `true`, the file is included in data version generation.
+      description: The files transferred to the analytic tenant from the receiving job. If the tenant has no previous data uploads, this list is empty.
+    servicing.ReceivingJobExtractedFilesForTenantResponseDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the analytic tenant that received files from the receiving job.
+        extractedFiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ReceivingJobExtractedFileResponseDTO'
+          description: The files transferred to the analytic tenant by the receiving job. If the tenant has no previous data uploads, this list is empty.
+      description: Information for each analytic tenant that received files from the receiving job.
+    servicing.ReceivingJobExtractedFilesListResponseDTO:
+      type: object
+      properties:
+        receivingJobId:
+          type: string
+          description: The receiving job identifier.
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ReceivingJobExtractedFilesForTenantResponseDTO'
+          description: Information for each analytic tenant that received files from the receiving job.
+      description: The analytic tenants that received files from the receiving job.
+    servicing.SourceFileResponseDTO:
+      type: object
+      properties:
+        uploadTime:
+          type: string
+          description: The upload time of the source file.
+        filename:
+          type: string
+          description: The name of the source file.
+        identifier:
+          type: string
+          description: The unique identifier of the file.
+        sourceId:
+          type: string
+          description: The UUID of the source associated with the file.
+        sourceObjectName:
+          type: string
+          description: The object name of the source associated with the file.
+        included:
+          type: boolean
+          description: If `true`, the file is included in data version generation.
+      description: Information about a file uploaded to a source.
     servicing.TenantDataUploadStatusResponseDTO:
       type: object
       properties:
@@ -3886,6 +4046,18 @@ components:
           items:
             $ref: '#/components/schemas/servicing.TenantDataUploadUpdateStatusResponseDTO'
           description: A list of objects representing the results of the data upload exclusion.
+    servicing.TenantSourceFilesListResponseDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the analytic tenant that owns the source files.
+        sourceFiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SourceFileResponseDTO'
+          description: The files uploaded to a source.
+      description: A list of the source's uploaded files.
     DirectDataUploadFileResponseDTO:
       type: object
       properties:
