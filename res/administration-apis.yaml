@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2027
+  version: 22222222.99201.2042
 paths:
   /v1/admin/capabilities:
     get:
@@ -2980,6 +2980,97 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/admin.ProductVersionsUpdateResponseDTO'
+  /v1alpha/admin/sidecar-app-configs/{applicationId}:
+    get:
+      tags:
+        - SidecarSolutions
+      summary: Retrieve a sidecar solution's settings
+      description: "Retrieve the settings for a specific sidecar solution. You must know the solution ID of your sidecar solution. To get the ID, contact Visier Technical Support.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: SidecarSolutions_GetSidecarSolutionSettings
+      parameters:
+        - name: applicationId
+          in: path
+          description: The unique identifier of the solution to configure.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SidecarSolutionSettingsDTO'
+    put:
+      tags:
+        - SidecarSolutions
+      summary: Update a sidecar solution's settings
+      description: "Update a sidecar solution's settings. The response returns the settings after updating. When updating setting, we recommend that you first retrieve the existing settings using `GET`. You can use the `GET` response in your `PUT` request definition.\n\n In `PUT` requests, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: SidecarSolutions_SetSidecarAppConfigs
+      parameters:
+        - name: applicationId
+          in: path
+          description: The unique identifier of the solution to configure.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.SidecarSolutionSettingsDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SidecarSolutionSettingsDTO'
+    delete:
+      tags:
+        - SidecarSolutions
+      summary: Delete a sidecar solution's settings
+      description: "Delete the settings for a sidecar solution. This deletes all the settings for the solution.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: SidecarSolutions_DeleteSidecarAppConfigs
+      parameters:
+        - name: applicationId
+          in: path
+          description: The unique identifier of the solution to configure.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.SidecarSolutionRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content: {}
   /v1beta/admin/sources:
     post:
       tags:
@@ -3906,6 +3997,12 @@ components:
         projectId:
           type: string
           description: The unique identifier of the draft project you want to import committed changes into.
+    admin.SidecarSolutionRequestDTO:
+      type: object
+      properties:
+        applicationId:
+          type: string
+          description: The unique identifier of the solution to configure.
     admin.TenantCodeBody:
       type: object
       properties:
@@ -4299,7 +4396,7 @@ components:
         traits:
           allOf:
             - $ref: '#/components/schemas/admin.TenantDetailsTraitsDTO'
-          description: The tenant's traits, including aggregation rights, tenant type, and data profile type.
+          description: The tenant's traits, including aggregation rights, tenant type, and data profile type. To set an analytic tenant's traits, contact Visier Technical Support.
     admin.TenantManagementAPIUpdateResponseDTO:
       type: object
       properties:
@@ -5893,6 +5990,15 @@ components:
           type: string
           description: "The dimension member's validity status. Valid values: Valid, NotFound.\n * **Valid**: The object exists and has loaded data.\n * **NotFound**: The object doesn't exist."
           format: enum
+    servicing.MultiValueSettingDTO:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: string
+          description: A value containing multiple strings.
+      description: A value containing multiple strings.
     servicing.PermissionAssignedByTenantDTO:
       type: object
       properties:
@@ -6310,12 +6416,46 @@ components:
         referenceSymbolName:
           type: string
           description: The reference symbol name.
+    servicing.SettingsDTO:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key of the configurable setting.
+        singleConfigItem:
+          allOf:
+            - $ref: '#/components/schemas/servicing.SingleValueSettingDTO'
+          description: A value containing a single string.
+        multiValueConfigItem:
+          allOf:
+            - $ref: '#/components/schemas/servicing.MultiValueSettingDTO'
+          description: A value containing multiple strings.
+      description: The settings to configure a sidecar solution.
     servicing.ShareableDataAccessSet:
       type: object
       properties:
         dataAccessSetId:
           type: string
           description: The unique identifier of the shareable data access set.
+    servicing.SidecarSolutionSettingsDTO:
+      type: object
+      properties:
+        configs:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SettingsDTO'
+          description: The available configuration settings.
+        applicationId:
+          type: string
+          description: The unique identifier of the solution to configure.
+      description: The options to configure a sidecar solution.
+    servicing.SingleValueSettingDTO:
+      type: object
+      properties:
+        value:
+          type: string
+          description: A value containing a single string.
+      description: A value containing a single string.
     servicing.SourcesAPIOperationRequestDTO:
       type: object
       properties:
@@ -6764,6 +6904,13 @@ tags:
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
 
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: SidecarSolutions
+    x-displayName: Sidecar Solutions
+    description: 'Manage your sidecar solution''s configuration. A sidecar solution is a unique solution built using the Visier platform, such as Smart Compensation. Use this API to retrieve the current settings, update the settings to new values, or delete existing settings.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: ReleaseVersionConfiguration
     x-displayName: Release Versions
     description: 'Manage the Visier product release versions for your tenants.
@@ -6798,4 +6945,5 @@ x-tagGroups:
       - EmailDomains
       - EncryptionKeys
       - NetworkSubnets
+      - SidecarSolutions
       - ReleaseVersionConfiguration

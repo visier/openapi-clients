@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2027
+  version: 22222222.99201.2042
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1722,7 +1722,7 @@ paths:
       tags:
         - DataModel
       summary: Retrieve a list of plans
-      description: "Retrieve all the plans you have access to. The response returns plan information you can use to call the Planning Data Load API.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Retrieve all the plans you have access to. The response returns plan information you can use to call the Plan Data Load API.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_PlanDataLoadlList
       parameters:
         - name: displayName

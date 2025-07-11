@@ -1,0 +1,531 @@
+openapi: 3.0.3
+info:
+  title: Visier Planning Public APIs
+  description: Visier APIs for managing your plans through API.
+  license:
+    name: Apache License, Version 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: 22222222.99201.2042
+paths:
+  /v1alpha/planning/data/plans:
+    patch:
+      tags:
+        - PlanAdministration
+      summary: Partially update subplans
+      description: "Make partial changes to existing subplans, such as consolidating or reopening them. The response returns whether the subplans were successfully patched or not. You must know the ID of the subplans to update them. To retrieve subplan IDs, see `GET /v1alpha/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the subplan without affecting omitted fields.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanAdministration_PatchPlans
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/planning.PlansPatchRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlansPatchResponse'
+        '500':
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+  /v1alpha/planning/data/plans/{planId}:
+    patch:
+      tags:
+        - PlanAdministration
+      summary: Partially update a subplan
+      description: "Make partial changes to an existing subplan, such as consolidating or reopening it. The response returns whether the subplan was successfully patched or not. You must know the ID of the subplan to update it. To retrieve subplan IDs, see `GET /v1alpha/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the subplan without affecting omitted fields.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanAdministration_PatchPlan
+      parameters:
+        - name: planId
+          in: path
+          description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/planning.PlanPatchRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlanPatchResponse'
+        '500':
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        '404':
+          description: plan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+  /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
+    patch:
+      tags:
+        - PlanDataLoad
+      summary: Upload plan data
+      description: "Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.\nThe data file must contain the following columns:\n  - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.\n  - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.\n  - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanDataLoad_PlanDataUpload
+      parameters:
+        - name: planId
+          in: path
+          description: The unique identifier of the plan.
+          required: true
+          schema:
+            type: string
+        - name: scenarioId
+          in: path
+          description: The unique identifier of the plan scenario to load data into.
+          required: true
+          schema:
+            type: string
+        - name: calculation
+          in: query
+          description: "Sets the plan values to rollup, distribute, or neither. Valid values:\n  - **ROLLUP**: Roll up loaded data values to parent and ancestor rows. If the data provides a parent value and its child value, this method prioritizes the loaded value for the child and overwrites the parent.\n  - **DISTRIBUTE**: Distribute loaded data values to their children and descendent rows. If the data provides a parent value and its child value, this method prioritizes the parent values and overrides the loaded child value.\n  - **NONE**: The loaded values are not rolled up or distributed. This is the default."
+          required: false
+          schema:
+            type: string
+        - name: currency
+          in: query
+          description: 'The 3-digit ISO 4217 currency code of the data.
+
+            If undefined, default is the plan''s consolidation currency. If the currency is different from the plan''s consolidation currency, the values are converted to the consolidation currency using the conversion rates loaded for the plan''s baseline period.'
+          required: false
+          schema:
+            type: string
+        - name: method
+          in: query
+          description: "Sets how to validate the data being loaded into Visier. Valid values:\n  - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.\n  - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.\n  - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default."
+          required: false
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The CSV file to load into the plan.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanDataUploadResponseDTO'
+  /v1alpha/planning/data/plans/{planId}/rows:
+    patch:
+      tags:
+        - PlanDataLoad
+      summary: Add or remove plan rows
+      description: "Send a file to Visier to modify a plan's rows. The file must be in CSV format and contain the following columns:\n- `Add/Remove`: In the column, use the value \"Add\" to add the specified row to the plan or \"Remove\" to remove the specified row from the plan.\n- A column for each plan segment level using the IDs from `planSegmentLevels`.\n  - To add a row, use the corresponding segment member ID from `planSegmentLevelMembers`. If the member doesn't exist in the schema, provide a display name. The response returns its assigned segment member ID.\n  - To remove a row, use the corresponding segmentId as the column name and the segment member ID from `planSegmentLevelMembers` as the row value.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanDataLoad_PlanRowDataLoad
+      parameters:
+        - name: planId
+          in: path
+          description: The unique identifier of the plan.
+          required: true
+          schema:
+            type: string
+        - name: method
+          in: query
+          description: "Sets how to validate the data being loaded into Visier. Valid values:\n  - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.\n  - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.\n  - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default."
+          required: false
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The CSV file to load into the plan.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanRowDataLoadResponseDTO'
+components:
+  schemas:
+    planning.ConsolidateActionPayload:
+      type: object
+      properties:
+        autoRollup:
+          type: boolean
+          description: "If `true`, consolidated subplan values are rolled up to the parent segment. Default is `true`."
+        includedSubPlans:
+          type: array
+          items:
+            type: string
+          description: "The UUIDs of the subplans to include. If not defined, all submitted subplans will be consolidated."
+      description: The details of the subplan consolidation.
+    planning.ErrorSummary:
+      type: object
+      properties:
+        rci:
+          type: string
+          description: A root cause identifier that allows Visier to determine the source of the problem.
+        message:
+          type: string
+          description: The details of the error and actions you can take to load the data correctly.
+      description: The error details of the unsuccessful action.
+    planning.PlanPatchActionResult:
+      type: object
+      properties:
+        planId:
+          type: string
+          description: The UUID of the subplan.
+        success:
+          type: boolean
+          description: If `true`, the action was successful.
+        error:
+          allOf:
+            - $ref: '#/components/schemas/planning.ErrorSummary'
+          description: The error details of the unsuccessful action.
+      description: The result of the action taken on the subplan.
+    planning.PlanPatchRequest:
+      type: object
+      properties:
+        actionType:
+          enum:
+            - Update
+            - Consolidate
+            - Reopen
+          type: string
+          description: "The action to perform on the subplan. Valid values:\n - `Consolidate`: Combine the submitted subplan values into the main plan.\n - `Reopen`: Reopen consolidated subplans so subplanners can change the values."
+          format: enum
+        consolidateActionPayload:
+          allOf:
+            - $ref: '#/components/schemas/planning.ConsolidateActionPayload'
+          description: The details of the subplan consolidation.
+        reopenActionPayload:
+          allOf:
+            - $ref: '#/components/schemas/planning.ReopenActionPayload'
+          description: The details of reopening the subplan.
+        planId:
+          type: string
+          description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
+      description: If reopening a subplan, this is the subplan to update. If consolidating subplans, this is the main plan to update.
+      oneOf:
+        - $ref: '#/components/schemas/PlanPatchConsolidateActionRequest'
+        - $ref: '#/components/schemas/PlanPatchReopenActionRequest'
+      discriminator:
+        propertyName: actionType
+        mapping:
+          Consolidate: '#/components/schemas/PlanPatchConsolidateActionRequest'
+          Reopen: '#/components/schemas/PlanPatchReopenActionRequest'
+    planning.PlanPatchResponse:
+      type: object
+      properties:
+        actionResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PlanPatchActionResult'
+          description: The result of the action taken on the subplan.
+      description: The result of the action taken on the subplan if reopening, or the main plan if consolidating.
+    planning.PlansPatchRequest:
+      type: object
+      properties:
+        plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlansPatchRequestPlanItem'
+          description: If reopening subplans, these are the subplans to update. If consolidating subplans, these are the main plans to update.
+      description: If reopening subplans, these are the subplans to update. If consolidating subplans, these are the main plans to update.
+    planning.PlansPatchResponse:
+      type: object
+      properties:
+        actionsResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PlansPatchResponseActionResult'
+          description: The result of the actions taken on the subplans.
+      description: The result of the actions taken on the subplans if reopening, or the main plans if consolidating.
+    planning.PlansPatchResponseActionResult:
+      type: object
+      properties:
+        planId:
+          type: string
+          description: The UUID of the subplan.
+        actionResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PlanPatchActionResult'
+          description: The result of the actions taken on the subplans.
+      description: The result of the actions taken on the subplans.
+    planning.ReopenActionPayload:
+      type: object
+      properties:
+        assignee:
+          type: string
+          description: The user that the subplan will be assigned to once reopened. If not defined, it will keep the user that was previously assigned.
+        dueDate:
+          type: string
+          description: "The due date of the subplan in UTC format. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string. If not defined, the due date will be the subplan’s existing due date. The due date cannot be earlier than today."
+      description: The details of reopening the subplan.
+    PlanPatchConsolidateActionRequest:
+      type: object
+      title: Consolidate subplans
+      required:
+        - actionType
+        - consolidateActionPayload
+      properties:
+        actionType:
+          description: 'The action to perform on the subplan. Valid values:
+
+            - `Consolidate`: Combine the submitted subplan values into the main plan.
+
+            - `Reopen`: Reopen consolidated subplans so subplanners can change the values.
+
+'
+          type: string
+          enum:
+            - Consolidate
+        consolidateActionPayload:
+          $ref: '#/components/schemas/planning.ConsolidateActionPayload'
+    PlanPatchReopenActionRequest:
+      type: object
+      title: Reopen a plan
+      required:
+        - actionType
+        - reopenActionPayload
+      properties:
+        actionType:
+          description: 'The action to perform on the subplan. Valid values:
+
+            - `Consolidate`: Combine the submitted subplan values into the main plan.
+
+            - `Reopen`: Reopen consolidated subplans so subplanners can change the values.
+
+'
+          type: string
+          enum:
+            - Reopen
+        reopenActionPayload:
+          $ref: '#/components/schemas/planning.ReopenActionPayload'
+    PlansPatchRequestPlanItem:
+      oneOf:
+        - $ref: '#/components/schemas/PlanPatchConsolidateActionRequestWithPlanId'
+        - $ref: '#/components/schemas/PlanPatchReopenActionRequestWithPlanId'
+      discriminator:
+        propertyName: actionType
+        mapping:
+          Consolidate: '#/components/schemas/PlanPatchConsolidateActionRequestWithPlanId'
+          Reopen: '#/components/schemas/PlanPatchReopenActionRequestWithPlanId'
+    PlanPatchConsolidateActionRequestWithPlanId:
+      allOf:
+        - $ref: '#/components/schemas/PlanPatchConsolidateActionRequest'
+        - type: object
+          required:
+            - actionType
+            - consolidateActionPayload
+            - planId
+          properties:
+            planId:
+              type: string
+              description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
+              format: uuid
+    PlanPatchReopenActionRequestWithPlanId:
+      allOf:
+        - $ref: '#/components/schemas/PlanPatchReopenActionRequest'
+        - type: object
+          required:
+            - actionType
+            - reopenActionPayload
+            - planId
+          properties:
+            planId:
+              type: string
+              description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
+              format: uuid
+    PlanDataUploadResponseDTO:
+      type: object
+      properties:
+        updatedCellsCount:
+          type: integer
+          description: The number of cells that were updated from the data load process.
+        potentialUpdatedCellsCount:
+          type: integer
+          description: The number of cells that would have been updated if all changes were saved.
+        errors:
+          type: array
+          description: The collection of errors encountered during the data load process.
+          items:
+            $ref: '#/components/schemas/planning.PlanDataLoadErrorDTO'
+        changelists:
+          type: array
+          description: 'The collection of changes grouped by plan item made during the data load process.
+
+            This list only contains the changes specified by the load.
+
+            If you indicated in the request that the changes are to be rolled up or distributed,
+
+            the values modified as a result of the calculations are not listed here.'
+          items:
+            $ref: '#/components/schemas/PlanDataLoadChangeListDTO'
+    PlanDataLoadChangeListDTO:
+      type: object
+      properties:
+        planItem:
+          type: string
+          description: The ID of the plan item.
+        changes:
+          type: array
+          description: The collection of changes made for the plan item.
+          items:
+            $ref: '#/components/schemas/PlanDataLoadChangeDTO'
+    PlanDataLoadChangeDTO:
+      type: object
+      properties:
+        rowMembers:
+          type: array
+          description: The collection of member ids that describe the row in the plan.
+          items:
+            type: string
+        period:
+          type: string
+          description: The display name of the time period.
+        oldValue:
+          type: number
+          format: double
+          description: The value that was replaced.
+        newValue:
+          type: number
+          format: double
+          description: The new value loaded into the plan from the data load.
+    PlanRowDataLoadResponseDTO:
+      type: object
+      properties:
+        addedRowsCount:
+          type: integer
+          description: The number of rows added to the plan.
+        removedRowsCount:
+          type: integer
+          description: The number of rows removed from the plan.
+        potentialAddedRowsCount:
+          type: integer
+          description: The number of rows that could have been added to the plan.
+        potentialRemovedRowsCount:
+          type: integer
+          description: The number of rows that could have been removed from the plan.
+        errors:
+          type: array
+          description: The errors that occurred while loading the data.
+          items:
+            $ref: '#/components/schemas/planning.PlanDataLoadErrorDTO'
+        customMembers:
+          type: array
+          description: The custom members and their corresponding IDs in the plan.
+          items:
+            $ref: '#/components/schemas/planning.PlanSegmentLevelMemberDTO'
+    Status:
+      type: object
+      properties:
+        localizedMessage:
+          type: string
+          description: Localized error message describing the root cause of the error.
+        code:
+          type: string
+          description: Error classification.
+        message:
+          type: string
+          description: Not used.
+        rci:
+          type: string
+          description: Optional root cause identifier.
+        userError:
+          type: boolean
+          description: Indicates whether the error is a user error.
+      description: The response structure for errors.
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      name: VisierASIDToken
+      in: cookie
+    ApiKeyAuth:
+      type: apiKey
+      name: apikey
+      in: header
+    BearerAuth:
+      type: http
+      scheme: bearer
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /v1/auth/oauth2/authorize
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+        password:
+          tokenUrl: /v1/auth/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+tags:
+  - name: PlanAdministration
+    x-displayName: Plan Administration
+    description: 'Manage your subplans, such as consolidating and reopening.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: PlanDataLoad
+    x-displayName: Plan Data Load
+    description: 'Send data directly to your plan''s scenario and optionally add or remove rows from your plan.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+security:
+  - ApiKeyAuth: []
+    BearerAuth: []
+  - ApiKeyAuth: []
+    CookieAuth: []
+  - ApiKeyAuth: []
+    OAuth2Auth: []
+x-tagGroups:
+  - name: planning
+    tags:
+      - PlanAdministration
+      - PlanDataLoad

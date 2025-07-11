@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2027
+  version: 22222222.99201.2042
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1146,6 +1146,86 @@ components:
           type: string
           description: "The qualifying path to the selection concept in Visier, such as the analytic object or event the selection\n concept is associated with. If the path has multiple objects, each object is separated by a period."
       description: The name and qualifying path of a selection concept to query.
+    dataservices.query.AggregateQueryExecutionOptionsDTO:
+      type: object
+      properties:
+        calendarType:
+          enum:
+            - TENANT_CALENDAR
+            - GREGORIAN_CALENDAR
+          type: string
+          description: "The calendar type to use. This will be used for all time calculations unless explicitly overridden in\n the calculation itself. Default is TENANT_CALENDAR."
+          format: enum
+        currencyConversionMode:
+          deprecated: true
+          enum:
+            - TENANT_CURRENCY_CONVERSION
+            - VISIER_CURRENCY_CONVERSION
+          type: string
+          description: "This will be removed as of Winter 2026. Use `currencyConversionCode` instead. \n\n The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION."
+          format: enum
+        currencyConversionDate:
+          type: string
+          description: "The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.\n Default is the exchange rate at the end of the query time interval. Format is the number of milliseconds since\n midnight 01 January, 1970 UTC as a string. Note: Epochs are expressed as 64-bit integers and represented as\n stringified longs in JSON due to JSON's inherent limitation in representing large numbers."
+        lineageDepth:
+          type: integer
+          description: The max number of levels of nesting to unwind when determining the lineage for a derived metric value.
+          format: int32
+        zeroVisibility:
+          enum:
+            - SHOW
+            - HIDE
+            - ELIMINATE
+          type: string
+          description: Show or hide zeros in the result. Default is SHOW.
+          format: enum
+        nullVisibility:
+          enum:
+            - SHOW
+            - HIDE
+            - ELIMINATE
+          type: string
+          description: Show or hide null or N/A values in the result. Default is SHOW.
+          format: enum
+        cellDistributionOptions:
+          $ref: '#/components/schemas/dataservices.query.CellDistributionOptionsDTO'
+        axisVisibility:
+          enum:
+            - SIMPLE
+            - VERBOSE
+          type: string
+          description: The amount of information to return about each axis. Default is SIMPLE.
+          format: enum
+        enableSparseResults:
+          type: boolean
+          description: "Retrieve sparse cell sets. Sparse results only retrieve non-zero and non-null cells. Whether a result is truly sparse\n or not is determined by the Visier server."
+        internal:
+          $ref: '#/components/schemas/dataservices.query.InternalQueryExecutionOptionsDTO'
+        enableDescendingSpace:
+          type: boolean
+          description: If true, filter non-time axis member sets to only include members that are in aggregate positions or whose previous position is a leaf
+        currencyConversionCode:
+          type: string
+          description: Overrides the tenant's default currency for currency conversions.
+        memberDisplayMode:
+          enum:
+            - DEFAULT
+            - COMPACT
+            - DISPLAY
+            - MDX
+            - COMPACT_DISPLAY
+          type: string
+          description: "Control how member values are displayed. You can override the `memberDisplayMode` on a per-axis basis, if required.\n\n Valid values are `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `DEFAULT`.\n\n * `DEFAULT`: The default member name representation. For non-time members, this returns the technical member name path.\n   For time members, this includes a bracketed member index.\n   For example, Time instant member: `2019-06-01T00:00:00.000Z - [0]`\n   For example, Time interval member: `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`\n * `COMPACT`: Shortens the member name representation. For time intervals, the member name is the end time of the interval.\n    For example, Time instant member: `2019-06-01T00:00:00.000Z`\n    For example, Time interval member: `2022-07-01T00:00:00.000Z` where the interval member name was `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`\n * `DISPLAY`: Emits the members' display names whenever possible. When combined with `axisVisibility = VERBOSE`, the full display name path will be emitted.\n * `MDX`: Emits member name paths where each element is enclosed in square brackets, `[]`. Multidimensional expression (MDX) display mode automatically encloses time members in square brackets and puts them in `COMPACT` format.\n   For example, Location member `North America.United States.California` becomes `[North America].[United States].[California]` in MDX display mode.\n   For example, Time instant member `2019-06-01T00:00:00.000Z - [0]` becomes `[2019-06-01T00:00:00.000Z]` in MDX display mode.\n * `COMPACT_DISPLAY`: Emit the members' display names after compacting. This applies primarily to time members for event-based metrics. Compact display is required when\n   running multi-metric queries containing both event-based and subject-based metrics. Multi-metric queries with `DISPLAY` mode are changed\n   automatically to `COMPACT_DISPLAY`.\n   For example, Time interval member `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]` becomes `Jun 30, 2022` in `COMPACT_DISPLAY` mode.\n   The exact format of the compacted time member display name depends on the the user's locale."
+          format: enum
+        axesOverallValueMode:
+          enum:
+            - NONE
+            - AGGREGATE
+            - OVERALL
+          type: string
+          description: "If `axes` is defined, use `axesOverallValueMode` to specify the type of overall values to return across the axes. Valid values:\n\n * `NONE`: Returns the metric's values for the selected axes and doesn't return overall values. This is the default.\n * `AGGREGATE`: Returns the metric's overall values for the selected axes members.\n * `OVERALL`: Returns the metric's overall values for all axes members.\n\n **Note**: `AGGREGATE` is not supported for lookup overlays because the overall values of selected members cannot be calculated directly from the data.\n\n Example: Let's say you want to know the Headcount of the locations Canada and US and the genders Male and Female. \n\n When `axesOverallValueMode` is `NONE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n \n When `axesOverallValueMode` is `AGGREGATE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 400 (Overall, Overall)\n * 200 (Overall, Male)\n * 200 (Overall, Female)\n * 200 (Canada, Overall)\n * 200 (US, Overall)\n\n When `axesOverallValueMode` is `OVERALL`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 800 (Overall, Overall)\n * 400 (Overall, Male)\n * 400 (Overall, Female)\n * 400 (Canada, Overall)\n * 400 (US, Overall)\n \n In this example, `OVERALL` returns higher overall values than `AGGREGATE` because `AGGREGATE` returns the overall values for the selected locations (Canada, US) and genders (Male, Female), whereas `OVERALL` returns the overall values across all locations and genders in the data."
+          format: enum
+      description: An AggregateQueryExecutionOptions provides additional instructions to perform an aggregate query.
     dataservices.query.AggregationQueryDTO:
       type: object
       properties:
@@ -1182,7 +1262,7 @@ components:
           description: "The data to perform an aggregation on, such as a metric or formula. The query must include a time interval,\n and may optionally include filters and axes."
         options:
           allOf:
-            - $ref: '#/components/schemas/dataservices.query.QueryExecutionOptionsDTO'
+            - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
           description: Additional instructions for your query, such as a calendar type or conversion information.
       description: An AggregationQueryExecution provides instructions to perform your aggregation query.
     dataservices.query.AggregationQuerySourceDTO:
@@ -1759,86 +1839,6 @@ components:
             $ref: '#/components/schemas/dataservices.query.QueryExecutionErrorDetailsDTO'
           description: The list of the error details.
       description: The errors that occurred during query execution.
-    dataservices.query.QueryExecutionOptionsDTO:
-      type: object
-      properties:
-        calendarType:
-          enum:
-            - TENANT_CALENDAR
-            - GREGORIAN_CALENDAR
-          type: string
-          description: "The calendar type to use. This will be used for all time calculations unless explicitly overridden in\n the calculation itself. Default is TENANT_CALENDAR."
-          format: enum
-        currencyConversionMode:
-          deprecated: true
-          enum:
-            - TENANT_CURRENCY_CONVERSION
-            - VISIER_CURRENCY_CONVERSION
-          type: string
-          description: "This will be removed as of Winter 2026. Use `currencyConversionCode` instead. \n\n The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION."
-          format: enum
-        currencyConversionDate:
-          type: string
-          description: "The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.\n Default is the exchange rate at the end of the query time interval. Format is the number of milliseconds since\n midnight 01 January, 1970 UTC as a string. Note: Epochs are expressed as 64-bit integers and represented as\n stringified longs in JSON due to JSON's inherent limitation in representing large numbers."
-        lineageDepth:
-          type: integer
-          description: The max number of levels of nesting to unwind when determining the lineage for a derived metric value.
-          format: int32
-        zeroVisibility:
-          enum:
-            - SHOW
-            - HIDE
-            - ELIMINATE
-          type: string
-          description: Show or hide zeros in the result. Default is SHOW.
-          format: enum
-        nullVisibility:
-          enum:
-            - SHOW
-            - HIDE
-            - ELIMINATE
-          type: string
-          description: Show or hide null or N/A values in the result. Default is SHOW.
-          format: enum
-        cellDistributionOptions:
-          $ref: '#/components/schemas/dataservices.query.CellDistributionOptionsDTO'
-        axisVisibility:
-          enum:
-            - SIMPLE
-            - VERBOSE
-          type: string
-          description: The amount of information to return about each axis. Default is SIMPLE.
-          format: enum
-        enableSparseResults:
-          type: boolean
-          description: "Retrieve sparse cell sets. Sparse results only retrieve non-zero and non-null cells. Whether a result is truly sparse\n or not is determined by the Visier server."
-        internal:
-          $ref: '#/components/schemas/dataservices.query.InternalQueryExecutionOptionsDTO'
-        enableDescendingSpace:
-          type: boolean
-          description: If true, filter non-time axis member sets to only include members that are in aggregate positions or whose previous position is a leaf
-        currencyConversionCode:
-          type: string
-          description: Overrides the tenant's default currency for currency conversions.
-        memberDisplayMode:
-          enum:
-            - DEFAULT
-            - COMPACT
-            - DISPLAY
-            - MDX
-            - COMPACT_DISPLAY
-          type: string
-          description: "Control how member values are displayed. You can override the `memberDisplayMode` on a per-axis basis, if required.\n\n Valid values are `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `DEFAULT`.\n\n * `DEFAULT`: The default member name representation. For non-time members, this returns the technical member name path.\n   For time members, this includes a bracketed member index.\n   For example, Time instant member: `2019-06-01T00:00:00.000Z - [0]`\n   For example, Time interval member: `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`\n * `COMPACT`: Shortens the member name representation. For time intervals, the member name is the end time of the interval.\n    For example, Time instant member: `2019-06-01T00:00:00.000Z`\n    For example, Time interval member: `2022-07-01T00:00:00.000Z` where the interval member name was `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`\n * `DISPLAY`: Emits the members' display names whenever possible. When combined with `axisVisibility = VERBOSE`, the full display name path will be emitted.\n * `MDX`: Emits member name paths where each element is enclosed in square brackets, `[]`. Multidimensional expression (MDX) display mode automatically encloses time members in square brackets and puts them in `COMPACT` format.\n   For example, Location member `North America.United States.California` becomes `[North America].[United States].[California]` in MDX display mode.\n   For example, Time instant member `2019-06-01T00:00:00.000Z - [0]` becomes `[2019-06-01T00:00:00.000Z]` in MDX display mode.\n * `COMPACT_DISPLAY`: Emit the members' display names after compacting. This applies primarily to time members for event-based metrics. Compact display is required when\n   running multi-metric queries containing both event-based and subject-based metrics. Multi-metric queries with `DISPLAY` mode are changed\n   automatically to `COMPACT_DISPLAY`.\n   For example, Time interval member `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]` becomes `Jun 30, 2022` in `COMPACT_DISPLAY` mode.\n   The exact format of the compacted time member display name depends on the the user's locale."
-          format: enum
-        axesOverallValueMode:
-          enum:
-            - NONE
-            - AGGREGATE
-            - OVERALL
-          type: string
-          description: "If `axes` is defined, use `axesOverallValueMode` to specify the type of overall values to return across the axes. Valid values:\n\n * `NONE`: Returns the metric's values for the selected axes and doesn't return overall values. This is the default.\n * `AGGREGATE`: Returns the metric's overall values for the selected axes members.\n * `OVERALL`: Returns the metric's overall values for all axes members.\n\n **Note**: `AGGREGATE` is not supported for lookup overlays because the overall values of selected members cannot be calculated directly from the data.\n\n Example: Let's say you want to know the Headcount of the locations Canada and US and the genders Male and Female. \n\n When `axesOverallValueMode` is `NONE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n \n When `axesOverallValueMode` is `AGGREGATE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 400 (Overall, Overall)\n * 200 (Overall, Male)\n * 200 (Overall, Female)\n * 200 (Canada, Overall)\n * 200 (US, Overall)\n\n When `axesOverallValueMode` is `OVERALL`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 800 (Overall, Overall)\n * 400 (Overall, Male)\n * 400 (Overall, Female)\n * 400 (Canada, Overall)\n * 400 (US, Overall)\n \n In this example, `OVERALL` returns higher overall values than `AGGREGATE` because `AGGREGATE` returns the overall values for the selected locations (Canada, US) and genders (Male, Female), whereas `OVERALL` returns the overall values across all locations and genders in the data."
-          format: enum
-      description: A QueryExecutionOptions provides additional instructions to perform a query.
     dataservices.query.QueryFilterDTO:
       type: object
       properties:
@@ -2187,10 +2187,19 @@ components:
           type: string
           description: The SQL-like query string
         options:
+          deprecated: true
           allOf:
-            - $ref: '#/components/schemas/dataservices.query.QueryExecutionOptionsDTO'
-          description: Optional options that currently that cannot be expressed in SQL-like
-      description: "*\n Request body for SQL-like query executions"
+            - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
+          description: "This will be removed as of Spring 2026. Use `aggregateQueryOptions` instead.\n If both `options` and `aggregateQueryOptions` are specified, `aggregateQueryOptions` takes precedence.\n\n Optional aggregate query options.\n **Note**: `enableDescendingSpace` is not supported in SQL-like aggregate queries."
+        aggregateQueryOptions:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
+          description: "Options to apply to a SQL-like aggregate query. The query is aggregate if it contains at least one metric.\n **Note**: `enableDescendingSpace` is not supported in SQL-like aggregate queries."
+        listQueryOptions:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.ListQueryExecutionOptionsDTO'
+          description: "Options to apply to a SQL-like list query. The query is list if it contains no metrics and has only properties.\n **Note**: `multipleTables` is not supported in SQL-like list queries."
+      description: "*\n Request body for SQL-like query executions, which can be either an aggregate or list query.\n For examples that distinguish between aggregate and list queries, see the `POST /v1/data/query/sql` description."
     dataservices.query.TimeShiftDTO:
       type: object
       properties:

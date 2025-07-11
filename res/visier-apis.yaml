@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2027
+  version: 22222222.99201.2042
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -6110,6 +6110,97 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/admin.ProductVersionsUpdateResponseDTO'
+  /v1alpha/admin/sidecar-app-configs/{applicationId}:
+    get:
+      tags:
+        - SidecarSolutions
+      summary: Retrieve a sidecar solution's settings
+      description: "Retrieve the settings for a specific sidecar solution. You must know the solution ID of your sidecar solution. To get the ID, contact Visier Technical Support.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: SidecarSolutions_GetSidecarSolutionSettings
+      parameters:
+        - name: applicationId
+          in: path
+          description: The unique identifier of the solution to configure.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SidecarSolutionSettingsDTO'
+    put:
+      tags:
+        - SidecarSolutions
+      summary: Update a sidecar solution's settings
+      description: "Update a sidecar solution's settings. The response returns the settings after updating. When updating setting, we recommend that you first retrieve the existing settings using `GET`. You can use the `GET` response in your `PUT` request definition.\n\n In `PUT` requests, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: SidecarSolutions_SetSidecarAppConfigs
+      parameters:
+        - name: applicationId
+          in: path
+          description: The unique identifier of the solution to configure.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.SidecarSolutionSettingsDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SidecarSolutionSettingsDTO'
+    delete:
+      tags:
+        - SidecarSolutions
+      summary: Delete a sidecar solution's settings
+      description: "Delete the settings for a sidecar solution. This deletes all the settings for the solution.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: SidecarSolutions_DeleteSidecarAppConfigs
+      parameters:
+        - name: applicationId
+          in: path
+          description: The unique identifier of the solution to configure.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.SidecarSolutionRequestDTO'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content: {}
   /v1alpha/data/data-version-exports/data-versions:
     get:
       tags:
@@ -6758,12 +6849,89 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.JobIdResponse'
+  /v1alpha/planning/data/plans:
+    patch:
+      tags:
+        - PlanAdministration
+      summary: Partially update subplans
+      description: "Make partial changes to existing subplans, such as consolidating or reopening them. The response returns whether the subplans were successfully patched or not. You must know the ID of the subplans to update them. To retrieve subplan IDs, see `GET /v1alpha/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the subplan without affecting omitted fields.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanAdministration_PatchPlans
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/planning.PlansPatchRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlansPatchResponse'
+        "500":
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+  /v1alpha/planning/data/plans/{planId}:
+    patch:
+      tags:
+        - PlanAdministration
+      summary: Partially update a subplan
+      description: "Make partial changes to an existing subplan, such as consolidating or reopening it. The response returns whether the subplan was successfully patched or not. You must know the ID of the subplan to update it. To retrieve subplan IDs, see `GET /v1alpha/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the subplan without affecting omitted fields.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanAdministration_PatchPlan
+      parameters:
+        - name: planId
+          in: path
+          description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/planning.PlanPatchRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlanPatchResponse'
+        "500":
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        "404":
+          description: plan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
   /v1alpha/planning/model/plans:
     get:
       tags:
         - DataModel
       summary: Retrieve a list of plans
-      description: "Retrieve all the plans you have access to. The response returns plan information you can use to call the Planning Data Load API.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Retrieve all the plans you have access to. The response returns plan information you can use to call the Plan Data Load API.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: DataModel_PlanDataLoadlList
       parameters:
         - name: displayName
@@ -9380,110 +9548,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
-    patch:
-      tags:
-        - PlanningDataLoad
-      summary: Upload plan data
-      description: "Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.\nThe data file must contain the following columns:\n  - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.\n  - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.\n  - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: PlanDataLoad_PlanDataUpload
-      parameters:
-        - name: planId
-          in: path
-          description: The unique identifier of the plan.
-          required: true
-          schema:
-            type: string
-        - name: scenarioId
-          in: path
-          description: The unique identifier of the plan scenario to load data into.
-          required: true
-          schema:
-            type: string
-        - name: calculation
-          in: query
-          description: "Sets the plan values to rollup, distribute, or neither. Valid values:\n  - **ROLLUP**: Roll up loaded data values to parent and ancestor rows. If the data provides a parent value and its child value, this method prioritizes the loaded value for the child and overwrites the parent.\n  - **DISTRIBUTE**: Distribute loaded data values to their children and descendent rows. If the data provides a parent value and its child value, this method prioritizes the parent values and overrides the loaded child value.\n  - **NONE**: The loaded values are not rolled up or distributed. This is the default."
-          required: false
-          schema:
-            type: string
-        - name: currency
-          in: query
-          description: 'The 3-digit ISO 4217 currency code of the data.
-
-            If undefined, default is the plan''s consolidation currency. If the currency is different from the plan''s consolidation currency, the values are converted to the consolidation currency using the conversion rates loaded for the plan''s baseline period.'
-          required: false
-          schema:
-            type: string
-        - name: method
-          in: query
-          description: "Sets how to validate the data being loaded into Visier. Valid values:\n  - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.\n  - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.\n  - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default."
-          required: false
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: The CSV file to load into the plan.
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlanDataUploadResponseDTO'
-  /v1alpha/planning/data/plans/{planId}/rows:
-    patch:
-      tags:
-        - PlanningDataLoad
-      summary: Add or remove plan rows
-      description: "Send a file to Visier to modify a plan's rows. The file must be in CSV format and contain the following columns:\n- `Add/Remove`: In the column, use the value \"Add\" to add the specified row to the plan or \"Remove\" to remove the specified row from the plan.\n- A column for each plan segment level using the IDs from `planSegmentLevels`.\n  - To add a row, use the corresponding segment member ID from `planSegmentLevelMembers`. If the member doesn't exist in the schema, provide a display name. The response returns its assigned segment member ID.\n  - To remove a row, use the corresponding segmentId as the column name and the segment member ID from `planSegmentLevelMembers` as the row value.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: PlanDataLoad_PlanRowDataLoad
-      parameters:
-        - name: planId
-          in: path
-          description: The unique identifier of the plan.
-          required: true
-          schema:
-            type: string
-        - name: method
-          in: query
-          description: "Sets how to validate the data being loaded into Visier. Valid values:\n  - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.\n  - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.\n  - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default."
-          required: false
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: The CSV file to load into the plan.
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlanRowDataLoadResponseDTO'
   /v1alpha/data/data-version-exports/exports/{exportUuid}/files/{fileId}:
     get:
       tags:
@@ -9561,6 +9625,110 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
+    patch:
+      tags:
+        - PlanDataLoad
+      summary: Upload plan data
+      description: "Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.\nThe data file must contain the following columns:\n  - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.\n  - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.\n  - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanDataLoad_PlanDataUpload
+      parameters:
+        - name: planId
+          in: path
+          description: The unique identifier of the plan.
+          required: true
+          schema:
+            type: string
+        - name: scenarioId
+          in: path
+          description: The unique identifier of the plan scenario to load data into.
+          required: true
+          schema:
+            type: string
+        - name: calculation
+          in: query
+          description: "Sets the plan values to rollup, distribute, or neither. Valid values:\n  - **ROLLUP**: Roll up loaded data values to parent and ancestor rows. If the data provides a parent value and its child value, this method prioritizes the loaded value for the child and overwrites the parent.\n  - **DISTRIBUTE**: Distribute loaded data values to their children and descendent rows. If the data provides a parent value and its child value, this method prioritizes the parent values and overrides the loaded child value.\n  - **NONE**: The loaded values are not rolled up or distributed. This is the default."
+          required: false
+          schema:
+            type: string
+        - name: currency
+          in: query
+          description: 'The 3-digit ISO 4217 currency code of the data.
+
+            If undefined, default is the plan''s consolidation currency. If the currency is different from the plan''s consolidation currency, the values are converted to the consolidation currency using the conversion rates loaded for the plan''s baseline period.'
+          required: false
+          schema:
+            type: string
+        - name: method
+          in: query
+          description: "Sets how to validate the data being loaded into Visier. Valid values:\n  - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.\n  - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.\n  - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default."
+          required: false
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The CSV file to load into the plan.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanDataUploadResponseDTO'
+  /v1alpha/planning/data/plans/{planId}/rows:
+    patch:
+      tags:
+        - PlanDataLoad
+      summary: Add or remove plan rows
+      description: "Send a file to Visier to modify a plan's rows. The file must be in CSV format and contain the following columns:\n- `Add/Remove`: In the column, use the value \"Add\" to add the specified row to the plan or \"Remove\" to remove the specified row from the plan.\n- A column for each plan segment level using the IDs from `planSegmentLevels`.\n  - To add a row, use the corresponding segment member ID from `planSegmentLevelMembers`. If the member doesn't exist in the schema, provide a display name. The response returns its assigned segment member ID.\n  - To remove a row, use the corresponding segmentId as the column name and the segment member ID from `planSegmentLevelMembers` as the row value.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanDataLoad_PlanRowDataLoad
+      parameters:
+        - name: planId
+          in: path
+          description: The unique identifier of the plan.
+          required: true
+          schema:
+            type: string
+        - name: method
+          in: query
+          description: "Sets how to validate the data being loaded into Visier. Valid values:\n  - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.\n  - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.\n  - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default."
+          required: false
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The CSV file to load into the plan.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanRowDataLoadResponseDTO'
   /v1/compensation-benchmarks/base-salary:
     get:
       summary: Get base salary benchmark value
@@ -11226,6 +11394,12 @@ components:
         projectId:
           type: string
           description: The unique identifier of the draft project you want to import committed changes into.
+    admin.SidecarSolutionRequestDTO:
+      type: object
+      properties:
+        applicationId:
+          type: string
+          description: The unique identifier of the solution to configure.
     admin.TenantCodeBody:
       type: object
       properties:
@@ -11764,7 +11938,7 @@ components:
         traits:
           allOf:
             - $ref: '#/components/schemas/admin.TenantDetailsTraitsDTO'
-          description: The tenant's traits, including aggregation rights, tenant type, and data profile type.
+          description: The tenant's traits, including aggregation rights, tenant type, and data profile type. To set an analytic tenant's traits, contact Visier Technical Support.
     admin.TenantManagementAPIUpdateResponseDTO:
       type: object
       properties:
@@ -14406,6 +14580,86 @@ components:
           type: string
           description: "The date from which data is no longer available.\n Note: Format is the number of milliseconds since midnight 01 January, 1970 UTC as a string."
       description: "A pair of values that represent the time interval to which the data is valid.\n The validity range is defined in Unix epoch format and UTC timezone.\n Note: Epochs are expressed as 64-bit integers and represented as stringified longs in JSON due to JSON's inherent\n limitation in representing large numbers."
+    dataservices.query.AggregateQueryExecutionOptionsDTO:
+      type: object
+      properties:
+        calendarType:
+          enum:
+            - TENANT_CALENDAR
+            - GREGORIAN_CALENDAR
+          type: string
+          description: "The calendar type to use. This will be used for all time calculations unless explicitly overridden in\n the calculation itself. Default is TENANT_CALENDAR."
+          format: enum
+        currencyConversionMode:
+          deprecated: true
+          enum:
+            - TENANT_CURRENCY_CONVERSION
+            - VISIER_CURRENCY_CONVERSION
+          type: string
+          description: "This will be removed as of Winter 2026. Use `currencyConversionCode` instead. \n\n The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION."
+          format: enum
+        currencyConversionDate:
+          type: string
+          description: "The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.\n Default is the exchange rate at the end of the query time interval. Format is the number of milliseconds since\n midnight 01 January, 1970 UTC as a string. Note: Epochs are expressed as 64-bit integers and represented as\n stringified longs in JSON due to JSON's inherent limitation in representing large numbers."
+        lineageDepth:
+          type: integer
+          description: The max number of levels of nesting to unwind when determining the lineage for a derived metric value.
+          format: int32
+        zeroVisibility:
+          enum:
+            - SHOW
+            - HIDE
+            - ELIMINATE
+          type: string
+          description: Show or hide zeros in the result. Default is SHOW.
+          format: enum
+        nullVisibility:
+          enum:
+            - SHOW
+            - HIDE
+            - ELIMINATE
+          type: string
+          description: Show or hide null or N/A values in the result. Default is SHOW.
+          format: enum
+        cellDistributionOptions:
+          $ref: '#/components/schemas/dataservices.query.CellDistributionOptionsDTO'
+        axisVisibility:
+          enum:
+            - SIMPLE
+            - VERBOSE
+          type: string
+          description: The amount of information to return about each axis. Default is SIMPLE.
+          format: enum
+        enableSparseResults:
+          type: boolean
+          description: "Retrieve sparse cell sets. Sparse results only retrieve non-zero and non-null cells. Whether a result is truly sparse\n or not is determined by the Visier server."
+        internal:
+          $ref: '#/components/schemas/dataservices.query.InternalQueryExecutionOptionsDTO'
+        enableDescendingSpace:
+          type: boolean
+          description: If true, filter non-time axis member sets to only include members that are in aggregate positions or whose previous position is a leaf
+        currencyConversionCode:
+          type: string
+          description: Overrides the tenant's default currency for currency conversions.
+        memberDisplayMode:
+          enum:
+            - DEFAULT
+            - COMPACT
+            - DISPLAY
+            - MDX
+            - COMPACT_DISPLAY
+          type: string
+          description: "Control how member values are displayed. You can override the `memberDisplayMode` on a per-axis basis, if required.\n\n Valid values are `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `DEFAULT`.\n\n * `DEFAULT`: The default member name representation. For non-time members, this returns the technical member name path.\n   For time members, this includes a bracketed member index.\n   For example, Time instant member: `2019-06-01T00:00:00.000Z - [0]`\n   For example, Time interval member: `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`\n * `COMPACT`: Shortens the member name representation. For time intervals, the member name is the end time of the interval.\n    For example, Time instant member: `2019-06-01T00:00:00.000Z`\n    For example, Time interval member: `2022-07-01T00:00:00.000Z` where the interval member name was `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`\n * `DISPLAY`: Emits the members' display names whenever possible. When combined with `axisVisibility = VERBOSE`, the full display name path will be emitted.\n * `MDX`: Emits member name paths where each element is enclosed in square brackets, `[]`. Multidimensional expression (MDX) display mode automatically encloses time members in square brackets and puts them in `COMPACT` format.\n   For example, Location member `North America.United States.California` becomes `[North America].[United States].[California]` in MDX display mode.\n   For example, Time instant member `2019-06-01T00:00:00.000Z - [0]` becomes `[2019-06-01T00:00:00.000Z]` in MDX display mode.\n * `COMPACT_DISPLAY`: Emit the members' display names after compacting. This applies primarily to time members for event-based metrics. Compact display is required when\n   running multi-metric queries containing both event-based and subject-based metrics. Multi-metric queries with `DISPLAY` mode are changed\n   automatically to `COMPACT_DISPLAY`.\n   For example, Time interval member `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]` becomes `Jun 30, 2022` in `COMPACT_DISPLAY` mode.\n   The exact format of the compacted time member display name depends on the the user's locale."
+          format: enum
+        axesOverallValueMode:
+          enum:
+            - NONE
+            - AGGREGATE
+            - OVERALL
+          type: string
+          description: "If `axes` is defined, use `axesOverallValueMode` to specify the type of overall values to return across the axes. Valid values:\n\n * `NONE`: Returns the metric's values for the selected axes and doesn't return overall values. This is the default.\n * `AGGREGATE`: Returns the metric's overall values for the selected axes members.\n * `OVERALL`: Returns the metric's overall values for all axes members.\n\n **Note**: `AGGREGATE` is not supported for lookup overlays because the overall values of selected members cannot be calculated directly from the data.\n\n Example: Let's say you want to know the Headcount of the locations Canada and US and the genders Male and Female. \n\n When `axesOverallValueMode` is `NONE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n \n When `axesOverallValueMode` is `AGGREGATE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 400 (Overall, Overall)\n * 200 (Overall, Male)\n * 200 (Overall, Female)\n * 200 (Canada, Overall)\n * 200 (US, Overall)\n\n When `axesOverallValueMode` is `OVERALL`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 800 (Overall, Overall)\n * 400 (Overall, Male)\n * 400 (Overall, Female)\n * 400 (Canada, Overall)\n * 400 (US, Overall)\n \n In this example, `OVERALL` returns higher overall values than `AGGREGATE` because `AGGREGATE` returns the overall values for the selected locations (Canada, US) and genders (Male, Female), whereas `OVERALL` returns the overall values across all locations and genders in the data."
+          format: enum
+      description: An AggregateQueryExecutionOptions provides additional instructions to perform an aggregate query.
     dataservices.query.AggregationQueryDTO:
       type: object
       properties:
@@ -14442,7 +14696,7 @@ components:
           description: "The data to perform an aggregation on, such as a metric or formula. The query must include a time interval,\n and may optionally include filters and axes."
         options:
           allOf:
-            - $ref: '#/components/schemas/dataservices.query.QueryExecutionOptionsDTO'
+            - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
           description: Additional instructions for your query, such as a calendar type or conversion information.
       description: An AggregationQueryExecution provides instructions to perform your aggregation query.
     dataservices.query.AggregationQuerySourceDTO:
@@ -15019,86 +15273,6 @@ components:
             $ref: '#/components/schemas/dataservices.query.QueryExecutionErrorDetailsDTO'
           description: The list of the error details.
       description: The errors that occurred during query execution.
-    dataservices.query.QueryExecutionOptionsDTO:
-      type: object
-      properties:
-        calendarType:
-          enum:
-            - TENANT_CALENDAR
-            - GREGORIAN_CALENDAR
-          type: string
-          description: "The calendar type to use. This will be used for all time calculations unless explicitly overridden in\n the calculation itself. Default is TENANT_CALENDAR."
-          format: enum
-        currencyConversionMode:
-          deprecated: true
-          enum:
-            - TENANT_CURRENCY_CONVERSION
-            - VISIER_CURRENCY_CONVERSION
-          type: string
-          description: "This will be removed as of Winter 2026. Use `currencyConversionCode` instead. \n\n The currency conversion mode to use. This will be used for all currency conversion calculations unless explicitly overridden in the calculation itself. Default is TENANT_CURRENCY_CONVERSION."
-          format: enum
-        currencyConversionDate:
-          type: string
-          description: "The currency conversion date to use. If defined, the currency conversion will use the exchange rates as of this date.\n Default is the exchange rate at the end of the query time interval. Format is the number of milliseconds since\n midnight 01 January, 1970 UTC as a string. Note: Epochs are expressed as 64-bit integers and represented as\n stringified longs in JSON due to JSON's inherent limitation in representing large numbers."
-        lineageDepth:
-          type: integer
-          description: The max number of levels of nesting to unwind when determining the lineage for a derived metric value.
-          format: int32
-        zeroVisibility:
-          enum:
-            - SHOW
-            - HIDE
-            - ELIMINATE
-          type: string
-          description: Show or hide zeros in the result. Default is SHOW.
-          format: enum
-        nullVisibility:
-          enum:
-            - SHOW
-            - HIDE
-            - ELIMINATE
-          type: string
-          description: Show or hide null or N/A values in the result. Default is SHOW.
-          format: enum
-        cellDistributionOptions:
-          $ref: '#/components/schemas/dataservices.query.CellDistributionOptionsDTO'
-        axisVisibility:
-          enum:
-            - SIMPLE
-            - VERBOSE
-          type: string
-          description: The amount of information to return about each axis. Default is SIMPLE.
-          format: enum
-        enableSparseResults:
-          type: boolean
-          description: "Retrieve sparse cell sets. Sparse results only retrieve non-zero and non-null cells. Whether a result is truly sparse\n or not is determined by the Visier server."
-        internal:
-          $ref: '#/components/schemas/dataservices.query.InternalQueryExecutionOptionsDTO'
-        enableDescendingSpace:
-          type: boolean
-          description: If true, filter non-time axis member sets to only include members that are in aggregate positions or whose previous position is a leaf
-        currencyConversionCode:
-          type: string
-          description: Overrides the tenant's default currency for currency conversions.
-        memberDisplayMode:
-          enum:
-            - DEFAULT
-            - COMPACT
-            - DISPLAY
-            - MDX
-            - COMPACT_DISPLAY
-          type: string
-          description: "Control how member values are displayed. You can override the `memberDisplayMode` on a per-axis basis, if required.\n\n Valid values are `DEFAULT`, `COMPACT`, `DISPLAY`, or `MDX`. Default is `DEFAULT`.\n\n * `DEFAULT`: The default member name representation. For non-time members, this returns the technical member name path.\n   For time members, this includes a bracketed member index.\n   For example, Time instant member: `2019-06-01T00:00:00.000Z - [0]`\n   For example, Time interval member: `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`\n * `COMPACT`: Shortens the member name representation. For time intervals, the member name is the end time of the interval.\n    For example, Time instant member: `2019-06-01T00:00:00.000Z`\n    For example, Time interval member: `2022-07-01T00:00:00.000Z` where the interval member name was `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]`\n * `DISPLAY`: Emits the members' display names whenever possible. When combined with `axisVisibility = VERBOSE`, the full display name path will be emitted.\n * `MDX`: Emits member name paths where each element is enclosed in square brackets, `[]`. Multidimensional expression (MDX) display mode automatically encloses time members in square brackets and puts them in `COMPACT` format.\n   For example, Location member `North America.United States.California` becomes `[North America].[United States].[California]` in MDX display mode.\n   For example, Time instant member `2019-06-01T00:00:00.000Z - [0]` becomes `[2019-06-01T00:00:00.000Z]` in MDX display mode.\n * `COMPACT_DISPLAY`: Emit the members' display names after compacting. This applies primarily to time members for event-based metrics. Compact display is required when\n   running multi-metric queries containing both event-based and subject-based metrics. Multi-metric queries with `DISPLAY` mode are changed\n   automatically to `COMPACT_DISPLAY`.\n   For example, Time interval member `2022-06-01T00:00:00.000Z/2022-07-01T00:00:00.000Z - [12]` becomes `Jun 30, 2022` in `COMPACT_DISPLAY` mode.\n   The exact format of the compacted time member display name depends on the the user's locale."
-          format: enum
-        axesOverallValueMode:
-          enum:
-            - NONE
-            - AGGREGATE
-            - OVERALL
-          type: string
-          description: "If `axes` is defined, use `axesOverallValueMode` to specify the type of overall values to return across the axes. Valid values:\n\n * `NONE`: Returns the metric's values for the selected axes and doesn't return overall values. This is the default.\n * `AGGREGATE`: Returns the metric's overall values for the selected axes members.\n * `OVERALL`: Returns the metric's overall values for all axes members.\n\n **Note**: `AGGREGATE` is not supported for lookup overlays because the overall values of selected members cannot be calculated directly from the data.\n\n Example: Let's say you want to know the Headcount of the locations Canada and US and the genders Male and Female. \n\n When `axesOverallValueMode` is `NONE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n \n When `axesOverallValueMode` is `AGGREGATE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 400 (Overall, Overall)\n * 200 (Overall, Male)\n * 200 (Overall, Female)\n * 200 (Canada, Overall)\n * 200 (US, Overall)\n\n When `axesOverallValueMode` is `OVERALL`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 800 (Overall, Overall)\n * 400 (Overall, Male)\n * 400 (Overall, Female)\n * 400 (Canada, Overall)\n * 400 (US, Overall)\n \n In this example, `OVERALL` returns higher overall values than `AGGREGATE` because `AGGREGATE` returns the overall values for the selected locations (Canada, US) and genders (Male, Female), whereas `OVERALL` returns the overall values across all locations and genders in the data."
-          format: enum
-      description: A QueryExecutionOptions provides additional instructions to perform a query.
     dataservices.query.QueryFilterDTO:
       type: object
       properties:
@@ -15447,10 +15621,19 @@ components:
           type: string
           description: The SQL-like query string
         options:
+          deprecated: true
           allOf:
-            - $ref: '#/components/schemas/dataservices.query.QueryExecutionOptionsDTO'
-          description: Optional options that currently that cannot be expressed in SQL-like
-      description: "*\n Request body for SQL-like query executions"
+            - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
+          description: "This will be removed as of Spring 2026. Use `aggregateQueryOptions` instead.\n If both `options` and `aggregateQueryOptions` are specified, `aggregateQueryOptions` takes precedence.\n\n Optional aggregate query options.\n **Note**: `enableDescendingSpace` is not supported in SQL-like aggregate queries."
+        aggregateQueryOptions:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
+          description: "Options to apply to a SQL-like aggregate query. The query is aggregate if it contains at least one metric.\n **Note**: `enableDescendingSpace` is not supported in SQL-like aggregate queries."
+        listQueryOptions:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.ListQueryExecutionOptionsDTO'
+          description: "Options to apply to a SQL-like list query. The query is list if it contains no metrics and has only properties.\n **Note**: `multipleTables` is not supported in SQL-like list queries."
+      description: "*\n Request body for SQL-like query executions, which can be either an aggregate or list query.\n For examples that distinguish between aggregate and list queries, see the `POST /v1/data/query/sql` description."
     dataservices.query.TimeShiftDTO:
       type: object
       properties:
@@ -16887,6 +17070,28 @@ components:
           type: integer
           description: The index to start retrieving results from, also known as offset. The index begins at 0.
           format: uint32
+    planning.ConsolidateActionPayload:
+      type: object
+      properties:
+        autoRollup:
+          type: boolean
+          description: "If `true`, consolidated subplan values are rolled up to the parent segment. Default is `true`."
+        includedSubPlans:
+          type: array
+          items:
+            type: string
+          description: "The UUIDs of the subplans to include. If not defined, all submitted subplans will be consolidated."
+      description: The details of the subplan consolidation.
+    planning.ErrorSummary:
+      type: object
+      properties:
+        rci:
+          type: string
+          description: A root cause identifier that allows Visier to determine the source of the problem.
+        message:
+          type: string
+          description: The details of the error and actions you can take to load the data correctly.
+      description: The error details of the unsuccessful action.
     planning.GetPlanListResponseDTO:
       type: object
       properties:
@@ -16958,6 +17163,60 @@ components:
           description: "The data type of the plan item. The data types are:\n - **rate**: Converts values into a percentage in the planning grid. The provided value is multiplied by 100 to get the display value. For example, a provided value of 0.5 is displayed as 50% in the grid.\n - **number**: Displays values as whole numbers. Decimal values are rounded to a whole number when displayed in the planning grid.\n - **currency**: Displays values as a currency. Values must not contain thousand separators, currency codes, or currency symbols.\n - **decimal**: Displays values with decimals."
           format: enum
       description: A plan item is a metric in your plan. The available plan items depend on the planning model.
+    planning.PlanPatchActionResult:
+      type: object
+      properties:
+        planId:
+          type: string
+          description: The UUID of the subplan.
+        success:
+          type: boolean
+          description: If `true`, the action was successful.
+        error:
+          allOf:
+            - $ref: '#/components/schemas/planning.ErrorSummary'
+          description: The error details of the unsuccessful action.
+      description: The result of the action taken on the subplan.
+    planning.PlanPatchRequest:
+      type: object
+      properties:
+        actionType:
+          enum:
+            - Update
+            - Consolidate
+            - Reopen
+          type: string
+          description: "The action to perform on the subplan. Valid values:\n - `Consolidate`: Combine the submitted subplan values into the main plan.\n - `Reopen`: Reopen consolidated subplans so subplanners can change the values."
+          format: enum
+        consolidateActionPayload:
+          allOf:
+            - $ref: '#/components/schemas/planning.ConsolidateActionPayload'
+          description: The details of the subplan consolidation.
+        reopenActionPayload:
+          allOf:
+            - $ref: '#/components/schemas/planning.ReopenActionPayload'
+          description: The details of reopening the subplan.
+        planId:
+          type: string
+          description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
+      description: If reopening a subplan, this is the subplan to update. If consolidating subplans, this is the main plan to update.
+      oneOf:
+        - $ref: '#/components/schemas/PlanPatchConsolidateActionRequest'
+        - $ref: '#/components/schemas/PlanPatchReopenActionRequest'
+      discriminator:
+        propertyName: actionType
+        mapping:
+          Consolidate: '#/components/schemas/PlanPatchConsolidateActionRequest'
+          Reopen: '#/components/schemas/PlanPatchReopenActionRequest'
+    planning.PlanPatchResponse:
+      type: object
+      properties:
+        actionResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PlanPatchActionResult'
+          description: The result of the action taken on the subplan.
+      description: The result of the action taken on the subplan if reopening, or the main plan if consolidating.
     planning.PlanSchemaDTO:
       type: object
       properties:
@@ -17056,6 +17315,46 @@ components:
             $ref: '#/components/schemas/planning.PlanDataLoadErrorDTO'
           description: The errors that occurred while loading the data.
       description: Details about the plan, including its schema.
+    planning.PlansPatchRequest:
+      type: object
+      properties:
+        plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlansPatchRequestPlanItem'
+          description: If reopening subplans, these are the subplans to update. If consolidating subplans, these are the main plans to update.
+      description: If reopening subplans, these are the subplans to update. If consolidating subplans, these are the main plans to update.
+    planning.PlansPatchResponse:
+      type: object
+      properties:
+        actionsResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PlansPatchResponseActionResult'
+          description: The result of the actions taken on the subplans.
+      description: The result of the actions taken on the subplans if reopening, or the main plans if consolidating.
+    planning.PlansPatchResponseActionResult:
+      type: object
+      properties:
+        planId:
+          type: string
+          description: The UUID of the subplan.
+        actionResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PlanPatchActionResult'
+          description: The result of the actions taken on the subplans.
+      description: The result of the actions taken on the subplans.
+    planning.ReopenActionPayload:
+      type: object
+      properties:
+        assignee:
+          type: string
+          description: The user that the subplan will be assigned to once reopened. If not defined, it will keep the user that was previously assigned.
+        dueDate:
+          type: string
+          description: "The due date of the subplan in UTC format. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string. If not defined, the due date will be the subplan’s existing due date. The due date cannot be earlier than today."
+      description: The details of reopening the subplan.
     planning.ScenarioInfoDTO:
       type: object
       properties:
@@ -18300,6 +18599,15 @@ components:
           type: string
           description: "The dimension member's validity status. Valid values: Valid, NotFound.\n * **Valid**: The object exists and has loaded data.\n * **NotFound**: The object doesn't exist."
           format: enum
+    servicing.MultiValueSettingDTO:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: string
+          description: A value containing multiple strings.
+      description: A value containing multiple strings.
     servicing.PermissionAssignedByTenantDTO:
       type: object
       properties:
@@ -18811,12 +19119,39 @@ components:
         referenceSymbolName:
           type: string
           description: The reference symbol name.
+    servicing.SettingsDTO:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key of the configurable setting.
+        singleConfigItem:
+          allOf:
+            - $ref: '#/components/schemas/servicing.SingleValueSettingDTO'
+          description: A value containing a single string.
+        multiValueConfigItem:
+          allOf:
+            - $ref: '#/components/schemas/servicing.MultiValueSettingDTO'
+          description: A value containing multiple strings.
+      description: The settings to configure a sidecar solution.
     servicing.ShareableDataAccessSet:
       type: object
       properties:
         dataAccessSetId:
           type: string
           description: The unique identifier of the shareable data access set.
+    servicing.SidecarSolutionSettingsDTO:
+      type: object
+      properties:
+        configs:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SettingsDTO'
+          description: The available configuration settings.
+        applicationId:
+          type: string
+          description: The unique identifier of the solution to configure.
+      description: The options to configure a sidecar solution.
     servicing.SimpleDocumentHeaderSearchResponseDTO:
       type: object
       properties:
@@ -18844,6 +19179,13 @@ components:
             - $ref: '#/components/schemas/servicing.DocumentSearchLinkDTO'
           description: Use the `viewLink` to build a web request to view this document.
       description: Structure of a single document header search using the Simple search operation.
+    servicing.SingleValueSettingDTO:
+      type: object
+      properties:
+        value:
+          type: string
+          description: A value containing a single string.
+      description: A value containing a single string.
     servicing.SourceFileResponseDTO:
       type: object
       properties:
@@ -20719,6 +21061,115 @@ components:
 
 
         If uploading a file, a success response means the upload was successful and doesn''t always mean the file was successfully loaded into its target object.'
+    DvExportStatus:
+      type: object
+      properties:
+        localizedMessage:
+          type: string
+          description: Localized error message describing the root cause of the error.
+        errorCode:
+          type: string
+          description: Error classification.
+        message:
+          type: string
+          description: Not used.
+        rci:
+          type: string
+          description: Optional root cause identifier.
+        userError:
+          type: boolean
+          description: Indicates whether the error is a user error.
+      description: The response structure for errors.
+    TableResponseDTO:
+      type: object
+      properties:
+        header:
+          type: object
+          additionalProperties:
+            type: string
+          description: Description of the columns in the result set.
+        rows:
+          type: array
+          description: Result rows in key-value format.
+          items:
+            type: object
+            additionalProperties:
+              type: string
+    PlanPatchConsolidateActionRequest:
+      type: object
+      title: Consolidate subplans
+      required:
+        - actionType
+        - consolidateActionPayload
+      properties:
+        actionType:
+          description: 'The action to perform on the subplan. Valid values:
+
+            - `Consolidate`: Combine the submitted subplan values into the main plan.
+
+            - `Reopen`: Reopen consolidated subplans so subplanners can change the values.
+
+'
+          type: string
+          enum:
+            - Consolidate
+        consolidateActionPayload:
+          $ref: '#/components/schemas/planning.ConsolidateActionPayload'
+    PlanPatchReopenActionRequest:
+      type: object
+      title: Reopen a plan
+      required:
+        - actionType
+        - reopenActionPayload
+      properties:
+        actionType:
+          description: 'The action to perform on the subplan. Valid values:
+
+            - `Consolidate`: Combine the submitted subplan values into the main plan.
+
+            - `Reopen`: Reopen consolidated subplans so subplanners can change the values.
+
+'
+          type: string
+          enum:
+            - Reopen
+        reopenActionPayload:
+          $ref: '#/components/schemas/planning.ReopenActionPayload'
+    PlansPatchRequestPlanItem:
+      oneOf:
+        - $ref: '#/components/schemas/PlanPatchConsolidateActionRequestWithPlanId'
+        - $ref: '#/components/schemas/PlanPatchReopenActionRequestWithPlanId'
+      discriminator:
+        propertyName: actionType
+        mapping:
+          Consolidate: '#/components/schemas/PlanPatchConsolidateActionRequestWithPlanId'
+          Reopen: '#/components/schemas/PlanPatchReopenActionRequestWithPlanId'
+    PlanPatchConsolidateActionRequestWithPlanId:
+      allOf:
+        - $ref: '#/components/schemas/PlanPatchConsolidateActionRequest'
+        - type: object
+          required:
+            - actionType
+            - consolidateActionPayload
+            - planId
+          properties:
+            planId:
+              type: string
+              description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
+              format: uuid
+    PlanPatchReopenActionRequestWithPlanId:
+      allOf:
+        - $ref: '#/components/schemas/PlanPatchReopenActionRequest'
+        - type: object
+          required:
+            - actionType
+            - reopenActionPayload
+            - planId
+          properties:
+            planId:
+              type: string
+              description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
+              format: uuid
     PlanDataUploadResponseDTO:
       type: object
       properties:
@@ -20799,40 +21250,6 @@ components:
           description: The custom members and their corresponding IDs in the plan.
           items:
             $ref: '#/components/schemas/planning.PlanSegmentLevelMemberDTO'
-    DvExportStatus:
-      type: object
-      properties:
-        localizedMessage:
-          type: string
-          description: Localized error message describing the root cause of the error.
-        errorCode:
-          type: string
-          description: Error classification.
-        message:
-          type: string
-          description: Not used.
-        rci:
-          type: string
-          description: Optional root cause identifier.
-        userError:
-          type: boolean
-          description: Indicates whether the error is a user error.
-      description: The response structure for errors.
-    TableResponseDTO:
-      type: object
-      properties:
-        header:
-          type: object
-          additionalProperties:
-            type: string
-          description: Description of the columns in the result set.
-        rows:
-          type: array
-          description: Result rows in key-value format.
-          items:
-            type: object
-            additionalProperties:
-              type: string
     Status:
       type: object
       properties:
@@ -21988,9 +22405,6 @@ tags:
     description: 'The Pretty Good Privacy (PGP) Keys API generates key pairs and provides a public key to encrypt data that you send to Visier. PGP encryption adds an additional layer of security against data disclosure.
 
       <br><br>After you generate a key pair and retrieve the public encryption key, you can encrypt your data files before sending them to Visier. When Visier receives files encrypted with the public key, we retrieve the associated private key to decrypt and process the file.'
-  - name: PlanningDataLoad
-    x-displayName: Planning Data Load
-    description: Send data directly to your plan's scenario and optionally add or remove rows from your plan.
   - name: DataUpload
     x-displayName: Data Upload
     description: Send data files to Visier. After we receive the data, Visier starts a receiving job and a processing job to process the data.
@@ -22098,6 +22512,13 @@ tags:
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
 
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: SidecarSolutions
+    x-displayName: Sidecar Solutions
+    description: 'Manage your sidecar solution''s configuration. A sidecar solution is a unique solution built using the Visier platform, such as Smart Compensation. Use this API to retrieve the current settings, update the settings to new values, or delete existing settings.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: ReleaseVersionConfiguration
     x-displayName: Release Versions
     description: 'Manage the Visier product release versions for your tenants.
@@ -22135,6 +22556,16 @@ tags:
       <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
 
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: PlanAdministration
+    x-displayName: Plan Administration
+    description: 'Manage your subplans, such as consolidating and reopening.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: PlanDataLoad
+    x-displayName: Plan Data Load
+    description: 'Send data directly to your plan''s scenario and optionally add or remove rows from your plan.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: Benchmarks
     description: |
       Get benchmark values.
@@ -22157,7 +22588,6 @@ x-tagGroups:
       - DataIntake
       - DataAndJobHandling
       - PGPKeys
-      - PlanningDataLoad
       - DataUpload
   - name: data out
     tags:
@@ -22184,6 +22614,7 @@ x-tagGroups:
       - EmailDomains
       - EncryptionKeys
       - NetworkSubnets
+      - SidecarSolutions
       - ReleaseVersionConfiguration
   - name: analytic model
     tags:
@@ -22194,6 +22625,10 @@ x-tagGroups:
   - name: webhooks
     tags:
       - Webhooks
+  - name: planning
+    tags:
+      - PlanAdministration
+      - PlanDataLoad
   - name: compensation benchmarks
     tags:
       - Benchmarks
