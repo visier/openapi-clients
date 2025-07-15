@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2042
+  version: 22222222.99201.2046
 paths:
   /v1alpha/planning/data/plans:
     patch:
@@ -289,13 +289,13 @@ components:
       properties:
         planId:
           type: string
-          description: The UUID of the subplan.
-        actionResults:
+          description: The UUID of the subplan, or the main plans if consolidating.
+        plans:
           type: array
           items:
             $ref: '#/components/schemas/planning.PlanPatchActionResult'
           description: The result of the actions taken on the subplans.
-      description: The result of the actions taken on the subplans.
+      description: The result of the actions taken on the subplans, or the main plans if consolidating.
     planning.ReopenActionPayload:
       type: object
       properties:
