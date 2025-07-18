@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2047
+  version: 22222222.99201.2050
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -11682,6 +11682,18 @@ components:
           items:
             type: string
           description: The unique identifiers.
+    admin.FeaturesForUserGroupDTO:
+      type: object
+      properties:
+        features:
+          type: array
+          items:
+            enum:
+              - SolutionFeatures
+              - StudioFeatures
+            type: string
+            format: enum
+          description: "The features that the user group is visible in. Valid values:\n - `SolutionFeatures`: The user group is visible in Solution features, such as sharing an analysis with user groups.\n - `StudioFeatures`: The user group is visible in Studio features, such as assigning user groups to a Vee sample question.\n **Note**: User group visibility is not available until Summer 2025."
     admin.HomeAnalysisByUserGroupDTO:
       type: object
       properties:
@@ -11916,8 +11928,9 @@ components:
           type: string
           description: A new display name to assign to the analytic tenant. Required if creating new tenants.
         tenantShortName:
+          deprecated: true
           type: string
-          description: A new short name to assign to the tenant. Required for analytic tenants.
+          description: This will no longer be available as of Spring 2028. A new short name to assign to the tenant.
         vanityUrlName:
           type: string
           description: A new vanity name to assign to the tenant. Omit for new Embedded analytic tenants.
@@ -12126,6 +12139,13 @@ components:
         projectId:
           type: string
           description: "The project ID in which to update or create the user group.\n If omitted and the ProjectID request header is not defined, the change is published to production immediately."
+        isVisibleInFeatures:
+          type: boolean
+          description: "If `true`, the user group is visible in features such as sharing an analysis with user groups or assigning user groups a Vee sample question.\n If `false`, the user group is not visible to select in features.\n Default is `true`.\n **Note**: User group visibility is not available until Summer 2025."
+        visibleFeatures:
+          allOf:
+            - $ref: '#/components/schemas/admin.FeaturesForUserGroupDTO'
+          description: "The features in which the user group is visible.\n If not defined, the user group is visible in all features.\n If `isVisibleInFeatures` is `false`, this field is ignored.\n **Note**: User group visibility is not available until Summer 2025."
     admin.UserGroupChangeDimensionFilterDTO:
       type: object
       properties:
@@ -20230,9 +20250,6 @@ components:
           items:
             $ref: '#/components/schemas/servicing.v2.objectconfiguration.MemberSelectionDTO'
           description: The dimension members in a member selection concept.
-        isExcluded:
-          type: boolean
-          description: If `true`, the member is excluded from the concept. Default is `false`.
       description: A dimension associated with the selection concept.
     servicing.v2.objectconfiguration.DimensionReferenceDTO:
       type: object
@@ -20445,6 +20462,9 @@ components:
           items:
             type: string
           description: The name path for a given dimension member. For example, `["North America", "United States", "California", "San Francisco"]`.
+        isExcluded:
+          type: boolean
+          description: If `true`, the member is excluded from the concept. Default is `false`.
       description: A dimension member in a member selection concept.
     servicing.v2.objectconfiguration.MetricDefinitionDTO:
       type: object
