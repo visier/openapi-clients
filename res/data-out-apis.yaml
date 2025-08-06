@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2050
+  version: 22222222.99201.2100
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1924,6 +1924,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregationTypeParameterValueDTO'
           description: A value for an aggregation parameter.
+        subjectMemberSetValue:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.SubjectMemberSetParameterValueDTO'
+          description: A value for a subject member set parameter.
       description: An object that contains parameter values for either member or numeric parameters.
     dataservices.query.QueryPropertyDTO:
       type: object
@@ -2200,6 +2204,41 @@ components:
             - $ref: '#/components/schemas/dataservices.query.ListQueryExecutionOptionsDTO'
           description: "Options to apply to a SQL-like list query. The query is list if it contains no metrics and has only properties.\n **Note**: `multipleTables` is not supported in SQL-like list queries."
       description: "*\n Request body for SQL-like query executions, which can be either an aggregate or list query.\n For examples that distinguish between aggregate and list queries, see the `POST /v1/data/query/sql` description."
+    dataservices.query.SubjectMemberSetParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique ID of the subject member set parameter.
+        keyNamePaths:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.SubjectMemberSetParameterValueDTO_NamePathDTO'
+          description: The name path keys for the subject member set parameter; for example, `["Java"]`.
+        valueNamePaths:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.SubjectMemberSetParameterValueDTO_ListOfNamePathDTO'
+          description: The name path values for each subject member set parameter key; for example, `["5.0"]`.
+      description: The value for a subject member set parameter.
+    dataservices.query.SubjectMemberSetParameterValueDTO_ListOfNamePathDTO:
+      type: object
+      properties:
+        namePaths:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataservices.query.SubjectMemberSetParameterValueDTO_NamePathDTO'
+          description: The name paths for subject member parameter key values.
+      description: A list of name paths.
+    dataservices.query.SubjectMemberSetParameterValueDTO_NamePathDTO:
+      type: object
+      properties:
+        namePath:
+          type: array
+          items:
+            type: string
+          description: The name path for dimension members.
+      description: The name path for dimension members.
     dataservices.query.TimeShiftDTO:
       type: object
       properties:
