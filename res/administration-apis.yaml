@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2050
+  version: 22222222.99201.2099
 paths:
   /v1/admin/capabilities:
     get:
@@ -615,6 +615,16 @@ paths:
           description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
           schema:
             type: boolean
+        - name: SessionBasedPermissions
+          in: header
+          description: Optionally, If `true`, the API call executes on session based and create/update actions take effect without a new production version, it doesn't work with NonVersioned=true header. If `false`, it's not a session based api call. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
+        - name: SessionRepoId
+          in: header
+          description: Optionally, work with SessionBasedPermissions only. If specified, the API call overwrite the existing permissions assigned to the SessionRepoId, otherwise it created a new one.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1370,13 +1380,15 @@ paths:
       tags:
         - Projects
       summary: Import committed changes into a project
-      description: Import a ZIP file that contains a list of committed changes into a draft project. The file must be an export from `POST /v1/admin/production-versions`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
+      description: 'Import a ZIP file that contains a list of committed changes into a draft project. The file must be an export from `POST /v1/admin/production-versions`.
+
+        Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.'
       operationId: Projects_PutProjectCommits
       parameters:
         - name: projectId
           in: path
-          description: The unique identifier of the draft project you want to import committed changes into.
           required: true
+          description: The unique identifier of the draft project you want to import committed changes into.
           schema:
             type: string
         - name: TargetTenantID
@@ -1385,24 +1397,25 @@ paths:
           schema:
             type: string
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/admin.PutProjectCommitsRequest'
         required: true
+        content:
+          application/zip:
+            schema:
+              type: string
+              format: binary
       responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCommitsAPIResponseDTO'
         default:
           description: Default error response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.ProjectCommitsAPIResponseDTO'
   /v1/admin/system-status:
     get:
       tags:
@@ -2822,7 +2835,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.EmailDomainsDTO'
+              $ref: '#/components/schemas/admin.DeleteEmailDomainsDTO'
         required: true
       responses:
         default:
@@ -2836,7 +2849,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/admin.EmailDomainsDTO'
+                $ref: '#/components/schemas/admin.DeleteEmailDomainsDTO'
   /v1alpha/admin/encryption-keys:
     get:
       tags:
@@ -3155,7 +3168,7 @@ paths:
       parameters:
         - name: limit
           in: query
-          description: The maximum number of tenants to return. Default is 400.
+          description: The limit of analytic tenants to return. Default and maximum are 400.
           schema:
             type: integer
             format: int32
@@ -3789,6 +3802,12 @@ paths:
           description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
           schema:
             type: boolean
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
@@ -4034,12 +4053,6 @@ components:
           items:
             $ref: '#/components/schemas/servicing.PermissionDTO'
           description: The list of permissions that will be created or updated
-    admin.PutProjectCommitsRequest:
-      type: object
-      properties:
-        projectId:
-          type: string
-          description: The unique identifier of the draft project you want to import committed changes into.
     admin.SidecarSolutionRequestDTO:
       type: object
       properties:
@@ -4140,18 +4153,6 @@ components:
           items:
             type: string
           description: The unique identifiers.
-    admin.FeaturesForUserGroupDTO:
-      type: object
-      properties:
-        features:
-          type: array
-          items:
-            enum:
-              - SolutionFeatures
-              - StudioFeatures
-            type: string
-            format: enum
-          description: "The features that the user group is visible in. Valid values:\n - `SolutionFeatures`: The user group is visible in Solution features, such as sharing an analysis with user groups.\n - `StudioFeatures`: The user group is visible in Studio features, such as assigning user groups to a Vee sample question.\n **Note**: User group visibility is not available until Summer 2025."
     admin.HomeAnalysisByUserGroupDTO:
       type: object
       properties:
@@ -4238,39 +4239,6 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, which can be used as values for the idp_url parameter
-    admin.TenantDetailsTraitsDTO:
-      type: object
-      properties:
-        aggregationRights:
-          type: boolean
-          description: If `true`, the tenant is opted in to Visier's data aggregation program, such as Visier Benchmarks. Default is `false`. If `false`, `aggregationRights` isn't returned in the response.
-        tenantType:
-          enum:
-            - ROOT_ADMIN
-            - ROOT
-            - BLUEPRINT
-            - ENTERPRISE
-            - ENTERPRISE_ROOT
-            - BENCHMARK
-            - PARTNER
-            - PARTNER_CUSTOMER
-            - SMB_BP
-            - SMB_CUSTOMER
-            - UNKNOWN
-          type: string
-          description: "The tenant's type. Valid values:\n * `ENTERPRISE`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.\n * `PARTNER`: An administrating tenant that manages one or more analytic tenants. Partner tenants are managed by non-Visier administrators, such as an embedded partner or system integration partner.\n * `PARTNER_CUSTOMER`: An analytic tenant managed by a partner that represents the partner's customer's instance of Visier."
-          format: enum
-        dataProfileType:
-          enum:
-            - Regular
-            - Integration
-            - Demo
-            - Cat
-            - Test
-          type: string
-          description: "The tenant's data profile, which designates how the tenant's data is used. Valid values:\n * `Regular`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.\n * `Integration`: A partner tenant for development, staging, and testing.\n * `Demo`: A Visier tenant for demonstrations and training.\n * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.\n * `Test`: A Visier tenant for development and testing."
-          format: enum
-      description: The tenant's traits, including aggregation rights, tenant type, and data profile type.
     admin.TenantManagementAPIGetResponseDTO:
       type: object
       properties:
@@ -4370,11 +4338,11 @@ components:
           description: A list of objects representing all the analytic tenants.
         limit:
           type: integer
-          description: The limit of analytic tenants to return. The maximum value is 1000. The default is 150.
+          description: The limit of analytic tenants to return.
           format: uint32
         start:
           type: integer
-          description: The index to start retrieving values from, also known as offset. The index begins at 0.
+          description: The starting index to retrieve values from, also known as offset.
           format: uint32
     admin.TenantManagementAPIUpdateRequestDTO:
       type: object
@@ -4597,13 +4565,10 @@ components:
         projectId:
           type: string
           description: "The project ID in which to update or create the user group.\n If omitted and the ProjectID request header is not defined, the change is published to production immediately."
-        isVisibleInFeatures:
-          type: boolean
-          description: "If `true`, the user group is visible in features such as sharing an analysis with user groups or assigning user groups a Vee sample question.\n If `false`, the user group is not visible to select in features.\n Default is `true`.\n **Note**: User group visibility is not available until Summer 2025."
-        visibleFeatures:
+        visibleForSelection:
           allOf:
-            - $ref: '#/components/schemas/admin.FeaturesForUserGroupDTO'
-          description: "The features in which the user group is visible.\n If not defined, the user group is visible in all features.\n If `isVisibleInFeatures` is `false`, this field is ignored.\n **Note**: User group visibility is not available until Summer 2025."
+            - $ref: '#/components/schemas/admin.VisibleForSelectionDTO'
+          description: "The features in which your users can see and select this user group. If omitted, the user group is visible in all features.\n **Note**: User group visibility is not available until Summer 2025."
     admin.UserGroupChangeDimensionFilterDTO:
       type: object
       properties:
@@ -4798,6 +4763,21 @@ components:
           items:
             $ref: '#/components/schemas/admin.UserGroupDeleteDTO'
           description: The user groups to delete.
+    admin.VisibleForSelectionDTO:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: "If `true`, the user group is visible in features such as sharing an analysis with user groups or assigning user groups a Vee sample question. Cannot update to `true` if `features` is empty.\n If `false`, the user group is not visible to select in any features.\n Default is `true`.\n **Note**: User group visibility is not available until Summer 2025."
+        features:
+          type: array
+          items:
+            enum:
+              - AnalyticsFeatures
+              - StudioFeatures
+            type: string
+            format: enum
+          description: "The features in which the user group is visible. Default is empty.\n If `enabled` is `true`, the user group is visible in features listed.\n If `enabled` is `false`, this field is ignored.\n **Note**: User group visibility is not available until Summer 2025."
     admin.ConsolidatedAnalyticsAPIExcludedSourceListDTO:
       type: object
       properties:
@@ -4852,7 +4832,7 @@ components:
           items:
             $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPITenantWithDetails'
           description: A list of CA tenants and their details.
-    admin.EmailDomainsDTO:
+    admin.DeleteEmailDomainsDTO:
       type: object
       properties:
         domains:
@@ -4862,7 +4842,15 @@ components:
           description: The list of allowed email address domains.
         confirmNotAllowedDomain:
           type: boolean
-          description: If `true`, you cannot sign in using credentials, such as username and password. You can only log in with single sign-on (SSO). To avoid this, add your current email address's domain to allowed domains list.
+          description: "If `true`, allows deletion of the requester's own domain when using credential-based login.\n If `false`, prevents deletion of the requester's own domain when using credentials.\n This setting only applies to credential-based logins, not to SSO logins (unless used in API calls)."
+    admin.EmailDomainsDTO:
+      type: object
+      properties:
+        domains:
+          type: array
+          items:
+            type: string
+          description: The list of allowed email address domains.
     admin.PermissionResponseDTO:
       type: object
       properties:
@@ -5063,6 +5051,39 @@ components:
         projectId:
           type: string
           description: The ID of the project that the change was made in, if applicable.
+    admin.TenantDetailsTraitsDTO:
+      type: object
+      properties:
+        aggregationRights:
+          type: boolean
+          description: If `true`, the tenant is opted in to Visier's data aggregation program, such as Visier Benchmarks. Default is `false`. If `false`, `aggregationRights` isn't returned in the response.
+        tenantType:
+          enum:
+            - ROOT_ADMIN
+            - ROOT
+            - BLUEPRINT
+            - ENTERPRISE
+            - ENTERPRISE_ROOT
+            - BENCHMARK
+            - PARTNER
+            - PARTNER_CUSTOMER
+            - SMB_BP
+            - SMB_CUSTOMER
+            - UNKNOWN
+          type: string
+          description: "The tenant's type. Valid values:\n * `ENTERPRISE`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.\n * `PARTNER`: An administrating tenant that manages one or more analytic tenants. Partner tenants are managed by non-Visier administrators, such as an embedded partner or system integration partner.\n * `PARTNER_CUSTOMER`: An analytic tenant managed by a partner that represents the partner's customer's instance of Visier."
+          format: enum
+        dataProfileType:
+          enum:
+            - Regular
+            - Integration
+            - Demo
+            - Cat
+            - Test
+          type: string
+          description: "The tenant's data profile, which designates how the tenant's data is used. Valid values:\n * `Regular`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.\n * `Integration`: A partner tenant for development, staging, and testing.\n * `Demo`: A Visier tenant for demonstrations and training.\n * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.\n * `Test`: A Visier tenant for development and testing."
+          format: enum
+      description: "The tenant's traits, including aggregation rights, tenant type, and data profile type.\n As workaround Due to sbt setup limitations this has been duplicated to components/data_services/modules/data_services-dto/src/main/protobuf/visier/dataservices/tenants/transfers/TenantDetailsTraits.proto\n Please make sure any change to this DTO (and enums) is also reflected in the above file."
     admin.UserGroupGetAPIResponseDTO:
       type: object
       properties:
@@ -6938,6 +6959,26 @@ components:
         email:
           type: string
           description: The user's email address.
+    ProjectCommitsAPIResponseDTO:
+      type: object
+      properties:
+        commits:
+          type: array
+          description: A list of committed changes in the project.
+          items:
+            $ref: '#/components/schemas/ProjectCommitDTO'
+    ProjectCommitDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the committed change.
+        name:
+          type: string
+          description: An identifiable name of the committed change to display in Visier.
+        description:
+          type: string
+          description: A description of the committed change.
     Status:
       type: object
       properties:
