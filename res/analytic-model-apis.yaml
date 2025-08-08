@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2050
+  version: 22222222.99201.2103
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1467,6 +1467,154 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.QuestionCategoriesAPIResponseDTO'
+    put:
+      tags:
+        - DataModel
+      summary: Update Vee question categories
+      description: "Update existing Vee sample question categories, such as its display name or icon. Administrating tenants can specify the tenant in which to update categories using the `TargetTenantID` header.\n\n When updating categories, the category definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values for optional fields from the update request, the values reset to their respective default value. We recommend that you retrieve a category's details before you update the category with new values.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataModel_PutVeeSampleQuestionCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesChangeDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
+    post:
+      tags:
+        - DataModel
+      summary: Create Vee question categories
+      description: "Create new sample question categories for Vee sample questions. Administrating tenants can specify the tenant in which to add sample question categories using the `TargetTenantID` header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataModel_CreateVeeSampleQuestionCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesChangeDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
+    delete:
+      tags:
+        - DataModel
+      summary: Delete Vee question categories
+      description: "Delete existing Vee sample question categories. Administrating tenants can specify the tenant in which to delete categories using the `TargetTenantID` header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataModel_DeleteVeeSampleQuestionCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesDeleteDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
+    patch:
+      tags:
+        - DataModel
+      summary: Partially update Vee question categories
+      description: "Make partial changes to Vee sample question categories. Administrating tenants can specify the tenant in which to patch categories using the `TargetTenantID` header.\n\n Unlike a `PUT` call, which completely replaces the sample question category definition, use `PATCH` to change specific fields in the category without affecting omitted fields.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataModel_UpdateVeeSampleQuestionCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesChangeDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
   /v1alpha/data/model/vee/sample-question-categories/{questionCategoryId}:
     get:
       tags:
@@ -1845,6 +1993,348 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/planning.PlanWithSchemaDTO'
+  /v2/data/model/analytic-objects/{analyticObjectName}/concepts:
+    get:
+      tags:
+        - ConceptsV2
+      summary: Retrieve a list of concepts by analytic object
+      description: Retrieve all the concepts for a specific analytic object. The response returns the details of all concepts for the analytic object, including object names, concept types, and descriptions.
+      operationId: ConceptsV2_GetAnalyticObjectConcepts
+      parameters:
+        - name: analyticObjectName
+          in: path
+          description: The object name of the analytic object from which to retrieve concepts.
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: "The type of the concept to retrieve. Omit to retrieve all supported concept types. Valid values:\n - `process`: Retrieves all process concepts.\n - `selection`: Retrieves all member selection concepts and calculated selection concepts."
+          schema:
+            type: array
+            items:
+              enum:
+                - process
+                - selection
+              type: string
+              format: enum
+        - name: with
+          in: query
+          description: "The level of information to retrieve for the concept. Valid values:\n - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.\n - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
+          schema:
+            type: array
+            items:
+              enum:
+                - basic
+                - details
+                - version
+              type: string
+              format: enum
+        - name: objectName
+          in: query
+          description: The concept object names to return in the response. When combined with `uuid`, the results return objects that match either the `objectName` or `uuid`.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: uuid
+          in: query
+          description: The concept UUIDs to return in the response. When combined with `objectName`, the results return objects that match either the `objectName` or `uuid`.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptResponseDTO'
+  /v2/data/model/concepts:
+    get:
+      tags:
+        - ConceptsV2
+      summary: Retrieve a list of concepts
+      description: Retrieve a list of all concepts in your Visier tenant.
+      operationId: ConceptsV2_GetAllConcepts
+      parameters:
+        - name: type
+          in: query
+          description: "The type of the concept to retrieve. Omit to retrieve all supported concept types. Valid values:\n - `process`: Retrieves all process concepts.\n - `selection`: Retrieves all member selection concepts and calculated selection concepts."
+          schema:
+            type: array
+            items:
+              enum:
+                - process
+                - selection
+              type: string
+              format: enum
+        - name: with
+          in: query
+          description: "The level of information to retrieve for the concept. Valid values:\n - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.\n - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
+          schema:
+            type: array
+            items:
+              enum:
+                - basic
+                - details
+                - version
+              type: string
+              format: enum
+        - name: objectName
+          in: query
+          description: The concept object names to return in the response. When combined with `uuid`, the results return objects that match either the `objectName` or `uuid`.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: uuid
+          in: query
+          description: The concept UUIDs to return in the response. When combined with `objectName`, the results return objects that match either the `objectName` or `uuid`.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptResponseDTO'
+    put:
+      tags:
+        - ConceptsV2
+      summary: Update concepts
+      description: "Update existing concepts. The response returns whether each concept was successfully updated or not. When updating objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PUT` request definition.\n\n In `PUT` calls, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the concept. To partially update a concept, see the `PATCH` method."
+      operationId: ConceptsV2_PutConcepts
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+    post:
+      tags:
+        - ConceptsV2
+      summary: Create concepts
+      description: "Create new concepts. The response returns whether each concept was successfully created or not.\n When creating objects, assign a unique object name but don't set a UUID. Visier generates UUIDs for new objects."
+      operationId: ConceptsV2_CreateConcepts
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+    delete:
+      tags:
+        - ConceptsV2
+      summary: Delete concepts
+      description: Delete existing concepts. The response returns whether each concept was successfully deleted or not.
+      operationId: ConceptsV2_DeleteConcepts
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptDeleteRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+    patch:
+      tags:
+        - ConceptsV2
+      summary: Partially update concepts
+      description: "Make partial changes to existing concepts. The response returns whether each concept was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition.\n\n Unlike `PUT`, which completely replaces the concept definition, use `PATCH` to change specific fields in the concept without affecting omitted fields. To replace a concept's entire definition, see the `PUT` method."
+      operationId: ConceptsV2_PatchConcepts
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+  /v2/data/model/concepts/{conceptId}:
+    get:
+      tags:
+        - ConceptsV2
+      summary: Retrieve a concept's details
+      description: Retrieve the details of a specific concept, such as its concept type and description.
+      operationId: ConceptsV2_GetOneConcept
+      parameters:
+        - name: conceptId
+          in: path
+          description: The object name or UUID of the concept to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: with
+          in: query
+          description: "The level of information to retrieve for the concept. Valid values:\n - `basic`: Retrieves the concept's UUID, object name, and basic information.\n - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`. This is the default.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
+          schema:
+            type: array
+            items:
+              enum:
+                - basic
+                - details
+                - version
+              type: string
+              format: enum
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptResponseDTO'
   /v2alpha/data/model/analytic-objects:
     put:
       tags:
@@ -1952,348 +2442,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.v2.objectconfiguration.DimensionResponseDTO'
-  /v2alpha/data/model/analytic-objects/{analyticObjectName}/concepts:
-    get:
-      tags:
-        - ConceptsV2
-      summary: Retrieve a list of concepts by analytic object
-      description: "Retrieve all the concepts for a specific analytic object. The response returns the details of all concepts for the analytic object, including object names, concept types, and descriptions.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: ConceptsV2_GetAnalyticObjectConcepts
-      parameters:
-        - name: analyticObjectName
-          in: path
-          description: The object name of the analytic object from which to retrieve concepts.
-          required: true
-          schema:
-            type: string
-        - name: type
-          in: query
-          description: "The type of the concept to retrieve. Omit to retrieve all supported concept types. Valid values:\n - `process`: Retrieves all process concepts.\n - `selection`: Retrieves all member selection concepts and calculated selection concepts."
-          schema:
-            type: array
-            items:
-              enum:
-                - process
-                - selection
-              type: string
-              format: enum
-        - name: with
-          in: query
-          description: "The level of information to retrieve for the concept. Valid values:\n - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.\n - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
-          schema:
-            type: array
-            items:
-              enum:
-                - basic
-                - details
-                - version
-              type: string
-              format: enum
-        - name: objectName
-          in: query
-          description: The concept object names to return in the response. When combined with `uuid`, the results return objects that match either the `objectName` or `uuid`.
-          schema:
-            type: array
-            items:
-              type: string
-        - name: uuid
-          in: query
-          description: The concept UUIDs to return in the response. When combined with `objectName`, the results return objects that match either the `objectName` or `uuid`.
-          schema:
-            type: array
-            items:
-              type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptResponseDTO'
-  /v2alpha/data/model/concepts:
-    get:
-      tags:
-        - ConceptsV2
-      summary: Retrieve a list of concepts
-      description: "Retrieve a list of all concepts in your Visier tenant.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: ConceptsV2_GetAllConcepts
-      parameters:
-        - name: type
-          in: query
-          description: "The type of the concept to retrieve. Omit to retrieve all supported concept types. Valid values:\n - `process`: Retrieves all process concepts.\n - `selection`: Retrieves all member selection concepts and calculated selection concepts."
-          schema:
-            type: array
-            items:
-              enum:
-                - process
-                - selection
-              type: string
-              format: enum
-        - name: with
-          in: query
-          description: "The level of information to retrieve for the concept. Valid values:\n - `basic`: Retrieves the concept's UUID, object name, and basic information. This is the default.\n - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
-          schema:
-            type: array
-            items:
-              enum:
-                - basic
-                - details
-                - version
-              type: string
-              format: enum
-        - name: objectName
-          in: query
-          description: The concept object names to return in the response. When combined with `uuid`, the results return objects that match either the `objectName` or `uuid`.
-          schema:
-            type: array
-            items:
-              type: string
-        - name: uuid
-          in: query
-          description: The concept UUIDs to return in the response. When combined with `objectName`, the results return objects that match either the `objectName` or `uuid`.
-          schema:
-            type: array
-            items:
-              type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptResponseDTO'
-    put:
-      tags:
-        - ConceptsV2
-      summary: Update concepts
-      description: "Update existing concepts. The response returns whether each concept was successfully updated or not. When updating objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PUT` request definition.\n\n In `PUT` calls, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the concept. To partially update a concept, see the `PATCH` method.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: ConceptsV2_PutConcepts
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptRequestDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
-    post:
-      tags:
-        - ConceptsV2
-      summary: Create concepts
-      description: "Create new concepts. The response returns whether each concept was successfully created or not.\n When creating objects, assign a unique object name but don't set a UUID. Visier generates UUIDs for new objects.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: ConceptsV2_CreateConcepts
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptRequestDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
-    delete:
-      tags:
-        - ConceptsV2
-      summary: Delete concepts
-      description: "Delete existing concepts. The response returns whether each concept was successfully deleted or not.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: ConceptsV2_DeleteConcepts
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptDeleteRequestDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
-    patch:
-      tags:
-        - ConceptsV2
-      summary: Partially update concepts
-      description: "Make partial changes to existing concepts. The response returns whether each concept was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition.\n\n Unlike `PUT`, which completely replaces the concept definition, use `PATCH` to change specific fields in the concept without affecting omitted fields. To replace a concept's entire definition, see the `PUT` method.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: ConceptsV2_PatchConcepts
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptRequestDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
-  /v2alpha/data/model/concepts/{conceptId}:
-    get:
-      tags:
-        - ConceptsV2
-      summary: Retrieve a concept's details
-      description: "Retrieve the details of a specific concept, such as its concept type and description.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: ConceptsV2_GetOneConcept
-      parameters:
-        - name: conceptId
-          in: path
-          description: The object name or UUID of the concept to retrieve.
-          required: true
-          schema:
-            type: string
-        - name: with
-          in: query
-          description: "The level of information to retrieve for the concept. Valid values:\n - `basic`: Retrieves the concept's UUID, object name, and basic information.\n - `details`: Retrieves the `basic` details and additional configurations, such as `visibleInApp`. This is the default.\n - `version`: Retrieves the object's version information, such as version type and last edited details."
-          schema:
-            type: array
-            items:
-              enum:
-                - basic
-                - details
-                - version
-              type: string
-              format: enum
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptResponseDTO'
   /v2alpha/data/model/dimensions:
     get:
       tags:
@@ -3971,6 +4119,16 @@ components:
             type: string
           description: The tag ids.
       description: Wrapper to distinguish between an empty list and a null/unset list.
+    servicing.CategoryIconDTO:
+      type: object
+      properties:
+        base64Png:
+          type: string
+          description: The Base64 value for the icon PNG.
+        backgroundColor:
+          type: string
+          description: Optionally, specify a HEX color code to accompany the question category icon. This is useful if the icon is transparent.
+      description: An icon associated with the question category.
     servicing.QuestionCategoriesAPIResponseDTO:
       type: object
       properties:
@@ -4028,6 +4186,128 @@ components:
             type: string
           description: A list of user group IDs assigned to the sample question.
       description: The Vee sample question's assigned user groups.
+    servicing.VeeQuestionCategoriesBulkChangeResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.VeeQuestionCategoryChangeSuccessDTO'
+          description: The question categories that were successfully changed.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.VeeQuestionCategoryChangeFailureDTO'
+          description: The question categories that were not successfully changed.
+      description: The results of the bulk change operation.
+    servicing.VeeQuestionCategoriesChangeDefinitionsDTO:
+      type: object
+      properties:
+        categoriesByTenant:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.VeeQuestionCategoryChangeDefinitionsByTenantDTO'
+          description: The Vee question category updates to make in each tenant.
+      description: The changes to Vee question categories.
+    servicing.VeeQuestionCategoriesDeleteDefinitionsDTO:
+      type: object
+      properties:
+        categoriesByTenant:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.VeeQuestionCategoryDeleteDefinitionsByTenantDTO'
+          description: The question categories to delete for each tenant.
+      description: The Vee question categories to delete.
+    servicing.VeeQuestionCategoryChangeDefinitionDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: A name in plain language to display in Vee.
+        categoryId:
+          type: string
+          description: The unique identifier of the question category. Omit if creating a new question category.
+        categoryIcon:
+          allOf:
+            - $ref: '#/components/schemas/servicing.CategoryIconDTO'
+          description: The question category's icon in PNG format.
+      description: The Vee question category details.
+    servicing.VeeQuestionCategoryChangeDefinitionsByTenantDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the tenant in which to update question categories.
+        projectId:
+          type: string
+          description: To make changes in a project, specify a project ID.
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.VeeQuestionCategoryChangeDefinitionDTO'
+          description: The Vee question categories to update.
+      description: Information about the question category and the context of the API request, such as the tenant code and project ID.
+    servicing.VeeQuestionCategoryChangeFailureDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The name in plain language that was successfully changed.
+        categoryId:
+          type: string
+          description: The unique identifier of the question category that was successfully changed.
+        categoryIcon:
+          allOf:
+            - $ref: '#/components/schemas/servicing.CategoryIconDTO'
+          description: The question category icons that were successfully changed.
+        message:
+          type: string
+          description: An error message describing the cause of the failure.
+        rci:
+          type: string
+          description: The root cause identifier to provide to Visier Technical Support if you require further troubleshooting.
+        tenantCode:
+          type: string
+          description: The tenant that the object was not successfully changed in.
+        projectId:
+          type: string
+          description: The project that the object was not successfully changed in.
+      description: The list of failed changes.
+    servicing.VeeQuestionCategoryChangeSuccessDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The name in plain language that was successfully changed.
+        categoryId:
+          type: string
+          description: The unique identifier of the question category that was successfully changed.
+        categoryIcon:
+          allOf:
+            - $ref: '#/components/schemas/servicing.CategoryIconDTO'
+          description: The question category icons that were successfully changed.
+        tenantCode:
+          type: string
+          description: The tenant that the question category was changed in.
+        projectId:
+          type: string
+          description: The project that the question category was changed in.
+      description: The list of successful changes.
+    servicing.VeeQuestionCategoryDeleteDefinitionsByTenantDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The code of the tenant to delete question categories from. Default is the current tenant.
+        projectId:
+          type: string
+          description: The project in which to delete question categories. If omitted and the `ProjectID` request header is not defined, the change is published to production immediately.
+        categoryIds:
+          type: array
+          items:
+            type: string
+          description: The IDs of the question categories to delete for a specific tenant.
+      description: Information about the question category and the context of the API request, such as the tenant code and project ID.
     servicing.VeeQuestionChangeDefinitionDTO:
       type: object
       properties:
@@ -4472,6 +4752,43 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptDefinitionDTO'
           description: Information about the concept, such as its UUID and concept type.
       description: Information about the concept and the context of the API request, such as the tenant code and project ID.
+    servicing.v2.objectconfiguration.DerivedMetricDetailsDTO:
+      type: object
+      properties:
+        formula:
+          type: string
+          description: The metric's formula written in Visier Formula Language (VFL).
+        dataType:
+          type: string
+          description: "The metric's data type. Valid values:\n\n `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
+        visibleInAnalytics:
+          type: boolean
+          description: If `true`, the object is visible to end users in the solution. Default is `true`.
+        includeWithVee:
+          type: boolean
+          description: If `true`, the object is available in Vee's responses.
+        analyticObjectName:
+          type: string
+          description: The metric's analytic object name.
+        baseMetricId:
+          type: string
+          description: The UUID of the metric from which this metric is derived.
+        derivedMetricType:
+          enum:
+            - Rate
+            - Annualized
+            - AverageCount
+            - AnnualizedRate
+            - AverageFTE
+            - Proportion
+            - Arbitrary
+          type: string
+          description: "The method through which to derive an existing metric. Valid values:\n - `Annualized`: Calculate the metric as a yearly value.\n - `AnnualizedRate`: Calculate the metric as a rate for the year. This type requires you to set another metric as the denominator for the calculation.\n - `Arbitrary`: Calculate the metric in a custom way. This is the only derived metric in which you can modify the formula.\n - `AverageCount`: Calculate the metric as an average over all members, like employees. This type requires you to set another metric as the denominator for the calculation.\n - `AverageFTE`: Calculate the metric as a weighted average over all members, with full-time equivalent (FTE) values as weights. This type requires you to set another metric as the denominator for the calculation.\n - `Proportion`: Calculate the metric as a percentage of the total.\n - `Rate`: Calculate the metric as a rate. This type requires you to set another metric as the denominator for the calculation."
+          format: enum
+        denominatorMetricName:
+          type: string
+          description: An optional metric to use as the denominator for the calculation. If defined, the derived metric is calculated as a fraction.
+      description: Information about the metric, such as its formula and data type.
     servicing.v2.objectconfiguration.DimensionDTO:
       type: object
       properties:
@@ -4795,14 +5112,26 @@ components:
           type: string
           description: "How to sum the metric's values. Valid values:\n - `fullyAdditive`: Sums the metric over any dimension, concept, or time period.\n - `balance`: Sums the metric over any dimension or concept, but not time period.\n - `nonAdditive`: Metric values are not additive."
           format: enum
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the metric, such as its object name, basic information, and additive type.
     servicing.v2.objectconfiguration.MetricTypeDetailsDTO:
       type: object
       properties:
         processConcept:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptMetricDefinitionDTO'
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptMetricDetailsDTO'
+          description: Information about the process concept metric, such as its formula and data type.
+        simple:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.SimpleMetricDetailsDTO'
           description: Information about the metric, such as its formula and data type.
+        derived:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.DerivedMetricDetailsDTO'
+          description: Information about the derived metric, such as its formula and data type.
     servicing.v2.objectconfiguration.MultiValuePropertyTypeDTO:
       type: object
       properties:
@@ -4910,7 +5239,7 @@ components:
             $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptMemberDTO'
           description: Each member mapped to a stage or outcome in the process concept.
       description: The members mapped to a stage or outcome in the process concept.
-    servicing.v2.objectconfiguration.ProcessConceptMetricDefinitionDTO:
+    servicing.v2.objectconfiguration.ProcessConceptMetricDetailsDTO:
       type: object
       properties:
         formula:
@@ -5080,6 +5409,25 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.MultiValuePropertyTypeDTO'
           description: A property type for a single attribute that can have several valid values at the same time. For example, Employee Education may have values for year, school, and certification.
       description: The property type.
+    servicing.v2.objectconfiguration.SimpleMetricDetailsDTO:
+      type: object
+      properties:
+        formula:
+          type: string
+          description: The metric's formula written in Visier Formula Language (VFL).
+        dataType:
+          type: string
+          description: "The metric's data type. Valid values:\n\n `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
+        visibleInAnalytics:
+          type: boolean
+          description: If `true`, the object is visible to end users in the solution. Default is `true`.
+        includeWithVee:
+          type: boolean
+          description: If `true`, the object is available in Vee's responses.
+        analyticObjectName:
+          type: string
+          description: The metric's analytic object name.
+      description: Information about the metric, such as its formula and data type.
     servicing.v2.objectconfiguration.SimplePropertyTypeDTO:
       type: object
       properties:
@@ -5295,11 +5643,7 @@ tags:
     description: Manage objects in your analytic model.
   - name: ConceptsV2
     x-displayName: Concepts V2
-    description: 'Create, retrieve, update, and delete concepts in your analytic model. You can create, update, and delete one or more concepts in an API call.
-
-      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
-
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+    description: Create, retrieve, update, and delete concepts in your analytic model. You can create, update, and delete one or more concepts in an API call.
   - name: DimensionsV2
     x-displayName: Dimensions V2
     description: 'Create, retrieve, update, and delete dimensions in your analytic model. You can create, update, and delete one or more dimensions in an API call.

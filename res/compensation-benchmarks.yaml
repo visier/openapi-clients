@@ -61,6 +61,13 @@ paths:
             type: string
           description: |
             The career level member ID. If the ID is not provided, the response returns the benchmark value across all career levels.
+        - name: matchDate
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The date on which the career level was matched in `yyyy-MM-dd` format. A `matchDate` allows precise migration of career levels according to job architecture changes released since the match was made. If `matchDate` is not available, the migration assumes the most recent possible match date for the provided career level.
       responses:
         "200":
           description: |
@@ -95,6 +102,56 @@ paths:
         credentials: "${apigateway_role}"
         httpMethod: "POST"
         uri: "${lambda-get-salary-arn}"
+      security:
+        - api_key: []
+  /v1/compensation-benchmarks/base-salary/feedback:
+    post:
+      summary: Submit feedback to improve salary benchmark values
+      tags: [Benchmarks]
+      operationId: "SubmitSalaryBenchmarkFeedback"
+      description: |
+        Give feedback for a salary benchmark value returned by `GET /v1/compensation-benchmarks/base-salary` or `/base-salaries`. To submit feedback, include the benchmark value's:
+          * ID values you defined in `GET /v1/compensation-benchmarks/base-salary` or `/base-salaries`.
+          * `referenceDate` and `releaseDate` returned by `GET /v1/compensation-benchmarks/base-salary` or `/base-salaries`.
+          * Optional `additionalComments` up to 150 characters.
+      requestBody:
+        description: |
+          The feedback to submit.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SalaryBenchmarkFeedbackInput"
+        required: true
+      responses:
+        "204":
+          description: |
+            Your feedback has been submitted successfully.
+        "400":
+          description: |
+            Your feedback could not be submitted. Ensure all mandatory fields are included in the request body.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-submit-benchmark-feedback-arn}"
+        type: "aws_proxy"
       security:
         - api_key: []
   /v1/compensation-benchmarks/base-salaries:
@@ -1249,6 +1306,10 @@ components:
             type: string
             description: |
               The career level member ID. If the ID is not provided, the response returns the benchmark value across all career levels.
+          matchDate:
+            type: string
+            description: |
+              The date on which the career level was matched in `yyyy-MM-dd` format. A `matchDate` allows precise migration of career levels according to job architecture changes released since the match was made. If `matchDate` is not available, the migration assumes the most recent possible match date for the provided career level.
         required:
           - uuid
           - job
@@ -1376,12 +1437,64 @@ components:
             The minimum is 2 characters and the maximum is 100 characters.
         naicsCode:
           type: string
-          description: If provided, the naicsCode entered when using the Get jobs endpoint. You're providing feedback on the quality of the results for the search term and code.
+          description: |
+            If provided, the naicsCode entered when using the Get jobs endpoint. You're providing feedback on the quality of the results for the search term and code.
         additionalComments:
           type: string
           description: "Additional written feedback about the job match results returned by the Get jobs endpoint. \nThe maximum is 150 characters.\n"
       required:
         - term
+    SalaryBenchmarkFeedbackInput:
+      title: SalaryBenchmarkFeedbackInput
+      description: |
+        The salary benchmark value for which to submit feedback.
+      type: object
+      properties:
+        job:
+          type: string
+          description: |
+            The job member ID for the salary benchmark.
+        location:
+          type: string
+          description: |
+            The location member ID for the salary benchmark.
+        careerLevel:
+          type: string
+          description: |
+            The career level member ID for the salary benchmark.
+        industry:
+          type: string
+          description: |
+            The industry member ID for the salary benchmark.
+        companySize:
+          type: string
+          description: |
+            The company size member ID for the salary benchmark.
+        referenceDate:
+          type: string
+          description: |
+            The date that benchmark values are calculated for.
+        releaseDate:
+          type: string
+          description: |
+            The date that benchmark values are released.
+        naicsCode:
+          type: string
+          description: |
+            If provided, the `naicsCode` in `GET /v1/compensation-benchmarks/base-salary` or `/base-salaries`.
+        additionalComments:
+          type: string
+          description: |
+            Optional written feedback about the salary benchmark values.
+            The maximum is 150 characters.
+      required:
+        - job
+        - location
+        - careerLevel
+        - industry
+        - companySize
+        - referenceDate
+        - releaseDate
     JobStandardizationInput:
       description: |
         The custom job titles to standardize.
