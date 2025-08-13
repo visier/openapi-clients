@@ -3,22 +3,10 @@ name: Generate SDKs
 on:
   workflow_dispatch:
     inputs:
-      version_postfix:
-        description: 'Additional version postfix for the SDK. For fix use "post{N}", for beta use "beta{N}".'
-        required: true
-        type: string
-        default: 'beta1'
       manual_openapi_client_pr_base_branch:
         description: |
           WARNING: Set this to the `main` branch for production releases!
           This workflow will create a Pull Request (PR) for the `openapi-clients` repository and merge it into the specified base branch.
-        required: true
-        type: string
-        default: 'github-actions-test'
-      manual_sdk_pr_base_branch:
-        description: |
-          WARNING: Set this to the `main` branch for production releases!
-          This workflow will create a Pull Request (PR) for the `language-sdk` (e.g. `python-sdk`) repository and merge it into the specified base branch.
         required: true
         type: string
         default: 'github-actions-test'
@@ -27,52 +15,8 @@ on:
       - 'release-**'
 
 jobs:
-  preprocess-specifications:
-    name: Preprocess OpenAPI specifications
-    runs-on: ubuntu-22.04
-    env:
-      ORIG_SPEC_DIR: ${{ github.workspace }}/res
-      SPEC_DIR: ${{ github.workspace }}/specs_preprocessed
-      PREPROCESSING_DIR: ${{ github.workspace }}/sdk-blueprints/preprocessing
-
-    steps:
-      - name: Checkout workflow repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-
-      - name: Preprocess OpenAPI specifications
-        id: preprocess
-        run: |
-          python3 -m pip install -r $PREPROCESSING_DIR/requirements.txt
-          python3 $PREPROCESSING_DIR/preprocessing.py -i $ORIG_SPEC_DIR/visier-apis.yaml -o $SPEC_DIR/visier-apis.yaml
-
-      - name: Sanitize artifact name
-        id: sanitize
-        run: |
-          specs_artifact_name=$(echo "processed-specs-${{ github.ref_name }}" | tr -d '\r\n' | tr '":<>|*?\\/' '_')
-          echo "specs_artifact_name=$specs_artifact_name" >> $GITHUB_ENV
-
-      - name: Upload preprocessed specifications as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.specs_artifact_name }}
-          path: ${{ env.SPEC_DIR }}
-          retention-days: 7
-
-  generate-python-sdk:
-    name: Generate Python SDK
-    needs: preprocess-specifications
-    uses: ./.github/workflows/generate-python-sdk.yml
-    secrets: inherit
-    with:
-      python_sdk_pr_base_branch: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.manual_sdk_pr_base_branch || vars.PYTHON_SDK_PR_BASE_BRANCH }}
-      python_sdk_branch: ${{ github.event_name == 'workflow_dispatch' && format('release-manual-{0}', github.event.inputs.version_postfix) || github.ref_name }}
-      version_postfix: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version_postfix || '' }}
-
   create-and-merge-pr:
     name: Create and Merge Pull Request for release
-    needs: generate-python-sdk
     runs-on: ubuntu-22.04
     permissions:
       contents: write
