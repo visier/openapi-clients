@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2103
+  version: 22222222.99201.2109
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -718,12 +718,12 @@ paths:
             type: boolean
         - name: SessionBasedPermissions
           in: header
-          description: Optionally, If `true`, the API call executes on session based and create/update actions take effect without a new production version, it doesn't work with NonVersioned=true header. If `false`, it's not a session based api call. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call assigns user permissions that are only valid for the specified `SessionRepoId` without creating a new production version. When a user signs in to your application with the `SessionRepoId`, their session-based permissions are valid until the user session ends. Cannot be `true` if `NonVersioned` is `true`. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
           schema:
             type: boolean
         - name: SessionRepoId
           in: header
-          description: Optionally, work with SessionBasedPermissions only. If specified, the API call overwrite the existing permissions assigned to the SessionRepoId, otherwise it created a new one.
+          description: Optionally, specify a session repository ID to overwrite the user's permissions that are associated with the `SessionRepoId`. Only valid with `SessionBasedPermissions`. If omitted and `SessionBasedPermissions` is `true`, the API creates a new `SessionRepoId`.
           schema:
             type: string
       requestBody:
@@ -12706,7 +12706,7 @@ components:
           description: The list of allowed email address domains.
         confirmNotAllowedDomain:
           type: boolean
-          description: "If `true`, allows deletion of the requester's own domain when using credential-based login.\n If `false`, prevents deletion of the requester's own domain when using credentials.\n This setting only applies to credential-based logins, not to SSO logins (unless used in API calls)."
+          description: "If `true`, allows deletion of the requester's own domain when using credential-based sign in.\n If `false`, prevents deletion of the requester's own domain when using credential-based sign in.\n This setting only applies to credential-based sign in, not to single sign-on (SSO) unless used in API calls."
     admin.EmailDomainsDTO:
       type: object
       properties:
@@ -20305,8 +20305,9 @@ components:
           enum:
             - unspecified
             - revertToBP
+            - put
           type: string
-          description: "Update the analytic object. Required for `PUT` requests. Valid values:\n - `unspecified`: Do not update the object.\n - `revertToBP`: Undo any tenant overrides and revert the object back to its Blueprint state."
+          description: "Update the analytic object. Required for `PUT` requests. Valid values:\n - `unspecified`: Do not update the object.\n - `revertToBP`: Undo any tenant overrides and revert the object back to its Blueprint state.\n - `put`: Replace the object definition with the provided definition."
           format: enum
         basicInformation:
           allOf:
@@ -20538,22 +20539,6 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ObjectIdDTO'
           description: Information identifying the concept to delete.
       description: Information about the concept to delete and the context of the API request, such as the tenant code and project ID.
-    servicing.v2.objectconfiguration.ConceptReferenceDTO:
-      type: object
-      properties:
-        objectName:
-          type: string
-          description: The object name of the concept.
-      description: A reference to a concept.
-    servicing.v2.objectconfiguration.ConceptReferenceListDTO:
-      type: object
-      properties:
-        concepts:
-          type: array
-          items:
-            $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptReferenceDTO'
-          description: The list of concept references.
-      description: The concepts referenced by the object.
     servicing.v2.objectconfiguration.ConceptRequestDTO:
       type: object
       properties:
@@ -20599,43 +20584,6 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptDefinitionDTO'
           description: Information about the concept, such as its UUID and concept type.
       description: Information about the concept and the context of the API request, such as the tenant code and project ID.
-    servicing.v2.objectconfiguration.DerivedMetricDetailsDTO:
-      type: object
-      properties:
-        formula:
-          type: string
-          description: The metric's formula written in Visier Formula Language (VFL).
-        dataType:
-          type: string
-          description: "The metric's data type. Valid values:\n\n `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
-        visibleInAnalytics:
-          type: boolean
-          description: If `true`, the object is visible to end users in the solution. Default is `true`.
-        includeWithVee:
-          type: boolean
-          description: If `true`, the object is available in Vee's responses.
-        analyticObjectName:
-          type: string
-          description: The metric's analytic object name.
-        baseMetricId:
-          type: string
-          description: The UUID of the metric from which this metric is derived.
-        derivedMetricType:
-          enum:
-            - Rate
-            - Annualized
-            - AverageCount
-            - AnnualizedRate
-            - AverageFTE
-            - Proportion
-            - Arbitrary
-          type: string
-          description: "The method through which to derive an existing metric. Valid values:\n - `Annualized`: Calculate the metric as a yearly value.\n - `AnnualizedRate`: Calculate the metric as a rate for the year. This type requires you to set another metric as the denominator for the calculation.\n - `Arbitrary`: Calculate the metric in a custom way. This is the only derived metric in which you can modify the formula.\n - `AverageCount`: Calculate the metric as an average over all members, like employees. This type requires you to set another metric as the denominator for the calculation.\n - `AverageFTE`: Calculate the metric as a weighted average over all members, with full-time equivalent (FTE) values as weights. This type requires you to set another metric as the denominator for the calculation.\n - `Proportion`: Calculate the metric as a percentage of the total.\n - `Rate`: Calculate the metric as a rate. This type requires you to set another metric as the denominator for the calculation."
-          format: enum
-        denominatorMetricName:
-          type: string
-          description: An optional metric to use as the denominator for the calculation. If defined, the derived metric is calculated as a fraction.
-      description: Information about the metric, such as its formula and data type.
     servicing.v2.objectconfiguration.DimensionDTO:
       type: object
       properties:
@@ -20657,7 +20605,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
           description: A list of tags assigned to the object.
-        visibleInApp:
+        visibleInAnalytics:
           type: boolean
           description: If `true`, the object is visible to end users in the solution.
         includeWithVee:
@@ -20792,10 +20740,6 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.LocalOrSharedDimensionListDTO'
           description: The event's dimensions, such as event type, location, and time.
-        conceptList:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptReferenceListDTO'
-          description: The event's concepts, such as process stages and their stages or outcomes.
         subjectReferenceList:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.SubjectReferenceListDTO'
@@ -20933,52 +20877,6 @@ components:
           type: boolean
           description: If `true`, the member is excluded from the concept. Default is `false`.
       description: A dimension member in a member selection concept.
-    servicing.v2.objectconfiguration.MetricDefinitionDTO:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: The UUID identifying the metric.
-        objectName:
-          type: string
-          description: The object name of the metric.
-        basicInformation:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
-          description: Fields that identify and describe the metric, such as its display name, description, and explanation.
-        details:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.MetricTypeDetailsDTO'
-          description: The metric type and its details.
-        additiveType:
-          enum:
-            - fullyAdditive
-            - balance
-            - nonAdditive
-            - unknown
-          type: string
-          description: "How to sum the metric's values. Valid values:\n - `fullyAdditive`: Sums the metric over any dimension, concept, or time period.\n - `balance`: Sums the metric over any dimension or concept, but not time period.\n - `nonAdditive`: Metric values are not additive."
-          format: enum
-        versionInformation:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
-          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
-      description: Information about the metric, such as its object name, basic information, and additive type.
-    servicing.v2.objectconfiguration.MetricTypeDetailsDTO:
-      type: object
-      properties:
-        processConcept:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptMetricDetailsDTO'
-          description: Information about the process concept metric, such as its formula and data type.
-        simple:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.SimpleMetricDetailsDTO'
-          description: Information about the metric, such as its formula and data type.
-        derived:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.DerivedMetricDetailsDTO'
-          description: Information about the derived metric, such as its formula and data type.
     servicing.v2.objectconfiguration.MultiValuePropertyTypeDTO:
       type: object
       properties:
@@ -21086,6 +20984,37 @@ components:
             $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptMemberDTO'
           description: Each member mapped to a stage or outcome in the process concept.
       description: The members mapped to a stage or outcome in the process concept.
+    servicing.v2.objectconfiguration.ProcessConceptMetricDefinitionDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The UUID identifying the metric.
+        objectName:
+          type: string
+          description: The object name of the metric.
+        basicInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+          description: Fields that identify and describe the metric, such as its display name, description, and explanation.
+        details:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptMetricTypeDetailsDTO'
+          description: The metric type and its details.
+        additiveType:
+          enum:
+            - fullyAdditive
+            - balance
+            - nonAdditive
+            - unknown
+          type: string
+          description: "How to sum the metric's values. Valid values:\n - `fullyAdditive`: Sums the metric over any dimension, concept, or time period.\n - `balance`: Sums the metric over any dimension or concept, but not time period.\n - `nonAdditive`: Metric values are not additive."
+          format: enum
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
+      description: Information about the metric, such as its object name, basic information, and additive type.
     servicing.v2.objectconfiguration.ProcessConceptMetricDetailsDTO:
       type: object
       properties:
@@ -21105,9 +21034,16 @@ components:
         metrics:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.v2.objectconfiguration.MetricDefinitionDTO'
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptMetricDefinitionDTO'
           description: Each metric in the process concept.
       description: The process concept's associated metrics.
+    servicing.v2.objectconfiguration.ProcessConceptMetricTypeDetailsDTO:
+      type: object
+      properties:
+        processConcept:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptMetricDetailsDTO'
+          description: Information about the process concept metric, such as its formula and data type.
     servicing.v2.objectconfiguration.ProcessConceptOutcomeDTO:
       type: object
       properties:
@@ -21142,13 +21078,38 @@ components:
             $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptOutcomeDTO'
           description: Each outcome in the process concept.
       description: The process concept's outcomes.
+    servicing.v2.objectconfiguration.ProcessConceptPropertyDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The UUID identifying the property.
+        objectName:
+          type: string
+          description: The object name of the property.
+        basicInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+          description: Fields that identify and describe the property, such as its display name, description, and explanation.
+        details:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptPropertyDetailsDTO'
+          description: The property type and its details.
+    servicing.v2.objectconfiguration.ProcessConceptPropertyDetailsDTO:
+      type: object
+      properties:
+        processConcept:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptPropertyTypeDTO'
+          description: The process concept's property type details.
+      description: Information about the process concept's property type details.
     servicing.v2.objectconfiguration.ProcessConceptPropertyListDTO:
       type: object
       properties:
         properties:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.v2.objectconfiguration.PropertyDefinitionDTO'
+            $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptPropertyDTO'
           description: Each property in the process concept.
       description: The process concept's associated properties.
     servicing.v2.objectconfiguration.ProcessConceptPropertyTypeDTO:
@@ -21208,10 +21169,21 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.PropertyTypeDetailsDTO'
           description: The property type and its details.
+        tagList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+          description: A list of tags assigned to the object.
+        includeWithVee:
+          type: boolean
+          description: If `true`, the object is available in Vee's responses.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
     servicing.v2.objectconfiguration.PropertyDefinitionListDTO:
       type: object
       properties:
-        propertyList:
+        properties:
           type: array
           items:
             $ref: '#/components/schemas/servicing.v2.objectconfiguration.PropertyDefinitionDTO'
@@ -21247,34 +21219,11 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.CalculatedPropertyTypeDTO'
           description: The calculated property type, which derives its value using a formula.
-        processConcept:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ProcessConceptPropertyTypeDTO'
-          description: The process concept property type, which describes the relationship between subject member properties and a subject member in the process pipeline.
         multiValue:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.MultiValuePropertyTypeDTO'
           description: A property type for a single attribute that can have several valid values at the same time. For example, Employee Education may have values for year, school, and certification.
       description: The property type.
-    servicing.v2.objectconfiguration.SimpleMetricDetailsDTO:
-      type: object
-      properties:
-        formula:
-          type: string
-          description: The metric's formula written in Visier Formula Language (VFL).
-        dataType:
-          type: string
-          description: "The metric's data type. Valid values:\n\n `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
-        visibleInAnalytics:
-          type: boolean
-          description: If `true`, the object is visible to end users in the solution. Default is `true`.
-        includeWithVee:
-          type: boolean
-          description: If `true`, the object is available in Vee's responses.
-        analyticObjectName:
-          type: string
-          description: The metric's analytic object name.
-      description: Information about the metric, such as its formula and data type.
     servicing.v2.objectconfiguration.SimplePropertyTypeDTO:
       type: object
       properties:
@@ -21325,10 +21274,6 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.LocalOrSharedDimensionListDTO'
           description: The subject's dimensions, such as department, job title, and location.
-        conceptList:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptReferenceListDTO'
-          description: The subject's concepts, such as process concepts and their stages or outcomes.
         subjectReferenceList:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.SubjectReferenceListDTO'
@@ -21364,6 +21309,9 @@ components:
         binding:
           type: boolean
           description: If `true`, the reference is binding. A binding reference requires a value in the reference subject; for example, the reference between Applicant and Requisition is binding, meaning that applicants must always have an associated Requisition ID. If `false`, the reference is non-binding. A non-binding reference doesn't require a value in the reference subject; for example, the reference between Employee and Applicant is non-binding, meaning that an employee does not require an associated Applicant ID. This is the default and expected behavior for most references.
+        visibleInAnalytics:
+          type: boolean
+          description: If `true`, the object is visible to end users in the solution.
       description: Information about forward or reverse references between analytic objects.
     servicing.v2.objectconfiguration.SubjectReferenceListDTO:
       type: object
