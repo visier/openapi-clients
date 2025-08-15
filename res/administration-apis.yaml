@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2103
+  version: 22222222.99201.2109
 paths:
   /v1/admin/capabilities:
     get:
@@ -622,12 +622,12 @@ paths:
             type: boolean
         - name: SessionBasedPermissions
           in: header
-          description: Optionally, If `true`, the API call executes on session based and create/update actions take effect without a new production version, it doesn't work with NonVersioned=true header. If `false`, it's not a session based api call. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call assigns user permissions that are only valid for the specified `SessionRepoId` without creating a new production version. When a user signs in to your application with the `SessionRepoId`, their session-based permissions are valid until the user session ends. Cannot be `true` if `NonVersioned` is `true`. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
           schema:
             type: boolean
         - name: SessionRepoId
           in: header
-          description: Optionally, work with SessionBasedPermissions only. If specified, the API call overwrite the existing permissions assigned to the SessionRepoId, otherwise it created a new one.
+          description: Optionally, specify a session repository ID to overwrite the user's permissions that are associated with the `SessionRepoId`. Only valid with `SessionBasedPermissions`. If omitted and `SessionBasedPermissions` is `true`, the API creates a new `SessionRepoId`.
           schema:
             type: string
       requestBody:
@@ -4856,7 +4856,7 @@ components:
           description: The list of allowed email address domains.
         confirmNotAllowedDomain:
           type: boolean
-          description: "If `true`, allows deletion of the requester's own domain when using credential-based login.\n If `false`, prevents deletion of the requester's own domain when using credentials.\n This setting only applies to credential-based logins, not to SSO logins (unless used in API calls)."
+          description: "If `true`, allows deletion of the requester's own domain when using credential-based sign in.\n If `false`, prevents deletion of the requester's own domain when using credential-based sign in.\n This setting only applies to credential-based sign in, not to single sign-on (SSO) unless used in API calls."
     admin.EmailDomainsDTO:
       type: object
       properties:
