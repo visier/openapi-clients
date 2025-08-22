@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2109
+  version: 22222222.99201.2134
 paths:
   /v1/admin/capabilities:
     get:
@@ -3003,7 +3003,7 @@ paths:
       tags:
         - SidecarSolutions
       summary: Retrieve a sidecar solution's settings
-      description: "Retrieve the settings for a specific sidecar solution. You must know the solution ID of your sidecar solution. To get the ID, contact Visier Technical Support.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Retrieve the settings for a specific sidecar solution. You must know the solution ID of your sidecar solution. To get the ID, contact Visier Technical Support.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: SidecarSolutions_GetSidecarSolutionSettings
       parameters:
         - name: applicationId
@@ -3382,6 +3382,11 @@ paths:
           schema:
             type: integer
             format: uint32
+        - name: displayNameFilter
+          in: query
+          description: "The display name filter to narrow the set of user groups to return. This filter must be defined using glob syntax with the following wildcards and is case-sensitive. The value in parentheses is the equivalent hex code, which is used when URL-encoding the filter string:\n - `'*'` (`%2A`) matches any sequence of characters.\n - `'?'` (`%3F`) matches a single character.\n - `' '` (`%20`) matches a space character.\n \n Example: \n - `Sales*` matches any user group that starts with \"Sales\".\n - `* ?egional * Office` is expressed as `%2A%20%3Fegional%20%2A%20Office` and can have many matches, such as \"Western Regional Support Office\"."
+          schema:
+            type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -6311,10 +6316,10 @@ components:
           description: The unique identifier associated with the profile.
         validityStartTime:
           type: string
-          description: An inclusive date-time when this profile is active.
+          description: The inclusive start date and time when this profile is active. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
         validityEndTime:
           type: string
-          description: An exclusive date-time when this profile is no longer active.
+          description: The exclusive end date and time when this profile is no longer active. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
       description: The profiles associated with the user.
     servicing.ProfileGetAPIResponseDTO:
       type: object
