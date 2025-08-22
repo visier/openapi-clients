@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2109
+  version: 22222222.99201.2134
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -6133,7 +6133,7 @@ paths:
       tags:
         - SidecarSolutions
       summary: Retrieve a sidecar solution's settings
-      description: "Retrieve the settings for a specific sidecar solution. You must know the solution ID of your sidecar solution. To get the ID, contact Visier Technical Support.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Retrieve the settings for a specific sidecar solution. You must know the solution ID of your sidecar solution. To get the ID, contact Visier Technical Support.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: SidecarSolutions_GetSidecarSolutionSettings
       parameters:
         - name: applicationId
@@ -6219,6 +6219,188 @@ paths:
         "200":
           description: OK
           content: {}
+  /v1alpha/alerts:
+    get:
+      tags:
+        - PersonalizedAlerts
+      summary: Retrieve personalized alerts
+      description: "Get all personalized alerts you have access to. The response returns each alert’s ID, creator, and whether the alert is enabled or disabled.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PersonalizedAlerts_GetAlerts
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platform.GetEventAlertsResponseDTO'
+    post:
+      tags:
+        - PersonalizedAlerts
+      summary: Create a personalized alert
+      description: "Create a new personalized alert. In the request body, define the alert’s display name and its trigger criteria, including the metric, filters, time periods, and threshold value.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PersonalizedAlerts_CreateAlert
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/platform.CreateEventAlertRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platform.EventAlertDTO'
+  /v1alpha/alerts/notifications:
+    get:
+      tags:
+        - PersonalizedAlerts
+      summary: Retrieve personalized alerts notifications
+      description: "Get all the notifications for your active personalized alerts from the last 30 days. For all active alerts, the response returns the date that the alert was triggered and the alert’s trigger criteria.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PersonalizedAlerts_GetNotifications
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platform.EventAlertNotificationResultsDTO'
+  /v1alpha/alerts/{alertId}:
+    get:
+      tags:
+        - PersonalizedAlerts
+      summary: Retrieve a personalized alert
+      description: "Get the details of a specific personalized alert. You must know the ID of the alert to retrieve its details. To retrieve all alert IDs, see `GET /v1alpha/alerts`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PersonalizedAlerts_GetAlert
+      parameters:
+        - name: alertId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platform.EventAlertDTO'
+    put:
+      tags:
+        - PersonalizedAlerts
+      summary: Update a personalized alert
+      description: "Make changes to an existing personalized alert. You can only update alerts that you created. You must know the ID of the alert to update it. To retrieve all alert IDs, see `GET /v1alpha/alerts`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PersonalizedAlerts_UpdateAlert
+      parameters:
+        - name: alertId
+          in: path
+          description: The unique identifier of the alert.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/platform.EventAlertDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platform.EventAlertDTO'
+    delete:
+      tags:
+        - PersonalizedAlerts
+      summary: Delete a personalized alert
+      description: "Delete a personalized alert. You can only delete alerts that you created. Alternatively, to disable an alert, see `PUT /v1alpha/alerts/{alertId}/recipient-status`. You must know the ID of the alert to delete it. To retrieve all alert IDs, see `GET /v1alpha/alerts`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PersonalizedAlerts_DeleteAlert
+      parameters:
+        - name: alertId
+          in: path
+          description: The unique identifier of the alert.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platform.EventAlertDeleteSuccessDTO'
+  /v1alpha/alerts/{alertId}/recipient-status:
+    put:
+      tags:
+        - PersonalizedAlerts
+      summary: Enable or disable a personalized alert
+      description: "Enable or disable a personalized alert. Disabling an alert removes it from your Home room and future email digests. You can re-enable an alert at any time.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PersonalizedAlerts_UpdateRecipientStatus
+      parameters:
+        - name: alertId
+          in: path
+          description: The unique identifier of the alert.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/platform.UpdateEventAlertRecipientStatusDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platform.UpdateEventAlertRecipientStatusDTO'
   /v1alpha/data/data-version-exports/data-versions:
     get:
       tags:
@@ -8042,6 +8224,11 @@ paths:
           schema:
             type: integer
             format: uint32
+        - name: displayNameFilter
+          in: query
+          description: "The display name filter to narrow the set of user groups to return. This filter must be defined using glob syntax with the following wildcards and is case-sensitive. The value in parentheses is the equivalent hex code, which is used when URL-encoding the filter string:\n - `'*'` (`%2A`) matches any sequence of characters.\n - `'?'` (`%3F`) matches a single character.\n - `' '` (`%20`) matches a space character.\n \n Example: \n - `Sales*` matches any user group that starts with \"Sales\".\n - `* ?egional * Office` is expressed as `%2A%20%3Fegional%20%2A%20Office` and can have many matches, such as \"Western Regional Support Office\"."
+          schema:
+            type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -17288,7 +17475,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
-          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production."
+          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered."
         keyName:
           type: string
           description: The display name of the encryption key for the webhook. Encryption key must use `HmacSHA256` algorithm.
@@ -17301,7 +17488,7 @@ components:
       properties:
         eventType:
           type: string
-          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production."
+          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered."
       description: The possible event types for Visier webhooks.
     designer.webhook.WebhookMessageResponseDTO:
       type: object
@@ -17729,6 +17916,711 @@ components:
           type: string
           description: If the scenario belongs to a managed plan, the response returns the scenario's user-readable symbol name.
       description: Information about a plan's scenario.
+    platform.AggregationTypeParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique identifier of the aggregation parameter.
+        aggregationOptionId:
+          type: string
+          description: The unique identifier of the aggregation option.
+      description: The value for an aggregation parameter.
+    platform.BetweenRuleDTO:
+      type: object
+      properties:
+        lower:
+          type: number
+          description: The lower bound of the range.
+          format: double
+        upper:
+          type: number
+          description: The upper bound of the range.
+          format: double
+      description: The alert triggers if the metric value is between two defined values.
+    platform.ComparedMetricDTO:
+      type: object
+      properties:
+        noComparison:
+          allOf:
+            - $ref: '#/components/schemas/platform.SameMetricDTO'
+          description: Do not compare the metric value to anything but its own value.
+        sameMetricOtherContext:
+          allOf:
+            - $ref: '#/components/schemas/platform.SameMetricOtherContextDTO'
+          description: Compare the metric against a group; for example, High Performers.
+        sameMetricOtherTime:
+          allOf:
+            - $ref: '#/components/schemas/platform.SameMetricOtherTimeDTO'
+          description: Compare the metric against a time period; for example, the previous period or the same period of the previous year.
+        otherMetric:
+          allOf:
+            - $ref: '#/components/schemas/platform.OtherMetricDTO'
+          description: Compare the metric against a different metric; for example, a Visier Benchmarks metric.
+      description: Whether to trigger the alert when the metric value is compared to a time period, another metric, or a group.
+    platform.ConceptReferenceFilterDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the concept reference.
+        qualifyingPath:
+          type: string
+          description: "The qualifying path to the concept reference in Visier, such as the analytic object or event the selection\n concept is associated with. If the path has multiple objects, each object is separated by a period."
+      description: A filter that uses a reference to a concept in Visier.
+    platform.CreateEventAlertRequestDTO:
+      type: object
+      properties:
+        triggerCriteria:
+          allOf:
+            - $ref: '#/components/schemas/platform.EventAlertTriggerCriteriaDTO'
+          description: The conditions on which to trigger the personalized alert.
+        displayName:
+          type: string
+          description: The display name of the alert.
+      description: The details of the personalized alert to create.
+    platform.DimensionMemberReferenceDTO:
+      type: object
+      properties:
+        path:
+          type: array
+          items:
+            type: string
+          description: "A list of strings representing the members within a dimension path. For example, a dimension for Location\n may have the paths \"Canada, BC, Vancouver\" and \"US, California, San Francisco\"."
+        memberId:
+          type: string
+          description: The unique identifier of the dimension member. Use `memberId` if the dimension member doesn't have a path, such as SD groups.
+      description: The members of a dimension.
+    platform.DimensionReferenceDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the dimension.
+        qualifyingPath:
+          type: string
+          description: "The qualifying path to the dimension in Visier, such as the analytic object or event the dimension is\n associated with. If the path has multiple objects, each object is separated by a period."
+      description: The name and qualifying path of a dimension to query.
+    platform.EventAlertDTO:
+      type: object
+      properties:
+        alertId:
+          type: string
+          description: The unique identifier of the alert.
+        triggerCriteria:
+          allOf:
+            - $ref: '#/components/schemas/platform.EventAlertTriggerCriteriaDTO'
+          description: The conditions on which to trigger the personalized alert.
+        displayName:
+          type: string
+          description: The display name of the alert.
+        isEnabledForUser:
+          type: boolean
+          description: If `true`, the personalized alert is enabled for the user.
+      description: A personalized alert's details, such as its ID and trigger criteria.
+    platform.EventAlertDeleteSuccessDTO:
+      type: object
+      properties:
+        alertId:
+          type: string
+          description: The unique identifier of the deleted alert.
+      description: The alert that was successfully deleted.
+    platform.EventAlertNotificationResultAlertDetailsDTO:
+      type: object
+      properties:
+        triggerType:
+          enum:
+            - UNSPECIFIED
+            - DV_UPDATE
+          type: string
+          description: "The event type that triggered the alert.\n * `UNSPECIFIED`: An unspecified event triggers the alert. Throws an exception if used.\n * `DV_UPDATE`: A data version update triggers the alert."
+          format: enum
+        triggerCriteria:
+          allOf:
+            - $ref: '#/components/schemas/platform.EventAlertTriggerCriteriaDTO'
+          description: The conditions on which to trigger the personalized alert.
+      description: Information about the alert notification that triggered.
+    platform.EventAlertNotificationResultDTO:
+      type: object
+      properties:
+        alertNotificationId:
+          type: string
+          description: The unique identifier of the alert notification.
+        alertId:
+          type: string
+          description: The unique identifier the alert that triggered the notification
+        createdDate:
+          type: string
+          description: The date that the notification generated.
+        alertDetails:
+          allOf:
+            - $ref: '#/components/schemas/platform.EventAlertNotificationResultAlertDetailsDTO'
+          description: Information about the triggered alert.
+        resultInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.TriggerCriteriaResultInfoDTO'
+          description: Information about the evaluated metric value.
+        resultType:
+          enum:
+            - NOMINAL
+            - TRIGGERED
+          type: string
+          description: "Whether the metric value was nominal (did not trigger the alert) or triggered the alert. Valid values:\n * `TRIGGERED`: The alert was triggered.\n * `NOMINAL`: The alert was nominal (not triggered)."
+          format: enum
+      description: A notification that has triggered for the user.
+    platform.EventAlertNotificationResultsDTO:
+      type: object
+      properties:
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.EventAlertNotificationResultDTO'
+          description: The alert notifications that have triggered for the user.
+      description: The notifications that have triggered for the user.
+    platform.EventAlertTriggerCriteriaDTO:
+      type: object
+      properties:
+        groupedMetricValueThreshold:
+          allOf:
+            - $ref: '#/components/schemas/platform.GroupedMetricValueThresholdCriteriaDTO'
+          description: The metric value threshold and additional conditions that trigger the alert.
+      description: The conditions on which to trigger the personalized alert.
+    platform.FilterDTO:
+      type: object
+      properties:
+        selectionConcept:
+          allOf:
+            - $ref: '#/components/schemas/platform.SelectionConceptReferenceDTO'
+          description: A filter that uses an existing selection concept in Visier.
+        memberSet:
+          allOf:
+            - $ref: '#/components/schemas/platform.MemberFilterDTO'
+          description: A filter that includes or excludes dimension members.
+        conceptReference:
+          allOf:
+            - $ref: '#/components/schemas/platform.ConceptReferenceFilterDTO'
+          description: A filter that uses a reference to a concept in Visier.
+        keyGroup:
+          allOf:
+            - $ref: '#/components/schemas/platform.KeyGroupFilterDTO'
+          description: A filter that uses a key group in Visier.
+        persistedCohort:
+          allOf:
+            - $ref: '#/components/schemas/platform.PersistedCohortFilterDTO'
+          description: A filter that uses a persisted cohort in Visier.
+        timePeriod:
+          allOf:
+            - $ref: '#/components/schemas/platform.TimePeriodFilterDTO'
+          description: A filter that uses a time period.
+        numericRange:
+          allOf:
+            - $ref: '#/components/schemas/platform.NumericRangeFilterDTO'
+          description: A filter that uses a numeric range.
+      description: A filter selects specific data points within a population.
+    platform.FixedTimeTypeDTO:
+      type: object
+      properties:
+        periodType:
+          enum:
+            - MONTH
+            - DAY
+            - WEEK
+            - QUARTER
+            - YEAR
+          type: string
+          description: The time period type for each interval. Default is `MONTH`.
+          format: enum
+        end:
+          type: string
+          description: The end time of the fixed time period.
+        periodCount:
+          type: integer
+          description: The number of time periods per interval.
+          format: int32
+      description: Compare against a fixed time period.
+    platform.GetEventAlertsResponseDTO:
+      type: object
+      properties:
+        ownedAlerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.EventAlertDTO'
+          description: The personalized alerts created by the user.
+        sharedAlerts:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.EventAlertDTO'
+          description: The personalized alerts shared with the user by someone else.
+      description: The personalized alerts the user has access to.
+    platform.GroupedMetricValueThresholdCriteriaDTO:
+      type: object
+      properties:
+        metric:
+          allOf:
+            - $ref: '#/components/schemas/platform.MetricDTO'
+          description: The metric to evaluate in the personalized alert.
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.FilterDTO'
+          description: An optional filter to apply to the alert metric; for example, filter by New Hire.
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/platform.DimensionReferenceDTO'
+          description: An optional group by to apply to the alert metric; for example, group by Organization Hierarchy. If defined, the alert triggers if any of the dimension members hit the threshold, such as Marketing. Otherwise, the alert triggers for the overall metric value.
+        relativeTimePeriod:
+          allOf:
+            - $ref: '#/components/schemas/platform.RelativeTimePeriodDTO'
+          description: The time period in which to evaluate the alert. If undefined, the default is the latest partial month.
+        ruleSet:
+          allOf:
+            - $ref: '#/components/schemas/platform.RuleSetDTO'
+          description: The rules to evaluate the metric, such as the operator (for example, greater than or less than) or another metric to compare against.
+      description: The metric threshold criteria on which to trigger the alert.
+    platform.KeyGroupFilterDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the key group.
+        qualifyingPath:
+          type: string
+          description: "The qualifying path to the key group in Visier, such as the analytic object or event the selection\n concept is associated with. If the path has multiple objects, each object is separated by a period."
+      description: A filter that uses a key group in Visier.
+    platform.MemberFilterDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/platform.DimensionReferenceDTO'
+          description: The dimension in which the members belong.
+        values:
+          allOf:
+            - $ref: '#/components/schemas/platform.MemberValuesDTO'
+          description: The dimension members to filter by.
+      description: "Member filters are dimension member values to filter by in your query. The member filters are\n defined within the filters section of a query definition. You can filter by dimension members in\n aggregate and list queries."
+    platform.MemberValuesDTO:
+      type: object
+      properties:
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.DimensionMemberReferenceDTO'
+          description: The unique IDs of members to include when evaluating the metric.
+        excluded:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.DimensionMemberReferenceDTO'
+          description: The unique IDs of members to exclude when evaluating the metric.
+      description: "Member filter values are discrete member references in a dimension filter. You can define\n included and excluded members simultaneously. This is typically done with filtering applied on\n dimensions with multiple levels. For example, a Location parameter may include \"South\n America\" and exclude \"Brazil\" which results in the metric being evaluated for all South American\n countries except Brazil."
+    platform.MetricDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the metric.
+        parameterValues:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.ParameterDefinitionDTO'
+          description: The values associated with the metric's parameters, if defined.
+        timeHandling:
+          allOf:
+            - $ref: '#/components/schemas/platform.TimeHandlingDTO'
+          description: The time handling settings for the metric.
+      description: The information of a metric.
+    platform.MetricFilterParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique identifier of the member parameter qualified by the object.
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.FilterDTO'
+          description: The filters on the primary metric input parameter.
+      description: The filter values of a metric parameter, including the parameter ID and the filters on the parameter
+    platform.NumericParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique identifier of the numeric parameter qualified by the object.
+        value:
+          type: number
+          description: The numeric value of the parameter.
+          format: double
+      description: The value of a numeric parameter, including the parameter ID and the numeric value passed into the parameter.
+    platform.NumericRangeDTO:
+      type: object
+      properties:
+        rangeStart:
+          type: string
+          description: The start of the numeric range.
+        rangeEnd:
+          type: string
+          description: The end of the numeric range.
+        rangeType:
+          enum:
+            - EXCLUSIVE_INCLUSIVE
+            - INCLUSIVE_EXCLUSIVE
+            - BOTH_EXCLUSIVE
+            - BOTH_INCLUSIVE
+          type: string
+          description: The type of numeric range, determining whether start and end of the range are inclusive or exclusive.
+          format: enum
+      description: A numeric range.
+    platform.NumericRangeFilterDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/platform.DimensionReferenceDTO'
+          description: The unique identifier of the dimension.
+        numericRange:
+          allOf:
+            - $ref: '#/components/schemas/platform.NumericRangeDTO'
+          description: The numeric range to filter by
+        isExcluded:
+          type: boolean
+          description: If `true`, filter by values outside this numeric range.
+      description: A filter that uses a numeric range.
+    platform.OtherMetricDTO:
+      type: object
+      properties:
+        metric:
+          allOf:
+            - $ref: '#/components/schemas/platform.MetricDTO'
+          description: The metric to compare the alert metric against.
+      description: Compare the metric against a different metric; for example, a Visier Benchmarks metric.
+    platform.ParameterDefinitionDTO:
+      type: object
+      properties:
+        metricFilterValue:
+          allOf:
+            - $ref: '#/components/schemas/platform.MetricFilterParameterValueDTO'
+          description: A value for a metric filter.
+        numericValue:
+          allOf:
+            - $ref: '#/components/schemas/platform.NumericParameterValueDTO'
+          description: A value for a numeric parameter.
+        planValue:
+          allOf:
+            - $ref: '#/components/schemas/platform.PlanParameterValueDTO'
+          description: A value for a plan parameter.
+        aggregationTypeValue:
+          allOf:
+            - $ref: '#/components/schemas/platform.AggregationTypeParameterValueDTO'
+          description: A value for an aggregation parameter.
+      description: The information of a metric parameter value.
+    platform.PeriodsBackDTO:
+      type: object
+      properties:
+        periodType:
+          type: string
+          description: The type of the period, such as `MONTH`, `QUARTER`, or `YEAR`.
+        periodsBack:
+          type: integer
+          description: The number of periods back to evaluate the metric value.
+          format: int32
+      description: The information of the periods back for a metric, including the period type and the number of periods back.
+    platform.PersistedCohortFilterDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the concept reference.
+        qualifyingPath:
+          type: string
+          description: "The qualifying path to the persisted cohort in Visier, such as the analytic object or event the selection\n concept is associated with. If the path has multiple objects, each object is separated by a period."
+      description: A filter that uses a persisted cohort in Visier.
+    platform.PlanParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique identifier of the plan parameter qualified by the object.
+        planId:
+          type: string
+          description: The unique identifier of the plan the parameter is based on.
+        scenarioId:
+          type: string
+          description: The unique identifier of the scenario the parameter is based on.
+        snapshotId:
+          type: string
+          description: The unique identifier of the snapshot the parameter is based on.
+        explorationSnapshotId:
+          type: string
+          description: The unique identifier of the exploration snapshot the parameter is based on.
+      description: The value for a parameter on a planning metric, including the parameter ID and the plan the parameter is based on.
+    platform.PreviousPeriodTimeTypeDTO:
+      type: object
+      properties: {}
+      description: Compare against the previous period.
+    platform.RelativeTimeExpressionDTO:
+      type: object
+      properties:
+        anchor:
+          enum:
+            - INTERVAL_START
+            - INTERVAL_END
+          type: string
+          format: enum
+        timeSelection:
+          $ref: '#/components/schemas/platform.RelativeTimeSelectionDTO'
+        timeShift:
+          $ref: '#/components/schemas/platform.RelativeTimeShiftDTO'
+    platform.RelativeTimePeriodDTO:
+      type: object
+      properties:
+        allowPartialPeriod:
+          type: boolean
+          description: If `true`, allows the time period to include partial periods. Default is `false`.
+        periodType:
+          enum:
+            - MONTH
+            - DAY
+            - WEEK
+            - QUARTER
+            - YEAR
+          type: string
+          description: The time period type for each interval. Default is `MONTH`.
+          format: enum
+        periodCount:
+          type: integer
+          description: The number of time periods per interval.
+          format: int32
+        direction:
+          enum:
+            - BACKWARD
+            - FORWARD
+          type: string
+          description: The direction to extend. Default is `BACKWARD`.
+          format: enum
+      description: A relative time period defines a series of time intervals to query, including the period type, period count, and time direction.
+    platform.RelativeTimeSelectionDTO:
+      type: object
+      properties:
+        periodType:
+          type: string
+        forward:
+          type: integer
+          format: int32
+        back:
+          type: integer
+          format: int32
+    platform.RelativeTimeShiftDTO:
+      type: object
+      properties:
+        periodType:
+          type: string
+        timeShift:
+          type: integer
+          format: int32
+    platform.RelativeToRuleDTO:
+      type: object
+      properties:
+        rulePredicate:
+          enum:
+            - LESS_THAN
+            - LESS_THAN_OR_EQUAL
+            - EQUAL
+            - GREATER_THAN_OR_EQUAL
+            - GREATER_THAN
+          type: string
+          description: The alert operator, such as greater than, equal to, or less than. Default is `GREATER_THAN`.
+          format: enum
+        comparand:
+          type: number
+          description: The value that triggers the alert.
+          format: double
+      description: The alert triggers if the metric value meets the defined value threshold.
+    platform.RuleDTO:
+      type: object
+      properties:
+        relativeToValueRule:
+          allOf:
+            - $ref: '#/components/schemas/platform.RelativeToRuleDTO'
+          description: The alert triggers if the metric value meets the defined value threshold.
+        betweenValuesRule:
+          allOf:
+            - $ref: '#/components/schemas/platform.BetweenRuleDTO'
+          description: The alert triggers if the metric value is between two defined values.
+      description: The value to evaluate the metric value against.
+    platform.RuleSetDTO:
+      type: object
+      properties:
+        compareTo:
+          allOf:
+            - $ref: '#/components/schemas/platform.ComparedMetricDTO'
+          description: Whether to trigger the alert when the metric value is compared to a time period, another metric, or a group.
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.RuleDTO'
+          description: The rules used to evaluate the values. Currently only a single rule is supported to trigger an alert.
+    platform.SameMetricDTO:
+      type: object
+      properties: {}
+      description: Do not compare the metric value to anything but its own value.
+    platform.SameMetricOtherContextDTO:
+      type: object
+      properties:
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.FilterDTO'
+          description: The filters on the comparison metric.
+      description: Compare the metric against a group; for example, High Performers.
+    platform.SameMetricOtherTimeDTO:
+      type: object
+      properties:
+        timePeriod:
+          $ref: '#/components/schemas/platform.TimePeriodMetadataDTO'
+      description: Compare the metric against a time period; for example, the previous period or the same period of the previous year.
+    platform.SamePeriodPreviousYearTimeTypeDTO:
+      type: object
+      properties: {}
+      description: Compare against the same period in the previous year.
+    platform.SelectionConceptReferenceDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the selection concept.
+        qualifyingPath:
+          type: string
+          description: "The qualifying path to the selection concept in Visier, such as the analytic object or event the selection\n concept is associated with. If the path has multiple objects, each object is separated by a period."
+      description: The name and qualifying path of a selection concept to query.
+    platform.TimeHandlingDTO:
+      type: object
+      properties:
+        perPeriod:
+          type: boolean
+          description: The metric is evaluated per period, such as per month or per quarter.
+        trailingPeriods:
+          allOf:
+            - $ref: '#/components/schemas/platform.PeriodsBackDTO'
+          description: The metric is evaluated over a trailing period, such as the last 12 months.
+      description: The time handling settings for a metric, which can be either per period or trailing periods.
+    platform.TimePeriodDTO:
+      type: object
+      properties:
+        end:
+          type: string
+          description: The end of the time period.
+        periodType:
+          enum:
+            - MONTH
+            - DAY
+            - WEEK
+            - QUARTER
+            - YEAR
+          type: string
+          description: The period type for this interval. Default is `MONTH`.
+          format: enum
+        periodCount:
+          type: integer
+          description: The number of periods per interval. Default is 1.
+          format: int32
+        timeType:
+          enum:
+            - FIXED
+            - PREVIOUS_PERIOD
+            - PREVIOUS_YEAR
+            - LAST_PERIOD_PREVIOUS_YEAR
+            - CUSTOM
+            - DYNAMIC_TIME
+            - LAST_PERIODS
+          type: string
+          description: The type of time period.
+          format: enum
+        expression:
+          allOf:
+            - $ref: '#/components/schemas/platform.RelativeTimeExpressionDTO'
+          description: The expression that defines the relative time period.
+      description: A time period can define a specific interval of time or relative time period.
+    platform.TimePeriodFilterDTO:
+      type: object
+      properties:
+        dimension:
+          allOf:
+            - $ref: '#/components/schemas/platform.DimensionReferenceDTO'
+          description: The dimension to filter by.
+        timePeriod:
+          allOf:
+            - $ref: '#/components/schemas/platform.TimePeriodDTO'
+          description: The time period to filter by.
+      description: A filter that uses a time period.
+    platform.TimePeriodMetadataDTO:
+      type: object
+      properties:
+        fixed:
+          allOf:
+            - $ref: '#/components/schemas/platform.FixedTimeTypeDTO'
+          description: A fixed time period.
+        previousPeriod:
+          allOf:
+            - $ref: '#/components/schemas/platform.PreviousPeriodTimeTypeDTO'
+          description: The previous period.
+        samePeriodPreviousYear:
+          allOf:
+            - $ref: '#/components/schemas/platform.SamePeriodPreviousYearTimeTypeDTO'
+          description: The same period in the previous year.
+      description: The information of a time period.
+    platform.TriggerCriteriaMemberResultInfoDTO:
+      type: object
+      properties:
+        memberId:
+          type: string
+          description: The unique identifier of the member.
+        displayName:
+          type: string
+          description: The user-friendly display name of the member.
+        value:
+          type: number
+          description: The value as a number.
+          format: double
+        formattedValue:
+          type: string
+          description: The value as a string.
+      description: The metric value by member ID, display name, and value.
+    platform.TriggerCriteriaOverallResultInfoDTO:
+      type: object
+      properties:
+        value:
+          type: number
+          description: The value as a number.
+          format: double
+        formattedValue:
+          type: string
+          description: The value as a string.
+      description: The metric value.
+    platform.TriggerCriteriaResultInfoDTO:
+      type: object
+      properties:
+        overallResult:
+          allOf:
+            - $ref: '#/components/schemas/platform.TriggerCriteriaOverallResultInfoDTO'
+          description: The metric value.
+        memberResult:
+          allOf:
+            - $ref: '#/components/schemas/platform.TriggerCriteriaMemberResultInfoDTO'
+          description: The metric value by member ID, display name, and value.
+      description: Information about the evaluated metric value.
+    platform.UpdateEventAlertRecipientStatusDTO:
+      type: object
+      properties:
+        status:
+          enum:
+            - UNSUPPORTED_EVENT_ALERT_STATUS
+            - SUBSCRIBED
+            - PAUSED
+          type: string
+          description: "Whether the alert is enabled for the user. Valid values:\n  * `SUBSCRIBED`: The alert is enabled and the user will receive notifications for the alert.\n  * `PAUSED`: The alert is disabled and the user will not receive notifications for the alert."
+          format: enum
     servicing.objectconfiguration.CalculatedPropertyTypeDTO:
       type: object
       properties:
@@ -18338,12 +19230,12 @@ components:
     servicing.CategoryIconDTO:
       type: object
       properties:
-        base64Png:
+        base64Image:
           type: string
-          description: The Base64 value for the icon PNG.
+          description: The Base64 value for the category icon image.
         backgroundColor:
           type: string
-          description: Optionally, specify a HEX color code to accompany the question category icon. This is useful if the icon is transparent.
+          description: The HEX color code of the background color for the category icon. This is useful if the icon is transparent.
       description: An icon associated with the question category.
     servicing.CloneFilesIntoSourceParametersDTO:
       type: object
@@ -19193,10 +20085,10 @@ components:
           description: The unique identifier associated with the profile.
         validityStartTime:
           type: string
-          description: An inclusive date-time when this profile is active.
+          description: The inclusive start date and time when this profile is active. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
         validityEndTime:
           type: string
-          description: An exclusive date-time when this profile is no longer active.
+          description: The exclusive end date and time when this profile is no longer active. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
       description: The profiles associated with the user.
     servicing.ProfileGetAPIResponseDTO:
       type: object
@@ -19344,6 +20236,10 @@ components:
         displayName:
           type: string
           description: An identifiable name to display within Visier. For example, "About individuals".
+        categoryIcon:
+          allOf:
+            - $ref: '#/components/schemas/servicing.CategoryIconDTO'
+          description: The icon for the question category.
       description: Information about the Vee question category.
     servicing.ReceivingJobExtractedFileResponseDTO:
       type: object
@@ -20077,7 +20973,7 @@ components:
         categoryIcon:
           allOf:
             - $ref: '#/components/schemas/servicing.CategoryIconDTO'
-          description: The question category's icon in PNG format.
+          description: The icon for the question category.
       description: The Vee question category details.
     servicing.VeeQuestionCategoryChangeDefinitionsByTenantDTO:
       type: object
@@ -20301,14 +21197,6 @@ components:
         objectName:
           type: string
           description: The object name of the analytic object.
-        updateOperation:
-          enum:
-            - unspecified
-            - revertToBP
-            - put
-          type: string
-          description: "Update the analytic object. Required for `PUT` requests. Valid values:\n - `unspecified`: Do not update the object.\n - `revertToBP`: Undo any tenant overrides and revert the object back to its Blueprint state.\n - `put`: Replace the object definition with the provided definition."
-          format: enum
         basicInformation:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
@@ -23217,6 +24105,13 @@ tags:
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
 
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: PersonalizedAlerts
+    x-displayName: Personalized Alerts
+    description: 'Manage your personalized alerts in Visier. Alerts notify you if a metric exceeds your defined threshold.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: Webhooks
     x-displayName: Webhooks
     description: 'Create, manage, and retrieve webhook definitions. Use webhooks to register your own HTTPS endpoints with Visier and listen for specific events. When these events occur, Visier sends an API request to your registered endpoint. For example, you can create a webhook to monitor job status events with Visier. Visier sends you a success or failure notification to your registered endpoint after the job completes.
@@ -23292,6 +24187,7 @@ x-tagGroups:
       - ObjectConfiguration
       - ConceptsV2
       - DimensionsV2
+      - PersonalizedAlerts
   - name: webhooks
     tags:
       - Webhooks

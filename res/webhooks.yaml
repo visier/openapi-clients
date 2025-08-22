@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2109
+  version: 22222222.99201.2134
 paths:
   /v1beta/op/webhooks:
     get:
@@ -290,7 +290,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
-          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production."
+          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered."
         keyName:
           type: string
           description: The display name of the encryption key for the webhook. Encryption key must use `HmacSHA256` algorithm.
@@ -303,7 +303,7 @@ components:
       properties:
         eventType:
           type: string
-          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production."
+          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered."
       description: The possible event types for Visier webhooks.
     designer.webhook.WebhookMessageResponseDTO:
       type: object
