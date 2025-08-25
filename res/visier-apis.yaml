@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2134
+  version: 22222222.99201.2145
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -10410,6 +10410,13 @@ paths:
           description: |
             If `true`, returns members in a tree structure based on the occupation hierarchy.
             Default is `false`.
+        - name: includeArchived
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, both `active` and `archived` members are returned. Default is `false`. Members are archived when taxonomy changes are made.
       responses:
         "200":
           description: |
@@ -10702,6 +10709,13 @@ paths:
           schema:
             type: boolean
           description: "Filter members based on the availability of benchmark values. \nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned. \nIf no value is specified, all members are returned.\n"
+        - name: includeArchived
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, both `active` and `archived` members are returned. Default is `false`. Members are archived when taxonomy changes are made.
       responses:
         "200":
           description: |
@@ -10789,6 +10803,13 @@ paths:
           schema:
             type: boolean
           description: "Filter members based on the availability of benchmark values. \nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned. \nIf no value is specified, all members are returned.\n"
+        - name: includeArchived
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, both `active` and `archived` members are returned. Default is `false`. Members are archived when taxonomy changes are made.
       responses:
         "200":
           description: |
@@ -10900,6 +10921,13 @@ paths:
           schema:
             type: boolean
           description: "Filter members based on the availability of benchmark values. \nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned. \nIf no value is specified, all members are returned.\n"
+        - name: includeArchived
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, both `active` and `archived` members are returned. Default is `false`. Members are archived when taxonomy changes are made.
       responses:
         "200":
           description: |
@@ -10961,6 +10989,13 @@ paths:
           schema:
             type: boolean
           description: "Filter members based on the availability of benchmark values. \nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned. \nIf no value is specified, all members are returned.\n"
+        - name: includeArchived
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, both `active` and `archived` members are returned. Default is `false`. Members are archived when taxonomy changes are made.
       responses:
         "200":
           description: |
@@ -10997,6 +11032,60 @@ paths:
         credentials: "${apigateway_role}"
         httpMethod: "POST"
         uri: "${lambda-get-dimension-members-arn}"
+      security:
+        - api_key: []
+  /v1/compensation-benchmarks/career-levels/search:
+    post:
+      summary: Get career level members in bulk
+      tags: [Dimensions]
+      operationId: "SearchCareerLevelsInBulk"
+      description: |
+        Retrieve career level members in bulk by job IDs.
+      requestBody:
+        description: |
+          A list of requests that contain job IDs to look up. Returns career levels that match.
+
+          Include the mandatory `jobIDs` field.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CareerLevelSearchInput"
+        required: true
+      responses:
+        "200":
+          description: |
+            The request was completed. Review the responses individually to see which actions were successful.
+            If you receive a 400 status code for an individual input, it indicates an invalid job ID or no career level was found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CareerLevelSearchOutput"
+        "400":
+          description: |
+            The API request failed due to invalid JSON input, empty input or it exceeded the size limit of 500 IDs.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-batch-dimension-members-arn}"
       security:
         - api_key: []
   /v1/compensation-benchmarks/info:
@@ -23066,6 +23155,81 @@ components:
       required:
         - successes
         - failures
+    CareerLevelSearchInput:
+      type: object
+      properties:
+        jobIDs:
+          type: array
+          description: |
+            A list of job IDs to retrieve career levels for. The maximum number of job IDs is 500.
+          items:
+            type: "string"
+        hasBenchmarkValue:
+          type: boolean
+          description: "Filter members based on the availability of benchmark values. If no value is specified, all members are returned.\nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned.\n"
+      required:
+        - jobIDs
+    CareerLevelSearchOutput:
+      type: object
+      properties:
+        successes:
+          type: array
+          description: |
+            The career levels retrieved for successful inputs.
+          items:
+            title: CareerLevelSearchSuccessfulOutput
+            type: object
+            properties:
+              jobID:
+                type: string
+                description: |
+                  The jobID input.
+              results:
+                type: array
+                description: |
+                  A list of matching career level members.
+                items:
+                  $ref: "#/components/schemas/DimensionMember"
+            required:
+              - jobID
+              - results
+        failures:
+          type: array
+          description: |
+            Error description for failed inputs.
+          items:
+            title: CareerLevelSearchFailureOutput
+            type: object
+            properties:
+              jobID:
+                type: string
+                description: |
+                  The jobID input.
+              httpStatus:
+                type: string
+                description: |
+                  A three-digit code that indicates the outcome of a request.
+              message:
+                type: string
+                description: |
+                  The details of the error.
+              rci:
+                type: string
+                description: |
+                  A root cause identifier that allows Visier to determine the source of the problem.
+              errorCode:
+                type: string
+                description: |
+                  A brief identifier of the type of error.
+            required:
+              - jobID
+              - httpStatus
+              - message
+              - rci
+              - errorCode
+      required:
+        - successes
+        - failures
     JobSearchInput:
       type: object
       properties:
@@ -23384,6 +23548,11 @@ components:
           description: |
             If `true`, similar job titles for a job member are included in the lexical search for matches.
             Default is `false`.
+          default: False
+        includeArchived:
+          type: boolean
+          description: |
+            If `true`, both `active` and `archived` members are returned. Default is `false`. Members are archived when taxonomy changes are made.
           default: False
       required:
         - "terms"
