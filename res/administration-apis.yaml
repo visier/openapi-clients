@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2145
+  version: 22222222.99201.2165
 paths:
   /v1/admin/capabilities:
     get:
@@ -3125,7 +3125,7 @@ paths:
       tags:
         - Sources
       summary: Import a list of sources
-      description: 'Import a list of sources in ZIP format. The file must be an export from `POST /v1alpha/admin/sources`. Use this API after making changes in a development environment to copy the changes to a draft project in your production environment.
+      description: 'Import a list of sources in ZIP format. The file must be an export from `POST /v1beta/admin/sources`. Use this API after making changes in a development environment to copy the changes to your production environment.
 
 
         <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.

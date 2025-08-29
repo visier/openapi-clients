@@ -5,51 +5,25 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2145
+  version: 22222222.99201.2165
 paths:
-  /v1alpha/planning/data/plans:
-    patch:
-      tags:
-        - PlanAdministration
-      summary: Partially update subplans
-      description: "Make partial changes to existing subplans, such as consolidating or reopening them. The response returns whether the subplans were successfully patched or not. You must know the ID of the subplans to update them. To retrieve subplan IDs, see `GET /v1alpha/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the subplan without affecting omitted fields.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: PlanAdministration_PatchPlans
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/planning.PlansPatchRequest'
-        required: true
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.PlansPatchResponse'
-        '500':
-          description: default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '400':
-          description: bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.ErrorSummary'
-  /v1alpha/planning/data/plans/{planId}:
+  /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
     patch:
       tags:
         - PlanAdministration
       summary: Partially update a subplan
-      description: "Make partial changes to an existing subplan, such as consolidating or reopening it. The response returns whether the subplan was successfully patched or not. You must know the ID of the subplan to update it. To retrieve subplan IDs, see `GET /v1alpha/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the subplan without affecting omitted fields.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Make partial changes to existing subplans. The response returns whether each subplan was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition. To retrieve main plan or subplan IDs and scenario IDs, see `GET /v1alpha/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the subplan without affecting omitted fields.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: PlanAdministration_PatchPlan
       parameters:
         - name: planId
           in: path
-          description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
+          description: The unique identifier of the main plan or subplan. Use the main plan ID for consolidating, starting collaboration, or ending collaboration. Otherwise, use the subplan ID.
+          required: true
+          schema:
+            type: string
+        - name: scenarioId
+          in: path
+          description: The unique identifier of the plan scenario.
           required: true
           schema:
             type: string
@@ -57,7 +31,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/planning.PlanPatchRequest'
+              $ref: '#/components/schemas/planning.PlanScenarioPatchRequest'
         required: true
       responses:
         '200':
@@ -65,7 +39,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/planning.PlanPatchResponse'
+                $ref: '#/components/schemas/planning.PlanScenarioPatchResponse'
         '500':
           description: default error response
           content:
@@ -84,7 +58,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/planning.ErrorSummary'
-  /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
+  /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}/cells:
     patch:
       tags:
         - PlanDataLoad
@@ -201,7 +175,18 @@ components:
           items:
             type: string
           description: "The UUIDs of the subplans to include. If not defined, all submitted subplans will be consolidated."
-      description: The details of the subplan consolidation.
+      description: The details of consolidating a subplan.
+    planning.EndCollaborationActionPayload:
+      type: object
+      properties:
+        actionWhenUnconsolidatedPlansExists:
+          enum:
+            - Ignore
+            - Revert
+          type: string
+          description: "The action to take when there are unconsolidated subplans for the main plan. Valid values:\n - `Ignore`: Ignore unconsolidated subplans.\n - `Revert`: Ignore all subplans and revert plan values to the state prior to the start of collaboration."
+          format: enum
+      description: The details of ending a collaboration project.
     planning.ErrorSummary:
       type: object
       properties:
@@ -212,12 +197,12 @@ components:
           type: string
           description: The details of the error and actions you can take to load the data correctly.
       description: The error details of the unsuccessful action.
-    planning.PlanPatchActionResult:
+    planning.PlanScenarioPatchActionResult:
       type: object
       properties:
         planId:
           type: string
-          description: The UUID of the subplan.
+          description: The UUID of the main plan or subplan.
         success:
           type: boolean
           description: If `true`, the action was successful.
@@ -225,77 +210,65 @@ components:
           allOf:
             - $ref: '#/components/schemas/planning.ErrorSummary'
           description: The error details of the unsuccessful action.
-      description: The result of the action taken on the subplan.
-    planning.PlanPatchRequest:
+      description: The result of the action taken on the main plan or subplan.
+    planning.PlanScenarioPatchRequest:
       type: object
       properties:
         actionType:
           enum:
             - Update
             - Consolidate
+            - Submit
             - Reopen
+            - StartCollaboration
+            - EndCollaboration
           type: string
-          description: "The action to perform on the subplan. Valid values:\n - `Consolidate`: Combine the submitted subplan values into the main plan.\n - `Reopen`: Reopen consolidated subplans so subplanners can change the values."
+          description: "The action to perform on the main plan or the subplan, in a specific scenario. Valid values:\n - `Consolidate`: Combine the submitted subplan values into the main plan.\n - `Submit`: Send your completed subplan to the plan coordinator for review.\n - `Reopen`: Reopen consolidated subplans so subplanners can change the values.\n - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.\n - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation."
           format: enum
         consolidateActionPayload:
           allOf:
             - $ref: '#/components/schemas/planning.ConsolidateActionPayload'
-          description: The details of the subplan consolidation.
+          description: The details of consolidating a subplan.
         reopenActionPayload:
           allOf:
             - $ref: '#/components/schemas/planning.ReopenActionPayload'
-          description: The details of reopening the subplan.
-        planId:
-          type: string
-          description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
-      description: If reopening a subplan, this is the subplan to update. If consolidating subplans, this is the main plan to update.
+          description: The details of reopening a subplan.
+        submitActionPayload:
+          allOf:
+            - $ref: '#/components/schemas/planning.SubmitActionPayload'
+          description: The details of submitting a subplan.
+        startCollaborationActionPayload:
+          allOf:
+            - $ref: '#/components/schemas/planning.StartCollaborationActionPayload'
+          description: The details of starting a collaboration project.
+        endCollaborationActionPayload:
+          allOf:
+            - $ref: '#/components/schemas/planning.EndCollaborationActionPayload'
+          description: The details of ending a collaboration project.
+      description: If consolidating subplans, starting collaboration, or ending collaboration, this is the main plan to update. Otherwise, this is the subplan to update.
       oneOf:
         - $ref: '#/components/schemas/PlanPatchConsolidateActionRequest'
+        - $ref: '#/components/schemas/PlanPatchSubmitActionRequest'
         - $ref: '#/components/schemas/PlanPatchReopenActionRequest'
+        - $ref: '#/components/schemas/PlanPatchStartCollaborationActionRequest'
+        - $ref: '#/components/schemas/PlanPatchEndCollaborationActionRequest'
       discriminator:
         propertyName: actionType
         mapping:
           Consolidate: '#/components/schemas/PlanPatchConsolidateActionRequest'
+          Submit: '#/components/schemas/PlanPatchSubmitActionRequest'
           Reopen: '#/components/schemas/PlanPatchReopenActionRequest'
-    planning.PlanPatchResponse:
+          StartCollaboration: '#/components/schemas/PlanPatchStartCollaborationActionRequest'
+          EndCollaboration: '#/components/schemas/PlanPatchEndCollaborationActionRequest'
+    planning.PlanScenarioPatchResponse:
       type: object
       properties:
         actionResults:
           type: array
           items:
-            $ref: '#/components/schemas/planning.PlanPatchActionResult'
-          description: The result of the action taken on the subplan.
+            $ref: '#/components/schemas/planning.PlanScenarioPatchActionResult'
+          description: The result of the action taken on the main plan or subplan.
       description: The result of the action taken on the subplan if reopening, or the main plan if consolidating.
-    planning.PlansPatchRequest:
-      type: object
-      properties:
-        plans:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlansPatchRequestPlanItem'
-          description: If reopening subplans, these are the subplans to update. If consolidating subplans, these are the main plans to update.
-      description: If reopening subplans, these are the subplans to update. If consolidating subplans, these are the main plans to update.
-    planning.PlansPatchResponse:
-      type: object
-      properties:
-        actionsResults:
-          type: array
-          items:
-            $ref: '#/components/schemas/planning.PlansPatchResponseActionResult'
-          description: The result of the actions taken on the subplans.
-      description: The result of the actions taken on the subplans if reopening, or the main plans if consolidating.
-    planning.PlansPatchResponseActionResult:
-      type: object
-      properties:
-        planId:
-          type: string
-          description: The UUID of the subplan, or the main plans if consolidating.
-        plans:
-          type: array
-          items:
-            $ref: '#/components/schemas/planning.PlanPatchActionResult'
-          description: The result of the actions taken on the subplans.
-      description: The result of the actions taken on the subplans, or the main plans if consolidating.
     planning.ReopenActionPayload:
       type: object
       properties:
@@ -304,8 +277,25 @@ components:
           description: The user that the subplan will be assigned to once reopened. If not defined, it will keep the user that was previously assigned.
         dueDate:
           type: string
-          description: "The due date of the subplan in UTC format. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string. If not defined, the due date will be the subplan’s existing due date. The due date cannot be earlier than today."
-      description: The details of reopening the subplan.
+          description: "The due date of the subplan in UTC format. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.\n The due date cannot be earlier than today.\n If not defined, the default is based on the length of the collaboration window:\n - Collaboration window between 2 and 14 days: The due date is set to one day before the collaboration window ends.\n - Collaboration window longer than 14 days: The due date is automatically set to 14 days from the start of the collaboration.\n - Collaboration window shorter than 2 days: The due date is automatically set to today."
+      description: The details of reopening a subplan.
+    planning.StartCollaborationActionPayload:
+      type: object
+      properties:
+        startDate:
+          type: string
+          description: The start date of the collaboration. The default is today. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+        dueDate:
+          type: string
+          description: The due date of the collaboration. The default is 14 days since the start date. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+      description: The details of starting a collaboration project.
+    planning.SubmitActionPayload:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: A note or instructions to include when submitting a subplan.
+      description: The details of submitting a subplan.
     PlanPatchConsolidateActionRequest:
       type: object
       title: Consolidate subplans
@@ -314,11 +304,17 @@ components:
         - consolidateActionPayload
       properties:
         actionType:
-          description: 'The action to perform on the subplan. Valid values:
+          description: 'The action to perform on the main plan or the subplan, in a specific scenario. Valid values:
 
             - `Consolidate`: Combine the submitted subplan values into the main plan.
 
+            - `Submit`: Send your completed subplan to the plan coordinator for review.
+
             - `Reopen`: Reopen consolidated subplans so subplanners can change the values.
+
+            - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
+
+            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
 
 '
           type: string
@@ -326,6 +322,32 @@ components:
             - Consolidate
         consolidateActionPayload:
           $ref: '#/components/schemas/planning.ConsolidateActionPayload'
+    PlanPatchSubmitActionRequest:
+      type: object
+      title: Submit a plan
+      required:
+        - actionType
+        - submitActionPayload
+      properties:
+        actionType:
+          description: 'The action to perform on the main plan or the subplan, in a specific scenario. Valid values:
+
+            - `Consolidate`: Combine the submitted subplan values into the main plan.
+
+            - `Submit`: Send your completed subplan to the plan coordinator for review.
+
+            - `Reopen`: Reopen consolidated subplans so subplanners can change the values.
+
+            - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
+
+            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+
+'
+          type: string
+          enum:
+            - Submit
+        submitActionPayload:
+          $ref: '#/components/schemas/planning.SubmitActionPayload'
     PlanPatchReopenActionRequest:
       type: object
       title: Reopen a plan
@@ -334,11 +356,17 @@ components:
         - reopenActionPayload
       properties:
         actionType:
-          description: 'The action to perform on the subplan. Valid values:
+          description: 'The action to perform on the main plan or the subplan, in a specific scenario. Valid values:
 
             - `Consolidate`: Combine the submitted subplan values into the main plan.
 
+            - `Submit`: Send your completed subplan to the plan coordinator for review.
+
             - `Reopen`: Reopen consolidated subplans so subplanners can change the values.
+
+            - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
+
+            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
 
 '
           type: string
@@ -346,41 +374,58 @@ components:
             - Reopen
         reopenActionPayload:
           $ref: '#/components/schemas/planning.ReopenActionPayload'
-    PlansPatchRequestPlanItem:
-      oneOf:
-        - $ref: '#/components/schemas/PlanPatchConsolidateActionRequestWithPlanId'
-        - $ref: '#/components/schemas/PlanPatchReopenActionRequestWithPlanId'
-      discriminator:
-        propertyName: actionType
-        mapping:
-          Consolidate: '#/components/schemas/PlanPatchConsolidateActionRequestWithPlanId'
-          Reopen: '#/components/schemas/PlanPatchReopenActionRequestWithPlanId'
-    PlanPatchConsolidateActionRequestWithPlanId:
-      allOf:
-        - $ref: '#/components/schemas/PlanPatchConsolidateActionRequest'
-        - type: object
-          required:
-            - actionType
-            - consolidateActionPayload
-            - planId
-          properties:
-            planId:
-              type: string
-              description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
-              format: uuid
-    PlanPatchReopenActionRequestWithPlanId:
-      allOf:
-        - $ref: '#/components/schemas/PlanPatchReopenActionRequest'
-        - type: object
-          required:
-            - actionType
-            - reopenActionPayload
-            - planId
-          properties:
-            planId:
-              type: string
-              description: The `uuid` of the subplan. Required for `PATCH /v1alpha/planning/data/plans`. If you are consolidating subplans, this is the `uuid` of the main plan.
-              format: uuid
+    PlanPatchStartCollaborationActionRequest:
+      type: object
+      title: Start Collaboration on a plan
+      required:
+        - actionType
+        - startCollaborationActionPayload
+      properties:
+        actionType:
+          description: 'The action to perform on the main plan or the subplan, in a specific scenario. Valid values:
+
+            - `Consolidate`: Combine the submitted subplan values into the main plan.
+
+            - `Submit`: Send your completed subplan to the plan coordinator for review.
+
+            - `Reopen`: Reopen consolidated subplans so subplanners can change the values.
+
+            - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
+
+            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+
+'
+          type: string
+          enum:
+            - StartCollaboration
+        startCollaborationActionPayload:
+          $ref: '#/components/schemas/planning.StartCollaborationActionPayload'
+    PlanPatchEndCollaborationActionRequest:
+      type: object
+      title: End Collaboration on a plan
+      required:
+        - actionType
+        - endCollaborationActionPayload
+      properties:
+        actionType:
+          description: 'The action to perform on the main plan or the subplan, in a specific scenario. Valid values:
+
+            - `Consolidate`: Combine the submitted subplan values into the main plan.
+
+            - `Submit`: Send your completed subplan to the plan coordinator for review.
+
+            - `Reopen`: Reopen consolidated subplans so subplanners can change the values.
+
+            - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
+
+            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+
+'
+          type: string
+          enum:
+            - EndCollaboration
+        endCollaborationActionPayload:
+          $ref: '#/components/schemas/planning.EndCollaborationActionPayload'
     PlanDataUploadResponseDTO:
       type: object
       properties:
