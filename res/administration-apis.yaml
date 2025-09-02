@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2165
+  version: 22222222.99201.2174
 paths:
   /v1/admin/capabilities:
     get:
@@ -4502,6 +4502,9 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the idp_url OAuth parameter. This is optional.
+        forceLoginsWithSessionBasedPermissions:
+          type: boolean
+          description: If `true`, user sign in must also provide a `SessionRepoId`. Only set if `SessionBasedPermissions` feature is enabled. Default is `false`.
     admin.TenantProvisionAPIDTO:
       required:
         - tenantCode
@@ -5581,6 +5584,8 @@ components:
           items:
             $ref: '#/components/schemas/servicing.AssignRevokePermissionByTenantDTO'
           description: A list of objects representing the users that were assigned permissions, organized by the tenants the users belong to.
+        sessionRepoId:
+          type: string
       description: The results of the permission assignment or removal.
     servicing.BulkDataAccessSetRequestDTO:
       type: object
