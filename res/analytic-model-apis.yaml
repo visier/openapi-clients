@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2174
+  version: 22222222.99201.2176
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2863,7 +2863,7 @@ paths:
             type: string
         - name: type
           in: query
-          description: "The type of the metric to retrieve. Omit to retrieve all supported metric types. Valid values:\n - `simple`: Retrieves all simple metrics.\n - `derived`: Retrieves all derived metrics."
+          description: "The type of the metric to retrieve. Omit to retrieve all supported metric types. Valid values:\n - `simple`: Retrieves all simple metrics. A simple metric is a metric based on one or more analytic objects.\n - `derived`: Retrieves all derived metrics. A derived metric is a metric based on a simple metric."
           schema:
             type: array
             items:
@@ -3263,7 +3263,7 @@ paths:
       parameters:
         - name: type
           in: query
-          description: "The type of the metric to retrieve. Omit to retrieve all supported metric types. Valid values:\n - `simple`: Retrieves all simple metrics.\n - `derived`: Retrieves all derived metrics."
+          description: "The type of the metric to retrieve. Omit to retrieve all supported metric types. Valid values:\n - `simple`: Retrieves all simple metrics. A simple metric is a metric based on one or more analytic objects.\n - `derived`: Retrieves all derived metrics. A derived metric is a metric based on a simple metric."
           schema:
             type: array
             items:
@@ -3400,7 +3400,7 @@ paths:
       tags:
         - MetricsV2
       summary: Delete metrics
-      description: "Delete existing simple or derived metrics. The response returns whether each metric was successfully deleted or not.\n\n **Note:** Deleting a base metric will also delete any derived metrics that depend on it. Derived metrics cannot exist without their base metric.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Delete existing simple or derived metrics. The response returns whether each metric was successfully deleted or not.\n\n **Note**: Deleting a simple metric will also delete any derived metrics that depend on it. Derived metrics cannot exist without their base metric.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: MetricsV2_DeleteMetrics
       parameters:
         - name: TargetTenantID
@@ -7175,7 +7175,7 @@ components:
             - forward
             - reverse
           type: string
-          description: "The direction of the reference between analytic objects.\n - `reverse`: The reference direction is `reverse`. For example, the object reference comes from Employee.\n - `forward`: The reference direction is `forward`. For example, the object references to Employee."
+          description: "The direction of the reference between analytic objects.\n - `forward`: The reference direction is `forward`. For example, the object references to Employee.\n - `reverse`: The reference direction is `reverse`. For example, the object reference comes from Employee.\n \n **Note**: `GET` responses return forward and reverse references.\n `POST`, `PUT`, and `PATCH` requests ignore `reverse` references because the platform automatically creates a corresponding reverse reference for every forward reference.\n For example, to create a reverse reference from Subject A to Subject B, create a forward reference from Subject B to Subject A."
           format: enum
         subject:
           type: string
@@ -7331,7 +7331,7 @@ tags:
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: MetricsV2
     x-displayName: Metrics V2
-    description: 'Create, retrieve, update, and delete simple and derived metrics in your analytic model. You can create, update, and delete one or more metrics in an API call.
+    description: 'Create, retrieve, update, and delete simple and derived metrics in your analytic model. A simple metric is a metric based on one or more analytic objects. A derived metric is a metric based on a simple metric. You can create, update, and delete one or more metrics in an API call.
 
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
 
