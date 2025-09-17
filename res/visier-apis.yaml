@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2191
+  version: 22222222.99201.2205
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -7646,6 +7646,63 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/analysis.common.VeeResponseDTO'
+  /v1alpha/vee/sample-question-categories:
+    get:
+      tags:
+        - Vee
+      summary: Retrieve a list of Vee question categories
+      description: "Get a list of categories for the Vee sample questions displayed in the conversation interface.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: Vee_VeeSampleQuestionCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.VeeQuestionCategoriesAPIResponseDTO'
+  /v1alpha/vee/sample-question-categories/{questionCategoryId}:
+    get:
+      tags:
+        - Vee
+      summary: Retrieve a Vee question category's details
+      description: "Get the details of a specific Vee sample question category where the ID is the `categoryID` returned by `GET /v1alpha/vee/sample-question-categories`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: Vee_VeeSampleQuestionCategory
+      parameters:
+        - name: questionCategoryId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.VeeQuestionCategoryAPIResponseDTO'
   /v1alpha/vee/sample-questions:
     get:
       tags:
@@ -14096,6 +14153,16 @@ components:
             $ref: '#/components/schemas/analysis.common.ReportDTO'
           description: A list of reports.
       description: The information of all the reports you have access to in your tenant.
+    analysis.common.VeeCategoryBasicInformationDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The user-friendly name for the category. For example, "About individuals".
+        description:
+          type: string
+          description: A short description of the category.
+      description: Information that identifies and describes the question category, such as its display name and description.
     analysis.common.VeeClarificationDTO:
       type: object
       properties:
@@ -14223,6 +14290,40 @@ components:
         includeDetailData:
           type: boolean
           description: If `true`, returns detail data relevant to the question. Default is `false`.
+    analysis.common.VeeQuestionCategoriesAPIResponseDTO:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.VeeQuestionCategoryAPIResponseDTO'
+          description: A list of available categories for Vee sample questions.
+      description: The Vee question categories.
+    analysis.common.VeeQuestionCategoryAPIResponseDTO:
+      type: object
+      properties:
+        categoryId:
+          type: string
+          description: The unique identifier of the question category.
+        basicInformation:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeCategoryBasicInformationDTO'
+          description: Information that identifies and describes the question category, such as its display name and description.
+        categoryIcon:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeQuestionCategoryIconDTO'
+          description: The icon for the question category.
+      description: Information about the Vee question category.
+    analysis.common.VeeQuestionCategoryIconDTO:
+      type: object
+      properties:
+        base64Image:
+          type: string
+          description: The Base64 value for the category icon image.
+        backgroundColor:
+          type: string
+          description: The HEX color code of the background color for the category icon. This is useful if the icon is transparent.
+      description: An icon associated with the Vee question category.
     analysis.common.VeeQuestionDTO:
       type: object
       properties:
