@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2205
+  version: 22222222.99201.2212
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -12757,7 +12757,7 @@ components:
           description: If running a job for the Databricks connector, specify the unique identifier of the connector credentials to use.
         outputTarget:
           type: string
-          description: Extraction output target - `Receiving` (default) or `SQL` (table sources)
+          description: "The output of the extraction. Valid values:\n - `Receiving`: A receiving job. This is the default. \n - `SQL`: A SQL job for table sources."
     admin.jobs.ProcessingJobRequestDTO:
       type: object
       properties:
@@ -17363,6 +17363,7 @@ components:
             - OEMCornerstone
             - Databricks
             - JiraV2
+            - Echo
           type: string
           description: The data provider associated with the credential.
           format: enum
@@ -17444,6 +17445,8 @@ components:
           $ref: '#/components/schemas/designer.ServiceNowV2AuthParamsDTO'
         databricksAuthParams:
           $ref: '#/components/schemas/designer.DatabricksAuthParamsDTO'
+        echoAuthParams:
+          $ref: '#/components/schemas/designer.EchoAuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -17689,6 +17692,31 @@ components:
         messages:
           type: string
           description: A description of the request status.
+    designer.EchoAuthParamsDTO:
+      type: object
+      properties:
+        vanityName:
+          type: string
+        basic:
+          $ref: '#/components/schemas/designer.EchoBasicParamsDTO'
+        oAuth:
+          $ref: '#/components/schemas/designer.EchoOAuthParamsDTO'
+    designer.EchoBasicParamsDTO:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    designer.EchoOAuthParamsDTO:
+      type: object
+      properties:
+        apiKey:
+          type: string
+        clientID:
+          type: string
+        clientSecret:
+          type: string
     designer.EmptyAuthParamsDTO:
       type: object
       properties: {}
@@ -24480,11 +24508,11 @@ components:
         referenceDate:
           type: string
           description: |
-            The date that benchmark values are calculated for.
+            The date that benchmark values are calculated for. The format is YYYY-MM-DD.
         releaseDate:
           type: string
           description: |
-            The date that benchmark values are released.
+            The date that benchmark values are released. The format is YYYY-MM-DD.
         naicsCode:
           type: string
           description: |

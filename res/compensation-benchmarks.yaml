@@ -1637,11 +1637,11 @@ components:
         referenceDate:
           type: string
           description: |
-            The date that benchmark values are calculated for.
+            The date that benchmark values are calculated for. The format is YYYY-MM-DD.
         releaseDate:
           type: string
           description: |
-            The date that benchmark values are released.
+            The date that benchmark values are released. The format is YYYY-MM-DD.
         naicsCode:
           type: string
           description: |
