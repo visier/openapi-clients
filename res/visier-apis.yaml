@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2212
+  version: 22222222.99200.22242
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -12757,7 +12757,7 @@ components:
           description: If running a job for the Databricks connector, specify the unique identifier of the connector credentials to use.
         outputTarget:
           type: string
-          description: "The output of the extraction. Valid values:\n - `Receiving`: A receiving job. This is the default. \n - `SQL`: A SQL job for table sources."
+          description: Extraction output target - `Receiving` (default) or `SQL` (table sources)
     admin.jobs.ProcessingJobRequestDTO:
       type: object
       properties:
