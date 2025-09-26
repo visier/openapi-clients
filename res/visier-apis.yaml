@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2212
+  version: 22222222.99201.2227
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -8457,6 +8457,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/admin.UserGroupChangeResponseDTO'
+  /v2/admin/user-groups/revert-to-parent:
+    post:
+      tags:
+        - UserGroupsV2
+      summary: Revert user groups
+      description: "Revert a user group to its parent version. For example, if you revert a:\n - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.\n - Tenant object: The API request fails. The object is unique to your tenant and no parent version exists.\n - Blueprint object: Nothing happens. Blueprint is the top-level parent."
+      operationId: UserGroupsV2_RevertUserGroupsToParent
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.UserGroupsRevertRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/admin.UserGroupChangeResponseDTO'
   /v2/admin/user-groups/{userGroupId}:
     get:
       tags:
@@ -9226,7 +9269,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
-  /v2alpha/data/model/analytic-objects/revert-to-bp:
+  /v2alpha/data/model/analytic-objects/revert-to-parent:
     post:
       tags:
         - AnalyticObjectsV2
@@ -13278,7 +13321,7 @@ components:
       properties:
         displayName:
           type: string
-          description: The display name of the user group that couldn't be created.
+          description: The display name of the user group that couldn't be changed.
         message:
           type: string
           description: The error message containing the cause of the failure.
@@ -13287,10 +13330,13 @@ components:
           description: The root cause identifier to provide to Visier Technical Support if you require further troubleshooting.
         tenantCode:
           type: string
-          description: The code of the tenant for which the user group could not be created or updated.
+          description: The code of the tenant in which the user group couldn't be changed.
         projectId:
           type: string
-          description: The ID of the project in which the user group could not be created or updated.
+          description: The unique identifier of the project in which the user group couldn't be changed.
+        userGroupId:
+          type: string
+          description: The unique identifier of the user group that couldn't be changed.
     admin.UserGroupChangeFilterDTO:
       type: object
       properties:
@@ -13323,27 +13369,27 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/admin.UserGroupChangeSuccessDTO'
-          description: The user groups that were created.
+          description: The user groups that were successfully changed (created, updated, patched, or reverted).
         failures:
           type: array
           items:
             $ref: '#/components/schemas/admin.UserGroupChangeFailureDTO'
-          description: The user groups that were not created.
+          description: The user groups that were not successfully changed (created, updated, patched, or reverted).
     admin.UserGroupChangeSuccessDTO:
       type: object
       properties:
         displayName:
           type: string
-          description: The display name of the created user group.
+          description: The display name of the user group that was successfully changed.
         userGroupId:
           type: string
           description: The unique identifier of the user group.
         tenantCode:
           type: string
-          description: The code of the tenant the user group was created or updated in.
+          description: The code of the tenant in which the user group was changed.
         projectId:
           type: string
-          description: The ID of the project the user group was created or updated in.
+          description: The unique identifier of the project in which the user group was changed.
     admin.UserGroupChangeUsersDTO:
       type: object
       properties:
@@ -13425,6 +13471,18 @@ components:
           items:
             $ref: '#/components/schemas/admin.UserGroupChangeFilterDTO'
           description: The filters that define user group membership.
+    admin.UserGroupRevertDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: "The code of the tenant in which to revert the user group.\n Omit if reverting user groups in the current tenant."
+        userGroupId:
+          type: string
+          description: The unique identifier for the user group.
+        projectId:
+          type: string
+          description: "The unique identifier of the project in which to revert the user group.\n If omitted and the `ProjectID` request header is not defined, the change is published to production immediately."
     admin.UserGroupSingleDeleteResponseDTO:
       type: object
       properties:
@@ -13452,6 +13510,14 @@ components:
           items:
             $ref: '#/components/schemas/admin.UserGroupDeleteDTO'
           description: The user groups to delete.
+    admin.UserGroupsRevertRequestDTO:
+      type: object
+      properties:
+        userGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin.UserGroupRevertDTO'
+          description: The user groups to revert.
     admin.VisibleForSelectionDTO:
       type: object
       properties:
@@ -14240,17 +14306,6 @@ components:
         context:
           type: string
           description: The filter applied to the visualization generated by Vee. For example, a time filter of April 2024.
-    analysis.common.VeeDetailDataDTO:
-      type: object
-      properties:
-        chartUrl:
-          type: string
-        queryFunction:
-          type: string
-        rewordedQuestion:
-          type: string
-        data:
-          $ref: '#/components/schemas/analysis.common.VeeDataDTO'
     analysis.common.VeeFeedbackDTO:
       type: object
       properties:
@@ -14380,11 +14435,6 @@ components:
         rewordedQuestion:
           type: string
           description: Vee's plain language interpretation of the original question. For example, if you asked "what is the headcount by gender in each org?", Vee might reword the question as "What is the gender breakdown of our workforce by organization this month?".
-        detailData:
-          type: array
-          items:
-            $ref: '#/components/schemas/analysis.common.VeeDetailDataDTO'
-          description: Returns if `includeDetailData` is `true`. Provides additional detail data relevant to the questions.
       description: The response after asking Vee a question.
     analysis.common.VeeResponseSchemaDTO:
       type: object
@@ -21092,14 +21142,29 @@ components:
         categoryId:
           type: string
           description: The unique identifier of the question category.
-        displayName:
-          type: string
-          description: An identifiable name to display within Visier. For example, "About individuals".
+        basicInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.QuestionCategoryBasicInformationDTO'
+          description: Information that identifies and describes the question category, such as its display name and description.
         categoryIcon:
           allOf:
             - $ref: '#/components/schemas/servicing.CategoryIconDTO'
           description: The icon for the question category.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the Vee question category.
+    servicing.QuestionCategoryBasicInformationDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The user-friendly name for the category. For example, "About individuals".
+        description:
+          type: string
+          description: A short description of the category.
+      description: Information that identifies and describes the question category, such as its display name and description.
     servicing.ReceivingJobExtractedFileResponseDTO:
       type: object
       properties:
@@ -21211,6 +21276,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.UserGroupAssignmentDTO'
           description: The user group IDs assigned to the sample question.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the sample question.
     servicing.SampleQuestionsAPIResponseDTO:
       type: object
@@ -23404,6 +23473,8 @@ components:
             - ProactiveAlertManagement
             - PermissionManagement
             - Sandbox
+            - ScopedSourceFiles
+            - ScopedImplicitSecurity
           type: string
           format: enum
         accessLevel:
