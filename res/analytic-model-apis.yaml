@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2212
+  version: 22222222.99201.2227
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2734,7 +2734,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
-  /v2alpha/data/model/analytic-objects/revert-to-bp:
+  /v2alpha/data/model/analytic-objects/revert-to-parent:
     post:
       tags:
         - AnalyticObjectsV2
@@ -5674,14 +5674,29 @@ components:
         categoryId:
           type: string
           description: The unique identifier of the question category.
-        displayName:
-          type: string
-          description: An identifiable name to display within Visier. For example, "About individuals".
+        basicInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.QuestionCategoryBasicInformationDTO'
+          description: Information that identifies and describes the question category, such as its display name and description.
         categoryIcon:
           allOf:
             - $ref: '#/components/schemas/servicing.CategoryIconDTO'
           description: The icon for the question category.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the Vee question category.
+    servicing.QuestionCategoryBasicInformationDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The user-friendly name for the category. For example, "About individuals".
+        description:
+          type: string
+          description: A short description of the category.
+      description: Information that identifies and describes the question category, such as its display name and description.
     servicing.SampleQuestionAPIResponseDTO:
       type: object
       properties:
@@ -5701,6 +5716,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.UserGroupAssignmentDTO'
           description: The user group IDs assigned to the sample question.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the sample question.
     servicing.SampleQuestionsAPIResponseDTO:
       type: object
