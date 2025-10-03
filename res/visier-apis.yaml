@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2227
+  version: 22222222.99201.2243
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -17747,25 +17747,20 @@ components:
       properties:
         vanityName:
           type: string
-        basic:
-          $ref: '#/components/schemas/designer.EchoBasicParamsDTO'
-        oAuth:
-          $ref: '#/components/schemas/designer.EchoOAuthParamsDTO'
-    designer.EchoBasicParamsDTO:
+        targetTenantID:
+          type: string
+        apiKey:
+          type: string
+        basicAuth:
+          $ref: '#/components/schemas/designer.EchoBasicAuthDTO'
+    designer.EchoBasicAuthDTO:
       type: object
       properties:
         username:
           type: string
         password:
           type: string
-    designer.EchoOAuthParamsDTO:
-      type: object
-      properties:
-        apiKey:
-          type: string
-        clientID:
-          type: string
-        clientSecret:
+        asidToken:
           type: string
     designer.EmptyAuthParamsDTO:
       type: object
