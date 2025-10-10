@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2243
+  version: 22222222.99201.2263
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -203,7 +203,7 @@ components:
         visier:tenant_details:
           allOf:
             - $ref: '#/components/schemas/authentication.OAuth2UserTenantDetailsDTO'
-          description: Detailed information about the analytic tenant. Included in the response if `includeTenantDetail` is `true`.
+          description: Detailed information about the analytic tenant. Included in the response if `includeTenantDetails` is `true`.
       description: Response from OAuth 2 `userinfo` endpoint.
     authentication.OAuth2UserSubnetInfoDTO:
       type: object

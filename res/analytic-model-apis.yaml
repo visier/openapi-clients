@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2243
+  version: 22222222.99201.2263
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2355,7 +2355,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     post:
       tags:
         - ConceptsV2
@@ -2392,7 +2392,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     delete:
       tags:
         - ConceptsV2
@@ -2429,7 +2429,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     patch:
       tags:
         - ConceptsV2
@@ -2466,7 +2466,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
   /v2/data/model/concepts/{conceptId}:
     get:
       tags:
@@ -2622,7 +2622,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     post:
       tags:
         - AnalyticObjectsV2
@@ -2659,7 +2659,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     delete:
       tags:
         - AnalyticObjectsV2
@@ -2696,7 +2696,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     patch:
       tags:
         - AnalyticObjectsV2
@@ -2733,7 +2733,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
   /v2alpha/data/model/analytic-objects/revert-to-parent:
     post:
       tags:
@@ -2771,7 +2771,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
   /v2alpha/data/model/analytic-objects/{analyticObjectId}/dimensions:
     get:
       tags:
@@ -3091,7 +3091,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     post:
       tags:
         - DimensionsV2
@@ -3128,7 +3128,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     delete:
       tags:
         - DimensionsV2
@@ -3165,7 +3165,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     patch:
       tags:
         - DimensionsV2
@@ -3202,7 +3202,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
   /v2alpha/data/model/dimensions/{dimensionId}:
     get:
       tags:
@@ -3358,7 +3358,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     post:
       tags:
         - MetricsV2
@@ -3395,7 +3395,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     delete:
       tags:
         - MetricsV2
@@ -3432,7 +3432,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
     patch:
       tags:
         - MetricsV2
@@ -3469,7 +3469,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/servicing.v2.objectconfiguration.BulkChangeResponseDTO'
+                $ref: '#/components/schemas/servicing.BulkChangeResponseDTO'
   /v2alpha/data/model/metrics/{metricId}:
     get:
       tags:
@@ -5649,6 +5649,58 @@ components:
             type: string
           description: The tag ids.
       description: Wrapper to distinguish between an empty list and a null/unset list.
+    servicing.AnalyticObjectReferenceDTO:
+      type: object
+      properties:
+        objectName:
+          type: string
+          description: The unique identifier name of the referenced analytic object.
+      description: A reference to an analytic object that relates to another object in the system.
+    servicing.AnalyticObjectReferenceListDTO:
+      type: object
+      properties:
+        analyticObjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.AnalyticObjectReferenceDTO'
+          description: The list of analytic object references.
+      description: A collection of references to analytic objects that relate to another object in the system.
+    servicing.BasicInformationDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The user-friendly name for the object.
+        shortDisplayName:
+          type: string
+          description: A shortened version of the display name. If the object is visible in the solution experience, this name is displayed in visualization titles.
+        description:
+          type: string
+          description: A short description of the object. Descriptions provide in-context help for your users while working in Visier.
+        explanation:
+          type: string
+          description: A longer description of the object that typically includes a definition, calculation details, and other guidance about how to use the object.
+        designerNotes:
+          type: string
+          description: An admin-only description of the object that provides design-specific information or considerations.
+        synonymList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.SynonymListDTO'
+          description: Alternative words or phrases for the object.
+      description: Fields that identify and describe the object, such as its display name, description, and explanation.
+    servicing.BulkChangeResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SuccessfulChangeDTO'
+          description: The list of successful changes.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.FailedChangeDTO'
+          description: The list of failed changes.
     servicing.CategoryIconDTO:
       type: object
       properties:
@@ -5659,6 +5711,47 @@ components:
           type: string
           description: The HEX color code of the background color for the category icon. This is useful if the icon is transparent.
       description: An icon associated with the question category.
+    servicing.ExecutionContextDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code.
+        projectId:
+          type: string
+          description: The project ID.
+      description: The context of the API request, such as the tenant code and project ID.
+    servicing.FailedChangeDTO:
+      type: object
+      properties:
+        executionContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.ExecutionContextDTO'
+          description: The tenant and, optionally, project that change was attempted on.
+        objectName:
+          type: string
+          description: The object name of the object that was attempted to be changed.
+        uuid:
+          type: string
+          description: The UUID of the object that was attempted to be changed.
+        displayName:
+          type: string
+          description: The display name of the object that was attempted to be changed.
+        messages:
+          type: array
+          items:
+            type: string
+          description: The error messages.
+    servicing.ObjectIdDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The UUID identifying the object.
+        objectName:
+          type: string
+          description: The object name of the object.
+      description: The identifier for the object.
     servicing.QuestionCategoriesAPIResponseDTO:
       type: object
       properties:
@@ -5684,7 +5777,7 @@ components:
           description: The icon for the question category.
         versionInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+            - $ref: '#/components/schemas/servicing.VersionInformationDTO'
           description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the Vee question category.
     servicing.QuestionCategoryBasicInformationDTO:
@@ -5718,7 +5811,7 @@ components:
           description: The user group IDs assigned to the sample question.
         versionInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+            - $ref: '#/components/schemas/servicing.VersionInformationDTO'
           description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the sample question.
     servicing.SampleQuestionsAPIResponseDTO:
@@ -5730,6 +5823,47 @@ components:
             $ref: '#/components/schemas/servicing.SampleQuestionAPIResponseDTO'
           description: A list of sample questions to help your users start using Vee.
       description: The list of Vee sample questions.
+    servicing.SuccessfulChangeDTO:
+      type: object
+      properties:
+        executionContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.ExecutionContextDTO'
+          description: The tenant and, optionally, project that change was made on.
+        objectName:
+          type: string
+          description: The object name of the object that was changed.
+        uuid:
+          type: string
+          description: The UUID of the object that was changed.
+        displayName:
+          type: string
+          description: The display name of the object that was changed.
+    servicing.SynonymListDTO:
+      type: object
+      properties:
+        synonyms:
+          type: array
+          items:
+            type: string
+          description: Alternative words or phrases for the object.
+      description: The object's synonyms.
+    servicing.TagReferenceDTO:
+      type: object
+      properties:
+        objectName:
+          type: string
+          description: The object name of the tag.
+      description: A reference to a tag.
+    servicing.TagReferenceListDTO:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.TagReferenceDTO'
+          description: A list of tags assigned to the object.
+      description: The tags assigned to the object.
     servicing.UserGroupAssignmentDTO:
       type: object
       properties:
@@ -5998,6 +6132,27 @@ components:
             $ref: '#/components/schemas/servicing.VeeQuestionDeleteDefinitionsByTenantDTO'
           description: The sample questions to delete for each tenant.
       description: The Vee sample question to delete.
+    servicing.VersionInformationDTO:
+      type: object
+      properties:
+        versionType:
+          enum:
+            - Unknown
+            - BP
+            - Tenant
+            - TenantOverride
+            - TenantShared
+            - Draft
+          type: string
+          description: "Indicates where the object originates from and whether the object has been modified. Valid values:\n - `Unknown`: The source is not known.\n - `BP`: The object originates from Visier's Blueprint and is not changed at the tenant level.\n - `Tenant`: The object only exists in the tenant and doesn't exist in Visier's Blueprint.\n - `TenantOverride`: The object originates from Visier's Blueprint and is changed at the tenant level.\n - `TenantShared`: The object is non-versioned, only exists in the tenant and doesn’t exist in Visier's Blueprint, and is shareable with other users in the tenant.\n - `Draft`: The object only exists in the specified draft project."
+          format: enum
+        edited:
+          type: string
+          description: The UTC time of the latest change in ISO 8601 format. For example, `2023-10-01T12:00:00Z`.
+        editor:
+          type: string
+          description: The user who made the latest change.
+      description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
     servicing.v2.objectconfiguration.AnalyticObjectDefinitionDTO:
       type: object
       properties:
@@ -6009,7 +6164,7 @@ components:
           description: The object name of the analytic object.
         basicInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+            - $ref: '#/components/schemas/servicing.BasicInformationDTO'
           description: Fields that identify and describe the analytic object, such as its display name, description, and explanation.
         details:
           allOf:
@@ -6017,11 +6172,11 @@ components:
           description: The analytic object type and its details.
         tagList:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+            - $ref: '#/components/schemas/servicing.TagReferenceListDTO'
           description: A list of tags assigned to the object.
         versionInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+            - $ref: '#/components/schemas/servicing.VersionInformationDTO'
           description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the analytic object.
     servicing.v2.objectconfiguration.AnalyticObjectDeleteRequestDTO:
@@ -6038,11 +6193,11 @@ components:
       properties:
         executionContext:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+            - $ref: '#/components/schemas/servicing.ExecutionContextDTO'
           description: The context of the API request, such as the tenant code and project ID.
         analyticObject:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ObjectIdDTO'
+            - $ref: '#/components/schemas/servicing.ObjectIdDTO'
           description: Information identifying the analytic object to delete.
       description: Information about the analytic object to delete and the context of the API request.
     servicing.v2.objectconfiguration.AnalyticObjectDetailsDTO:
@@ -6087,22 +6242,6 @@ components:
             type: string
           description: The object names of the analytic objects associated with the object.
       description: The analytic objects associated with the object.
-    servicing.v2.objectconfiguration.AnalyticObjectReferenceDTO:
-      type: object
-      properties:
-        objectName:
-          type: string
-          description: The unique identifier name of the referenced analytic object.
-      description: A reference to an analytic object that relates to another object in the system.
-    servicing.v2.objectconfiguration.AnalyticObjectReferenceListDTO:
-      type: object
-      properties:
-        analyticObjects:
-          type: array
-          items:
-            $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectReferenceDTO'
-          description: The list of analytic object references.
-      description: A collection of references to analytic objects that relate to another object in the system.
     servicing.v2.objectconfiguration.AnalyticObjectRequestDTO:
       type: object
       properties:
@@ -6135,11 +6274,11 @@ components:
       properties:
         executionContext:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+            - $ref: '#/components/schemas/servicing.ExecutionContextDTO'
           description: The context of the API request, such as the tenant code and project ID.
         analyticObject:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ObjectIdDTO'
+            - $ref: '#/components/schemas/servicing.ObjectIdDTO'
           description: Information identifying the analytic object to revert.
       description: Information about the analytic object to revert and the context of the API request.
     servicing.v2.objectconfiguration.AnalyticObjectWithContextDTO:
@@ -6147,49 +6286,13 @@ components:
       properties:
         executionContext:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+            - $ref: '#/components/schemas/servicing.ExecutionContextDTO'
           description: The context of the API request, such as the tenant code and project ID.
         analyticObject:
           allOf:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectDefinitionDTO'
           description: Information about the analytic object, such as its UUID and object name.
       description: Information about the analytic object and the context of the API request, such as the tenant code and project ID.
-    servicing.v2.objectconfiguration.BasicInformationDTO:
-      type: object
-      properties:
-        displayName:
-          type: string
-          description: The user-friendly name for the object.
-        shortDisplayName:
-          type: string
-          description: A shortened version of the display name. If the object is visible in the solution experience, this name is displayed in visualization titles.
-        description:
-          type: string
-          description: A short description of the object. Descriptions provide in-context help for your users while working in Visier.
-        explanation:
-          type: string
-          description: A longer description of the object that typically includes a definition, calculation details, and other guidance about how to use the object.
-        designerNotes:
-          type: string
-          description: An admin-only description of the object that provides design-specific information or considerations.
-        synonymList:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.SynonymListDTO'
-          description: Alternative words or phrases for the object.
-      description: Fields that identify and describe the object, such as its display name, description, and explanation.
-    servicing.v2.objectconfiguration.BulkChangeResponseDTO:
-      type: object
-      properties:
-        successes:
-          type: array
-          items:
-            $ref: '#/components/schemas/servicing.v2.objectconfiguration.SuccessfulChangeDTO'
-          description: The list of successful changes.
-        failures:
-          type: array
-          items:
-            $ref: '#/components/schemas/servicing.v2.objectconfiguration.FailedChangeDTO'
-          description: The list of failed changes.
     servicing.v2.objectconfiguration.CalculatedPropertyTypeDTO:
       type: object
       properties:
@@ -6215,7 +6318,7 @@ components:
           description: The object name of the analytic object associated with the concept.
         tagList:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+            - $ref: '#/components/schemas/servicing.TagReferenceListDTO'
           description: The tags assigned to the object.
         visibleInAnalytics:
           type: boolean
@@ -6256,7 +6359,7 @@ components:
           description: The object name of the concept.
         basicInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+            - $ref: '#/components/schemas/servicing.BasicInformationDTO'
           description: Fields that identify and describe the concept, such as its display name, description, and explanation.
         details:
           allOf:
@@ -6264,7 +6367,7 @@ components:
           description: The concept type and its details.
         versionInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+            - $ref: '#/components/schemas/servicing.VersionInformationDTO'
           description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the concept, such as its UUID and concept type.
     servicing.v2.objectconfiguration.ConceptDeleteRequestDTO:
@@ -6281,11 +6384,11 @@ components:
       properties:
         executionContext:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+            - $ref: '#/components/schemas/servicing.ExecutionContextDTO'
           description: The context of the API request, such as the tenant code and project ID.
         concept:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ObjectIdDTO'
+            - $ref: '#/components/schemas/servicing.ObjectIdDTO'
           description: Information identifying the concept to delete.
       description: Information about the concept to delete and the context of the API request, such as the tenant code and project ID.
     servicing.v2.objectconfiguration.ConceptRequestDTO:
@@ -6326,7 +6429,7 @@ components:
       properties:
         executionContext:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+            - $ref: '#/components/schemas/servicing.ExecutionContextDTO'
           description: The context of the API request, such as the tenant code and project ID.
         concept:
           allOf:
@@ -6372,7 +6475,7 @@ components:
           description: The unique name of the dimension.
         basicInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+            - $ref: '#/components/schemas/servicing.BasicInformationDTO'
           description: Fields that identify and describe the dimension, such as its display name, description, and explanation.
         details:
           allOf:
@@ -6380,7 +6483,7 @@ components:
           description: The dimension type and its details.
         tagList:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+            - $ref: '#/components/schemas/servicing.TagReferenceListDTO'
           description: A list of tags assigned to the object.
         visibleInAnalytics:
           type: boolean
@@ -6390,7 +6493,7 @@ components:
           description: If `true`, the object is available in Vee's responses.
         versionInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+            - $ref: '#/components/schemas/servicing.VersionInformationDTO'
           description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the dimension.
     servicing.v2.objectconfiguration.DimensionDeleteRequestDTO:
@@ -6407,11 +6510,11 @@ components:
       properties:
         executionContext:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+            - $ref: '#/components/schemas/servicing.ExecutionContextDTO'
           description: The context of the API request, such as the tenant code and project ID.
         dimension:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ObjectIdDTO'
+            - $ref: '#/components/schemas/servicing.ObjectIdDTO'
           description: Information identifying the dimension to delete.
       description: Information about the dimension to delete and the context of the API request, such as the tenant code and project ID.
     servicing.v2.objectconfiguration.DimensionDetailsDTO:
@@ -6473,7 +6576,7 @@ components:
       properties:
         executionContext:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+            - $ref: '#/components/schemas/servicing.ExecutionContextDTO'
           description: The context of the API request, such as the tenant code and project ID.
         dimension:
           allOf:
@@ -6522,37 +6625,6 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.SubjectReferenceListDTO'
           description: The analytic object's references.
       description: Information about the event, such as its subject, default metric, and attributes.
-    servicing.v2.objectconfiguration.ExecutionContextDTO:
-      type: object
-      properties:
-        tenantCode:
-          type: string
-          description: The tenant code.
-        projectId:
-          type: string
-          description: The project ID.
-      description: The context of the API request, such as the tenant code and project ID.
-    servicing.v2.objectconfiguration.FailedChangeDTO:
-      type: object
-      properties:
-        executionContext:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
-          description: The tenant and, optionally, project that change was attempted on.
-        objectName:
-          type: string
-          description: The object name of the object that was attempted to be changed.
-        uuid:
-          type: string
-          description: The UUID of the object that was attempted to be changed.
-        displayName:
-          type: string
-          description: The display name of the object that was attempted to be changed.
-        messages:
-          type: array
-          items:
-            type: string
-          description: The error messages.
     servicing.v2.objectconfiguration.LevelDTO:
       type: object
       properties:
@@ -6600,7 +6672,7 @@ components:
           description: If `true`, you can search for members in a dimension with more than 300,000 members. Default is `false` to help with performance.
         analyticObjectList:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectReferenceListDTO'
+            - $ref: '#/components/schemas/servicing.AnalyticObjectReferenceListDTO'
           description: The analytic objects associated with the dimension.
       description: The leveled dimension's configuration, such as its levels and settings.
     servicing.v2.objectconfiguration.LocalOrSharedDimensionDTO:
@@ -6633,7 +6705,7 @@ components:
           description: The list of analytic object associated with the concept.
         tagList:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+            - $ref: '#/components/schemas/servicing.TagReferenceListDTO'
           description: The tags assigned to the object.
         visibleInAnalytics:
           type: boolean
@@ -6665,7 +6737,7 @@ components:
           description: The object name of the metric.
         basicInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+            - $ref: '#/components/schemas/servicing.BasicInformationDTO'
           description: Fields that identify and describe the metric, such as its display name, description, and explanation.
         details:
           allOf:
@@ -6691,11 +6763,11 @@ components:
           description: The metric's analytic object name.
         tagList:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+            - $ref: '#/components/schemas/servicing.TagReferenceListDTO'
           description: The tags assigned to the object.
         versionInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+            - $ref: '#/components/schemas/servicing.VersionInformationDTO'
           description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the metric, such as its object name, basic information, and additive type.
     servicing.v2.objectconfiguration.MetricDeleteRequestDTO:
@@ -6712,11 +6784,11 @@ components:
       properties:
         executionContext:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+            - $ref: '#/components/schemas/servicing.ExecutionContextDTO'
           description: The context of the API request, such as the tenant code and project ID.
         metric:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ObjectIdDTO'
+            - $ref: '#/components/schemas/servicing.ObjectIdDTO'
           description: Information identifying the metric to delete.
       description: Information about the metric to delete and the context of the API request, such as the tenant code and project ID.
     servicing.v2.objectconfiguration.MetricRequestDTO:
@@ -6753,7 +6825,7 @@ components:
       properties:
         executionContext:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
+            - $ref: '#/components/schemas/servicing.ExecutionContextDTO'
           description: The context of the API request, such as the tenant code and project ID.
         metric:
           allOf:
@@ -6767,16 +6839,6 @@ components:
           type: string
           description: The data type associated with the multi-value property.
       description: A property type for a single attribute that can have several valid values at the same time. For example, Employee Education may have values for year, school, and certification.
-    servicing.v2.objectconfiguration.ObjectIdDTO:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: The UUID identifying the object.
-        objectName:
-          type: string
-          description: The object name of the object.
-      description: The identifier for the object.
     servicing.v2.objectconfiguration.ParentChildDetailsDTO:
       type: object
       properties:
@@ -6801,7 +6863,7 @@ components:
           description: The member name corresponding with the ID (or primary key).
         analyticObjectList:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.AnalyticObjectReferenceListDTO'
+            - $ref: '#/components/schemas/servicing.AnalyticObjectReferenceListDTO'
           description: The analytic objects associated with the dimension.
       description: The parent-child dimension's configuration, such as its levels and name property.
     servicing.v2.objectconfiguration.ProcessConceptDefinitionDTO:
@@ -6837,7 +6899,7 @@ components:
           description: The process concept's associated properties.
         tagList:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+            - $ref: '#/components/schemas/servicing.TagReferenceListDTO'
           description: The tags assigned to the object.
         visibleInAnalytics:
           type: boolean
@@ -6878,7 +6940,7 @@ components:
           description: The object name of the metric.
         basicInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+            - $ref: '#/components/schemas/servicing.BasicInformationDTO'
           description: Fields that identify and describe the metric, such as its display name, description, and explanation.
         details:
           allOf:
@@ -6895,7 +6957,7 @@ components:
           format: enum
         versionInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+            - $ref: '#/components/schemas/servicing.VersionInformationDTO'
           description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
       description: Information about the metric, such as its object name, basic information, and additive type.
     servicing.v2.objectconfiguration.ProcessConceptMetricDetailsDTO:
@@ -6938,7 +7000,7 @@ components:
           description: The object name of the process concept outcome.
         basicInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+            - $ref: '#/components/schemas/servicing.BasicInformationDTO'
           description: Fields that identify and describe the concept outcome, such as its display name, description, and explanation.
         outcomeSemantic:
           enum:
@@ -6972,7 +7034,7 @@ components:
           description: The object name of the property.
         basicInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+            - $ref: '#/components/schemas/servicing.BasicInformationDTO'
           description: Fields that identify and describe the property, such as its display name, description, and explanation.
         details:
           allOf:
@@ -7019,7 +7081,7 @@ components:
           description: The object name of the process concept stage.
         basicInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+            - $ref: '#/components/schemas/servicing.BasicInformationDTO'
           description: Fields that identify and describe the concept stage, such as its display name, description, and explanation.
         mappedMemberList:
           allOf:
@@ -7046,7 +7108,7 @@ components:
           description: The object name of the property.
         basicInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+            - $ref: '#/components/schemas/servicing.BasicInformationDTO'
           description: Fields that identify and describe the property, such as its display name, description, and explanation.
         details:
           allOf:
@@ -7054,14 +7116,14 @@ components:
           description: The property type and its details.
         tagList:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+            - $ref: '#/components/schemas/servicing.TagReferenceListDTO'
           description: A list of tags assigned to the object.
         includeWithVee:
           type: boolean
           description: If `true`, the object is available in Vee's responses.
         versionInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.VersionInformationDTO'
+            - $ref: '#/components/schemas/servicing.VersionInformationDTO'
           description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
     servicing.v2.objectconfiguration.PropertyDefinitionListDTO:
       type: object
@@ -7183,11 +7245,11 @@ components:
           description: The object name of the reference.
         basicInformation:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.BasicInformationDTO'
+            - $ref: '#/components/schemas/servicing.BasicInformationDTO'
           description: Fields that identify and describe the analytic object, such as its display name, description, and explanation.
         tagList:
           allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceListDTO'
+            - $ref: '#/components/schemas/servicing.TagReferenceListDTO'
           description: A list of tags assigned to the object.
         direction:
           enum:
@@ -7215,68 +7277,6 @@ components:
             $ref: '#/components/schemas/servicing.v2.objectconfiguration.SubjectReferenceDTO'
           description: The analytic object's references.
       description: The analytic object's references.
-    servicing.v2.objectconfiguration.SuccessfulChangeDTO:
-      type: object
-      properties:
-        executionContext:
-          allOf:
-            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ExecutionContextDTO'
-          description: The tenant and, optionally, project that change was made on.
-        objectName:
-          type: string
-          description: The object name of the object that was changed.
-        uuid:
-          type: string
-          description: The UUID of the object that was changed.
-        displayName:
-          type: string
-          description: The display name of the object that was changed.
-    servicing.v2.objectconfiguration.SynonymListDTO:
-      type: object
-      properties:
-        synonyms:
-          type: array
-          items:
-            type: string
-          description: Alternative words or phrases for the object.
-      description: The object's synonyms.
-    servicing.v2.objectconfiguration.TagReferenceDTO:
-      type: object
-      properties:
-        objectName:
-          type: string
-          description: The object name of the tag.
-      description: A reference to a tag.
-    servicing.v2.objectconfiguration.TagReferenceListDTO:
-      type: object
-      properties:
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/servicing.v2.objectconfiguration.TagReferenceDTO'
-          description: A list of tags assigned to the object.
-      description: The tags assigned to the object.
-    servicing.v2.objectconfiguration.VersionInformationDTO:
-      type: object
-      properties:
-        versionType:
-          enum:
-            - Unknown
-            - BP
-            - Tenant
-            - TenantOverride
-            - TenantShared
-            - Draft
-          type: string
-          description: "Indicates where the object originates from and whether the object has been modified. Valid values:\n - `Unknown`: The source is not known.\n - `BP`: The object originates from Visier's Blueprint and is not changed at the tenant level.\n - `Tenant`: The object only exists in the tenant and doesn't exist in Visier's Blueprint.\n - `TenantOverride`: The object originates from Visier's Blueprint and is changed at the tenant level.\n - `TenantShared`: The object is non-versioned, only exists in the tenant and doesn’t exist in Visier's Blueprint, and is shareable with other users in the tenant.\n - `Draft`: The object only exists in the specified draft project."
-          format: enum
-        edited:
-          type: string
-          description: The UTC time of the latest change in ISO 8601 format. For example, `2023-10-01T12:00:00Z`.
-        editor:
-          type: string
-          description: The user who made the latest change.
-      description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
     Status:
       type: object
       properties:
