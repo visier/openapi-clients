@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2243
+  version: 22222222.99201.2263
 paths:
   /v1/api/pgp-keys:
     get:
@@ -1495,6 +1495,344 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/data_in.ReceivingJobStatusResponse'
+  /v1alpha/data/table-sources/tables:
+    get:
+      tags:
+        - TableSource
+      summary: Retrieve table sources
+      description: "Retrieve a list of table source configurations. Table sources are SQL-accessible tables that can store and manage data directly within Visier.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_GetTableSources
+      parameters:
+        - name: limit
+          in: query
+          description: The maximum number of table sources to return. Default is 100.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTableListResponseDTO'
+    post:
+      tags:
+        - TableSource
+      summary: Create a table source
+      description: "Create a table source configuration. Table sources define the structure and metadata for SQL-accessible tables in Visier.\n\n When creating objects, assign a unique object name but don't set a UUID. Visier generates UUIDs for new objects.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_CreateTableSource
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTableDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTableDTO'
+  /v1alpha/data/table-sources/tables/{tableId}:
+    get:
+      tags:
+        - TableSource
+      summary: Retrieve a table source
+      description: "Retrieve a specific table source configuration by its unique identifier.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_GetTableSource
+      parameters:
+        - name: tableId
+          in: path
+          description: The unique identifier of the table source.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTableDTO'
+    put:
+      tags:
+        - TableSource
+      summary: Update a table source
+      description: "Update an existing table source configuration. Use this to modify the structure, columns, or metadata of a table source.\n \n In `PUT` requests, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the table source. \n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_UpdateTableSource
+      parameters:
+        - name: tableId
+          in: path
+          description: The unique identifier of the table source to update.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTableDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTableDTO'
+    delete:
+      tags:
+        - TableSource
+      summary: Delete a table source
+      description: "Delete a table source configuration. This removes the table source definition but does not delete the associated data.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_DeleteTableSource
+      parameters:
+        - name: tableId
+          in: path
+          description: The unique identifier of the table source.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content: {}
+  /v1alpha/data/table-sources/transactions:
+    post:
+      tags:
+        - TableSource
+      summary: Start a transaction
+      description: "Start a transaction for SQL operations on table sources. Transactions provide isolation for multiple operations and allow for rollback if needed.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_BeginTransaction
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.sqlsource.SqlSourceBeginTransactionRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTransactionStateDTO'
+  /v1alpha/data/table-sources/transactions/{transactionId}:
+    get:
+      tags:
+        - TableSource
+      summary: Retrieve a transaction's status
+      description: "Retrieve the current status and details of a specific transaction.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_GetTransaction
+      parameters:
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTransactionStateDTO'
+  /v1alpha/data/table-sources/transactions/{transactionId}/inputs/{filename}:
+    put:
+      tags:
+        - TableSource
+      summary: Upload an input file to a transaction
+      description: "Send input files to a transaction. SQL operations can reference an input file within a job as if it were a local, temporary view. For example, the input file can contain data to insert into your sources, IDs to match against to change or delete rows, or any other input for your SQL query.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_UploadInputFile
+      parameters:
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction.
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The name of the file to upload. The input will be accessible with this filename during job execution.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content: {}
+  /v1alpha/data/table-sources/transactions/{transactionId}/jobs:
+    post:
+      tags:
+        - TableSource
+      summary: Run a SQL job within a transaction
+      description: "Execute a SQL job within a transaction. Jobs can contain multiple SQL operations including queries, inserts, updates, deletes, and merge operations.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_ExecuteJob
+      parameters:
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.sqlsource.SqlSourceExecuteJobRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.sqlsource.SqlSourceExecuteJobResponseDTO'
+  /v1alpha/data/table-sources/transactions/{transactionId}/outputs/{filename}:
+    get:
+      tags:
+        - TableSource
+      summary: Download an output file from a transaction
+      description: "Download an output file generated by a SQL operation within a transaction. To generate output files, use the `QUERY` action and `output` parameter in `POST /v1alpha/data/table-sources/transactions/{transactionId}/jobs`.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_DownloadOutputFile
+      parameters:
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction.
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The name of the file to download. This should be the filename specified in an output of an action during job execution.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content: {}
   /v1alpha/op/data/receiving-jobs/{jobId}/files:
     get:
       tags:
@@ -3684,6 +4022,332 @@ components:
           items:
             $ref: '#/components/schemas/dp.JobCancellationResultDTO'
           description: A list of objects representing the job cancellation results.
+    servicing.sqlsource.SqlJobTableAccessDTO:
+      type: object
+      properties:
+        read:
+          type: array
+          items:
+            type: string
+          description: The read tables for a given job.
+        write:
+          type: array
+          items:
+            type: string
+          description: The write tables for a given job.
+    servicing.sqlsource.SqlSourceActionDTO:
+      type: object
+      properties:
+        QUERY:
+          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceQueryActionDTO'
+        UPSERT:
+          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceUpsertActionDTO'
+        REPLACE:
+          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceReplaceActionDTO'
+        CAPTURECHANGES:
+          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceCaptureChangesActionDTO'
+        ROLLBACK:
+          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceRollbackActionDTO'
+        COMMIT:
+          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceCommitActionDTO'
+        PROCESS:
+          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceProcessActionDTO'
+      description: An individual action to execute within a SQL job.
+    servicing.sqlsource.SqlSourceBeginTransactionRequestDTO:
+      type: object
+      properties:
+        expireAfterSeconds:
+          type: integer
+          description: The number of seconds that the transaction is open before rolling back and the number of seconds that query results are available.
+          format: int32
+        tablesToModify:
+          type: array
+          items:
+            type: string
+          description: "The tables to modify in the transaction. If undefined, the transaction is read-only. You cannot add tables to modify after creating the transaction.\n\n After a job starts running, the tables are locked for the duration of the transaction to prevent concurrent writes. Each tenant has independent locks; there is no cross-tenant locking."
+    servicing.sqlsource.SqlSourceCaptureChangesActionDTO:
+      type: object
+      properties:
+        source:
+          type: string
+          description: The SQL table (identifier) to capture changes from.
+        target:
+          type: string
+          description: The SQL table (identifier) to insert the changes into.
+      description: "A capture changes action. Logs changes that have occurred since the beginning of the transaction on the specified source table\n and inserts them into the specified target table."
+    servicing.sqlsource.SqlSourceColumnDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the column. This is used in SQL queries to refer to the column.
+        dataType:
+          enum:
+            - UNSPECIFIED
+            - STRING
+            - TENANT_ID
+            - INTEGER
+            - LONG
+            - DOUBLE
+            - DECIMAL
+            - BOOLEAN
+            - DATE_TIME
+            - DATE
+            - JSON
+          type: string
+          description: "The SQL type of data stored in the column.\n * `UNSPECIFIED`: The data type is unspecified.\n * `STRING`: The data type is a string.\n * `TENANT_ID`: The data type is a tenant ID.\n * `INTEGER`: The data type is an integer.\n * `LONG`: The data type is a long value.\n * `DOUBLE`: The data type is a double.\n * `DECIMAL`: The data type is a decimal.\n * `BOOLEAN`: The data type is a Boolean value.\n * `DATE_TIME`: The data type is a date and time value. \n * `DATE`: The data type is date.\n * `JSON`: The data type is in JSON format."
+          format: enum
+        isPrimaryTimestamp:
+          type: boolean
+          description: If `true`, this column determines the overall timestamp of the data contained within the row. This is used for time-based partitioning.
+    servicing.sqlsource.SqlSourceCommitActionDTO:
+      type: object
+      properties: {}
+      description: A commit action.
+    servicing.sqlsource.SqlSourceExecuteJobRequestDTO:
+      type: object
+      properties:
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.sqlsource.SqlSourceActionDTO'
+          description: The actions to execute within the job, in order.
+        tenants:
+          type: array
+          items:
+            type: string
+          description: The tenants to schedule the job for. If not specified, schedules for the current tenant only.
+        inputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.sqlsource.SqlSourceInputDTO'
+          description: The input files to make available to the job.
+        keepTransactionOpenOnError:
+          type: boolean
+          description: If `true`, keep the transaction open if an error occurs while executing the job. The default is to rollback the transaction.
+    servicing.sqlsource.SqlSourceExecuteJobResponseDTO:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: "The job ID that was scheduled. If multiple tenants were specified, the jobs for each tenant will be scheduled\n as child jobs of this parent job."
+        tableAccess:
+          allOf:
+            - $ref: '#/components/schemas/servicing.sqlsource.SqlJobTableAccessDTO'
+          description: The read and write tables per job.
+    servicing.sqlsource.SqlSourceInputDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The name to give the input view in SQL.
+        filename:
+          type: string
+          description: The name of the input file.
+        format:
+          allOf:
+            - $ref: '#/components/schemas/servicing.sqlsource.SqlSourceIoFormatDTO'
+          description: The format and parameters to use to read the input file.
+        tenantCodeColumn:
+          type: string
+          description: The tenant code column to use when multiple tenants are specified.
+        prependAdminTenantCode:
+          type: boolean
+          description: If `true`, the tenant codes in the column/filename do not include the parent tenant prefix.
+        inputDistributionMode:
+          enum:
+            - NO_DISTRIBUTION
+            - DISTRIBUTE_FILES
+            - DISTRIBUTE_ROWS
+          type: string
+          description: "Describes how to distribute input data among tenants. Required when multiple tenants are specified. Valid values:\n - `NO_DISTRIBUTION`: Don't distribute to multiple tenants. Files must be uploaded directly to their target tenant.\n - `DISTRIBUTE_FILES`: Distribute to multiple tenants based on the file path. The input filename must exist under subdirectories.\n - `DISTRIBUTE_ROWS`: Distribute to multiple tenants by splitting rows to each tenant based on the tenant code column."
+          format: enum
+        fileContainerName:
+          type: string
+          description: Indicates if the file exists in a container and the container name.
+    servicing.sqlsource.SqlSourceIoFormatDTO:
+      type: object
+      properties:
+        CSV:
+          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceIoFormatDTO_CsvFormatDTO'
+        PARQUET:
+          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceIoFormatDTO_ParquetFormatDTO'
+      description: Input/output format configuration for a query.
+    servicing.sqlsource.SqlSourceIoFormatDTO_CsvFormatDTO:
+      type: object
+      properties:
+        header:
+          type: boolean
+          description: If `true`, the output includes a header row.
+      description: Options for the CSV format.
+    servicing.sqlsource.SqlSourceIoFormatDTO_ParquetFormatDTO:
+      type: object
+      properties: {}
+      description: Options for the Parquet format.
+    servicing.sqlsource.SqlSourceProcessActionDTO:
+      type: object
+      properties:
+        projectId:
+          type: string
+          description: The project ID to execute the processing job for. If not specified, the current production project is used.
+        versionId:
+          type: string
+          description: The version ID to execute the processing job for. If not specified, the latest version is used.
+        dataCategoryIds:
+          type: array
+          items:
+            type: string
+          description: "The data category IDs to spawn processing jobs for. If not specified, all data categories\n used by tables that were locked by the transaction are processed."
+      description: A process action. Spawns a processing job for the specified data categories.
+    servicing.sqlsource.SqlSourceQueryActionDTO:
+      type: object
+      properties:
+        query:
+          type: string
+          description: The SQL query to execute.
+        timeoutSeconds:
+          type: integer
+          description: The maximum amount of time (in seconds) to run the query for before cancelling it.
+          format: int32
+        output:
+          allOf:
+            - $ref: '#/components/schemas/servicing.sqlsource.SqlSourceQueryOutputDTO'
+          description: The output configuration for the query, if desired.
+        rollbackOnEmpty:
+          type: boolean
+          description: If `true`, the transaction rolls back if the query returns no rows. Use this to implement a validation step.
+      description: A query action. Executes the specified SQL query within the tenant's context.
+    servicing.sqlsource.SqlSourceQueryOutputDTO:
+      type: object
+      properties:
+        format:
+          allOf:
+            - $ref: '#/components/schemas/servicing.sqlsource.SqlSourceIoFormatDTO'
+          description: The format to write the output in.
+        filename:
+          type: string
+          description: The filename to write the output to.
+      description: Output configuration for a query. If specified, query output will be written to a file that can be retrieved later.
+    servicing.sqlsource.SqlSourceReplaceActionDTO:
+      type: object
+      properties:
+        source:
+          type: string
+          description: The SQL table (identifier) containing rows to replace.
+        target:
+          type: string
+          description: The SQL table (identifier) to replace the rows in.
+      description: "A replace action. Replaces all rows in the target table with the rows in the source table.\n Preserves rows that exist in both the source and the target."
+    servicing.sqlsource.SqlSourceRollbackActionDTO:
+      type: object
+      properties: {}
+      description: A rollback action.
+    servicing.sqlsource.SqlSourceTableDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: "The unique identifier for the table. This UUID is generated automatically when the table is created and cannot be changed.\n Do not provide a value when creating a new table."
+        objectName:
+          type: string
+          description: The object name for the table. This determines the name of the table accessible from SQL.
+        basicInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.BasicInformationDTO'
+          description: Fields that identify and describe the table, such as its display name, description, and explanation.
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.sqlsource.SqlSourceColumnDTO'
+          description: The columns contained within the table.
+        canChildrenInherit:
+          type: boolean
+          description: If `true`, analytic tenants inherit the table definition. To also inherit the table data, set `canChildrenInheritData` to `true`. Default is `false`.
+        canChildrenInheritData:
+          type: boolean
+          description: If `true`, analytic tenants inherit the table data. Analytic tenants can read the data but cannot write to it. Default is `false`.
+    servicing.sqlsource.SqlSourceTableListResponseDTO:
+      type: object
+      properties:
+        tables:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTableDTO'
+          description: The list of tables.
+    servicing.sqlsource.SqlSourceTransactionStateDTO:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: The transaction ID.
+        status:
+          enum:
+            - UNSPECIFIED
+            - OPEN
+            - CLOSED
+            - COMMITTED
+            - ROLLED_BACK
+          type: string
+          description: "The current status of the transaction.\n * `UNSPECIFIED`: The transaction is in an unspecified state.\n * `OPEN`: The transaction is open and can accept new actions.\n * `CLOSED`: The transaction is closed and cannot accept new actions.\n * `COMMITTED`: The transaction has been committed and is closed.\n * `ROLLED_BACK`: The transaction has been rolled back and is closed."
+          format: enum
+        createdAt:
+          type: string
+          description: The timestamp when the transaction was created in ISO 8601 format.
+        createdBy:
+          type: string
+          description: The name of the user who created the transaction.
+        expireAt:
+          type: string
+          description: The timestamp when the transaction will expire in ISO 8601 format.
+        startedAt:
+          type: string
+          description: The timestamp when work began on the transaction in ISO 8601 format.
+        closedAt:
+          type: string
+          description: The timestamp when the transaction was closed in ISO 8601 format.
+        tablesToModify:
+          type: array
+          items:
+            type: string
+          description: The tables to modify in the transaction.
+    servicing.sqlsource.SqlSourceUpsertActionDTO:
+      type: object
+      properties:
+        source:
+          type: string
+          description: The SQL table (identifier) containing rows to upsert.
+        target:
+          type: string
+          description: The SQL table (identifier) to upsert the rows into.
+        keys:
+          type: array
+          items:
+            type: string
+          description: The key columns to match on to find rows that should be replaced.
+      description: An upsert action. Replaces any rows that match on `keys` with the rows in the source table, and inserts them if there are no matches.
+    servicing.BasicInformationDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The user-friendly name for the object.
+        shortDisplayName:
+          type: string
+          description: A shortened version of the display name. If the object is visible in the solution experience, this name is displayed in visualization titles.
+        description:
+          type: string
+          description: A short description of the object. Descriptions provide in-context help for your users while working in Visier.
+        explanation:
+          type: string
+          description: A longer description of the object that typically includes a definition, calculation details, and other guidance about how to use the object.
+        designerNotes:
+          type: string
+          description: An admin-only description of the object that provides design-specific information or considerations.
+        synonymList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.SynonymListDTO'
+          description: Alternative words or phrases for the object.
+      description: Fields that identify and describe the object, such as its display name, description, and explanation.
     servicing.DataCategoriesResponseDTO:
       type: object
       properties:
@@ -3901,6 +4565,15 @@ components:
           type: boolean
           description: If `true`, the file is included in data version generation.
       description: Information about a file uploaded to a source.
+    servicing.SynonymListDTO:
+      type: object
+      properties:
+        synonyms:
+          type: array
+          items:
+            type: string
+          description: Alternative words or phrases for the object.
+      description: The object's synonyms.
     servicing.TenantDataUploadStatusResponseDTO:
       type: object
       properties:
@@ -4071,6 +4744,13 @@ tags:
   - name: DataUpload
     x-displayName: Data Upload
     description: Send data files to Visier. After we receive the data, Visier starts a receiving job and a processing job to process the data.
+  - name: TableSource
+    x-displayName: Table Source
+    description: 'Use row-based management for your source data in Visier. The Table Source API supports direct SQL-based data modifications, eliminating concerns about file management or override behavior. Use the API to create, modify, and delete tables. Use SQL statements to query, insert, update, delete, and merge data into tables with transactions. You can reference the tables by mappings, just like other sources, to load data into an analytic object in a data version.
+
+      <br><br>
+
+      **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.</em>'
 security:
   - ApiKeyAuth: []
     BearerAuth: []
@@ -4086,3 +4766,4 @@ x-tagGroups:
       - DataAndJobHandling
       - PGPKeys
       - DataUpload
+      - TableSource
