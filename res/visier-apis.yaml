@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2263
+  version: 22222222.99201.2280
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -393,6 +393,48 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/servicing.BulkDataAccessSetRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.BulkDataAccessSetResponseDTO'
+    delete:
+      tags:
+        - Permissions
+      summary: Delete shareable data access sets
+      description: "Delete shareable data access sets.\n\n To specify the project in which to delete shareable data access sets, provide a project UUID in the `ProjectID` request header."
+      operationId: Permissions_DeleteDataAccessSets
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.BulkDataAccessSetDeleteRequestDTO'
         required: true
       responses:
         default:
@@ -13638,7 +13680,7 @@ components:
         visibleForSelection:
           allOf:
             - $ref: '#/components/schemas/admin.VisibleForSelectionDTO'
-          description: "The features in which your users can see and select this user group. If omitted, the user group is visible in all features.\n **Note**: User group visibility is not available until Summer 2025."
+          description: The features in which your users can see and select this user group. If omitted, the user group is visible in all features.
     admin.UserGroupChangeDimensionFilterDTO:
       type: object
       properties:
@@ -13861,7 +13903,7 @@ components:
       properties:
         enabled:
           type: boolean
-          description: "If `true`, the user group is visible in features such as sharing an analysis with user groups or assigning user groups a Vee sample question. Cannot update to `true` if `features` is empty.\n If `false`, the user group is not visible to select in any features.\n Default is `true`.\n **Note**: User group visibility is not available until Summer 2025."
+          description: "If `true`, the user group is visible in features such as sharing an analysis with user groups or assigning user groups a Vee sample question. Cannot update to `true` if `features` is empty.\n If `false`, the user group is not visible to select in any features.\n Default is `true`."
         features:
           type: array
           items:
@@ -13870,7 +13912,7 @@ components:
               - StudioFeatures
             type: string
             format: enum
-          description: "The features in which the user group is visible. Default is empty.\n If `enabled` is `true`, the user group is visible in features listed.\n If `enabled` is `false`, this field is ignored.\n **Note**: User group visibility is not available until Summer 2025."
+          description: "The features in which the user group is visible. Default is empty.\n If `enabled` is `true`, the user group is visible in features listed.\n If `enabled` is `false`, this field is ignored."
     admin.AssignConnectorCredentialsByTenantResponseDTO:
       type: object
       properties:
@@ -15610,6 +15652,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/dataservices.datamodel.CurrencyDTO'
+          description: The list of available currencies.
+        tenantReportingCurrencyCode:
+          type: string
+          description: The tenant's default reporting currency in ISO 4217 3-letter format, if set.
+        userPreferredCurrencyCode:
+          type: string
+          description: The user's preferred currency in ISO 4217 3-letter format, if set.
       description: A collection of currencies.
     dataservices.datamodel.CurrencyDTO:
       type: object
@@ -20167,19 +20216,19 @@ components:
     servicing.sqlsource.SqlSourceActionDTO:
       type: object
       properties:
-        QUERY:
+        query:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceQueryActionDTO'
-        UPSERT:
+        upsert:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceUpsertActionDTO'
-        REPLACE:
+        replace:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceReplaceActionDTO'
-        CAPTURECHANGES:
+        captureChanges:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceCaptureChangesActionDTO'
-        ROLLBACK:
+        rollback:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceRollbackActionDTO'
-        COMMIT:
+        commit:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceCommitActionDTO'
-        PROCESS:
+        process:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceProcessActionDTO'
       description: An individual action to execute within a SQL job.
     servicing.sqlsource.SqlSourceBeginTransactionRequestDTO:
@@ -20297,9 +20346,9 @@ components:
     servicing.sqlsource.SqlSourceIoFormatDTO:
       type: object
       properties:
-        CSV:
+        csv:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceIoFormatDTO_CsvFormatDTO'
-        PARQUET:
+        parquet:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceIoFormatDTO_ParquetFormatDTO'
       description: Input/output format configuration for a query.
     servicing.sqlsource.SqlSourceIoFormatDTO_CsvFormatDTO:
@@ -20779,6 +20828,14 @@ components:
           items:
             $ref: '#/components/schemas/servicing.FailedChangeDTO'
           description: The list of failed changes.
+    servicing.BulkDataAccessSetDeleteRequestDTO:
+      type: object
+      properties:
+        shareablePropertyAccessConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.DataAccessSetDeleteDTO'
+          description: The data access sets to be deleted.
     servicing.BulkDataAccessSetRequestDTO:
       type: object
       properties:
@@ -20899,6 +20956,12 @@ components:
           items:
             $ref: '#/components/schemas/servicing.PropertyAccessConfigDTO'
           description: The data access assigned to properties in the data access set.
+    servicing.DataAccessSetDeleteDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the data access set to delete.
     servicing.DataAccessSetErrorDTO:
       type: object
       properties:

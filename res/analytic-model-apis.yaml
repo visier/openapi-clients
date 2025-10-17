@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2263
+  version: 22222222.99201.2280
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -3651,6 +3651,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/dataservices.datamodel.CurrencyDTO'
+          description: The list of available currencies.
+        tenantReportingCurrencyCode:
+          type: string
+          description: The tenant's default reporting currency in ISO 4217 3-letter format, if set.
+        userPreferredCurrencyCode:
+          type: string
+          description: The user's preferred currency in ISO 4217 3-letter format, if set.
       description: A collection of currencies.
     dataservices.datamodel.CurrencyDTO:
       type: object
