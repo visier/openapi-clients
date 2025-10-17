@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2263
+  version: 22222222.99201.2280
 paths:
   /v1/api/pgp-keys:
     get:
@@ -4038,19 +4038,19 @@ components:
     servicing.sqlsource.SqlSourceActionDTO:
       type: object
       properties:
-        QUERY:
+        query:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceQueryActionDTO'
-        UPSERT:
+        upsert:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceUpsertActionDTO'
-        REPLACE:
+        replace:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceReplaceActionDTO'
-        CAPTURECHANGES:
+        captureChanges:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceCaptureChangesActionDTO'
-        ROLLBACK:
+        rollback:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceRollbackActionDTO'
-        COMMIT:
+        commit:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceCommitActionDTO'
-        PROCESS:
+        process:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceProcessActionDTO'
       description: An individual action to execute within a SQL job.
     servicing.sqlsource.SqlSourceBeginTransactionRequestDTO:
@@ -4168,9 +4168,9 @@ components:
     servicing.sqlsource.SqlSourceIoFormatDTO:
       type: object
       properties:
-        CSV:
+        csv:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceIoFormatDTO_CsvFormatDTO'
-        PARQUET:
+        parquet:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceIoFormatDTO_ParquetFormatDTO'
       description: Input/output format configuration for a query.
     servicing.sqlsource.SqlSourceIoFormatDTO_CsvFormatDTO:
