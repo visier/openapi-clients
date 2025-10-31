@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2290
+  version: 22222222.99201.2312
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -333,6 +333,7 @@ components:
             - Sandbox
             - ScopedSourceFiles
             - ScopedImplicitSecurity
+            - QueryMcpServer
           type: string
           format: enum
         accessLevel:
