@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2290
+  version: 22222222.99201.2312
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -3214,7 +3214,7 @@ paths:
             format: int32
         - name: limit
           in: query
-          description: For paginated member requests against high-cardinality dimensions, the maximum number of members to retrieve. Default is -1, meaning no limit. If the `limit` value is specified to a non-default value, all other non-pagination parameters are ignored.
+          description: For paginated member requests against high-cardinality dimensions, the maximum number of members to retrieve. Default is -1 to return up to 15,000 members. If the `limit` value is specified to a non-default value, all other non-pagination parameters are ignored. If pagination occurs, the response status code is 206.
           schema:
             type: integer
             format: int32
@@ -7448,6 +7448,38 @@ paths:
               schema:
                 type: string
                 format: binary
+  /v1alpha/op/data/source-files/{identifier}:
+    get:
+      tags:
+        - SourceFilesDownload
+      summary: Download a source file
+      description: "Download a single source file in ZIP format. You must know the `identifier` of the file to download it. To retrieve file identifiers, see `GET /v1alpha/op/data/uploaded-files`.\n\n Administrating tenants can specify the tenant from which to download sources using the `TargetTenantID` header.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: SourceFilesDownload_DownloadSourceFile
+      parameters:
+        - name: identifier
+          in: path
+          description: The unique identifier of the source file you want to download.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.DownloadSourceFilesResponseDTO'
   /v1alpha/op/data/uploaded-files:
     get:
       tags:
@@ -13488,7 +13520,7 @@ components:
           type: array
           items:
             type: string
-          description: "A comma-separated collection of strings that represent the Visier modules assigned to the new analytic tenant. Required if creating new tenants.\n\n To get the module name:\n 1. In Visier, open a project and navigate to **Model > Modules**.\n 2. Select a module.\n 3. In **Basic Information**, copy the **Object name**. This is the module name."
+          description: "A comma-separated collection of strings that represent the Visier modules assigned to the new analytic tenant. Required if creating new tenants.\n\n To get module object names, contact your Partner Success Manager."
         embeddableDomains:
           type: array
           items:
@@ -24184,6 +24216,7 @@ components:
             - Sandbox
             - ScopedSourceFiles
             - ScopedImplicitSecurity
+            - QueryMcpServer
           type: string
           format: enum
         accessLevel:

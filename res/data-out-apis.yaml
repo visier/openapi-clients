@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2290
+  version: 22222222.99201.2312
 paths:
   /v1/data/query/aggregate:
     post:
@@ -371,6 +371,38 @@ paths:
               schema:
                 type: string
                 format: binary
+  /v1alpha/op/data/source-files/{identifier}:
+    get:
+      tags:
+        - SourceFilesDownload
+      summary: Download a source file
+      description: "Download a single source file in ZIP format. You must know the `identifier` of the file to download it. To retrieve file identifiers, see `GET /v1alpha/op/data/uploaded-files`.\n\n Administrating tenants can specify the tenant from which to download sources using the `TargetTenantID` header.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: SourceFilesDownload_DownloadSourceFile
+      parameters:
+        - name: identifier
+          in: path
+          description: The unique identifier of the source file you want to download.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.DownloadSourceFilesResponseDTO'
   /v1alpha/reporting/reports:
     get:
       tags:

@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2290
+  version: 22222222.99201.2312
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -440,7 +440,7 @@ paths:
             format: int32
         - name: limit
           in: query
-          description: For paginated member requests against high-cardinality dimensions, the maximum number of members to retrieve. Default is -1, meaning no limit. If the `limit` value is specified to a non-default value, all other non-pagination parameters are ignored.
+          description: For paginated member requests against high-cardinality dimensions, the maximum number of members to retrieve. Default is -1 to return up to 15,000 members. If the `limit` value is specified to a non-default value, all other non-pagination parameters are ignored. If pagination occurs, the response status code is 206.
           schema:
             type: integer
             format: int32

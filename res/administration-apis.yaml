@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2290
+  version: 22222222.99201.2312
 paths:
   /v1/admin/capabilities:
     get:
@@ -4483,7 +4483,7 @@ components:
           type: array
           items:
             type: string
-          description: "A comma-separated collection of strings that represent the Visier modules assigned to the new analytic tenant. Required if creating new tenants.\n\n To get the module name:\n 1. In Visier, open a project and navigate to **Model > Modules**.\n 2. Select a module.\n 3. In **Basic Information**, copy the **Object name**. This is the module name."
+          description: "A comma-separated collection of strings that represent the Visier modules assigned to the new analytic tenant. Required if creating new tenants.\n\n To get module object names, contact your Partner Success Manager."
         embeddableDomains:
           type: array
           items:
