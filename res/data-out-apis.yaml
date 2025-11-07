@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2323
+  version: 22222222.99201.2330
 paths:
   /v1/data/query/aggregate:
     post:
@@ -609,6 +609,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.SimpleDocumentHeaderSearchResponseDTO'
+  /v1alpha/search/visier-objects:
+    post:
+      tags:
+        - Search
+      summary: Search for Visier objects
+      description: "Perform a search for Visier objects, such as metrics, dimensions, dimension members, concepts, analytic objects, and properties.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: Search_ContextSearchDocumentHeaders
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VisierObjectSearchRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VisierObjectSearchResponseDTO'
   /v1alpha/vee/feedback:
     post:
       tags:
@@ -2585,6 +2617,38 @@ components:
         messages:
           type: string
           description: A description of the request status.
+    servicing.ConceptSearchContextDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The unique identifier of the analytic object to which the concept belongs.
+        metricId:
+          type: string
+          description: The unique identifier of the metric to which the concept applies.
+    servicing.DimensionMemberSearchContextDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The unique identifier of the analytic object to which the dimension member belongs.
+        dimensionId:
+          type: array
+          items:
+            type: string
+          description: A list of unique identifiers representing the dimensions to which the dimension member belongs.
+        leafMembersOnly:
+          type: boolean
+          description: If `true`, the response only includes leaf dimension members. Default is `false`.
+    servicing.DimensionSearchContextDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The unique identifier of the analytic object to which the dimension belongs.
+        metricId:
+          type: string
+          description: The unique identifier of the metric to which the dimension applies.
     servicing.DocumentSearchLinkDTO:
       type: object
       properties:
@@ -2595,6 +2659,12 @@ components:
           type: string
           description: The verb to use when formulating the web request. This is commonly `GET`.
       description: Defines the attributes of a web request to reference documents in the search results.
+    servicing.PropertySearchContextDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The unique identifier of the analytic object to which the property belongs.
     servicing.SimpleDocumentHeaderSearchResponseDTO:
       type: object
       properties:
@@ -2622,6 +2692,104 @@ components:
             - $ref: '#/components/schemas/servicing.DocumentSearchLinkDTO'
           description: Use the `viewLink` to build a web request to view this document.
       description: Structure of a single document header search using the Simple search operation.
+    servicing.VisierObjectSearchRequestDTO:
+      type: object
+      properties:
+        query:
+          type: array
+          items:
+            type: string
+          description: The search string. You can provide multiple search strings. The results include Visier object headers that match each of the search strings. Search strings are case-insensitive and support partial matches. Search strings must be at least 3 characters up to a maximum of 200 characters.
+        objectType:
+          enum:
+            - METRIC
+            - DIMENSION
+            - DIMENSION_MEMBER
+            - CONCEPT
+            - ANALYTIC_OBJECT
+            - PROPERTY
+          type: string
+          description: "The type of Visier object to search. Valid values:\n - `METRIC`: Search for metrics that match the search strings.\n - `DIMENSION`: Search for dimensions that match the search strings.\n - `DIMENSION_MEMBER`: Search for dimension members that match the search strings.\n - `CONCEPT`: Search for concepts that match the search strings.\n - `ANALYTIC_OBJECT`: Search for analytic objects that match the search strings.\n - `PROPERTY`: Search for properties that match the search strings."
+          format: enum
+        limit:
+          type: integer
+          description: The maximum number of results to return. Default and maximum are 100.
+          format: int32
+        offset:
+          type: integer
+          description: The index to start retrieving results from, also known as offset. Default is 0.
+          format: int32
+        mask:
+          type: string
+          description: "A comma-separated list of additional fields to include in the response. Valid values:\n - `Description`\n - `Explanation`\n - `Tags`\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
+        dimensionSearchContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.DimensionSearchContextDTO'
+          description: Additional context to refine a dimension search.
+        conceptSearchContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.ConceptSearchContextDTO'
+          description: Additional context to refine a concept search.
+        dimensionMemberSearchContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.DimensionMemberSearchContextDTO'
+          description: Additional context to refine a dimension member search.
+        propertySearchContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.PropertySearchContextDTO'
+          description: Additional context to refine a property search.
+      description: The context search to perform.
+    servicing.VisierObjectSearchResponseDTO:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.VisierObjectSearchResultsDTO'
+          description: "The collection of search results for all `query` search strings. Each result corresponds to one query's search results. The entries are in the same order as the `query` search strings. For example, if the request includes two `query` terms, `headcount` and `turnover`, the response contains two entries in the collection, as shown next.\n\n ```\n \"results\": [\n         \"resultsForQuery\": [\n              {\n                id: \"employeeCount\",\n                displayName: \"Headcount\",\n                matchedField: \"<B>Headcount</B>\",\n                matchScore: 198.0\n              },\n              {\n                id: \"employeeRatio\",\n                displayName: \"Headcount Ratio\",\n                matchedField: \"<B>Headcount</B> Ratio\",\n                matchScore: 190.0\n              }\n          ],\n          \"resultsForQuery\": [\n              {\n                id: \"turnoverRate\",\n                displayName: \"Turnover Rate\",\n                matchedField: \"<B>Turnover</B> Rate\",\n                matchScore: 98.5\n              },\n              {\n                id: \"turnoverCost\",\n                displayName: \"Turnover Cost\",\n                matchedField: \"Turnover Cost\",\n                matchScore: 95.0\n              }\n          ]\n ]\n ```"
+    servicing.VisierObjectSearchResultDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'The unique identifier of the Visier object in the search result. For dimension members, the unique identifier is the qualified name: the dimension''s object name and member''s object name separated by a period; for example, `Location.Canada`.'
+        displayName:
+          type: string
+          description: The localized display name of the Visier object in the search result.
+        matchedField:
+          type: string
+          description: The object field that matched the search string.
+        matchScore:
+          type: number
+          description: The quality of the match. Higher scores represent better matches.
+          format: float
+        description:
+          type: string
+          description: The localized description of the Visier object in the search result. Only included if the `mask` parameter contained `Description`.
+        explanation:
+          type: string
+          description: The localized explanation of the Visier object in the search result. Only included if the `mask` parameter contained `Explanation`.
+        tags:
+          type: array
+          items:
+            type: string
+          description: The tags associated with the Visier object in the search result. Only included if the `mask` parameter contained `Tags`.
+        qualifyingPath:
+          type: string
+          description: The path to the Visier object ID, such as the analytic object with which the object is associated. If the path includes multiple objects, they are separated by periods; for example, `Employee.Candidate.Gender`.
+        path:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of identifiers for members on the query axis. Only valid for `HIERARCHY_MEMBER` object types.
+    servicing.VisierObjectSearchResultsDTO:
+      type: object
+      properties:
+        resultsForQuery:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.VisierObjectSearchResultDTO'
+          description: The collection of search results for a specific `query` search string.
     systemstatus.VeeStatusDTO:
       type: object
       properties:

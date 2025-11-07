@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2323
+  version: 22222222.99201.2330
 paths:
   /v1/admin/capabilities:
     get:
@@ -6331,6 +6331,14 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.RoleModulesConfigDTO'
           description: A list of content packages assigned to the permission.
+        sourceSecurityConfig:
+          allOf:
+            - $ref: '#/components/schemas/servicing.SourceSecurityConfigDTO'
+          description: "The sources assigned in the permission.\n <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>"
+        targetSecurityConfig:
+          allOf:
+            - $ref: '#/components/schemas/servicing.TargetSecurityConfigDTO'
+          description: "A list of data categories and their targets assigned in the permission.\n <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>"
     servicing.PermissionErrorDTO:
       type: object
       properties:
@@ -6709,6 +6717,20 @@ components:
           type: string
           description: A value containing a single string.
       description: A value containing a single string.
+    servicing.SourceSecurityConfigDTO:
+      type: object
+      properties:
+        sourceSecurityProfiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SourceSecurityProfileDTO'
+          description: The sources this permission grants access to.
+    servicing.SourceSecurityProfileDTO:
+      type: object
+      properties:
+        sourceId:
+          type: string
+          description: The unique identifier of the source. Required to update source security. To retrieve source IDs, see `GET /v1/op/data-sources`.
     servicing.SourcesAPIOperationRequestDTO:
       type: object
       properties:
@@ -6767,6 +6789,18 @@ components:
         userId:
           type: string
           description: The user ID.
+    servicing.TargetSecurityConfigDTO:
+      type: object
+      properties:
+        targetSecurityForAll:
+          allOf:
+            - $ref: '#/components/schemas/servicing.TargetsForAllDataCategoriesDTO'
+          description: The data security for targets in all data categories in the permission.
+        targetSecurityProfiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.TargetsForDataCategoryDTO'
+          description: The data security for targets in specific data categories in the permission.
     servicing.TargetTenantCodeDTO:
       type: object
       properties:
@@ -6776,6 +6810,31 @@ components:
         forAllChildren:
           type: boolean
           description: If true, the assignment is for all the analytic tenants of the specified tenant.
+    servicing.TargetsForAllDataCategoriesDTO:
+      type: object
+      properties:
+        accessToAllTargets:
+          type: boolean
+          description: If `true`, the permission grants access to all targets in all data categories. Default is `false`.
+        targetIds:
+          type: array
+          items:
+            type: string
+          description: Distinct targets to grant access to. A target can be the name of an analytic object, parent-child dimension or multi-valued property. This value is ignored if `accessToAllTargets` is `true`.
+    servicing.TargetsForDataCategoryDTO:
+      type: object
+      properties:
+        dataCategoryId:
+          type: string
+          description: The unique identifier of the data category for which the target access definition applies.
+        accessToAllTargets:
+          type: boolean
+          description: If `true`, the permission grants access to all targets in all data categories. Default is `false`.
+        targetIds:
+          type: array
+          items:
+            type: string
+          description: Distinct targets to grant access to. A target can be the name of an analytic object, parent-child dimension or multi-valued property. This value is ignored if `accessToAllTargets` is `true`.
     servicing.TenantCodeErrorDTO:
       type: object
       properties:
