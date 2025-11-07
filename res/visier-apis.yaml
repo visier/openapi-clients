@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2323
+  version: 22222222.99201.2330
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -7191,6 +7191,38 @@ paths:
         "200":
           description: OK
           content: {}
+  /v1alpha/data/table-sources/tables/{tableId}/metadata:
+    get:
+      tags:
+        - TableSource
+      summary: Retrieve a table source's metadata
+      description: "Retrieve previously-stored metadata for a table source, such as the key-value pairs to apply to the table if you commit the transaction. To store metadata for a table source, use the `setMetadata` action in `POST /v1alpha/data/table-sources/transactions/{transactionId}/jobs`.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_GetTableSourceMetadata
+      parameters:
+        - name: tableId
+          in: path
+          description: The unique identifier of the table source for which to retrieve metadata.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.sqlsource.SqlSourceGetTableMetadataResponseDTO'
   /v1alpha/data/table-sources/transactions:
     post:
       tags:
@@ -8004,6 +8036,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.SimpleDocumentHeaderSearchResponseDTO'
+  /v1alpha/search/visier-objects:
+    post:
+      tags:
+        - Search
+      summary: Search for Visier objects
+      description: "Perform a search for Visier objects, such as metrics, dimensions, dimension members, concepts, analytic objects, and properties.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: Search_ContextSearchDocumentHeaders
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VisierObjectSearchRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VisierObjectSearchResponseDTO'
   /v1alpha/vee/feedback:
     post:
       tags:
@@ -17935,6 +17999,12 @@ components:
             - Notification
           type: string
           format: enum
+        sourceType:
+          enum:
+            - UnVersioned
+            - Sql
+          type: string
+          format: enum
     designer.DataProviderBasicInformationDTO:
       type: object
       properties:
@@ -18764,7 +18834,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
-          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered."
+          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A smart compensation event notification was triggered. This is available for Embedded Partners."
         keyName:
           type: string
           description: The display name of the encryption key for the webhook. Encryption key must use `HmacSHA256` algorithm.
@@ -18777,7 +18847,7 @@ components:
       properties:
         eventType:
           type: string
-          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered."
+          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A smart compensation event notification was triggered. This is available for Embedded Partners."
       description: The possible event types for Visier webhooks.
     designer.webhook.WebhookMessageResponseDTO:
       type: object
@@ -20274,6 +20344,8 @@ components:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceCommitActionDTO'
         process:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceProcessActionDTO'
+        setMetadata:
+          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceSetMetadataActionDTO'
       description: An individual action to execute within a SQL job.
     servicing.sqlsource.SqlSourceBeginTransactionRequestDTO:
       type: object
@@ -20347,6 +20419,11 @@ components:
         keepTransactionOpenOnError:
           type: boolean
           description: If `true`, keep the transaction open if an error occurs while executing the job. The default is to rollback the transaction.
+        preconditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.sqlsource.SqlSourceJobPreconditionDTO'
+          description: The precondition requirements to execute the job. If any precondition isn't met, the job fails with an error. To set metadata to use for preconditions, use the `setMetadata` action in `POST /v1alpha/data/table-sources/transactions/{transactionId}/jobs`.
     servicing.sqlsource.SqlSourceExecuteJobResponseDTO:
       type: object
       properties:
@@ -20357,6 +20434,20 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.sqlsource.SqlJobTableAccessDTO'
           description: The read and write tables per job.
+    servicing.sqlsource.SqlSourceGetTableMetadataResponseDTO:
+      type: object
+      properties:
+        tableId:
+          type: string
+          description: The unique identifier of the table.
+        transactionId:
+          type: string
+          description: The unique identifier of the transaction for which the metadata was retrieved, if applicable.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: The table's key-value pairs that were set by previously-executed jobs or previously-committed transactions.
     servicing.sqlsource.SqlSourceInputDTO:
       type: object
       properties:
@@ -20406,6 +20497,18 @@ components:
       type: object
       properties: {}
       description: Options for the Parquet format.
+    servicing.sqlsource.SqlSourceJobPreconditionDTO:
+      type: object
+      properties:
+        table:
+          type: string
+          description: The unique identifier of the SQL table for which to check the precondition.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: The required key-value pairs. If any key doesn't exist or has a different value than specified here, the precondition isn't met and the job fails with an error.
+      description: A precondition that must be met for a job to execute.
     servicing.sqlsource.SqlSourceProcessActionDTO:
       type: object
       properties:
@@ -20464,6 +20567,18 @@ components:
       type: object
       properties: {}
       description: A rollback action.
+    servicing.sqlsource.SqlSourceSetMetadataActionDTO:
+      type: object
+      properties:
+        table:
+          type: string
+          description: The unique identifier of the SQL table for which to set metadata.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'The key-value pairs to set for the job; for example, `"version": "1"`. Keys have a maximum of 128 characters. Values have a maximum of 256 characters.'
+      description: A set metadata action. Sets the key-value pairs to apply to the table source when you commit the transaction. You can use key-value pairs as preconditions for jobs. If any key doesn't exist or has a different value than specified here, the precondition isn't met and the job fails with an error.
     servicing.sqlsource.SqlSourceTableDTO:
       type: object
       properties:
@@ -20968,6 +21083,15 @@ components:
         description:
           type: string
           description: A description of the committed change.
+    servicing.ConceptSearchContextDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The unique identifier of the analytic object to which the concept belongs.
+        metricId:
+          type: string
+          description: The unique identifier of the metric to which the concept applies.
     servicing.ContentPackageDTO:
       type: object
       properties:
@@ -21119,6 +21243,29 @@ components:
           $ref: '#/components/schemas/servicing.StaticDimensionFilterDTO'
         dynamicDimensionFilter:
           $ref: '#/components/schemas/servicing.DynamicDimensionFilterDTO'
+    servicing.DimensionMemberSearchContextDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The unique identifier of the analytic object to which the dimension member belongs.
+        dimensionId:
+          type: array
+          items:
+            type: string
+          description: A list of unique identifiers representing the dimensions to which the dimension member belongs.
+        leafMembersOnly:
+          type: boolean
+          description: If `true`, the response only includes leaf dimension members. Default is `false`.
+    servicing.DimensionSearchContextDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The unique identifier of the analytic object to which the dimension belongs.
+        metricId:
+          type: string
+          description: The unique identifier of the metric to which the dimension applies.
     servicing.DirectDataJobConfigDTO:
       type: object
       properties:
@@ -21708,6 +21855,14 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.RoleModulesConfigDTO'
           description: A list of content packages assigned to the permission.
+        sourceSecurityConfig:
+          allOf:
+            - $ref: '#/components/schemas/servicing.SourceSecurityConfigDTO'
+          description: "The sources assigned in the permission.\n <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>"
+        targetSecurityConfig:
+          allOf:
+            - $ref: '#/components/schemas/servicing.TargetSecurityConfigDTO'
+          description: "A list of data categories and their targets assigned in the permission.\n <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>"
     servicing.PermissionErrorDTO:
       type: object
       properties:
@@ -21951,6 +22106,12 @@ components:
           type: string
           description: "The property's validity status. Valid values: `Valid`, `NoData`, `NotFound`.\n * **Valid**: The object exists and has loaded data.\n * **NoData**: The object exists but doesn't have loaded data.\n * **NotFound**: The object doesn't exist."
           format: enum
+    servicing.PropertySearchContextDTO:
+      type: object
+      properties:
+        analyticObjectId:
+          type: string
+          description: The unique identifier of the analytic object to which the property belongs.
     servicing.PropertySetConfigDTO:
       type: object
       properties:
@@ -22252,6 +22413,20 @@ components:
           type: boolean
           description: If `true`, the file is included in data version generation.
       description: Information about a file uploaded to a source.
+    servicing.SourceSecurityConfigDTO:
+      type: object
+      properties:
+        sourceSecurityProfiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SourceSecurityProfileDTO'
+          description: The sources this permission grants access to.
+    servicing.SourceSecurityProfileDTO:
+      type: object
+      properties:
+        sourceId:
+          type: string
+          description: The unique identifier of the source. Required to update source security. To retrieve source IDs, see `GET /v1/op/data-sources`.
     servicing.SourcesAPIOperationRequestDTO:
       type: object
       properties:
@@ -22351,6 +22526,18 @@ components:
             $ref: '#/components/schemas/servicing.TagReferenceDTO'
           description: A list of tags assigned to the object.
       description: The tags assigned to the object.
+    servicing.TargetSecurityConfigDTO:
+      type: object
+      properties:
+        targetSecurityForAll:
+          allOf:
+            - $ref: '#/components/schemas/servicing.TargetsForAllDataCategoriesDTO'
+          description: The data security for targets in all data categories in the permission.
+        targetSecurityProfiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.TargetsForDataCategoryDTO'
+          description: The data security for targets in specific data categories in the permission.
     servicing.TargetTenantCodeDTO:
       type: object
       properties:
@@ -22360,6 +22547,31 @@ components:
         forAllChildren:
           type: boolean
           description: If true, the assignment is for all the analytic tenants of the specified tenant.
+    servicing.TargetsForAllDataCategoriesDTO:
+      type: object
+      properties:
+        accessToAllTargets:
+          type: boolean
+          description: If `true`, the permission grants access to all targets in all data categories. Default is `false`.
+        targetIds:
+          type: array
+          items:
+            type: string
+          description: Distinct targets to grant access to. A target can be the name of an analytic object, parent-child dimension or multi-valued property. This value is ignored if `accessToAllTargets` is `true`.
+    servicing.TargetsForDataCategoryDTO:
+      type: object
+      properties:
+        dataCategoryId:
+          type: string
+          description: The unique identifier of the data category for which the target access definition applies.
+        accessToAllTargets:
+          type: boolean
+          description: If `true`, the permission grants access to all targets in all data categories. Default is `false`.
+        targetIds:
+          type: array
+          items:
+            type: string
+          description: Distinct targets to grant access to. A target can be the name of an analytic object, parent-child dimension or multi-valued property. This value is ignored if `accessToAllTargets` is `true`.
     servicing.TenantCodeErrorDTO:
       type: object
       properties:
@@ -23014,6 +23226,104 @@ components:
           type: string
           description: The user who made the latest change.
       description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
+    servicing.VisierObjectSearchRequestDTO:
+      type: object
+      properties:
+        query:
+          type: array
+          items:
+            type: string
+          description: The search string. You can provide multiple search strings. The results include Visier object headers that match each of the search strings. Search strings are case-insensitive and support partial matches. Search strings must be at least 3 characters up to a maximum of 200 characters.
+        objectType:
+          enum:
+            - METRIC
+            - DIMENSION
+            - DIMENSION_MEMBER
+            - CONCEPT
+            - ANALYTIC_OBJECT
+            - PROPERTY
+          type: string
+          description: "The type of Visier object to search. Valid values:\n - `METRIC`: Search for metrics that match the search strings.\n - `DIMENSION`: Search for dimensions that match the search strings.\n - `DIMENSION_MEMBER`: Search for dimension members that match the search strings.\n - `CONCEPT`: Search for concepts that match the search strings.\n - `ANALYTIC_OBJECT`: Search for analytic objects that match the search strings.\n - `PROPERTY`: Search for properties that match the search strings."
+          format: enum
+        limit:
+          type: integer
+          description: The maximum number of results to return. Default and maximum are 100.
+          format: int32
+        offset:
+          type: integer
+          description: The index to start retrieving results from, also known as offset. Default is 0.
+          format: int32
+        mask:
+          type: string
+          description: "A comma-separated list of additional fields to include in the response. Valid values:\n - `Description`\n - `Explanation`\n - `Tags`\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
+        dimensionSearchContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.DimensionSearchContextDTO'
+          description: Additional context to refine a dimension search.
+        conceptSearchContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.ConceptSearchContextDTO'
+          description: Additional context to refine a concept search.
+        dimensionMemberSearchContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.DimensionMemberSearchContextDTO'
+          description: Additional context to refine a dimension member search.
+        propertySearchContext:
+          allOf:
+            - $ref: '#/components/schemas/servicing.PropertySearchContextDTO'
+          description: Additional context to refine a property search.
+      description: The context search to perform.
+    servicing.VisierObjectSearchResponseDTO:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.VisierObjectSearchResultsDTO'
+          description: "The collection of search results for all `query` search strings. Each result corresponds to one query's search results. The entries are in the same order as the `query` search strings. For example, if the request includes two `query` terms, `headcount` and `turnover`, the response contains two entries in the collection, as shown next.\n\n ```\n \"results\": [\n         \"resultsForQuery\": [\n              {\n                id: \"employeeCount\",\n                displayName: \"Headcount\",\n                matchedField: \"<B>Headcount</B>\",\n                matchScore: 198.0\n              },\n              {\n                id: \"employeeRatio\",\n                displayName: \"Headcount Ratio\",\n                matchedField: \"<B>Headcount</B> Ratio\",\n                matchScore: 190.0\n              }\n          ],\n          \"resultsForQuery\": [\n              {\n                id: \"turnoverRate\",\n                displayName: \"Turnover Rate\",\n                matchedField: \"<B>Turnover</B> Rate\",\n                matchScore: 98.5\n              },\n              {\n                id: \"turnoverCost\",\n                displayName: \"Turnover Cost\",\n                matchedField: \"Turnover Cost\",\n                matchScore: 95.0\n              }\n          ]\n ]\n ```"
+    servicing.VisierObjectSearchResultDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'The unique identifier of the Visier object in the search result. For dimension members, the unique identifier is the qualified name: the dimension''s object name and member''s object name separated by a period; for example, `Location.Canada`.'
+        displayName:
+          type: string
+          description: The localized display name of the Visier object in the search result.
+        matchedField:
+          type: string
+          description: The object field that matched the search string.
+        matchScore:
+          type: number
+          description: The quality of the match. Higher scores represent better matches.
+          format: float
+        description:
+          type: string
+          description: The localized description of the Visier object in the search result. Only included if the `mask` parameter contained `Description`.
+        explanation:
+          type: string
+          description: The localized explanation of the Visier object in the search result. Only included if the `mask` parameter contained `Explanation`.
+        tags:
+          type: array
+          items:
+            type: string
+          description: The tags associated with the Visier object in the search result. Only included if the `mask` parameter contained `Tags`.
+        qualifyingPath:
+          type: string
+          description: The path to the Visier object ID, such as the analytic object with which the object is associated. If the path includes multiple objects, they are separated by periods; for example, `Employee.Candidate.Gender`.
+        path:
+          type: array
+          items:
+            type: string
+          description: A comma-separated list of identifiers for members on the query axis. Only valid for `HIERARCHY_MEMBER` object types.
+    servicing.VisierObjectSearchResultsDTO:
+      type: object
+      properties:
+        resultsForQuery:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.VisierObjectSearchResultDTO'
+          description: The collection of search results for a specific `query` search string.
     servicing.v2.objectconfiguration.AnalyticObjectDefinitionDTO:
       type: object
       properties:
