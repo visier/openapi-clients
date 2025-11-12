@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2330
+  version: 22222222.99201.2341
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -11413,7 +11413,7 @@ paths:
         Give feedback for a salary benchmark value returned by `GET /v1/compensation-benchmarks/base-salary` or `/base-salaries`. To submit feedback, include the benchmark value's:
           * ID values you defined in `GET /v1/compensation-benchmarks/base-salary` or `/base-salaries`.
           * `referenceDate` and `releaseDate` returned by `GET /v1/compensation-benchmarks/base-salary` or `/base-salaries`.
-          * Optional `additionalComments` up to 150 characters.
+          * Optional `additionalComments` up to 750 characters.
       requestBody:
         description: |
           The feedback to submit.
@@ -11799,7 +11799,7 @@ paths:
       summary: Send feedback to help improve the quality of the job match results
       tags: [Dimensions]
       operationId: "SubmitJobsFeedback"
-      description: "This API allows you to submit feedback on the quality of the job match results returned by the Get jobs endpoint. \n\nYou must include the search term (job title you entered) in the request body. You can include the optional `naicsCode` if it was used as part of the search in the Get jobs endpoint.\n\nYou can also submit additional comments by providing values for `additionalComments`, along with `term` and `naicsCode`.\n\n**Note:**\n\nFor `term`, the minimum is 2 characters and the maximum is 100 characters.\n\nFor `additionalComments`, the maximum is 150 characters.\n"
+      description: "This API allows you to submit feedback on the quality of the job match results returned by the Get jobs endpoint. \n\nYou must include the search term (job title you entered) in the request body. You can include the optional `naicsCode` if it was used as part of the search in the Get jobs endpoint.\n\nYou can also submit additional comments by providing values for `additionalComments`, along with `term` and `naicsCode`.\n\n**Note:**\n\nFor `term`, the minimum is 2 characters and the maximum is 100 characters.\n\nFor `additionalComments`, the maximum is 750 characters.\n"
       requestBody:
         description: |
           The feedback you want to submit for.
@@ -12299,6 +12299,44 @@ paths:
         credentials: "${apigateway_role}"
         httpMethod: "POST"
         uri: "${lambda-get-info-arn}"
+      security:
+        - api_key: []
+  /v1/compensation-benchmarks/taxonomy-change-info:
+    get:
+      summary: Retrieve taxonomy changes
+      tags: [Dimensions]
+      operationId: "GetTaxonomyChangeInfo"
+      description: |
+        Retrieve a list of taxonomy changes in CSV format, including updates to jobs, locations, industries, career levels, and company size up to the latest release.
+      responses:
+        "200":
+          description: |
+            A list of changes to the taxonomy in CSV format.
+          content:
+            text/csv:
+              schema:
+                type: string
+                example: |
+                  "Date,Type,Category,Name,Id,Description\n\"January 1, 2025\",Add,Job,New job,J.123456,Job added"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-taxonomy-change-info-arn}"
       security:
         - api_key: []
   /v1/jobs/{id}:
@@ -25601,7 +25639,7 @@ components:
             If provided, the naicsCode entered when using the Get jobs endpoint. You're providing feedback on the quality of the results for the search term and code.
         additionalComments:
           type: string
-          description: "Additional written feedback about the job match results returned by the Get jobs endpoint. \nThe maximum is 150 characters.\n"
+          description: "Additional written feedback about the job match results returned by the Get jobs endpoint. \nThe maximum is 750 characters.\n"
       required:
         - term
     SalaryBenchmarkFeedbackInput:
@@ -25646,7 +25684,7 @@ components:
           type: string
           description: |
             Optional written feedback about the salary benchmark values.
-            The maximum is 150 characters.
+            The maximum is 750 characters.
       required:
         - job
         - location
