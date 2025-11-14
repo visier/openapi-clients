@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2341
+  version: 22222222.99201.2354
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -14869,6 +14869,12 @@ components:
         includeDetailData:
           type: boolean
           description: If `true`, returns detail data relevant to the question. Default is `false`.
+        includeRelatedAnalyses:
+          type: boolean
+          description: If `true`, returns related analyses. Default is `false`.
+        includeRelatedReports:
+          type: boolean
+          description: If `true`, returns related reports. Default is `false`. Reports are available for Embedded Partners.
     analysis.common.VeeQuestionCategoriesAPIResponseDTO:
       type: object
       properties:
@@ -14922,6 +14928,36 @@ components:
           description: The maximum number of members to return in Detailed View.
           format: uint32
       description: The request body fields to ask Vee a question.
+    analysis.common.VeeRelatedDocumentDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier (UUID) of the document.
+        title:
+          type: string
+          description: The document's display name.
+        description:
+          type: string
+          description: A description of the document.
+        url:
+          type: string
+          description: A direct URL to view the document in Visier, or the click-through link for Embedded Partners if configured.
+      description: Information about a related analysis or report. Reports are available for Embedded Partners.
+    analysis.common.VeeRelatedDocumentListDTO:
+      type: object
+      properties:
+        analyses:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.VeeRelatedDocumentDTO'
+          description: A list of related analyses.
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.VeeRelatedDocumentDTO'
+          description: A list of related reports. Reports are available for Embedded Partners.
+      description: A list of related analyses and reports that may be relevant to the question. Reports are available for Embedded Partners.
     analysis.common.VeeResponseDTO:
       type: object
       properties:
@@ -14959,6 +14995,10 @@ components:
         rewordedQuestion:
           type: string
           description: Vee's plain language interpretation of the original question. For example, if you asked "what is the headcount by gender in each org?", Vee might reword the question as "What is the gender breakdown of our workforce by organization this month?".
+        relatedDocuments:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.VeeRelatedDocumentListDTO'
+          description: A list of related analyses and reports that may be relevant to the question. Reports are available for Embedded Partners.
       description: The response after asking Vee a question.
     analysis.common.VeeResponseSchemaDTO:
       type: object
