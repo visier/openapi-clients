@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2357
+  version: 22222222.99201.2370
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1441,6 +1441,430 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.objectconfiguration.ObjectsBulkChangeResponseDTO'
+  /v1/data/model/vee/sample-question-categories:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of all Vee question categories
+      description: Get a list of all categories for Vee sample questions. Administrating tenants can specify the tenant from which to retrieve categories using the `TargetTenantID` header.
+      operationId: DataModel_GetVeeSampleQuestionCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.QuestionCategoriesAPIResponseDTO'
+    put:
+      tags:
+        - DataModel
+      summary: Update Vee question categories
+      description: "Update existing Vee sample question categories, such as its display name or icon. Administrating tenants can specify the tenant in which to update categories using the `TargetTenantID` header.\n\n When updating categories, the category definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values for optional fields from the update request, the values reset to their respective default value. We recommend that you retrieve a category's details before you update the category with new values."
+      operationId: DataModel_PutVeeSampleQuestionCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesChangeDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
+    post:
+      tags:
+        - DataModel
+      summary: Create Vee question categories
+      description: Create new sample question categories for Vee sample questions. Administrating tenants can specify the tenant in which to add sample question categories using the `TargetTenantID` header.
+      operationId: DataModel_CreateVeeSampleQuestionCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesChangeDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
+    delete:
+      tags:
+        - DataModel
+      summary: Delete Vee question categories
+      description: Delete existing Vee sample question categories. Administrating tenants can specify the tenant in which to delete categories using the `TargetTenantID` header.
+      operationId: DataModel_DeleteVeeSampleQuestionCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesDeleteDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
+    patch:
+      tags:
+        - DataModel
+      summary: Partially update Vee question categories
+      description: "Make partial changes to Vee sample question categories. Administrating tenants can specify the tenant in which to patch categories using the `TargetTenantID` header.\n\n Unlike a `PUT` call, which completely replaces the sample question category definition, use `PATCH` to change specific fields in the category without affecting omitted fields."
+      operationId: DataModel_UpdateVeeSampleQuestionCategories
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesChangeDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
+  /v1/data/model/vee/sample-question-categories/{questionCategoryId}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a Vee question category's details
+      description: Get the details of a specific Vee sample question category where the ID is the `categoryID` returned by `GET /v1/data/model/vee/sample-question-categories`.
+      operationId: DataModel_GetVeeSampleQuestionCategory
+      parameters:
+        - name: questionCategoryId
+          in: path
+          description: The ID of the Vee sample question category to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.QuestionCategoryAPIResponseDTO'
+  /v1/data/model/vee/sample-questions:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of all Vee sample questions
+      description: Get a list of all Vee sample questions for a tenant, including sample questions that are not available to end users. Administrating tenants can specify the tenant from which to retrieve sample questions using the `TargetTenantID` header.
+      operationId: DataModel_GetVeeSampleQuestions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SampleQuestionsAPIResponseDTO'
+    put:
+      tags:
+        - DataModel
+      summary: Update Vee sample questions
+      description: "Update existing sample questions, such as its question category or whether the question is visible in Vee. Administrating tenants can specify the tenant in which to update sample questions using the `TargetTenantID` header.\n When updating sample questions, the question definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values for optional fields from the update request, the values reset to their respective default value. We recommend that you retrieve a question's details before you update the question with new values."
+      operationId: DataModel_PutVeeSampleQuestions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionsChangeDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionsBulkChangeResponseDTO'
+    post:
+      tags:
+        - DataModel
+      summary: Add Vee sample questions
+      description: Create new sample questions that your users can ask Vee. Administrating tenants can specify the tenant in which to add sample questions using the `TargetTenantID` header.
+      operationId: DataModel_CreateVeeSampleQuestions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionsChangeDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionsBulkChangeResponseDTO'
+    delete:
+      tags:
+        - DataModel
+      summary: Delete Vee sample questions
+      description: Delete existing sample questions. Administrating tenants can specify the tenant in which to delete questions using the `TargetTenantID` header.
+      operationId: DataModel_DeleteVeeSampleQuestions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionsDeleteDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionsBulkChangeResponseDTO'
+    patch:
+      tags:
+        - DataModel
+      summary: Patch Vee sample questions
+      description: "Make partial changes to Vee sample questions. Administrating tenants can specify the tenant in which to patch questions using the `TargetTenantID` header.\n Unlike a `PUT` call, which completely replaces the sample question definition, use `PATCH` to change specific fields in the question without affecting omitted fields."
+      operationId: DataModel_UpdateVeeSampleQuestions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.VeeQuestionsChangeDefinitionsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.VeeQuestionsBulkChangeResponseDTO'
+  /v1/data/model/vee/sample-questions/{questionId}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a Vee sample question's details
+      description: Get the details of a specific Vee sample question where the ID is the `questionID` returned by `GET /v1/data/model/vee/sample-questions`.
+      operationId: DataModel_GetVeeSampleQuestion
+      parameters:
+        - name: questionId
+          in: path
+          description: The ID of the Vee sample question to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SampleQuestionAPIResponseDTO'
   /v1alpha/alerts:
     get:
       tags:
@@ -1623,430 +2047,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/platform.UpdateEventAlertRecipientStatusDTO'
-  /v1alpha/data/model/vee/sample-question-categories:
-    get:
-      tags:
-        - DataModel
-      summary: Retrieve a list of all Vee question categories
-      description: "Get a list of all categories for Vee sample questions. Administrating tenants can specify the tenant from which to retrieve categories using the `TargetTenantID` header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_GetVeeSampleQuestionCategories
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.QuestionCategoriesAPIResponseDTO'
-    put:
-      tags:
-        - DataModel
-      summary: Update Vee question categories
-      description: "Update existing Vee sample question categories, such as its display name or icon. Administrating tenants can specify the tenant in which to update categories using the `TargetTenantID` header.\n\n When updating categories, the category definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values for optional fields from the update request, the values reset to their respective default value. We recommend that you retrieve a category's details before you update the category with new values.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_PutVeeSampleQuestionCategories
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesChangeDefinitionsDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
-    post:
-      tags:
-        - DataModel
-      summary: Create Vee question categories
-      description: "Create new sample question categories for Vee sample questions. Administrating tenants can specify the tenant in which to add sample question categories using the `TargetTenantID` header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_CreateVeeSampleQuestionCategories
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesChangeDefinitionsDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
-    delete:
-      tags:
-        - DataModel
-      summary: Delete Vee question categories
-      description: "Delete existing Vee sample question categories. Administrating tenants can specify the tenant in which to delete categories using the `TargetTenantID` header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_DeleteVeeSampleQuestionCategories
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesDeleteDefinitionsDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
-    patch:
-      tags:
-        - DataModel
-      summary: Partially update Vee question categories
-      description: "Make partial changes to Vee sample question categories. Administrating tenants can specify the tenant in which to patch categories using the `TargetTenantID` header.\n\n Unlike a `PUT` call, which completely replaces the sample question category definition, use `PATCH` to change specific fields in the category without affecting omitted fields.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_UpdateVeeSampleQuestionCategories
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.VeeQuestionCategoriesChangeDefinitionsDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.VeeQuestionCategoriesBulkChangeResponseDTO'
-  /v1alpha/data/model/vee/sample-question-categories/{questionCategoryId}:
-    get:
-      tags:
-        - DataModel
-      summary: Retrieve a Vee question category's details
-      description: "Get the details of a specific Vee sample question category where the ID is the `categoryID` returned by `GET /v1alpha/data/model/vee/sample-question-categories`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_GetVeeSampleQuestionCategory
-      parameters:
-        - name: questionCategoryId
-          in: path
-          description: The ID of the Vee sample question category to retrieve.
-          required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.QuestionCategoryAPIResponseDTO'
-  /v1alpha/data/model/vee/sample-questions:
-    get:
-      tags:
-        - DataModel
-      summary: Retrieve a list of all Vee sample questions
-      description: "Get a list of all Vee sample questions for a tenant, including sample questions that are not available to end users. Administrating tenants can specify the tenant from which to retrieve sample questions using the `TargetTenantID` header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_GetVeeSampleQuestions
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
-          schema:
-            type: string
-            format: uuid
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.SampleQuestionsAPIResponseDTO'
-    put:
-      tags:
-        - DataModel
-      summary: Update Vee sample questions
-      description: "Update existing sample questions, such as its question category or whether the question is visible in Vee. Administrating tenants can specify the tenant in which to update sample questions using the `TargetTenantID` header.\n When updating sample questions, the question definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values for optional fields from the update request, the values reset to their respective default value. We recommend that you retrieve a question's details before you update the question with new values.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_PutVeeSampleQuestions
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.VeeQuestionsChangeDefinitionsDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.VeeQuestionsBulkChangeResponseDTO'
-    post:
-      tags:
-        - DataModel
-      summary: Add Vee sample questions
-      description: "Create new sample questions that your users can ask Vee. Administrating tenants can specify the tenant in which to add sample questions using the `TargetTenantID` header.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_CreateVeeSampleQuestions
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.VeeQuestionsChangeDefinitionsDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.VeeQuestionsBulkChangeResponseDTO'
-    delete:
-      tags:
-        - DataModel
-      summary: Delete Vee sample questions
-      description: "Delete existing sample questions. Administrating tenants can specify the tenant in which to delete questions using the `TargetTenantID` header.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_DeleteVeeSampleQuestions
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.VeeQuestionsDeleteDefinitionsDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.VeeQuestionsBulkChangeResponseDTO'
-    patch:
-      tags:
-        - DataModel
-      summary: Patch Vee sample questions
-      description: "Make partial changes to Vee sample questions. Administrating tenants can specify the tenant in which to patch questions using the `TargetTenantID` header.\n Unlike a `PUT` call, which completely replaces the sample question definition, use `PATCH` to change specific fields in the question without affecting omitted fields.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_UpdateVeeSampleQuestions
-      parameters:
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.VeeQuestionsChangeDefinitionsDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.VeeQuestionsBulkChangeResponseDTO'
-  /v1alpha/data/model/vee/sample-questions/{questionId}:
-    get:
-      tags:
-        - DataModel
-      summary: Retrieve a Vee sample question's details
-      description: "Get the details of a specific Vee sample question where the ID is the `questionID` returned by `GET /v1alpha/data/model/vee/sample-questions`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_GetVeeSampleQuestion
-      parameters:
-        - name: questionId
-          in: path
-          description: The ID of the Vee sample question to retrieve.
-          required: true
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-        - name: ProjectID
-          in: header
-          description: Optionally, specify a project in which to make the request.
-          schema:
-            type: string
-            format: uuid
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.SampleQuestionAPIResponseDTO'
   /v1alpha/planning/model/plans:
     get:
       tags:
@@ -7332,7 +7332,7 @@ components:
 tags:
   - name: DataModel
     x-displayName: Data Model
-    description: "Discover the objects that make up your Visier solution and provide detailed information on the object's schema.\nYou can retrieve detailed information about objects in Visier by retrieving a list of all objects or retrieving information about an object by object ID.\nThe types of objects you can retrieve using the data model API are:\n  * Analytic objects\n  * Properties\n  * Dimensions\n  * Selection concepts\n  * Metrics\n  * Predictions"
+    description: "Discover the objects that make up your Visier solution and provide detailed information on the object's schema.\nYou can retrieve detailed information about objects in Visier by retrieving a list of all objects or retrieving information about an object by object ID.\nThe types of objects you can retrieve using the data model API are:\n  * Analytic objects\n  * Properties\n  * Dimensions\n  * Selection concepts\n  * Metrics\n  * Predictions\n  * Vee sample questions and categories"
   - name: ObjectConfiguration
     x-displayName: Object Configuration
     description: Manage objects in your analytic model.
