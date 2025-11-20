@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2370
+  version: 22222222.99201.2382
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -15044,7 +15044,7 @@ components:
           description: The unique identifier of the question category.
         isAssignedToUser:
           type: boolean
-          description: If `true`, the sample question is assigned to at least one of the user's user groups.
+          description: If `true`, the sample question is spotlighted for at least one of the user's user groups.
     analysis.common.VeeSampleQuestionLibraryDTO:
       type: object
       properties:
@@ -22351,7 +22351,7 @@ components:
         userGroupAssignment:
           allOf:
             - $ref: '#/components/schemas/servicing.UserGroupAssignmentDTO'
-          description: The user group IDs assigned to the sample question.
+          description: The user group IDs that the sample question is spotlighted for.
         versionInformation:
           allOf:
             - $ref: '#/components/schemas/servicing.VersionInformationDTO'
@@ -23165,7 +23165,7 @@ components:
         userGroupAssignment:
           allOf:
             - $ref: '#/components/schemas/servicing.UserGroupAssignmentDTO'
-          description: The user group IDs assigned to the sample question.
+          description: The user group IDs that the sample question is spotlighted for.
       description: The Vee sample question details.
     servicing.VeeQuestionChangeDefinitionsByTenantDTO:
       type: object
@@ -23197,7 +23197,7 @@ components:
         userGroupAssignment:
           allOf:
             - $ref: '#/components/schemas/servicing.UserGroupAssignmentDTO'
-          description: The user group IDs that were not successfully assigned to the sample question.
+          description: The user group IDs that were not successfully assigned to the sample question for spotlight.
         message:
           type: string
           description: An error message describing the cause of the failure.
@@ -23229,7 +23229,7 @@ components:
         userGroupAssignment:
           allOf:
             - $ref: '#/components/schemas/servicing.UserGroupAssignmentDTO'
-          description: The user group IDs that were successfully assigned to the sample question.
+          description: The user group IDs that were successfully assigned to the sample question for spotlight.
         tenantCode:
           type: string
           description: The tenant that the sample question was changed in.
