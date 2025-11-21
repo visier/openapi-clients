@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2382
+  version: 22222222.99201.2383
 paths:
   /v1/admin/capabilities:
     get:
@@ -3761,12 +3761,6 @@ paths:
           description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
           schema:
             type: boolean
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/admin.DeleteUserGroupV2Request'
-        required: true
       responses:
         default:
           description: Default error response
@@ -4124,12 +4118,6 @@ paths:
                 $ref: '#/components/schemas/Status'
 components:
   schemas:
-    admin.DeleteUserGroupV2Request:
-      type: object
-      properties:
-        userGroupId:
-          type: string
-          description: The ID of user group to delete.
     admin.DeleteUserResponse:
       type: object
       properties: {}
