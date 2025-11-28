@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2383
+  version: 22222222.99201.2392
 paths:
   /v1/api/pgp-keys:
     get:
@@ -4094,6 +4094,8 @@ components:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceProcessActionDTO'
         setMetadata:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceSetMetadataActionDTO'
+        reset:
+          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceResetActionDTO'
       description: An individual action to execute within a SQL job.
     servicing.sqlsource.SqlSourceBeginTransactionRequestDTO:
       type: object
@@ -4311,6 +4313,16 @@ components:
           type: string
           description: The SQL table (identifier) to replace the rows in.
       description: "A replace action. Replaces all rows in the target table with the rows in the source table.\n Preserves rows that exist in both the source and the target."
+    servicing.sqlsource.SqlSourceResetActionDTO:
+      type: object
+      properties:
+        table:
+          type: string
+          description: The SQL table (identifier) to rollback.
+        asOfTimestamp:
+          type: string
+          description: The timestamp we use to fetch the latest snapshot
+      description: An reset action. Rolls table back to the latest snapshot given the timestamp.
     servicing.sqlsource.SqlSourceRollbackActionDTO:
       type: object
       properties: {}

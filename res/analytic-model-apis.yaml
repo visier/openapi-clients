@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2383
+  version: 22222222.99201.2392
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -4723,6 +4723,9 @@ components:
         displayName:
           type: string
           description: The display name of the alert.
+        description:
+          type: string
+          description: optional, The user provided description of the alert.
       description: The details of the personalized alert to create.
     platform.DimensionMemberReferenceDTO:
       type: object
@@ -4762,6 +4765,9 @@ components:
         isEnabledForUser:
           type: boolean
           description: If `true`, the personalized alert is enabled for the user.
+        description:
+          type: string
+          description: optional, The description of the alert.
       description: A personalized alert's details, such as its ID and trigger criteria.
     platform.EventAlertDeleteSuccessDTO:
       type: object
@@ -6681,6 +6687,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.AnalyticObjectReferenceListDTO'
           description: The analytic objects associated with the dimension.
+        useMappingDisplayName:
+          type: boolean
+          description: If `true`, you can map a dimension member's object name and display name using different source columns. If `false`, the same column is used to map both the object name and display name.
       description: The leveled dimension's configuration, such as its levels and settings.
     servicing.v2.objectconfiguration.LocalOrSharedDimensionDTO:
       type: object
