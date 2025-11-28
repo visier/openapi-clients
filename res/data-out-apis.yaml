@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2383
+  version: 22222222.99201.2392
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1123,7 +1123,7 @@ components:
           description: Options to specify how Vee should respond to a question.
         maxViewDetailsMembers:
           type: integer
-          description: The maximum number of members to return in Detailed View.
+          description: The maximum number of members to return in Detailed View. At maximum chart size (1600 by 900 pixels), a maximum of 16 members can be shown in the chart.
           format: uint32
       description: The request body fields to ask Vee a question.
     analysis.common.VeeRelatedDocumentDTO:
@@ -1907,7 +1907,26 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryAxisOptionsDTO'
           description: Additional transformations to perform on this axis. Only available when the Accept header is a table format, such as text/csv or application/jsonlines.
+        sortAndLimitOptions:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryAxisSortAndLimitOptionsDTO'
+          description: Optional sorting and limits to apply to the axis.
       description: An axis of a query used to group data points.
+    dataservices.query.QueryAxisLimitDTO:
+      type: object
+      properties:
+        limitType:
+          enum:
+            - FIRST_N
+            - LAST_N
+          type: string
+          description: "The type of limit to apply to the axis. Valid values:\n - `FIRST_N`: Limits the axis to the first N members.\n - `LAST_N`: Limits the axis to the last N members."
+          format: enum
+        n:
+          type: integer
+          description: If `limitType` is defined, the number of axis members to include. `n` must be at least `1`. If less than `1`, no limit is applied.
+          format: int32
+      description: Limit the number of axis members returned in the response.
     dataservices.query.QueryAxisOptionsDTO:
       type: object
       properties:
@@ -1925,6 +1944,36 @@ components:
           type: string
           description: If specified, returns the column name of the axis in the response.
       description: "QueryAxisOptions allows you to customize an axis in the query, such as changing the display mode for its cell set values or providing a custom column name.\n Only available when the Accept header is a table format, such as text/csv or application/jsonlines."
+    dataservices.query.QueryAxisSortAndLimitOptionsDTO:
+      type: object
+      properties:
+        sort:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryAxisSortDTO'
+          description: Sort the order that axis members returned in the response. For no sorting, omit `sort`.
+        limit:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.QueryAxisLimitDTO'
+          description: Limit the number of axis members returned in the response. For no limit, omit `limit`.
+      description: Sort and limit the axis members returned in the response.
+    dataservices.query.QueryAxisSortDTO:
+      type: object
+      properties:
+        sortType:
+          enum:
+            - CONFIGURED
+            - METRIC_VALUE
+          type: string
+          description: "The order in which to return axis members in the response. Valid values:\n - `CONFIGURED`: Sorts axis members by their configuration:\n   - For parent-child dimensions, sorts axis members alphabetically by name.\n   - For all other dimensions, sorts axis members by their configured order in Studio.\n   - Unknown members are always placed at the end of the axis.\n - `METRIC_VALUE`: Sorts axis members by their metric values. Applicable if there is only one query axis and only one time axis member."
+          format: enum
+        sortDirection:
+          enum:
+            - SORT_ASCENDING
+            - SORT_DESCENDING
+          type: string
+          description: "The direction in which to return axis members in the response. Valid values:\n - `SORT_ASCENDING`: Sorts axis members in ascending order.\n - `SORT_DESCENDING`: Sorts axis members in descending order."
+          format: enum
+      description: Sort the axis members returned in the response by type and direction.
     dataservices.query.QueryDimensionDataMemberSelectionDTO:
       type: object
       properties:
