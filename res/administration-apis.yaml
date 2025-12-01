@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2392
+  version: 22222222.99201.2398
 paths:
   /v1/admin/capabilities:
     get:
@@ -4403,7 +4403,7 @@ components:
           description: A list of objects representing the analysis displayed to specific user groups when users log in.
         clickThroughLink:
           type: string
-          description: The custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability or email content.
+          description: The custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability, embedded visualizations, or email content.
         clickThroughLinkEnabled:
           type: string
           description: Whether the click-through link is enabled or disabled.
@@ -4507,7 +4507,7 @@ components:
           description: If true, the tenant is enabled. Enabled tenants have access to Visier visualizations.
         clickThroughLink:
           type: string
-          description: A custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability or email content. This is optional. Causes the API request to take longer because it must publish a project to production.
+          description: A custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability, embedded visualizations, or email content. This is optional. Causes the API request to take longer because it must publish a project to production.
         defaultCurrency:
           type: string
           description: The default currency to show in the application for the tenant.
@@ -4573,7 +4573,7 @@ components:
           description: Whether the tenant is enabled or disabled. Enabled tenants have access to Visier visualizations.
         clickThroughLink:
           type: string
-          description: A custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability or email content.
+          description: A custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability, embedded visualizations, or email content.
         vanityUrlName:
           type: string
           description: The name of the administrating tenant used in Visier URLs.

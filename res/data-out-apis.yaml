@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2392
+  version: 22222222.99201.2398
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1172,7 +1172,7 @@ components:
           description: Vee's answer to the question.
         chartUrl:
           type: string
-          description: A URL to view the visualization in Visier.
+          description: A URL to view the visualization in Visier. If a click-through link is configured, this field will show a custom URL that redirects users to the relevant content in your portal. To configure a click-through link, see `POST /v2/admin/tenants`.
         schema:
           allOf:
             - $ref: '#/components/schemas/analysis.common.VeeResponseSchemaDTO'
