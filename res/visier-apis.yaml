@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2398
+  version: 22222222.99201.2411
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -13587,7 +13587,7 @@ components:
       properties:
         tenantCode:
           type: string
-          description: A unique identifier for the newly created analytic tenant. Required if creating new tenants.
+          description: A unique identifier for the newly created analytic tenant. Required if creating new tenants. The maximum is 50 characters. This limit includes the administrating tenant code. For example, WFF_a1b2c~whatisthemaxlengthofatenantcode123456789 (50 characters).
         tenantDisplayName:
           type: string
           description: A new display name to assign to the analytic tenant. Required if creating new tenants.
@@ -13735,7 +13735,7 @@ components:
       properties:
         tenantCode:
           type: string
-          description: The unique identifier of the analytic tenant.
+          description: The unique identifier of the analytic tenant. The maximum is 50 characters. This limit includes the administrating tenant code. For example, WFF_a1b2c~whatisthemaxlengthofatenantcode123456789 (50 characters).
         tenantDisplayName:
           type: string
           description: The display name that is assigned to the analytic tenant.
@@ -19542,6 +19542,10 @@ components:
         description:
           type: string
           description: optional, The description of the alert.
+        content:
+          allOf:
+            - $ref: '#/components/schemas/platform.EventAlertRelatedContentDTO'
+          description: optional, content related to the alert
       description: A personalized alert's details, such as its ID and trigger criteria.
     platform.EventAlertDeleteSuccessDTO:
       type: object
@@ -19603,6 +19607,18 @@ components:
             $ref: '#/components/schemas/platform.EventAlertNotificationResultDTO'
           description: The alert notifications that have triggered for the user.
       description: The notifications that have triggered for the user.
+    platform.EventAlertRelatedAnalysisDTO:
+      type: object
+      properties:
+        analysisId:
+          type: string
+        businessQuestionId:
+          type: string
+    platform.EventAlertRelatedContentDTO:
+      type: object
+      properties:
+        analysis:
+          $ref: '#/components/schemas/platform.EventAlertRelatedAnalysisDTO'
     platform.EventAlertTriggerCriteriaDTO:
       type: object
       properties:
@@ -20572,6 +20588,12 @@ components:
           additionalProperties:
             type: string
           description: The table's key-value pairs that were set by previously-executed jobs or previously-committed transactions.
+        recordCount:
+          type: string
+          description: The number of records in the table.
+        recordsUpdatedAt:
+          type: string
+          description: The timestamp when the table records were last updated in ISO 8601 format.
     servicing.sqlsource.SqlSourceInputDTO:
       type: object
       properties:
@@ -20692,11 +20714,11 @@ components:
       properties:
         table:
           type: string
-          description: The SQL table (identifier) to rollback.
+          description: The SQL table (identifier) to roll back.
         asOfTimestamp:
           type: string
-          description: The timestamp we use to fetch the latest snapshot
-      description: An reset action. Rolls table back to the latest snapshot given the timestamp.
+          description: The time from which to retrieve the latest snapshot in ISO 8601 format, such as `"2001-10-25T13:45:35.999"`.
+      description: A reset action. Rolls the table back to the latest snapshot given the timestamp.
     servicing.sqlsource.SqlSourceRollbackActionDTO:
       type: object
       properties: {}

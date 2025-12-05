@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2398
+  version: 22222222.99201.2411
 paths:
   /v1/admin/capabilities:
     get:
@@ -4448,7 +4448,7 @@ components:
       properties:
         tenantCode:
           type: string
-          description: A unique identifier for the newly created analytic tenant. Required if creating new tenants.
+          description: A unique identifier for the newly created analytic tenant. Required if creating new tenants. The maximum is 50 characters. This limit includes the administrating tenant code. For example, WFF_a1b2c~whatisthemaxlengthofatenantcode123456789 (50 characters).
         tenantDisplayName:
           type: string
           description: A new display name to assign to the analytic tenant. Required if creating new tenants.
@@ -4596,7 +4596,7 @@ components:
       properties:
         tenantCode:
           type: string
-          description: The unique identifier of the analytic tenant.
+          description: The unique identifier of the analytic tenant. The maximum is 50 characters. This limit includes the administrating tenant code. For example, WFF_a1b2c~whatisthemaxlengthofatenantcode123456789 (50 characters).
         tenantDisplayName:
           type: string
           description: The display name that is assigned to the analytic tenant.
