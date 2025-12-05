@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2398
+  version: 22222222.99201.2411
 paths:
   /v1/api/pgp-keys:
     get:
@@ -4198,6 +4198,12 @@ components:
           additionalProperties:
             type: string
           description: The table's key-value pairs that were set by previously-executed jobs or previously-committed transactions.
+        recordCount:
+          type: string
+          description: The number of records in the table.
+        recordsUpdatedAt:
+          type: string
+          description: The timestamp when the table records were last updated in ISO 8601 format.
     servicing.sqlsource.SqlSourceInputDTO:
       type: object
       properties:
@@ -4318,11 +4324,11 @@ components:
       properties:
         table:
           type: string
-          description: The SQL table (identifier) to rollback.
+          description: The SQL table (identifier) to roll back.
         asOfTimestamp:
           type: string
-          description: The timestamp we use to fetch the latest snapshot
-      description: An reset action. Rolls table back to the latest snapshot given the timestamp.
+          description: The time from which to retrieve the latest snapshot in ISO 8601 format, such as `"2001-10-25T13:45:35.999"`.
+      description: A reset action. Rolls the table back to the latest snapshot given the timestamp.
     servicing.sqlsource.SqlSourceRollbackActionDTO:
       type: object
       properties: {}

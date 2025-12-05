@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2398
+  version: 22222222.99201.2411
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -4768,6 +4768,10 @@ components:
         description:
           type: string
           description: optional, The description of the alert.
+        content:
+          allOf:
+            - $ref: '#/components/schemas/platform.EventAlertRelatedContentDTO'
+          description: optional, content related to the alert
       description: A personalized alert's details, such as its ID and trigger criteria.
     platform.EventAlertDeleteSuccessDTO:
       type: object
@@ -4829,6 +4833,18 @@ components:
             $ref: '#/components/schemas/platform.EventAlertNotificationResultDTO'
           description: The alert notifications that have triggered for the user.
       description: The notifications that have triggered for the user.
+    platform.EventAlertRelatedAnalysisDTO:
+      type: object
+      properties:
+        analysisId:
+          type: string
+        businessQuestionId:
+          type: string
+    platform.EventAlertRelatedContentDTO:
+      type: object
+      properties:
+        analysis:
+          $ref: '#/components/schemas/platform.EventAlertRelatedAnalysisDTO'
     platform.EventAlertTriggerCriteriaDTO:
       type: object
       properties:
