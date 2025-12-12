@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2411
+  version: 22222222.99201.2423
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -449,6 +449,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.BulkDataAccessSetResponseDTO'
+  /v1/admin/data-access-sets/revert-to-parent:
+    post:
+      tags:
+        - Permissions
+      summary: Revert data access sets
+      description: "Revert a shareable data access set to its parent version. For example, if you revert a:\n - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.\n - Tenant object: The API request fails. The object is unique to your tenant and no parent version exists.\n - Blueprint object: Nothing happens. The object is inherited from the parent and there is nothing to revert on this tenant."
+      operationId: Permissions_RevertDataAccessSetsToParent
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.BulkDataAccessSetRevertRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.BulkDataAccessSetResponseDTO'
   /v1/admin/data-access-sets/{dataAccessSetId}:
     get:
       tags:
@@ -720,6 +763,49 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/servicing.DeletePermissionsRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.PermissionBulkOperationResponseDTO'
+  /v1/admin/permissions/revert-to-parent:
+    post:
+      tags:
+        - Permissions
+      summary: Revert permissions
+      description: "Revert a permission to its parent version. For example, if you revert a:\n - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.\n - Tenant object: The API request fails. The object is unique to your tenant and no parent version exists.\n - Blueprint object: Nothing happens. The object is inherited from the parent and there is nothing to revert on this tenant."
+      operationId: Permissions_RevertPermissionsToParent
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.RevertPermissionsRequestDTO'
         required: true
       responses:
         default:
@@ -8948,7 +9034,7 @@ paths:
       tags:
         - UserGroupsV2
       summary: Revert user groups
-      description: "Revert a user group to its parent version. For example, if you revert a:\n - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.\n - Tenant object: The API request fails. The object is unique to your tenant and no parent version exists.\n - Blueprint object: Nothing happens. Blueprint is the top-level parent."
+      description: "Revert a user group to its parent version. For example, if you revert a:\n - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.\n - Tenant object: The API request fails. The object is unique to your tenant and no parent version exists.\n - Blueprint object: Nothing happens. The object is inherited from the parent and there is nothing to revert on this tenant."
       operationId: UserGroupsV2_RevertUserGroupsToParent
       parameters:
         - name: TargetTenantID
@@ -9754,7 +9840,7 @@ paths:
       tags:
         - AnalyticObjectsV2
       summary: Revert analytic objects to Blueprint
-      description: "Revert analytic objects to their Blueprint state. The response returns whether each analytic object was successfully reverted or not.\n You can revert tenant override objects to Blueprint. If you execute the revert operation on a:\n - Blueprint object: Nothing happens. The object is already the Blueprint version!\n - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.\n - Tenant object: The API request fails. The object is unique to your tenant and no Blueprint version exists.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Revert analytic objects to their Blueprint state. The response returns whether each analytic object was successfully reverted or not.\n You can revert tenant override objects to Blueprint. If you execute the revert operation on a:\n - Blueprint object: Nothing happens. The object is inherited from the parent and there is nothing to revert on this tenant.\n - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.\n - Tenant object: The API request fails. The object is unique to your tenant and no Blueprint version exists.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: AnalyticObjectsV2_RevertAnalyticObjects
       parameters:
         - name: TargetTenantID
@@ -13566,6 +13652,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/admin.TenantDetailsTraitsDTO'
           description: The tenant's traits, including aggregation rights, tenant type, and data profile type.
+        industryInfo:
+          allOf:
+            - $ref: '#/components/schemas/admin.TenantIndustryInfoDTO'
+          description: The tenant's industry information, including the industry code and classification type. Valid classification systems are `NAICS` and `NACE`.
     admin.TenantManagementAPIListResponseDTO:
       type: object
       properties:
@@ -13586,9 +13676,13 @@ components:
       type: object
       properties:
         tenantCode:
+          maxLength: 50
+          minLength: 1
+          pattern: ^[a-zA-Z][a-zA-Z0-9]+$
           type: string
-          description: A unique identifier for the newly created analytic tenant. Required if creating new tenants. The maximum is 50 characters. This limit includes the administrating tenant code. For example, WFF_a1b2c~whatisthemaxlengthofatenantcode123456789 (50 characters).
+          description: 'An alphanumeric string that represents a unique identifier for the analytic tenant. Required if creating new tenants. Example: If the full tenant code is `WFF_j1r~c7o`, specify `c7o` in this field. The maximum is 50 characters for the full tenant code, including the automatically prefixed administrating tenant code (`WFF_j1r~` in the example).'
         tenantDisplayName:
+          minLength: 1
           type: string
           description: A new display name to assign to the analytic tenant. Required if creating new tenants.
         tenantShortName:
@@ -13599,6 +13693,7 @@ components:
           type: string
           description: A new vanity name to assign to the tenant. Omit for new Embedded analytic tenants.
         industryCode:
+          minLength: 1
           type: integer
           description: "The North American Industry Classification System (NAICS) code for the industry in which the business operates.  Provide a value of 0 to use the business unit industry codes in the data or if the industry code is unknown. We highly recommend that you provide an industry code here or with the business units in the data to take advantage of all of Visier’s features.\n\n Required if creating new tenants."
           format: uint32
@@ -13662,6 +13757,10 @@ components:
         forceLoginsWithSessionBasedPermissions:
           type: boolean
           description: If `true`, user sign in must also provide a `SessionRepoId`. Only valid if `SessionBasedPermissions` feature is enabled. Default is `false`.
+        industryInfo:
+          allOf:
+            - $ref: '#/components/schemas/admin.TenantIndustryInfoDTO'
+          description: The tenant's industry information, including the industry code and classification type. Valid classification systems are `NAICS` and `NACE`.
     admin.TenantManagementAPIUpdateResponseDTO:
       type: object
       properties:
@@ -13734,9 +13833,13 @@ components:
       type: object
       properties:
         tenantCode:
+          maxLength: 50
+          minLength: 1
+          pattern: ^[a-zA-Z][a-zA-Z0-9]+$
           type: string
-          description: The unique identifier of the analytic tenant. The maximum is 50 characters. This limit includes the administrating tenant code. For example, WFF_a1b2c~whatisthemaxlengthofatenantcode123456789 (50 characters).
+          description: 'An alphanumeric string that represents the unique identifier of the analytic tenant. Example: If the full tenant code is `WFF_j1r~c7o`, specify `c7o` in this field. The maximum is 50 characters for the full tenant code, including the automatically prefixed administrating tenant code (`WFF_j1r~` in the example).'
         tenantDisplayName:
+          minLength: 1
           type: string
           description: The display name that is assigned to the analytic tenant.
         purchasedModules:
@@ -14572,6 +14675,21 @@ components:
           description: "The tenant's data profile, which designates how the tenant's data is used. Valid values:\n * `Regular`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.\n * `Integration`: A partner tenant for development, staging, and testing.\n * `Demo`: A Visier tenant for demonstrations and training.\n * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.\n * `Test`: A Visier tenant for development and testing."
           format: enum
       description: "The tenant's traits, including aggregation rights, tenant type, and data profile type.\n As workaround Due to sbt setup limitations this has been duplicated to components/data_services/modules/data_services-dto/src/main/protobuf/visier/dataservices/tenants/transfers/TenantDetailsTraits.proto\n Please make sure any change to this DTO (and enums) is also reflected in the above file."
+    admin.TenantIndustryInfoDTO:
+      type: object
+      properties:
+        industryCode:
+          type: string
+          description: The standardized code that describes the tenant's industry within a particular industry classification system. We highly recommend that you provide an industry code here or with the business units in the data to take advantage of all of Visier's features.
+        industryClassificationType:
+          enum:
+            - UNKNOWN_CLASSIFICATION
+            - NAICS
+            - NACE
+          type: string
+          description: "The classification system the industry code belongs to. Valid values:\n * `NAICS`: The industry classification system of Canada, Mexico, and the United States.\n * `NACE`: The industry classification system of the European Union."
+          format: enum
+      description: A tenant's industry information, including the industry code and classification type.
     admin.UserGroupGetAPIResponseDTO:
       type: object
       properties:
@@ -21149,7 +21267,7 @@ components:
         shareablePropertyAccessConfigs:
           type: array
           items:
-            $ref: '#/components/schemas/servicing.DataAccessSetDeleteDTO'
+            $ref: '#/components/schemas/servicing.DataAccessSetIdDTO'
           description: The data access sets to be deleted.
     servicing.BulkDataAccessSetRequestDTO:
       type: object
@@ -21172,6 +21290,14 @@ components:
           items:
             $ref: '#/components/schemas/servicing.DataAccessSetFailureDTO'
           description: The data access sets that failed to be created and any relevant error information.
+    servicing.BulkDataAccessSetRevertRequestDTO:
+      type: object
+      properties:
+        shareablePropertyAccessConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.DataAccessSetIdDTO'
+          description: The data access sets to be reverted.
     servicing.CapabilitiesDTO:
       type: object
       properties:
@@ -21280,12 +21406,6 @@ components:
           items:
             $ref: '#/components/schemas/servicing.PropertyAccessConfigDTO'
           description: The data access assigned to properties in the data access set.
-    servicing.DataAccessSetDeleteDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique ID of the data access set to delete.
     servicing.DataAccessSetErrorDTO:
       type: object
       properties:
@@ -21308,6 +21428,12 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.DataAccessSetErrorDTO'
           description: The error associated with the failure.
+    servicing.DataAccessSetIdDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the data access set.
     servicing.DataAccessSetSuccessDTO:
       type: object
       properties:
@@ -22402,6 +22528,14 @@ components:
         displayName:
           type: string
           description: An identifiable analytic object name to display in Visier, such as "Recognition".
+    servicing.RevertPermissionsRequestDTO:
+      type: object
+      properties:
+        permissionIds:
+          type: array
+          items:
+            type: string
+          description: The identifiers of the permissions to revert.
     servicing.RoleModulesConfigDTO:
       type: object
       properties:
@@ -23392,6 +23526,7 @@ components:
           description: The search string. You can provide multiple search strings. The results include Visier object headers that match each of the search strings. Search strings are case-insensitive and support partial matches. Search strings must be at least 3 characters up to a maximum of 200 characters.
         objectType:
           enum:
+            - UNKNOWN
             - METRIC
             - DIMENSION
             - DIMENSION_MEMBER
@@ -23411,7 +23546,10 @@ components:
           format: int32
         mask:
           type: string
-          description: "A comma-separated list of additional fields to include in the response. Valid values:\n - `Description`\n - `Explanation`\n - `Tags`\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
+          description: "A comma-separated list of additional fields to include in the response. Valid values:\n - For all objects: `Description`, `Explanation`, `Tags`\n - For `METRIC` search: `analyticObjectId`, `dataStartDate`, `dataEndDate`\n - For `ANALYTIC_OBJECT` search: `objectReferences`, `analyticObjectType`, `dataStartDate`, `dataEndDate`, `propertyIds`\n - For `DIMENSION_MEMBER` search: `path`, `level`\n - For `PROPERTY` search: `dataType`\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
+        includeDocumentIdSearch:
+          type: boolean
+          description: If `true`, the search includes document IDs. This is not valid for `DIMENSION_MEMBER` object type. Default is `false`.
         dimensionSearchContext:
           allOf:
             - $ref: '#/components/schemas/servicing.DimensionSearchContextDTO'
@@ -23467,11 +23605,9 @@ components:
         qualifyingPath:
           type: string
           description: The path to the Visier object ID, such as the analytic object with which the object is associated. If the path includes multiple objects, they are separated by periods; for example, `Employee.Candidate.Gender`.
-        path:
-          type: array
-          items:
-            type: string
-          description: A comma-separated list of identifiers for members on the query axis. Only valid for `HIERARCHY_MEMBER` object types.
+        metadata:
+          type: object
+          description: Additional metadata about the Visier object in the search result. This is included if certain `mask` values are specified in the request. For more information, see the `mask` field description in request object.
     servicing.VisierObjectSearchResultsDTO:
       type: object
       properties:
