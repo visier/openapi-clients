@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2411
+  version: 22222222.99201.2423
 paths:
   /v1/data/query/aggregate:
     post:
@@ -2791,6 +2791,7 @@ components:
           description: The search string. You can provide multiple search strings. The results include Visier object headers that match each of the search strings. Search strings are case-insensitive and support partial matches. Search strings must be at least 3 characters up to a maximum of 200 characters.
         objectType:
           enum:
+            - UNKNOWN
             - METRIC
             - DIMENSION
             - DIMENSION_MEMBER
@@ -2810,7 +2811,10 @@ components:
           format: int32
         mask:
           type: string
-          description: "A comma-separated list of additional fields to include in the response. Valid values:\n - `Description`\n - `Explanation`\n - `Tags`\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
+          description: "A comma-separated list of additional fields to include in the response. Valid values:\n - For all objects: `Description`, `Explanation`, `Tags`\n - For `METRIC` search: `analyticObjectId`, `dataStartDate`, `dataEndDate`\n - For `ANALYTIC_OBJECT` search: `objectReferences`, `analyticObjectType`, `dataStartDate`, `dataEndDate`, `propertyIds`\n - For `DIMENSION_MEMBER` search: `path`, `level`\n - For `PROPERTY` search: `dataType`\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
+        includeDocumentIdSearch:
+          type: boolean
+          description: If `true`, the search includes document IDs. This is not valid for `DIMENSION_MEMBER` object type. Default is `false`.
         dimensionSearchContext:
           allOf:
             - $ref: '#/components/schemas/servicing.DimensionSearchContextDTO'
@@ -2866,11 +2870,9 @@ components:
         qualifyingPath:
           type: string
           description: The path to the Visier object ID, such as the analytic object with which the object is associated. If the path includes multiple objects, they are separated by periods; for example, `Employee.Candidate.Gender`.
-        path:
-          type: array
-          items:
-            type: string
-          description: A comma-separated list of identifiers for members on the query axis. Only valid for `HIERARCHY_MEMBER` object types.
+        metadata:
+          type: object
+          description: Additional metadata about the Visier object in the search result. This is included if certain `mask` values are specified in the request. For more information, see the `mask` field description in request object.
     servicing.VisierObjectSearchResultsDTO:
       type: object
       properties:
