@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2423
+  version: 22222222.99201.2436
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1645,6 +1645,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1/admin/security-artifacts/sync:
+    post:
+      tags:
+        - Permissions
+      summary: Synchronize security artifacts
+      description: "Copies permissions, data access sets, user groups, and user direct assignments from the versioned environment to the non-versioned environment. This operation immediately applies the security configurations, independent of data versioning.\n\n The versioned environment utilizes projects and data versions while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions and data access sets. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Use this to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants.\n\n <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>"
+      operationId: Permissions_SyncToNonVersioned
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.NonVersionedSyncRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.NonVersionedSyncResponseDTO'
   /v1/admin/selection-concepts:
     get:
       tags:
@@ -18141,6 +18173,7 @@ components:
             - Databricks
             - JiraV2
             - Echo
+            - SnowflakeV2
           type: string
           description: The data provider associated with the credential.
           format: enum
@@ -18224,6 +18257,8 @@ components:
           $ref: '#/components/schemas/designer.DatabricksAuthParamsDTO'
         echoAuthParams:
           $ref: '#/components/schemas/designer.EchoAuthParamsDTO'
+        snowflakeV2AuthParams:
+          $ref: '#/components/schemas/designer.SnowflakeV2AuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -18841,6 +18876,23 @@ components:
         clientSecret:
           type: string
     designer.SnowflakeAuthParamsDTO:
+      type: object
+      properties:
+        accountIdentifier:
+          type: string
+        database:
+          type: string
+        schema:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        warehouse:
+          type: string
+        privateKey:
+          type: string
+    designer.SnowflakeV2AuthParamsDTO:
       type: object
       properties:
         accountIdentifier:
@@ -19659,11 +19711,11 @@ components:
           description: If `true`, the personalized alert is enabled for the user.
         description:
           type: string
-          description: optional, The description of the alert.
+          description: The description of the alert.
         content:
           allOf:
             - $ref: '#/components/schemas/platform.EventAlertRelatedContentDTO'
-          description: optional, content related to the alert
+          description: Content related to the alert, such as analyses.
       description: A personalized alert's details, such as its ID and trigger criteria.
     platform.EventAlertDeleteSuccessDTO:
       type: object
@@ -19730,13 +19782,17 @@ components:
       properties:
         analysisId:
           type: string
+          description: The unique identifier of the related analysis.
         businessQuestionId:
           type: string
+          description: The unique identifier of the analysis's heading (or business question).
     platform.EventAlertRelatedContentDTO:
       type: object
       properties:
         analysis:
-          $ref: '#/components/schemas/platform.EventAlertRelatedAnalysisDTO'
+          allOf:
+            - $ref: '#/components/schemas/platform.EventAlertRelatedAnalysisDTO'
+          description: The analysis related to the alert.
     platform.EventAlertTriggerCriteriaDTO:
       type: object
       properties:
@@ -22035,6 +22091,58 @@ components:
             type: string
           description: A value containing multiple strings.
       description: A value containing multiple strings.
+    servicing.NonVersionedSyncErrorDTO:
+      type: object
+      properties:
+        type:
+          enum:
+            - UserGroups
+            - UserDirectAssignments
+            - DataAccessSets
+            - Permissions
+          type: string
+          description: The type of artifact that failed to synchronize.
+          format: enum
+        objectId:
+          type: string
+          description: The unique identifier of the artifact that failed, for example permission ID, user group ID, and user ID. Not provided for system-level errors.
+        displayName:
+          type: string
+          description: The display name of the artifact that failed, for example `Diversity Access` and `Leadership Group`. Not provided for system-level errors or user direct assignments.
+        message:
+          type: string
+          description: Human-readable error message describing what went wrong.
+      description: Detailed error information for a synchronization failure.
+    servicing.NonVersionedSyncRequestDTO:
+      type: object
+      properties:
+        syncTypes:
+          type: array
+          items:
+            enum:
+              - UserGroups
+              - UserDirectAssignments
+            type: string
+            format: enum
+          description: "Optional types to synchronize. Specify which artifact types to include in the sync operation. Valid values:\n - `UserGroups`: Synchronizes user group assignments.\n - `UserDirectAssignments`: Synchronizes direct permission assignments to users.\n\n Data Access Sets and Permissions are always synchronized regardless of this setting."
+      description: "Request to copy permissions, data access sets, user groups, and user direct assignments from the versioned environment to the non-versioned environment. This operation immediately applies the security configurations, independent of data versioning.\n This endpoint always synchronizes permissions and data access sets. You can optionally synchronize user group assignments and direct permissions assignments to users."
+    servicing.NonVersionedSyncResponseDTO:
+      type: object
+      properties:
+        status:
+          enum:
+            - Unknown
+            - Success
+            - Failed
+          type: string
+          description: "The status of the sync operation. Valid values:\n - `Success`: All artifacts synchronized successfully.\n - `Failed`: One or more errors occurred during synchronization."
+          format: enum
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.NonVersionedSyncErrorDTO'
+          description: "List of detailed errors that occurred during synchronization. Each error includes the artifact type, identifier, display name, and human-readable message.\n Empty if status is `Success`. Contains one or more errors if status is `Failed`.\n Common error types include: duplicate artifacts, missing parent artifacts, invalid references, and data inconsistencies."
+      description: Response from non-versioned synchronization operation.
     servicing.ObjectIdDTO:
       type: object
       properties:

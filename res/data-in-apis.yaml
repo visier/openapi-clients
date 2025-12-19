@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2423
+  version: 22222222.99201.2436
 paths:
   /v1/api/pgp-keys:
     get:
@@ -3349,6 +3349,7 @@ components:
             - Databricks
             - JiraV2
             - Echo
+            - SnowflakeV2
           type: string
           description: The data provider associated with the credential.
           format: enum
@@ -3432,6 +3433,8 @@ components:
           $ref: '#/components/schemas/designer.DatabricksAuthParamsDTO'
         echoAuthParams:
           $ref: '#/components/schemas/designer.EchoAuthParamsDTO'
+        snowflakeV2AuthParams:
+          $ref: '#/components/schemas/designer.SnowflakeV2AuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -3852,6 +3855,23 @@ components:
         clientSecret:
           type: string
     designer.SnowflakeAuthParamsDTO:
+      type: object
+      properties:
+        accountIdentifier:
+          type: string
+        database:
+          type: string
+        schema:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        warehouse:
+          type: string
+        privateKey:
+          type: string
+    designer.SnowflakeV2AuthParamsDTO:
       type: object
       properties:
         accountIdentifier:
