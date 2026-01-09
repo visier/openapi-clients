@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2436
+  version: 22222222.99201.2451
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -4727,6 +4727,15 @@ components:
           type: string
           description: optional, The user provided description of the alert.
       description: The details of the personalized alert to create.
+    platform.CustomMemberSetSelectionDTO:
+      type: object
+      properties:
+        keyDimensionMembers:
+          $ref: '#/components/schemas/platform.MemberSetParameterSelectionsDTO'
+        otherDimensionMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.MemberSetParameterSelectionsDTO'
     platform.DimensionMemberReferenceDTO:
       type: object
       properties:
@@ -4971,6 +4980,20 @@ components:
             - $ref: '#/components/schemas/platform.MemberValuesDTO'
           description: The dimension members to filter by.
       description: "Member filters are dimension member values to filter by in your query. The member filters are\n defined within the filters section of a query definition. You can filter by dimension members in\n aggregate and list queries."
+    platform.MemberSetParameterSelectionDTO:
+      type: object
+      properties:
+        hasSelection:
+          type: boolean
+        memberId:
+          type: string
+    platform.MemberSetParameterSelectionsDTO:
+      type: object
+      properties:
+        dimensionMember:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.MemberSetParameterSelectionDTO'
     platform.MemberValuesDTO:
       type: object
       properties:
@@ -5085,6 +5108,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/platform.AggregationTypeParameterValueDTO'
           description: A value for an aggregation parameter.
+        subjectMemberSetValue:
+          allOf:
+            - $ref: '#/components/schemas/platform.SubjectMemberSetParameterValueDTO'
+          description: A value for a subject member
       description: The information of a metric parameter value.
     platform.PeriodsBackDTO:
       type: object
@@ -5126,6 +5153,13 @@ components:
           type: string
           description: The unique identifier of the exploration snapshot the parameter is based on.
       description: The value for a parameter on a planning metric, including the parameter ID and the plan the parameter is based on.
+    platform.PresetMemberSetSelectionDTO:
+      type: object
+      properties:
+        subjectId:
+          type: string
+        memberId:
+          type: string
     platform.PreviousPeriodTimeTypeDTO:
       type: object
       properties: {}
@@ -5265,6 +5299,17 @@ components:
           type: string
           description: "The qualifying path to the selection concept in Visier, such as the analytic object or event the selection\n concept is associated with. If the path has multiple objects, each object is separated by a period."
       description: The name and qualifying path of a selection concept to query.
+    platform.SubjectMemberSetParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique identifier of the metric subject member set parameter.
+        customSelection:
+          $ref: '#/components/schemas/platform.CustomMemberSetSelectionDTO'
+        presetSelection:
+          $ref: '#/components/schemas/platform.PresetMemberSetSelectionDTO'
+      description: The value for a metric subject member set parameter.
     platform.TimeHandlingDTO:
       type: object
       properties:

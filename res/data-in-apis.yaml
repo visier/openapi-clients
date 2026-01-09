@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2436
+  version: 22222222.99201.2451
 paths:
   /v1/api/pgp-keys:
     get:
@@ -2389,19 +2389,22 @@ components:
           format: int32
         lastExtractionTimeOffsetMode:
           type: string
-          description: The mode used to offset the last extraction time (weeks vs months)
+          description: 'The mode used to offset the last extraction time. Valid values: `"WEEK"`, `"MONTH"`. Default is `"MONTH"`.'
         offsetWeekOption:
           type: string
-          description: The week options used to offset the last extraction time (first of day / last of day)
+          description: 'The week options used to offset the last extraction time. Valid values: `"CURRENT_DAY_OF_WEEK"`, `"FIRST_OF_WEEK"`, `"LAST_OF_WEEK"`. Default is `"CURRENT_DAY_OF_WEEK"`.'
         offsetMonthOption:
           type: string
-          description: The month options used to offset the last extraction time (first of month / last of month)
+          description: 'The month options used to offset the last extraction time. Valid values: `"CURRENT_DAY_OF_MONTH"`, `"FIRST_OF_MONTH"`, `"LAST_OF_MONTH"`. Default is `"CURRENT_DAY_OF_MONTH"`.'
         credentialId:
           type: string
           description: If running a job for the Databricks connector, specify the unique identifier of the connector credentials to use.
         outputTarget:
           type: string
           description: "The output of the extraction. Valid values:\n - `Receiving`: A receiving job. This is the default. \n - `SQL`: A SQL job for table sources."
+        isStream:
+          type: boolean
+          description: If true, starts a streaming job instead of a finite extraction. Not all connectors support this.
     admin.jobs.ProcessingJobRequestDTO:
       type: object
       properties:
@@ -3350,6 +3353,7 @@ components:
             - JiraV2
             - Echo
             - SnowflakeV2
+            - SSE
           type: string
           description: The data provider associated with the credential.
           format: enum
@@ -3435,6 +3439,8 @@ components:
           $ref: '#/components/schemas/designer.EchoAuthParamsDTO'
         snowflakeV2AuthParams:
           $ref: '#/components/schemas/designer.SnowflakeV2AuthParamsDTO'
+        sseAuthParams:
+          $ref: '#/components/schemas/designer.SSEAuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -3512,6 +3518,8 @@ components:
           type: string
         basicAuth:
           $ref: '#/components/schemas/designer.EchoBasicAuthDTO'
+        oAuth:
+          $ref: '#/components/schemas/designer.EchoOAuthDTO'
     designer.EchoBasicAuthDTO:
       type: object
       properties:
@@ -3520,6 +3528,21 @@ components:
         password:
           type: string
         asidToken:
+          type: string
+    designer.EchoOAuthDTO:
+      type: object
+      properties:
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+        authCode:
+          type: string
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expireTimestamp:
           type: string
     designer.EmptyAuthParamsDTO:
       type: object
@@ -3648,6 +3671,10 @@ components:
           type: string
         connectParams:
           $ref: '#/components/schemas/designer.JiraConnectParamsDTO'
+        cloudId:
+          type: string
+        email:
+          type: string
     designer.JiraConnectParamsDTO:
       type: object
       properties:
@@ -3804,6 +3831,17 @@ components:
         tablePrefix:
           type: string
         schema:
+          type: string
+    designer.SSEAuthParamsDTO:
+      type: object
+      properties:
+        endpoint:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        streamName:
           type: string
     designer.SalesforceAuthParamsDTO:
       type: object

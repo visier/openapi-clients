@@ -1044,7 +1044,7 @@ components:
     api_key:
       type: "apiKey"
       in: "header"
-      name: "x-api-key"
+      name: "apikey"
       x-amazon-apigateway-api-key-source: "HEADER"
   schemas:
     BenchmarkValue:
