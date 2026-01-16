@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2451
+  version: 22222222.99201.2469
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -6514,6 +6514,15 @@ components:
             - $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptDefinitionDTO'
           description: Information about the concept, such as its UUID and concept type.
       description: Information about the concept and the context of the API request, such as the tenant code and project ID.
+    servicing.v2.objectconfiguration.CustomPropertyListDTO:
+      type: object
+      properties:
+        propertyNames:
+          type: array
+          items:
+            type: string
+          description: The list of custom property names.
+      description: The custom properties in a parent-child dimension.
     servicing.v2.objectconfiguration.DerivedMetricDetailsDTO:
       type: object
       properties:
@@ -6946,6 +6955,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.AnalyticObjectReferenceListDTO'
           description: The analytic objects associated with the dimension.
+        customPropertyList:
+          allOf:
+            - $ref: '#/components/schemas/servicing.v2.objectconfiguration.CustomPropertyListDTO'
+          description: The custom properties in the dimension.
       description: The parent-child dimension's configuration, such as its levels and name property.
     servicing.v2.objectconfiguration.ProcessConceptDefinitionDTO:
       type: object

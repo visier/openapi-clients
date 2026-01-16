@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2451
+  version: 22222222.99201.2469
 paths:
   /v1/data/query/aggregate:
     post:
@@ -45,6 +45,38 @@ paths:
             text/csv:
               schema:
                 type: string
+  /v1/data/query/connector-version:
+    get:
+      tags:
+        - DataQuery
+      summary: Retrieve a data out connector's latest version
+      description: Retrieve the latest released version of a data out connector. Use this endpoint to automate checking connector release versions.
+      operationId: DataQuery_ConnectorVersion
+      parameters:
+        - name: connectorId
+          in: query
+          description: "The name of the connector for which to retrieve the latest version. Valid values:\n - `powerbi`: Retrieve the latest version of Visier's Power BI connector.\n - `tableau`: Retrieve the latest version of Visier's Tableau connector."
+          schema:
+            enum:
+              - powerbi
+              - tableau
+            type: string
+            format: enum
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataservices.query.ConnectorVersionDTO'
+      security:
+        - {}
   /v1/data/query/list:
     post:
       tags:
@@ -1634,6 +1666,16 @@ components:
             - $ref: '#/components/schemas/dataservices.query.QueryTimeIntervalDTO'
           description: The time at which to apply the key group, such as a specific day or period of months.
       description: "Use a cohort filter to define a population as it existed during a specific time period.\n Cohort filters allow you to define a population in terms of a collection of filters, known as a key group.\n The cohort's defined time interval is independent of the query's time. The cohort's time interval is the\n time at which the key group should be applied.\n Cohorts are typically used to follow populations and understand changes to the population over time,\n such as promotion and resignation rates."
+    dataservices.query.ConnectorVersionDTO:
+      type: object
+      properties:
+        version:
+          type: string
+          description: The version number; for example, 1.0.1.
+        id:
+          type: string
+          description: The unique identifier of the connector.
+      description: The version information of a connector.
     dataservices.query.InternalQueryExecutionOptionsDTO:
       type: object
       properties:

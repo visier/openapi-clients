@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2451
+  version: 22222222.99201.2469
 paths:
   /v1/admin/capabilities:
     get:
@@ -198,6 +198,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: correlationIds
+          in: query
+          description: "If defined, `correlationIds` limits the response to the data access sets associated with the specified correlation IDs.\n You can specify multiple correlation IDs in the `correlationIds` parameter separated by commas; for example, `correlationIds=123,abc,456`.\n\n **Note**:\n - Correlation IDs must be between 3 and 64 characters long and may only contain alphanumeric characters, underscores and hyphens.\n - Correlation IDs have a lifetime of up to 7 days after creation. After a correlation ID expires, you can only retrieve specific data access sets using the data access set ID.\n - Correlation IDs are optional during data access set creation and are only applicable to those objects created with a defined correlation ID."
+          schema:
+            type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -5345,7 +5350,7 @@ components:
             - Test
             - DataProfileUnknown
           type: string
-          description: "The tenant's data profile, which designates how the tenant's data is used. Valid values:\n * `Regular`: An analytic tenant managed by Visier that represents an enterprise customer's instance of Visier.\n * `Integration`: A partner tenant for development, staging, and testing.\n * `Demo`: A Visier tenant for demonstrations and training.\n * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.\n * `Test`: A Visier tenant for development and testing."
+          description: "The tenant's data profile, which designates how the tenant's data is used. Selecting the correct data profile is critical for accurately measuring adoption, assessing system performance, and accurate billing. Valid values:\n * `Regular`: An analytic tenant that hosts data for customer business decisions. `Regular` tenants receive monitoring for business data quality and the highest priority for system performance.\n * `Integration`: An analytic tenant that hosts data for development, staging, and testing. Customers do not use data in this tenant to make business decisions.\n * `Demo`: An analytic tenant that hosts data for demonstrations and training. `Demo` tenants receive the highest priority for system performance, but no monitoring for business data quality. Customers do not use data in this tenant to make business decisions.\n * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.\n * `Test`: An analytic tenant that hosts data for testing. Customers do not use data in this tenant to make business decisions."
           format: enum
       description: "The tenant's traits, including aggregation rights, tenant type, and data profile type.\n As workaround Due to sbt setup limitations this has been duplicated to components/data_services/modules/data_services-dto/src/main/protobuf/visier/dataservices/tenants/transfers/TenantDetailsTraits.proto\n Please make sure any change to this DTO (and enums) is also reflected in the above file."
     admin.TenantIndustryInfoDTO:
@@ -5970,6 +5975,9 @@ components:
           items:
             $ref: '#/components/schemas/servicing.PropertyAccessConfigDTO'
           description: The data access assigned to properties in the data access set.
+        correlationId:
+          type: string
+          description: "An optional identifier to associate bulk request fields with their corresponding response fields. Correlation IDs may be between 3 and 64 characters long and\n consist of alphanumeric characters, `-`, and `_`.\n\n **Note**:\n - Each request field must have a unique `correlationId`.\n - Cannot reuse a `correlationId` in subsequent `POST` requests while the ID is still active. A `correlationId` is active for 7 days after creation."
     servicing.DataAccessSetErrorDTO:
       type: object
       properties:
@@ -5992,6 +6000,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.DataAccessSetErrorDTO'
           description: The error associated with the failure.
+        correlationId:
+          type: string
+          description: An identifier to associate the matching request field. Only returned if a `correlationId` was defined for the corresponding request field.
     servicing.DataAccessSetIdDTO:
       type: object
       properties:
@@ -6007,6 +6018,9 @@ components:
         displayName:
           type: string
           description: An identifiable data access set name to display in Visier, such as "Detailed(Employee)".
+        correlationId:
+          type: string
+          description: An identifier to associate the matching request field. Only returned if a `correlationId` was defined for the corresponding request field.
     servicing.DataSecurityProfileDTO:
       type: object
       properties:
