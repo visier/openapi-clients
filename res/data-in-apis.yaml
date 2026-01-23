@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2469
+  version: 22222222.99201.2489
 paths:
   /v1/api/pgp-keys:
     get:
@@ -2402,9 +2402,6 @@ components:
         outputTarget:
           type: string
           description: "The output of the extraction. Valid values:\n - `Receiving`: A receiving job. This is the default. \n - `SQL`: A SQL job for table sources."
-        isStream:
-          type: boolean
-          description: If true, starts a streaming job instead of a finite extraction. Not all connectors support this.
     admin.jobs.ProcessingJobRequestDTO:
       type: object
       properties:
@@ -3925,6 +3922,8 @@ components:
         warehouse:
           type: string
         privateKey:
+          type: string
+        role:
           type: string
     designer.SqlServerAuthParamsDTO:
       type: object

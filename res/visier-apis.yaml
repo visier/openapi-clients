@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2469
+  version: 22222222.99201.2489
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -6067,10 +6067,10 @@ paths:
   /v1/vee/feedback:
     post:
       tags:
-        - Vee
+        - VeeV1
       summary: Submit Vee feedback
       description: "Give Vee feedback for a previous answer. To submit feedback, include:\n * The conversation details from the `/question` response.\n * A rating of Vee's answer. If `isApproved` is `true`, Vee answered the question correctly. If `isApproved` is `false`, Vee's answer was incorrect or lacked details.\n * A description of how Vee should have answered the question or how Vee can improve the answer, such as \"Expected Headcount metric, but Vee returned Average Headcount\"."
-      operationId: Vee_VeeFeedback
+      operationId: VeeV1_VeeFeedback
       parameters:
         - name: TargetTenantID
           in: header
@@ -6099,10 +6099,10 @@ paths:
   /v1/vee/question:
     post:
       tags:
-        - Vee
+        - VeeV1
       summary: Ask Vee a question
       description: "Use plain language to ask Vee a people question. Use body parameters to specify how Vee should respond, such as returning a visualization, data, or rewording the question.\n\n The response always returns a `conversationState` object containing a unique ID for the conversation. To ask a follow-up question or continue the conversation with Vee, include the `conversationState` from the response in your next `/question` call. To submit feedback about Vee's answer, copy the entire response into your `/feedback` call."
-      operationId: Vee_VeeQuestionRequest
+      operationId: VeeV1_VeeQuestionRequest
       parameters:
         - name: TargetTenantID
           in: header
@@ -6131,10 +6131,10 @@ paths:
   /v1/vee/sample-question-categories:
     get:
       tags:
-        - Vee
+        - VeeV1
       summary: Retrieve a list of Vee question categories
       description: Get a list of categories for the Vee sample questions displayed in the conversation interface.
-      operationId: Vee_VeeSampleQuestionCategories
+      operationId: VeeV1_VeeSampleQuestionCategories
       parameters:
         - name: TargetTenantID
           in: header
@@ -6157,10 +6157,10 @@ paths:
   /v1/vee/sample-question-categories/{questionCategoryId}:
     get:
       tags:
-        - Vee
+        - VeeV1
       summary: Retrieve a Vee question category's details
       description: Get the details of a specific Vee sample question category where the ID is the `categoryID` returned by `GET /v1/vee/sample-question-categories`.
-      operationId: Vee_VeeSampleQuestionCategory
+      operationId: VeeV1_VeeSampleQuestionCategory
       parameters:
         - name: questionCategoryId
           in: path
@@ -6188,10 +6188,10 @@ paths:
   /v1/vee/sample-questions:
     get:
       tags:
-        - Vee
+        - VeeV1
       summary: Retrieve a list of sample questions to ask Vee
       description: "Get a list of sample questions to help you start using Vee. The response returns a list of questions that you can ask Vee, such as \"What is the turnover rate?\".\n You may occasionally encounter a sample question that can't be answered due to data availability or your data access"
-      operationId: Vee_VeeSampleQuestions
+      operationId: VeeV1_VeeSampleQuestions
       parameters:
         - name: TargetTenantID
           in: header
@@ -6214,10 +6214,10 @@ paths:
   /v1/vee/status:
     get:
       tags:
-        - Vee
+        - VeeV1
       summary: Check the overall current status of Vee
       description: "Check the current overall status of Vee.\n\n The overall status is one of:\n * `UP` :  Vee is operational.\n * `DOWN`: Vee is not operational."
-      operationId: Vee_VeeStatus
+      operationId: VeeV1_VeeStatus
       parameters:
         - name: TargetTenantID
           in: header
@@ -8901,6 +8901,11 @@ paths:
           description: "The display name filter to narrow the set of user groups to return. This filter must be defined using glob syntax with the following wildcards and is case-sensitive. The value in parentheses is the equivalent hex code, which is used when URL-encoding the filter string:\n - `'*'` (`%2A`) matches any sequence of characters.\n - `'?'` (`%3F`) matches a single character.\n - `' '` (`%20`) matches a space character.\n \n Example: \n - `Sales*` matches any user group that starts with \"Sales\".\n - `* ?egional * Office` is expressed as `%2A%20%3Fegional%20%2A%20Office` and can have many matches, such as \"Western Regional Support Office\"."
           schema:
             type: string
+        - name: correlationIds
+          in: query
+          description: "If defined, `correlationIds` limits the response to the user groups associated with the specified correlation IDs.\n You can specify multiple correlation IDs in the `correlationIds` parameter separated by commas; for example, `correlationIds=123,abc,456`.\n\n **Note**:\n - Correlation IDs must be between 3 and 64 characters long and may only contain alphanumeric characters, underscores and hyphens.\n - Correlation IDs have a lifetime of up to 7 days after creation. After a correlation ID expires, you can only retrieve specific user groups using the user group ID.\n - Correlation IDs are optional during user group creation and are only applicable to those objects created with a defined correlation ID."
+          schema:
+            type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -9687,6 +9692,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.v2.objectconfiguration.ConceptResponseDTO'
+  /v2/vee/sample-questions:
+    get:
+      tags:
+        - VeeV2
+      summary: Retrieve a list of sample questions to ask Vee
+      description: "Get a list of sample questions to help you start using Vee. The response returns a list of questions that you can ask Vee, such as \"What is the turnover rate?\".\n You may occasionally encounter a sample question that can't be answered due to data availability or your data access"
+      operationId: VeeV2_VeeSampleQuestions
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.VeeSampleQuestionLibraryV2DTO'
   /v2alpha/data/model/analytic-objects:
     get:
       tags:
@@ -11655,11 +11686,11 @@ paths:
         - api_key: []
   /v1/compensation-benchmarks/jobs:
     get:
-      summary: Get jobs
+      summary: Get jobs V1
       tags: [Dimensions]
-      operationId: GetJobs
+      operationId: GetJobsV1
       description: |
-        Retrieve a list of all the jobs in Visier's ontology.
+        Retrieve a list of all the jobs in Visier's ontology. A new version of this endpoint is now available. For more information, see `GET /v2/compensation-benchmarks/jobs`.
       parameters:
         - name: hierarchy
           in: query
@@ -11741,6 +11772,148 @@ paths:
             type: boolean
           description: |
             If `true`, both `active` and `archived` members are returned. Default is `false`. Members are archived when taxonomy changes are made.
+      responses:
+        "200":
+          description: |
+            List of job members.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DimensionMember"
+        "400":
+          description: |
+            The API request failed given the parameters provided, such as missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-salary-arn}"
+      security:
+        - api_key: []
+  /v2/compensation-benchmarks/jobs:
+    get:
+      summary: Get jobs V2
+      tags: [Dimensions]
+      operationId: GetJobsV2
+      description: |
+        Retrieve a list of all the jobs in Visier's ontology. Jobs V2 improves upon Jobs V1 in the following ways:
+        - Supports pagination through the `page` and `limit` parameters.
+        - Returns both the short and long versions of job descriptions and job typical titles.
+      parameters:
+        - name: hierarchy
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The ID of the job hierarchy to navigate.
+
+            If not provided, Visier's default job hierarchy is used. In the default hierarchy, jobs are organized into three levels with domain and subdomain groupings.
+        - name: parent
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The ID of the parent member.
+
+            If the ID is provided, the response returns the immediate children of the parent member.
+
+            To get the top-level members, use the value `root`.
+
+            Member availability and the parent-child relationship depends on the selected hierarchy. Please refer to the `hierarchy` parameter.
+        - name: term
+          in: query
+          required: false
+          schema:
+            type: string
+          description: "The input search term. The job members that are the most semantically similar to the search term are returned with the most relevant job members displayed first. \nYour search term may not be included in the results as semantic search goes beyond keyword matching and attempts to interpret the meaning behind the query to provide search results.\n\nThe minimum length is 2 characters and the maximum length is 100 characters.\n\n***The search term must be URL encoded.***\n"
+        - name: naicsCode
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            The North American Industry Classification System (NAICS) code.
+
+            If `naicsCode` is provided, `term` is required. The most relevant job members associated with the naicsCode are returned first.
+        - name: hasBenchmarkValue
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: "Filter members based on the availability of benchmark values. \nIf `true`, members with benchmark values are returned. \nIf `false`, members without benchmark values are returned. \nIf no value is specified, all members are returned.\n"
+        - name: semanticOnly
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, only semantic search will be used to find matches. Ensure the parameter `lexicalOnly` is set to `false`.
+            Default is `false`. By default, both semantic and lexical search are used to find matches.
+        - name: lexicalOnly
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: "If `true`, only lexical search will be used to find matches. Ensure the parameter `semanticOnly` is set to `false`. \nDefault is `false`. By default, both semantic and lexical search are used to find matches.\n"
+        - name: typicalTitlesSearch
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, similar job titles for a job member are included in the lexical search for matches.
+            Default is `false`.
+        - name: showHierarchy
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, returns members in a tree structure based on the occupation hierarchy.
+            Default is `false`.
+        - name: includeArchived
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            If `true`, both `active` and `archived` members are returned. Default is `false`. Members are archived when taxonomy changes are made.
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: |
+            The subset of the overall result set to return. The number of rows per page is equal to `limit`, except the last page which may contain fewer rows. Page is an index that begins at 0. The index to start retrieving results is calculated by multiplying `page` by `limit`. Default is to return results for page 0.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: |
+            The maximum number of entries to return. Default and maximum are 1000 entries.
       responses:
         "200":
           description: |
@@ -12702,9 +12875,6 @@ components:
         outputTarget:
           type: string
           description: "The output of the extraction. Valid values:\n - `Receiving`: A receiving job. This is the default. \n - `SQL`: A SQL job for table sources."
-        isStream:
-          type: boolean
-          description: If true, starts a streaming job instead of a finite extraction. Not all connectors support this.
     admin.jobs.ProcessingJobRequestDTO:
       type: object
       properties:
@@ -13222,6 +13392,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/admin.VisibleForSelectionDTO'
           description: The features in which your users can see and select this user group. If omitted, the user group is visible in all features.
+        correlationId:
+          type: string
+          description: "An optional identifier to associate bulk request fields with their corresponding response fields. Correlation IDs may be between 3 and 64 characters long and\n consist of alphanumeric characters, `-`, and `_`.\n\n **Note**:\n - Each request field must have a unique `correlationId`.\n - Cannot reuse a `correlationId` in subsequent POST requests while the ID is still active. A `correlationId` is active for 7 days after creation."
     admin.UserGroupChangeDimensionFilterDTO:
       type: object
       properties:
@@ -13258,6 +13431,9 @@ components:
         userGroupId:
           type: string
           description: The unique identifier of the user group that couldn't be changed.
+        correlationId:
+          type: string
+          description: An identifier to associate the matching request field. Only returned if a `correlationId` was defined for the corresponding request field.
     admin.UserGroupChangeFilterDTO:
       type: object
       properties:
@@ -13311,6 +13487,9 @@ components:
         projectId:
           type: string
           description: The unique identifier of the project in which the user group was changed.
+        correlationId:
+          type: string
+          description: An identifier to associate the matching request field. Only returned if a `correlationId` was defined for the corresponding request field.
     admin.UserGroupChangeUsersDTO:
       type: object
       properties:
@@ -14466,6 +14645,30 @@ components:
             $ref: '#/components/schemas/analysis.common.VeeSampleQuestionDTO'
           description: A list of sample questions to help your users start using Vee.
       description: A list of sample questions to ask Vee.
+    analysis.common.VeeSampleQuestionLibraryV2DTO:
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.VeeSampleQuestionV2DTO'
+          description: A list of sample questions to help your users start using Vee.
+      description: A list of sample questions to ask Vee.
+    analysis.common.VeeSampleQuestionV2DTO:
+      type: object
+      properties:
+        question:
+          type: string
+          description: A question in plain language.
+        questionId:
+          type: string
+          description: The unique identifier of the sample question.
+        categoryId:
+          type: string
+          description: The unique identifier of the question category.
+        isSpotlightedForUser:
+          type: boolean
+          description: If `true`, the sample question is spotlighted for at least one of the user's user groups.
     analysis.common.VeeStatusCodeDTO:
       type: object
       properties:
@@ -16490,6 +16693,9 @@ components:
           type: integer
           description: If `limitType` is defined, the number of axis members to include. `n` must be at least `1`. If less than `1`, no limit is applied.
           format: int32
+        showOthers:
+          type: boolean
+          description: If `true`, includes an `Others` member that aggregates all members not included in the limited set. Default is `false`.
       description: Limit the number of axis members returned in the response.
     dataservices.query.QueryAxisOptionsDTO:
       type: object
@@ -18228,6 +18434,8 @@ components:
           type: string
         privateKey:
           type: string
+        role:
+          type: string
     designer.SqlServerAuthParamsDTO:
       type: object
       properties:
@@ -18994,11 +19202,14 @@ components:
       type: object
       properties:
         keyDimensionMembers:
-          $ref: '#/components/schemas/platform.MemberSetParameterSelectionsDTO'
+          allOf:
+            - $ref: '#/components/schemas/platform.MemberSetParameterSelectionsDTO'
+          description: A unique dimension member that the `otherDimensionMembers` members relate to. For example, let's say the Skills parameter has the Skill Name key dimension. The other dimensions are Skill Level and Skill Importance, which relate to a specific skill (identified by Skill Name).
         otherDimensionMembers:
           type: array
           items:
             $ref: '#/components/schemas/platform.MemberSetParameterSelectionsDTO'
+          description: The dimension members in the parameter that relate to the `keyDimensionMembers`.
     platform.DimensionMemberReferenceDTO:
       type: object
       properties:
@@ -19248,8 +19459,10 @@ components:
       properties:
         hasSelection:
           type: boolean
+          description: If `true`, the member ID exists. If `false`, the member ID doesn't exist.
         memberId:
           type: string
+          description: The unique identifier of the dimension member.
     platform.MemberSetParameterSelectionsDTO:
       type: object
       properties:
@@ -19257,6 +19470,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/platform.MemberSetParameterSelectionDTO'
+          description: The dimensions member's ID and whether or not the member ID exists.
     platform.MemberValuesDTO:
       type: object
       properties:
@@ -19374,7 +19588,7 @@ components:
         subjectMemberSetValue:
           allOf:
             - $ref: '#/components/schemas/platform.SubjectMemberSetParameterValueDTO'
-          description: A value for a subject member
+          description: A value for a subject member.
       description: The information of a metric parameter value.
     platform.PeriodsBackDTO:
       type: object
@@ -19421,8 +19635,10 @@ components:
       properties:
         subjectId:
           type: string
+          description: The unique identifier of the preset subject.
         memberId:
           type: string
+          description: The unique identifier of the preset dimension member.
     platform.PreviousPeriodTimeTypeDTO:
       type: object
       properties: {}
@@ -19569,9 +19785,13 @@ components:
           type: string
           description: The unique identifier of the metric subject member set parameter.
         customSelection:
-          $ref: '#/components/schemas/platform.CustomMemberSetSelectionDTO'
+          allOf:
+            - $ref: '#/components/schemas/platform.CustomMemberSetSelectionDTO'
+          description: A list of dimension members in the parameter.
         presetSelection:
-          $ref: '#/components/schemas/platform.PresetMemberSetSelectionDTO'
+          allOf:
+            - $ref: '#/components/schemas/platform.PresetMemberSetSelectionDTO'
+          description: A subject member to select in the parameter. For example, if the preset subject is Employee, `presetSelection` determines the specific employee to create a `customSelection` from.
       description: The value for a metric subject member set parameter.
     platform.TimeHandlingDTO:
       type: object
@@ -25615,8 +25835,12 @@ tags:
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
 
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
-  - name: Vee
+  - name: VeeV1
+    x-displayName: Vee V1
     description: Use Vee through Visier APIs, such as asking questions, submitting feedback, and getting sample questions.
+  - name: VeeV2
+    x-displayName: Vee V2
+    description: Use Vee through Visier APIs, such as getting sample questions. Vee V2 improves upon Vee V1 by aligning response field names with the Vee UI.
   - name: Search
     description: 'Search for documents, such as analyses, in Visier.
 
@@ -25803,7 +26027,8 @@ x-tagGroups:
     tags:
       - DataQuery
       - DataVersionExport
-      - Vee
+      - VeeV1
+      - VeeV2
       - Search
       - SourceFilesDownload
       - Reporting
