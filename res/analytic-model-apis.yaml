@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2469
+  version: 22222222.99201.2489
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -4731,11 +4731,14 @@ components:
       type: object
       properties:
         keyDimensionMembers:
-          $ref: '#/components/schemas/platform.MemberSetParameterSelectionsDTO'
+          allOf:
+            - $ref: '#/components/schemas/platform.MemberSetParameterSelectionsDTO'
+          description: A unique dimension member that the `otherDimensionMembers` members relate to. For example, let's say the Skills parameter has the Skill Name key dimension. The other dimensions are Skill Level and Skill Importance, which relate to a specific skill (identified by Skill Name).
         otherDimensionMembers:
           type: array
           items:
             $ref: '#/components/schemas/platform.MemberSetParameterSelectionsDTO'
+          description: The dimension members in the parameter that relate to the `keyDimensionMembers`.
     platform.DimensionMemberReferenceDTO:
       type: object
       properties:
@@ -4985,8 +4988,10 @@ components:
       properties:
         hasSelection:
           type: boolean
+          description: If `true`, the member ID exists. If `false`, the member ID doesn't exist.
         memberId:
           type: string
+          description: The unique identifier of the dimension member.
     platform.MemberSetParameterSelectionsDTO:
       type: object
       properties:
@@ -4994,6 +4999,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/platform.MemberSetParameterSelectionDTO'
+          description: The dimensions member's ID and whether or not the member ID exists.
     platform.MemberValuesDTO:
       type: object
       properties:
@@ -5111,7 +5117,7 @@ components:
         subjectMemberSetValue:
           allOf:
             - $ref: '#/components/schemas/platform.SubjectMemberSetParameterValueDTO'
-          description: A value for a subject member
+          description: A value for a subject member.
       description: The information of a metric parameter value.
     platform.PeriodsBackDTO:
       type: object
@@ -5158,8 +5164,10 @@ components:
       properties:
         subjectId:
           type: string
+          description: The unique identifier of the preset subject.
         memberId:
           type: string
+          description: The unique identifier of the preset dimension member.
     platform.PreviousPeriodTimeTypeDTO:
       type: object
       properties: {}
@@ -5306,9 +5314,13 @@ components:
           type: string
           description: The unique identifier of the metric subject member set parameter.
         customSelection:
-          $ref: '#/components/schemas/platform.CustomMemberSetSelectionDTO'
+          allOf:
+            - $ref: '#/components/schemas/platform.CustomMemberSetSelectionDTO'
+          description: A list of dimension members in the parameter.
         presetSelection:
-          $ref: '#/components/schemas/platform.PresetMemberSetSelectionDTO'
+          allOf:
+            - $ref: '#/components/schemas/platform.PresetMemberSetSelectionDTO'
+          description: A subject member to select in the parameter. For example, if the preset subject is Employee, `presetSelection` determines the specific employee to create a `customSelection` from.
       description: The value for a metric subject member set parameter.
     platform.TimeHandlingDTO:
       type: object

@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2469
+  version: 22222222.99201.2489
 paths:
   /v1/admin/capabilities:
     get:
@@ -3562,6 +3562,11 @@ paths:
           description: "The display name filter to narrow the set of user groups to return. This filter must be defined using glob syntax with the following wildcards and is case-sensitive. The value in parentheses is the equivalent hex code, which is used when URL-encoding the filter string:\n - `'*'` (`%2A`) matches any sequence of characters.\n - `'?'` (`%3F`) matches a single character.\n - `' '` (`%20`) matches a space character.\n \n Example: \n - `Sales*` matches any user group that starts with \"Sales\".\n - `* ?egional * Office` is expressed as `%2A%20%3Fegional%20%2A%20Office` and can have many matches, such as \"Western Regional Support Office\"."
           schema:
             type: string
+        - name: correlationIds
+          in: query
+          description: "If defined, `correlationIds` limits the response to the user groups associated with the specified correlation IDs.\n You can specify multiple correlation IDs in the `correlationIds` parameter separated by commas; for example, `correlationIds=123,abc,456`.\n\n **Note**:\n - Correlation IDs must be between 3 and 64 characters long and may only contain alphanumeric characters, underscores and hyphens.\n - Correlation IDs have a lifetime of up to 7 days after creation. After a correlation ID expires, you can only retrieve specific user groups using the user group ID.\n - Correlation IDs are optional during user group creation and are only applicable to those objects created with a defined correlation ID."
+          schema:
+            type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -4814,6 +4819,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/admin.VisibleForSelectionDTO'
           description: The features in which your users can see and select this user group. If omitted, the user group is visible in all features.
+        correlationId:
+          type: string
+          description: "An optional identifier to associate bulk request fields with their corresponding response fields. Correlation IDs may be between 3 and 64 characters long and\n consist of alphanumeric characters, `-`, and `_`.\n\n **Note**:\n - Each request field must have a unique `correlationId`.\n - Cannot reuse a `correlationId` in subsequent POST requests while the ID is still active. A `correlationId` is active for 7 days after creation."
     admin.UserGroupChangeDimensionFilterDTO:
       type: object
       properties:
@@ -4850,6 +4858,9 @@ components:
         userGroupId:
           type: string
           description: The unique identifier of the user group that couldn't be changed.
+        correlationId:
+          type: string
+          description: An identifier to associate the matching request field. Only returned if a `correlationId` was defined for the corresponding request field.
     admin.UserGroupChangeFilterDTO:
       type: object
       properties:
@@ -4903,6 +4914,9 @@ components:
         projectId:
           type: string
           description: The unique identifier of the project in which the user group was changed.
+        correlationId:
+          type: string
+          description: An identifier to associate the matching request field. Only returned if a `correlationId` was defined for the corresponding request field.
     admin.UserGroupChangeUsersDTO:
       type: object
       properties:
