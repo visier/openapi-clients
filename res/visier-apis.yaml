@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2489
+  version: 22222222.99201.2518
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -312,7 +312,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -348,7 +348,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -390,7 +390,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -432,7 +432,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -475,7 +475,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -524,7 +524,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -612,6 +612,11 @@ paths:
           description: "If `true`, returns the validity statuses for the permission's properties in data access sets and the\n permission's dimensions, dimension members, and hierarchy properties in member filters. If `false`,\n doesn't return validity status information. Default is `false`."
           schema:
             type: boolean
+        - name: correlationIds
+          in: query
+          description: "If defined, `correlationIds` limits the response to the permissions associated with the specified correlation IDs.\n You can specify multiple correlation IDs in the `correlationIds` parameter separated by commas; for example, `correlationIds=123,abc,456`.\n\n **Note**:\n - Correlation IDs must be between 3 and 64 characters long and may only contain alphanumeric characters, underscores and hyphens.\n - Correlation IDs have a lifetime of up to 7 days after creation. After a correlation ID expires, you can only retrieve specific permissions using the permission ID.\n - Correlation IDs are optional during permission creation and are only applicable to those objects created with a defined correlation ID."
+          schema:
+            type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -625,7 +630,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -666,7 +671,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -713,7 +718,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -760,7 +765,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -803,7 +808,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -846,7 +851,7 @@ paths:
             type: string
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
         - name: SessionBasedPermissions
@@ -898,7 +903,7 @@ paths:
             type: string
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -957,7 +962,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -1022,7 +1027,7 @@ paths:
             type: string
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -2202,7 +2207,7 @@ paths:
             type: string
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -2244,7 +2249,7 @@ paths:
             type: string
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -2374,7 +2379,7 @@ paths:
             type: string
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -2473,7 +2478,7 @@ paths:
             type: string
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -8305,7 +8310,7 @@ paths:
       parameters:
         - name: q
           in: query
-          description: The search query string.
+          description: The search query string. The results include document headers that match the search string. Search string is case-insensitive and supports partial matches. Search string must be at least 2 characters up to a maximum of 200 characters.
           schema:
             type: string
         - name: limit
@@ -8919,7 +8924,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -8955,7 +8960,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -8997,7 +9002,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -9039,7 +9044,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -9081,7 +9086,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -9124,7 +9129,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -9183,7 +9188,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -9225,7 +9230,7 @@ paths:
             format: uuid
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
       responses:
@@ -10742,7 +10747,7 @@ paths:
             type: string
         - name: NonVersioned
           in: header
-          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.<br>**Note:** <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
         - name: ProjectID
@@ -21846,6 +21851,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.TargetSecurityConfigDTO'
           description: "A list of data categories and their targets assigned in the permission.\n <br>**Note:** <em>This field is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>"
+        correlationId:
+          type: string
+          description: "An optional identifier to associate bulk request fields with their corresponding response fields. Correlation IDs may be between 3 and 64 characters long and\n consist of alphanumeric characters, `-`, and `_`.\n\n **Note**:\n - Each request field must have a unique `correlationId`.\n - Cannot reuse a `correlationId` in subsequent POST requests while the ID is still active. A `correlationId` is active for 7 days after creation."
     servicing.PermissionErrorDTO:
       type: object
       properties:
@@ -21868,6 +21876,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.PermissionErrorDTO'
           description: The error associated with the failure.
+        correlationId:
+          type: string
+          description: An identifier to associate the matching request field. Only returned if a `correlationId` was defined for the corresponding request field.
     servicing.PermissionSuccessDTO:
       type: object
       properties:
@@ -21877,6 +21888,9 @@ components:
         displayName:
           type: string
           description: An identifiable permission name to display in Visier, such as "Diversity Access".
+        correlationId:
+          type: string
+          description: An identifier to associate the matching request field. Only returned if a `correlationId` was defined for the corresponding request field.
     servicing.ProductionVersionAPIOperationRequestDTO:
       type: object
       properties:
@@ -23224,7 +23238,7 @@ components:
           type: array
           items:
             type: string
-          description: The search string. You can provide multiple search strings. The results include Visier object headers that match each of the search strings. Search strings are case-insensitive and support partial matches. Search strings must be at least 3 characters up to a maximum of 200 characters.
+          description: The search string. You can provide multiple search strings. The results include Visier object headers that match each of the search strings. Search strings are case-insensitive and support partial matches. Search strings must be at least 2 characters up to a maximum of 200 characters.
         objectType:
           enum:
             - UNKNOWN
@@ -23250,7 +23264,7 @@ components:
           description: "A comma-separated list of additional fields to include in the response. Valid values:\n - For all objects: `Description`, `Explanation`, `Tags`\n - For `METRIC` search: `analyticObjectId`, `dataStartDate`, `dataEndDate`\n - For `ANALYTIC_OBJECT` search: `objectReferences`, `analyticObjectType`, `dataStartDate`, `dataEndDate`, `propertyIds`\n - For `DIMENSION_MEMBER` search: `path`, `level`\n - For `PROPERTY` search: `dataType`\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
         includeDocumentIdSearch:
           type: boolean
-          description: If `true`, the search includes document IDs. This is not valid for `DIMENSION_MEMBER` object type. Default is `false`.
+          description: If `true`, the search includes document IDs. This is not valid for `DIMENSION_MEMBER` object type. Default is `false`. Note that document ID search queries are case-sensitive.
         dimensionSearchContext:
           allOf:
             - $ref: '#/components/schemas/servicing.DimensionSearchContextDTO'
