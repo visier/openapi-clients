@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2489
+  version: 22222222.99201.2518
 paths:
   /v1/data/query/aggregate:
     post:
@@ -755,7 +755,7 @@ paths:
       parameters:
         - name: q
           in: query
-          description: The search query string.
+          description: The search query string. The results include document headers that match the search string. Search string is case-insensitive and supports partial matches. Search string must be at least 2 characters up to a maximum of 200 characters.
           schema:
             type: string
         - name: limit
@@ -2883,7 +2883,7 @@ components:
           type: array
           items:
             type: string
-          description: The search string. You can provide multiple search strings. The results include Visier object headers that match each of the search strings. Search strings are case-insensitive and support partial matches. Search strings must be at least 3 characters up to a maximum of 200 characters.
+          description: The search string. You can provide multiple search strings. The results include Visier object headers that match each of the search strings. Search strings are case-insensitive and support partial matches. Search strings must be at least 2 characters up to a maximum of 200 characters.
         objectType:
           enum:
             - UNKNOWN
@@ -2909,7 +2909,7 @@ components:
           description: "A comma-separated list of additional fields to include in the response. Valid values:\n - For all objects: `Description`, `Explanation`, `Tags`\n - For `METRIC` search: `analyticObjectId`, `dataStartDate`, `dataEndDate`\n - For `ANALYTIC_OBJECT` search: `objectReferences`, `analyticObjectType`, `dataStartDate`, `dataEndDate`, `propertyIds`\n - For `DIMENSION_MEMBER` search: `path`, `level`\n - For `PROPERTY` search: `dataType`\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
         includeDocumentIdSearch:
           type: boolean
-          description: If `true`, the search includes document IDs. This is not valid for `DIMENSION_MEMBER` object type. Default is `false`.
+          description: If `true`, the search includes document IDs. This is not valid for `DIMENSION_MEMBER` object type. Default is `false`. Note that document ID search queries are case-sensitive.
         dimensionSearchContext:
           allOf:
             - $ref: '#/components/schemas/servicing.DimensionSearchContextDTO'
