@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2518
+  version: 22222222.99201.2535
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -10726,12 +10726,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.v2.objectconfiguration.MetricResponseDTO'
-  /v3alpha/admin/users/{username}:
+  /v3/admin/users/{username}:
     put:
       tags:
         - UsersV3
       summary: Update or insert (upsert) a user
-      description: "Update a user if the user exists, otherwise create a new user. Use the user's `username` to specify the user to update or create.\n\n In `PUT` requests, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the request, those values are removed from the user if the user exists.\n\n <br>Note: <em>This API is in alpha. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Update a user if the user exists, otherwise create a new user. Use the user's `username` to specify the user to update or create.\n\n In `PUT` requests, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the request, those values are removed from the user if the user exists."
       operationId: UsersV3_UpdateUsers
       parameters:
         - name: username
@@ -25885,7 +25885,7 @@ tags:
       In Visier, production is the version of Visier available to your end users.'
   - name: UsersV3
     x-displayName: Users V3
-    description: "Manage users within an organization. Users V3 offers the ability to update or insert (upsert) a user. \n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.</em>"
+    description: 'Manage users within an organization. Users V3 offers the ability to update or insert (upsert) a user. '
   - name: UsersV2
     x-displayName: Users V2
     description: 'Manage users in bulk, such as creating, updating, and deleting many users.
