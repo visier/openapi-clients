@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2535
+  version: 22222222.99201.2542
 paths:
   /v1/api/pgp-keys:
     get:
@@ -4141,8 +4141,6 @@ components:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceUpsertActionDTO'
         replace:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceReplaceActionDTO'
-        captureChanges:
-          $ref: '#/components/schemas/servicing.sqlsource.SqlSourceCaptureChangesActionDTO'
         rollback:
           $ref: '#/components/schemas/servicing.sqlsource.SqlSourceRollbackActionDTO'
         commit:
@@ -4166,16 +4164,6 @@ components:
           items:
             type: string
           description: "The tables to modify in the transaction. If undefined, the transaction is read-only. You cannot add tables to modify after creating the transaction.\n\n After a job starts running, the tables are locked for the duration of the transaction to prevent concurrent writes. Each tenant has independent locks; there is no cross-tenant locking."
-    servicing.sqlsource.SqlSourceCaptureChangesActionDTO:
-      type: object
-      properties:
-        source:
-          type: string
-          description: The SQL table (identifier) to capture changes from.
-        target:
-          type: string
-          description: The SQL table (identifier) to insert the changes into.
-      description: "A capture changes action. Logs changes that have occurred since the beginning of the transaction on the specified source table\n and inserts them into the specified target table."
     servicing.sqlsource.SqlSourceColumnDTO:
       type: object
       properties:
