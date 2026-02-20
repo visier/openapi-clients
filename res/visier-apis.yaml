@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2542
+  version: 22222222.99201.2587
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -22043,6 +22043,14 @@ components:
             type: string
             format: enum
           description: "The current user's capabilities for the project. Users with `canWrite`, `canShare`, or `owner` capabilities can add and commit changes to the project.\n **canRead**: The project has been shared to the user with `View` access.\n **canWrite**: The project has been shared to the user with `Edit` access.\n **canShare**: The project has been shared to the user with `Share` access.\n **owner**: The user is the owner of the project.\n Omit when creating a new project."
+        projectType:
+          enum:
+            - Standard
+            - Prototype
+            - UnknownType
+          type: string
+          description: The type of the project. Omit when creating a new project.
+          format: enum
     servicing.ProjectOperationRequestDTO:
       type: object
       properties:
