@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2627
+  version: 22222222.99201.2629
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -8356,6 +8356,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
@@ -20514,6 +20520,9 @@ components:
         canChildrenInheritData:
           type: boolean
           description: If `true`, analytic tenants inherit the table data. Analytic tenants can read the data but cannot write to it. Default is `false`.
+        excludeFromAutoProcessing:
+          type: boolean
+          description: If `true`, Visier ignores this source when checking which data categories require a processing job during a `process` action with no specified `dataCategoryIds`. Default is `false`.
     servicing.sqlsource.SqlSourceTableListResponseDTO:
       type: object
       properties:
