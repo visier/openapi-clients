@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2629
+  version: 22222222.99201.2630
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -5118,6 +5118,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/platform.SubjectMemberSetParameterValueDTO'
           description: A value for a subject member.
+        versionedPlanValue:
+          allOf:
+            - $ref: '#/components/schemas/platform.VersionedPlanParameterValueDTO'
+          description: A value for a versioned plan parameter.
       description: The information of a metric parameter value.
     platform.PeriodsBackDTO:
       type: object
@@ -5449,6 +5453,19 @@ components:
           type: string
           description: "Whether the alert is enabled for the user. Valid values:\n  * `SUBSCRIBED`: The alert is enabled and the user will receive notifications for the alert.\n  * `PAUSED`: The alert is disabled and the user will not receive notifications for the alert."
           format: enum
+    platform.VersionedPlanParameterValueDTO:
+      type: object
+      properties:
+        parameterId:
+          type: string
+          description: The unique identifier of the versioned plan parameter qualified by the object.
+        versionedPlanId:
+          type: string
+          description: The unique identifier of the versioned plan the parameter is based on.
+        versionedScenarioId:
+          type: string
+          description: The unique identifier of the versioned scenario the parameter is based on.
+      description: The value for a parameter on a planning metric, including the parameter ID and the versioned plan the parameter is based on.
     servicing.objectconfiguration.CalculatedPropertyTypeDTO:
       type: object
       properties:
