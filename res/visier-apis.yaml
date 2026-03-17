@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2639
+  version: 22222222.99201.2640
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -7667,6 +7667,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.sqlsource.SqlSourceExecuteJobResponseDTO'
+  /v1alpha/data/table-sources/transactions/{transactionId}/jobs/{jobId}:
+    get:
+      tags:
+        - TableSource
+      summary: Retrieve a job's status
+      description: "Retrieve the status of a SQL job and any child jobs spawned from it. Use the job ID returned by `POST /v1alpha/data/table-sources/transactions/{transactionId}/jobs` to retrieve the job's status.\n\n If the job was dispatched across multiple tenants, the response includes per-tenant status details along with aggregated summary counts.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_GetJobStatus
+      parameters:
+        - name: transactionId
+          in: path
+          description: The unique identifier of the transaction.
+          required: true
+          schema:
+            type: string
+        - name: jobId
+          in: path
+          description: The unique identifier of the job.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.sqlsource.SqlSourceGetJobStatusResponseDTO'
   /v1alpha/data/table-sources/transactions/{transactionId}/outputs/{filename}:
     get:
       tags:
@@ -20346,6 +20384,35 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.sqlsource.SqlJobTableAccessDTO'
           description: The read and write tables per job.
+    servicing.sqlsource.SqlSourceGetJobStatusResponseDTO:
+      type: object
+      properties:
+        status:
+          enum:
+            - UNKNOWN
+            - PENDING
+            - RUNNING
+            - SUCCEEDED
+            - FAILED
+          type: string
+          description: The overall status of the jobs, including children of the requested job.
+          format: enum
+        summary:
+          allOf:
+            - $ref: '#/components/schemas/servicing.sqlsource.SqlSourceJobStatusSummaryDTO'
+          description: Summary of job statuses for SQL jobs.
+        processingSummary:
+          allOf:
+            - $ref: '#/components/schemas/servicing.sqlsource.SqlSourceJobStatusSummaryDTO'
+          description: Summary of job status for processing jobs (if any were created).
+        tenants:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTenantJobStatusDTO'
+          description: Status information for each tenant.
+        jobId:
+          type: string
+          description: The ID of the requested job.
     servicing.sqlsource.SqlSourceGetTableMetadataResponseDTO:
       type: object
       properties:
@@ -20427,6 +20494,25 @@ components:
             type: string
           description: The required key-value pairs. If any key doesn't exist or has a different value than specified here, the precondition isn't met and the job fails with an error.
       description: A precondition that must be met for a job to execute.
+    servicing.sqlsource.SqlSourceJobStatusSummaryDTO:
+      type: object
+      properties:
+        pending:
+          type: integer
+          description: The number of jobs that are waiting to run.
+          format: int32
+        running:
+          type: integer
+          description: The number of jobs that are running.
+          format: int32
+        succeeded:
+          type: integer
+          description: The number of jobs that have succeeded.
+          format: int32
+        failed:
+          type: integer
+          description: The number of jobs that have failed.
+          format: int32
     servicing.sqlsource.SqlSourceProcessActionDTO:
       type: object
       properties:
@@ -20542,6 +20628,34 @@ components:
           items:
             $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTableDTO'
           description: The list of tables.
+    servicing.sqlsource.SqlSourceTenantJobStatusDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code for the status.
+        status:
+          enum:
+            - UNKNOWN
+            - PENDING
+            - RUNNING
+            - SUCCEEDED
+            - FAILED
+            - PROCESSING_FAILED
+          type: string
+          description: The status of the job.
+          format: enum
+        message:
+          type: string
+          description: Any applicable additional message for the status.
+        processingJobIds:
+          type: array
+          items:
+            type: string
+          description: Processing job IDs created by PROCESS actions within the job, if any.
+        jobId:
+          type: string
+          description: The ID of the job.
     servicing.sqlsource.SqlSourceTransactionStateDTO:
       type: object
       properties:
