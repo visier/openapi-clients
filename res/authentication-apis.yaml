@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2640
+  version: 22222222.99201.2652
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -285,6 +285,7 @@ components:
             - Translation
             - ModuleManagement
             - AnalyticObjectCreation
+            - AdHocModuleManagement
             - ClassicAdminConfig
             - ClassicReadOnlyAdminConfig
             - ClassicManageTenant
@@ -334,6 +335,7 @@ components:
             - ScopedSourceFiles
             - ScopedImplicitSecurity
             - QueryMcpServer
+            - ImplementationPartnerSuperUserCapability
           type: string
           format: enum
         accessLevel:
