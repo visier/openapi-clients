@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2652
+  version: 22222222.99201.2666
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -224,6 +224,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -256,6 +262,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -288,6 +300,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -327,6 +345,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -365,6 +389,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
@@ -454,6 +484,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -502,6 +538,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -540,6 +582,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -579,6 +627,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -619,6 +673,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -658,6 +718,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -696,6 +762,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -722,6 +794,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -754,6 +832,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -801,6 +885,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -854,6 +944,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -930,6 +1026,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -962,6 +1064,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -1001,6 +1109,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -1040,6 +1154,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -1073,6 +1193,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -1105,6 +1231,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -1137,6 +1269,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -1176,6 +1314,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -1214,6 +1358,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -1247,6 +1397,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
@@ -1279,6 +1435,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request. If omitted, the request uses the production version.
+          schema:
+            type: string
+            format: uuid
       responses:
         default:
           description: Default error response
