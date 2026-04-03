@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2666
+  version: 22222222.99201.2686
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -77,10 +77,15 @@ paths:
           description: The tenant ID to execute the call on.
           schema:
             type: string
+        - name: TargetUsername
+          in: header
+          description: The username of the user to impersonate. If provided in both the header and the request body, the header value takes precedence.
+          schema:
+            type: string
       requestBody:
         description: Request to generate an impersonation token.
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/GenerateImpersonationTokenRequest'
         required: true

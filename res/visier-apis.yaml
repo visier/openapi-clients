@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2666
+  version: 22222222.99201.2686
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -7233,26 +7233,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/platform.EventAlertDTO'
-  /v1alpha/alerts/notifications:
-    get:
-      tags:
-        - PersonalizedAlerts
-      summary: Retrieve personalized alerts notifications
-      description: "Get all the notifications for your active personalized alerts from the last 30 days. For all active alerts, the response returns the date that the alert was triggered and the alert’s trigger criteria.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: PersonalizedAlerts_GetNotifications
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/platform.EventAlertNotificationResultsDTO'
   /v1alpha/alerts/{alertId}:
     get:
       tags:
@@ -7753,7 +7733,7 @@ paths:
       tags:
         - TableSource
       summary: Retrieve a transaction's status
-      description: "Retrieve the current status and details of a specific transaction.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Retrieve the current status and details of a specific transaction. If the transaction was dispatched to analytic tenants, the response includes the status of each analytic tenant's transaction in the `children` field.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_GetTransaction
       parameters:
         - name: transactionId
@@ -7762,6 +7742,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: summaryOnly
+          in: query
+          description: If `true`, the response omits the `children` array and returns only the `summary` counts. Use for polling. Default is `false`.
+          schema:
+            type: boolean
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -8067,6 +8052,26 @@ paths:
               schema:
                 type: string
                 format: binary
+  /v1alpha/notifications:
+    get:
+      tags:
+        - PersonalizedAlerts
+      summary: Retrieve personalized alerts notifications
+      description: "Get all the notifications for your active personalized alerts from the last 30 days. For all active alerts, the response returns the date that the alert was triggered and the alert’s trigger criteria.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PersonalizedAlerts_GetNotifications
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platform.EventAlertNotificationResultsDTO'
   /v1alpha/op/data/receiving-jobs/{jobId}/files:
     get:
       tags:
@@ -8232,7 +8237,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Run a consolidated analytics job
-      description: Run a job for a consolidated analytics tenant. This request retrieves data for all source tenants in a consolidated analytics tenant. After the job completes, you can run a processing job to generate a data version for the consolidated analytics tenant. To run a processing job, see `POST /v1alpha/op/jobs/processing-jobs`.
+      description: 'Run a job for a consolidated analytics tenant. This request retrieves data for all source tenants in a consolidated analytics tenant. Optionally, set `runProcessingJob: true` in the request body to generate a data version for the consolidated analytics tenant.'
       operationId: DataAndJobHandling_AdhocConsolidatedAnalyticsJob
       parameters:
         - name: TargetTenantID
@@ -11372,10 +11377,15 @@ paths:
           description: The tenant ID to execute the call on.
           schema:
             type: string
+        - name: TargetUsername
+          in: header
+          description: The username of the user to impersonate. If provided in both the header and the request body, the header value takes precedence.
+          schema:
+            type: string
       requestBody:
         description: Request to generate an impersonation token.
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/GenerateImpersonationTokenRequest'
         required: true
@@ -13159,6 +13169,9 @@ components:
         tenantCode:
           type: string
           description: The tenant code of the consolidated analytics tenant; for example, "WFF_j1r~CAa7s".
+        runProcessingJob:
+          type: boolean
+          description: If `true`, runs a processing job after the consolidated analytics job completes. If unspecified, the default is `false`.
     admin.jobs.ExtractDataAndLoadDTO:
       type: object
       properties:
@@ -14532,8 +14545,9 @@ components:
             - Cat
             - Test
             - DataProfileUnknown
+            - ProductIntelligence
           type: string
-          description: "The tenant's data profile, which designates how the tenant's data is used. Selecting the correct data profile is critical for accurately measuring adoption, assessing system performance, and accurate billing. Valid values:\n * `Regular`: An analytic tenant that hosts data for customer business decisions. `Regular` tenants receive monitoring for business data quality and the highest priority for system performance.\n * `Integration`: An analytic tenant that hosts data for development, staging, and testing. Customers do not use data in this tenant to make business decisions.\n * `Demo`: An analytic tenant that hosts data for demonstrations and training. `Demo` tenants receive the highest priority for system performance, but no monitoring for business data quality. Customers do not use data in this tenant to make business decisions.\n * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.\n * `Test`: An analytic tenant that hosts data for testing. Customers do not use data in this tenant to make business decisions."
+          description: "The tenant's data profile, which designates how the tenant's data is used. Selecting the correct data profile is critical for accurately measuring adoption, assessing system performance, and accurate billing. Valid values:\n * `Regular`: An analytic tenant that hosts data for customer business decisions. `Regular` tenants receive monitoring for business data quality and the highest priority for system performance.\n * `Integration`: An analytic tenant that hosts data for development, staging, and testing. Customers do not use data in this tenant to make business decisions.\n * `Demo`: An analytic tenant that hosts data for demonstrations and training. `Demo` tenants receive the highest priority for system performance, but no monitoring for business data quality. Customers do not use data in this tenant to make business decisions.\n * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.\n * `Test`: An analytic tenant that hosts data for testing. Customers do not use data in this tenant to make business decisions.\n * `ProductIntelligence`: A Product Intelligence tenant for cross-tenant analysis."
           format: enum
       description: "The tenant's traits, including aggregation rights, tenant type, and data profile type.\n As workaround Due to sbt setup limitations this has been duplicated to components/data_services/modules/data_services-dto/src/main/protobuf/visier/dataservices/tenants/transfers/TenantDetailsTraits.proto\n Please make sure any change to this DTO (and enums) is also reflected in the above file."
     admin.TenantIndustryInfoDTO:
@@ -19027,7 +19041,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
-          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded."
+          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered."
         keyName:
           type: string
           description: The display name of the encryption key for the webhook. Encryption key must use `HmacSHA256` algorithm.
@@ -19040,7 +19054,7 @@ components:
       properties:
         eventType:
           type: string
-          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded."
+          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered."
       description: The possible event types for Visier webhooks.
     designer.webhook.WebhookMessageResponseDTO:
       type: object
@@ -20652,6 +20666,28 @@ components:
           items:
             type: string
           description: "The tables to modify in the transaction. If undefined, the transaction is read-only. You cannot add tables to modify after creating the transaction.\n\n After a job starts running, the tables are locked for the duration of the transaction to prevent concurrent writes. Each tenant has independent locks; there is no cross-tenant locking."
+    servicing.sqlsource.SqlSourceChildTransactionStateDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the analytic tenant.
+        status:
+          enum:
+            - UNSPECIFIED
+            - OPEN
+            - CLOSED
+            - COMMITTED
+            - ROLLED_BACK
+          type: string
+          description: The current status of the transaction in the analytic tenant.
+          format: enum
+        startedAt:
+          type: string
+          description: The timestamp when work began on the child transaction in ISO 8601 format.
+        closedAt:
+          type: string
+          description: The timestamp when the child transaction was closed in ISO 8601 format.
     servicing.sqlsource.SqlSourceColumnDTO:
       type: object
       properties:
@@ -20693,7 +20729,7 @@ components:
           type: array
           items:
             type: string
-          description: The tenants to schedule the job for. If not specified, schedules for the current tenant only.
+          description: The tenants to schedule the job for. If this field isn't specified and a distribution mode is set, the job dispatches to the tenants detected from the input data. If this field isn't specified and no distribution mode is set, the job runs for the current tenant only.
         inputs:
           type: array
           items:
@@ -20712,7 +20748,7 @@ components:
       properties:
         jobId:
           type: string
-          description: "The job ID that was scheduled. If multiple tenants were specified, the jobs for each tenant will be scheduled\n as child jobs of this parent job."
+          description: The job ID that was scheduled. If the job dispatches to multiple tenants, the jobs for each tenant are scheduled as child jobs of this parent job.
         tableAccess:
           allOf:
             - $ref: '#/components/schemas/servicing.sqlsource.SqlJobTableAccessDTO'
@@ -20798,7 +20834,7 @@ components:
             - DISTRIBUTE_FILES
             - DISTRIBUTE_ROWS
           type: string
-          description: "Describes how to distribute input data among tenants. Required when multiple tenants are specified. Valid values:\n - `NO_DISTRIBUTION`: Don't distribute to multiple tenants. Files must be uploaded directly to their target tenant.\n - `DISTRIBUTE_FILES`: Distribute to multiple tenants based on the file path. The input filename must exist under subdirectories.\n - `DISTRIBUTE_ROWS`: Distribute to multiple tenants by splitting rows to each tenant based on the tenant code column."
+          description: "Describes how to distribute input data among tenants. Required when multiple tenants are specified. When set and `tenants` is not specified, tenants are automatically detected from the input data. Valid values:\n - `NO_DISTRIBUTION`: Don't distribute to multiple tenants. Files must be uploaded directly to their target tenant.\n - `DISTRIBUTE_FILES`: Distribute to multiple tenants based on the file path. The input filename must exist under subdirectories.\n - `DISTRIBUTE_ROWS`: Distribute to multiple tenants by splitting rows to each tenant based on the tenant code column."
           format: enum
         fileContainerName:
           type: string
@@ -20945,6 +20981,9 @@ components:
           additionalProperties:
             type: string
           description: 'The key-value pairs to set for the job; for example, `"version": "1"`. Keys have a maximum of 128 characters. Values have a maximum of 256 characters.'
+        applyToUnmodifiedTenants:
+          type: boolean
+          description: If `true` and the job dispatches to multiple tenants by automatic detection, this action applies to tenants that had no data in any distributed input. This field does not impact tenants that receive a child job. Job preconditions are evaluated before applying this action. Default is `false`.
       description: A set metadata action. Sets the key-value pairs to apply to the table source when you commit the transaction. You can use key-value pairs as preconditions for jobs. If any key doesn't exist or has a different value than specified here, the precondition isn't met and the job fails with an error.
     servicing.sqlsource.SqlSourceTableDTO:
       type: object
@@ -21005,7 +21044,7 @@ components:
           type: array
           items:
             type: string
-          description: Processing job IDs created by PROCESS actions within the job, if any.
+          description: Processing job IDs created by `process` actions within the job, if any.
         jobId:
           type: string
           description: The ID of the job.
@@ -21045,6 +21084,34 @@ components:
           items:
             type: string
           description: The tables to modify in the transaction.
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.sqlsource.SqlSourceChildTransactionStateDTO'
+          description: The state of the transaction in each analytic tenant if this transaction was dispatched to multiple tenants.
+        summary:
+          allOf:
+            - $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTransactionStatusSummaryDTO'
+          description: Summary counts of transaction statuses across the parent and all analytic tenants.
+    servicing.sqlsource.SqlSourceTransactionStatusSummaryDTO:
+      type: object
+      properties:
+        open:
+          type: integer
+          description: The number of open transactions, including the parent transaction.
+          format: int32
+        resolving:
+          type: integer
+          description: The number of transactions that are committing or rolling back, including the parent transaction.
+          format: int32
+        committed:
+          type: integer
+          description: The number of committed transactions, including the parent transaction.
+          format: int32
+        rolledBack:
+          type: integer
+          description: The number of rolled back transactions, including the parent transaction.
+          format: int32
     servicing.sqlsource.SqlSourceUpsertActionDTO:
       type: object
       properties:
