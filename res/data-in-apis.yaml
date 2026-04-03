@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2666
+  version: 22222222.99201.2686
 paths:
   /v1/api/pgp-keys:
     get:
@@ -1730,7 +1730,7 @@ paths:
       tags:
         - TableSource
       summary: Retrieve a transaction's status
-      description: "Retrieve the current status and details of a specific transaction.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Retrieve the current status and details of a specific transaction. If the transaction was dispatched to analytic tenants, the response includes the status of each analytic tenant's transaction in the `children` field.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_GetTransaction
       parameters:
         - name: transactionId
@@ -1739,6 +1739,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: summaryOnly
+          in: query
+          description: If `true`, the response omits the `children` array and returns only the `summary` counts. Use for polling. Default is `false`.
+          schema:
+            type: boolean
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -2141,7 +2146,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Run a consolidated analytics job
-      description: Run a job for a consolidated analytics tenant. This request retrieves data for all source tenants in a consolidated analytics tenant. After the job completes, you can run a processing job to generate a data version for the consolidated analytics tenant. To run a processing job, see `POST /v1alpha/op/jobs/processing-jobs`.
+      description: 'Run a job for a consolidated analytics tenant. This request retrieves data for all source tenants in a consolidated analytics tenant. Optionally, set `runProcessingJob: true` in the request body to generate a data version for the consolidated analytics tenant.'
       operationId: DataAndJobHandling_AdhocConsolidatedAnalyticsJob
       parameters:
         - name: TargetTenantID
@@ -2489,6 +2494,9 @@ components:
         tenantCode:
           type: string
           description: The tenant code of the consolidated analytics tenant; for example, "WFF_j1r~CAa7s".
+        runProcessingJob:
+          type: boolean
+          description: If `true`, runs a processing job after the consolidated analytics job completes. If unspecified, the default is `false`.
     admin.jobs.ExtractDataAndLoadDTO:
       type: object
       properties:
@@ -4347,6 +4355,28 @@ components:
           items:
             type: string
           description: "The tables to modify in the transaction. If undefined, the transaction is read-only. You cannot add tables to modify after creating the transaction.\n\n After a job starts running, the tables are locked for the duration of the transaction to prevent concurrent writes. Each tenant has independent locks; there is no cross-tenant locking."
+    servicing.sqlsource.SqlSourceChildTransactionStateDTO:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          description: The tenant code of the analytic tenant.
+        status:
+          enum:
+            - UNSPECIFIED
+            - OPEN
+            - CLOSED
+            - COMMITTED
+            - ROLLED_BACK
+          type: string
+          description: The current status of the transaction in the analytic tenant.
+          format: enum
+        startedAt:
+          type: string
+          description: The timestamp when work began on the child transaction in ISO 8601 format.
+        closedAt:
+          type: string
+          description: The timestamp when the child transaction was closed in ISO 8601 format.
     servicing.sqlsource.SqlSourceColumnDTO:
       type: object
       properties:
@@ -4388,7 +4418,7 @@ components:
           type: array
           items:
             type: string
-          description: The tenants to schedule the job for. If not specified, schedules for the current tenant only.
+          description: The tenants to schedule the job for. If this field isn't specified and a distribution mode is set, the job dispatches to the tenants detected from the input data. If this field isn't specified and no distribution mode is set, the job runs for the current tenant only.
         inputs:
           type: array
           items:
@@ -4407,7 +4437,7 @@ components:
       properties:
         jobId:
           type: string
-          description: "The job ID that was scheduled. If multiple tenants were specified, the jobs for each tenant will be scheduled\n as child jobs of this parent job."
+          description: The job ID that was scheduled. If the job dispatches to multiple tenants, the jobs for each tenant are scheduled as child jobs of this parent job.
         tableAccess:
           allOf:
             - $ref: '#/components/schemas/servicing.sqlsource.SqlJobTableAccessDTO'
@@ -4493,7 +4523,7 @@ components:
             - DISTRIBUTE_FILES
             - DISTRIBUTE_ROWS
           type: string
-          description: "Describes how to distribute input data among tenants. Required when multiple tenants are specified. Valid values:\n - `NO_DISTRIBUTION`: Don't distribute to multiple tenants. Files must be uploaded directly to their target tenant.\n - `DISTRIBUTE_FILES`: Distribute to multiple tenants based on the file path. The input filename must exist under subdirectories.\n - `DISTRIBUTE_ROWS`: Distribute to multiple tenants by splitting rows to each tenant based on the tenant code column."
+          description: "Describes how to distribute input data among tenants. Required when multiple tenants are specified. When set and `tenants` is not specified, tenants are automatically detected from the input data. Valid values:\n - `NO_DISTRIBUTION`: Don't distribute to multiple tenants. Files must be uploaded directly to their target tenant.\n - `DISTRIBUTE_FILES`: Distribute to multiple tenants based on the file path. The input filename must exist under subdirectories.\n - `DISTRIBUTE_ROWS`: Distribute to multiple tenants by splitting rows to each tenant based on the tenant code column."
           format: enum
         fileContainerName:
           type: string
@@ -4640,6 +4670,9 @@ components:
           additionalProperties:
             type: string
           description: 'The key-value pairs to set for the job; for example, `"version": "1"`. Keys have a maximum of 128 characters. Values have a maximum of 256 characters.'
+        applyToUnmodifiedTenants:
+          type: boolean
+          description: If `true` and the job dispatches to multiple tenants by automatic detection, this action applies to tenants that had no data in any distributed input. This field does not impact tenants that receive a child job. Job preconditions are evaluated before applying this action. Default is `false`.
       description: A set metadata action. Sets the key-value pairs to apply to the table source when you commit the transaction. You can use key-value pairs as preconditions for jobs. If any key doesn't exist or has a different value than specified here, the precondition isn't met and the job fails with an error.
     servicing.sqlsource.SqlSourceTableDTO:
       type: object
@@ -4700,7 +4733,7 @@ components:
           type: array
           items:
             type: string
-          description: Processing job IDs created by PROCESS actions within the job, if any.
+          description: Processing job IDs created by `process` actions within the job, if any.
         jobId:
           type: string
           description: The ID of the job.
@@ -4740,6 +4773,34 @@ components:
           items:
             type: string
           description: The tables to modify in the transaction.
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.sqlsource.SqlSourceChildTransactionStateDTO'
+          description: The state of the transaction in each analytic tenant if this transaction was dispatched to multiple tenants.
+        summary:
+          allOf:
+            - $ref: '#/components/schemas/servicing.sqlsource.SqlSourceTransactionStatusSummaryDTO'
+          description: Summary counts of transaction statuses across the parent and all analytic tenants.
+    servicing.sqlsource.SqlSourceTransactionStatusSummaryDTO:
+      type: object
+      properties:
+        open:
+          type: integer
+          description: The number of open transactions, including the parent transaction.
+          format: int32
+        resolving:
+          type: integer
+          description: The number of transactions that are committing or rolling back, including the parent transaction.
+          format: int32
+        committed:
+          type: integer
+          description: The number of committed transactions, including the parent transaction.
+          format: int32
+        rolledBack:
+          type: integer
+          description: The number of rolled back transactions, including the parent transaction.
+          format: int32
     servicing.sqlsource.SqlSourceUpsertActionDTO:
       type: object
       properties:

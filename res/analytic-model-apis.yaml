@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2666
+  version: 22222222.99201.2686
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2072,26 +2072,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/platform.EventAlertDTO'
-  /v1alpha/alerts/notifications:
-    get:
-      tags:
-        - PersonalizedAlerts
-      summary: Retrieve personalized alerts notifications
-      description: "Get all the notifications for your active personalized alerts from the last 30 days. For all active alerts, the response returns the date that the alert was triggered and the alert’s trigger criteria.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: PersonalizedAlerts_GetNotifications
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/platform.EventAlertNotificationResultsDTO'
   /v1alpha/alerts/{alertId}:
     get:
       tags:
@@ -2209,6 +2189,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/platform.UpdateEventAlertRecipientStatusDTO'
+  /v1alpha/notifications:
+    get:
+      tags:
+        - PersonalizedAlerts
+      summary: Retrieve personalized alerts notifications
+      description: "Get all the notifications for your active personalized alerts from the last 30 days. For all active alerts, the response returns the date that the alert was triggered and the alert’s trigger criteria.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PersonalizedAlerts_GetNotifications
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platform.EventAlertNotificationResultsDTO'
   /v1alpha/planning/model/plans:
     get:
       tags:

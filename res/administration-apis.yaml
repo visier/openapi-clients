@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2666
+  version: 22222222.99201.2686
 paths:
   /v1/admin/capabilities:
     get:
@@ -5368,8 +5368,9 @@ components:
             - Cat
             - Test
             - DataProfileUnknown
+            - ProductIntelligence
           type: string
-          description: "The tenant's data profile, which designates how the tenant's data is used. Selecting the correct data profile is critical for accurately measuring adoption, assessing system performance, and accurate billing. Valid values:\n * `Regular`: An analytic tenant that hosts data for customer business decisions. `Regular` tenants receive monitoring for business data quality and the highest priority for system performance.\n * `Integration`: An analytic tenant that hosts data for development, staging, and testing. Customers do not use data in this tenant to make business decisions.\n * `Demo`: An analytic tenant that hosts data for demonstrations and training. `Demo` tenants receive the highest priority for system performance, but no monitoring for business data quality. Customers do not use data in this tenant to make business decisions.\n * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.\n * `Test`: An analytic tenant that hosts data for testing. Customers do not use data in this tenant to make business decisions."
+          description: "The tenant's data profile, which designates how the tenant's data is used. Selecting the correct data profile is critical for accurately measuring adoption, assessing system performance, and accurate billing. Valid values:\n * `Regular`: An analytic tenant that hosts data for customer business decisions. `Regular` tenants receive monitoring for business data quality and the highest priority for system performance.\n * `Integration`: An analytic tenant that hosts data for development, staging, and testing. Customers do not use data in this tenant to make business decisions.\n * `Demo`: An analytic tenant that hosts data for demonstrations and training. `Demo` tenants receive the highest priority for system performance, but no monitoring for business data quality. Customers do not use data in this tenant to make business decisions.\n * `Cat`: A consolidated analytics tenant for aggregating data from multiple analytic tenants in a single tenant.\n * `Test`: An analytic tenant that hosts data for testing. Customers do not use data in this tenant to make business decisions.\n * `ProductIntelligence`: A Product Intelligence tenant for cross-tenant analysis."
           format: enum
       description: "The tenant's traits, including aggregation rights, tenant type, and data profile type.\n As workaround Due to sbt setup limitations this has been duplicated to components/data_services/modules/data_services-dto/src/main/protobuf/visier/dataservices/tenants/transfers/TenantDetailsTraits.proto\n Please make sure any change to this DTO (and enums) is also reflected in the above file."
     admin.TenantIndustryInfoDTO:
