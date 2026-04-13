@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2692
+  version: 22222222.99201.2696
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2631,6 +2631,361 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.AllProfileAssignedForLocalTenantDTO'
+  /v1/admin/vee/instructions:
+    get:
+      tags:
+        - VeeConfiguration
+      summary: Retrieve Vee instructions
+      description: Retrieve all Vee instructions for a tenant. Administrating tenants can specify the tenant from which to retrieve instructions using the `TargetTenantID` header.
+      operationId: VeeConfiguration_GetVeeInstructions
+      parameters:
+        - name: category
+          in: query
+          description: Optionally filter instructions by category. When omitted, all instructions are returned.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.InstructionsAPIResponseDTO'
+    post:
+      tags:
+        - VeeConfiguration
+      summary: Create a Vee instruction
+      description: Create a new Vee instruction for a tenant. Administrating tenants can specify the tenant in which to create the instruction using the `TargetTenantID` header.
+      operationId: VeeConfiguration_CreateVeeInstruction
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.InstructionAPIResponseDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.InstructionAPIResponseDTO'
+  /v1/admin/vee/instructions/{instructionId}:
+    get:
+      tags:
+        - VeeConfiguration
+      summary: Retrieve a Vee instruction's details
+      description: Retrieve the details of a specific Vee instruction. Administrating tenants can specify the tenant from which to retrieve the instruction using the `TargetTenantID` header.
+      operationId: VeeConfiguration_GetVeeInstruction
+      parameters:
+        - name: instructionId
+          in: path
+          description: The ID of the Vee instruction to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.InstructionAPIResponseDTO'
+    put:
+      tags:
+        - VeeConfiguration
+      summary: Update a Vee instruction
+      description: "Update an existing Vee instruction. The instruction definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values for optional fields, those values reset to their respective defaults.\n\n Administrating tenants can specify the tenant in which to update the instruction using the `TargetTenantID` header."
+      operationId: VeeConfiguration_UpdateVeeInstruction
+      parameters:
+        - name: instructionId
+          in: path
+          description: The ID of the Vee instruction to update.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.InstructionAPIResponseDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.InstructionAPIResponseDTO'
+    delete:
+      tags:
+        - VeeConfiguration
+      summary: Delete a Vee instruction
+      description: Delete a Vee instruction by its unique identifier. Administrating tenants can specify the tenant from which to delete the instruction using the `TargetTenantID` header.
+      operationId: VeeConfiguration_DeleteVeeInstruction
+      parameters:
+        - name: instructionId
+          in: path
+          description: The ID of the Vee instruction to delete.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.InstructionAPIResponseDTO'
+  /v1/admin/vee/safeguards:
+    get:
+      tags:
+        - VeeConfiguration
+      summary: Retrieve Vee safeguards
+      description: Retrieve all Vee safeguards for a tenant. Administrating tenants can specify the tenant from which to retrieve safeguards using the `TargetTenantID` header.
+      operationId: VeeConfiguration_GetVeeSafeguards
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SafeguardsAPIResponseDTO'
+    post:
+      tags:
+        - VeeConfiguration
+      summary: Create a Vee safeguard
+      description: Create a new Vee safeguard for a tenant. Administrating tenants can specify the tenant in which to create the safeguard using the `TargetTenantID` header.
+      operationId: VeeConfiguration_CreateVeeSafeguard
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.SafeguardAPIResponseDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SafeguardAPIResponseDTO'
+  /v1/admin/vee/safeguards/{safeguardId}:
+    get:
+      tags:
+        - VeeConfiguration
+      summary: Retrieve a Vee safeguard's details
+      description: Retrieve the details of a specific Vee safeguard. Administrating tenants can specify the tenant from which to retrieve the safeguard using the `TargetTenantID` header.
+      operationId: VeeConfiguration_GetVeeSafeguard
+      parameters:
+        - name: safeguardId
+          in: path
+          description: The ID of the Vee safeguard to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SafeguardAPIResponseDTO'
+    put:
+      tags:
+        - VeeConfiguration
+      summary: Update a Vee safeguard
+      description: "Update an existing Vee safeguard. The safeguard definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values for optional fields, those values reset to their respective defaults.\n\n Administrating tenants can specify the tenant in which to update the safeguard using the `TargetTenantID` header."
+      operationId: VeeConfiguration_UpdateVeeSafeguard
+      parameters:
+        - name: safeguardId
+          in: path
+          description: The ID of the Vee safeguard to update.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.SafeguardAPIResponseDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SafeguardAPIResponseDTO'
+    delete:
+      tags:
+        - VeeConfiguration
+      summary: Delete a Vee safeguard
+      description: Delete a Vee safeguard by its unique identifier. Administrating tenants can specify the tenant from which to delete the safeguard using the `TargetTenantID` header.
+      operationId: VeeConfiguration_DeleteVeeSafeguard
+      parameters:
+        - name: safeguardId
+          in: path
+          description: The ID of the Vee safeguard to delete.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SafeguardAPIResponseDTO'
   /v1/api/pgp-keys:
     get:
       tags:
@@ -22133,6 +22488,45 @@ components:
           description: 'The optional object name of a binding (strong) reference to the target analytic object. If not specified, uses the first binding reference from the source
 
             to the target analytic object.'
+    servicing.InstructionAPIResponseDTO:
+      type: object
+      properties:
+        instructionId:
+          type: string
+          description: The unique identifier of the instruction.
+        displayName:
+          type: string
+          description: The user-friendly display name for the instruction.
+        content:
+          type: string
+          description: The instruction content.
+        category:
+          enum:
+            - INSTRUCTION_CATEGORY_UNSPECIFIED
+            - INSTRUCTION_DATA_GATHERING
+            - INSTRUCTION_RESPONSE_STYLE
+          type: string
+          description: The category of the instruction.
+          format: enum
+        userGroupIds:
+          type: array
+          items:
+            type: string
+          description: The user group IDs that the instruction applies to.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
+      description: Information about a Vee instruction.
+    servicing.InstructionsAPIResponseDTO:
+      type: object
+      properties:
+        instructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.InstructionAPIResponseDTO'
+          description: A list of instructions.
+      description: The Vee instructions.
     servicing.JobIdResponse:
       type: object
       properties:
@@ -22816,6 +23210,40 @@ components:
           items:
             type: string
           description: The unique IDs of the content packages assigned to the permission.
+    servicing.SafeguardAPIResponseDTO:
+      type: object
+      properties:
+        safeguardId:
+          type: string
+          description: The unique identifier of the safeguard.
+        displayName:
+          type: string
+          description: The user-friendly display name for the safeguard.
+        content:
+          type: string
+          description: The safeguard text that constrains Vee's behavior.
+        customResponse:
+          type: string
+          description: The custom response text when a safeguard is triggered.
+        userGroupIds:
+          type: array
+          items:
+            type: string
+          description: The user group IDs that the safeguard applies to.
+        versionInformation:
+          allOf:
+            - $ref: '#/components/schemas/servicing.VersionInformationDTO'
+          description: The object's version information. Version information is read-only. It indicates where the object originates from and whether the object has been modified in your tenant.
+      description: Information about a Vee safeguard.
+    servicing.SafeguardsAPIResponseDTO:
+      type: object
+      properties:
+        safeguards:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SafeguardAPIResponseDTO'
+          description: A list of safeguards.
+      description: The Vee safeguards.
     servicing.SampleQuestionAPIResponseDTO:
       type: object
       properties:
@@ -26521,6 +26949,13 @@ tags:
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
 
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: VeeConfiguration
+    x-displayName: Vee Configuration
+    description: 'Manage Vee v2 instructions and safeguards for a tenant. Instructions guide Vee''s behavior when responding to queries. Safeguards prevent Vee from responding to certain types of queries.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: DataModel
     x-displayName: Data Model
     description: "Discover the objects that make up your Visier solution and provide detailed information on the object's schema.\nYou can retrieve detailed information about objects in Visier by retrieving a list of all objects or retrieving information about an object by object ID.\nThe types of objects you can retrieve using the data model API are:\n  * Analytic objects\n  * Properties\n  * Dimensions\n  * Selection concepts\n  * Metrics\n  * Predictions\n  * Vee sample questions and categories"
@@ -26625,6 +27060,7 @@ x-tagGroups:
       - NetworkSubnets
       - SidecarSolutions
       - ReleaseVersionConfiguration
+      - VeeConfiguration
   - name: analytic model
     tags:
       - DataModel
