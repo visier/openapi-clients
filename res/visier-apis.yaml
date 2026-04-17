@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2696
+  version: 22222222.99201.2710
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -7328,7 +7328,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/designer.crypto.TenantEncryptionKeyDetailsDTO'
+                $ref: '#/components/schemas/designer.crypto.TenantEncryptionKeyDetailListDTO'
     post:
       tags:
         - EncryptionKeys
@@ -16443,6 +16443,9 @@ components:
         visibleInApp:
           type: boolean
           description: // If `true`, the metric is visible to end users in the solution.
+        dataType:
+          type: string
+          description: "The metric's data type. Valid values:\n\n Custom data types, `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
       description: A metric is a calculation based on one or more attribute values of analytic objects.
     dataservices.datamodel.MetricsDTO:
       type: object
@@ -18249,6 +18252,15 @@ components:
           type: string
           description: The encryption key value.
       description: The details of an encryption key.
+    designer.crypto.TenantEncryptionKeyDetailListDTO:
+      type: object
+      properties:
+        keyDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.crypto.TenantEncryptionKeyDetailsDTO'
+          description: Information about a list of encryption keys.
+      description: A list of encryption keys.
     designer.crypto.TenantEncryptionKeyDetailsDTO:
       type: object
       properties:
@@ -21108,6 +21120,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.sqlsource.SqlJobTableAccessDTO'
           description: The read and write tables per job.
+        transactionId:
+          type: string
+          description: The transaction ID in which the job was scheduled.
     servicing.sqlsource.SqlSourceExtendTransactionRequestDTO:
       type: object
       properties:
@@ -24616,7 +24631,7 @@ components:
           description: The metric's formula written in Visier Formula Language (VFL).
         dataType:
           type: string
-          description: "The metric's data type. Valid values:\n\n `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
+          description: "The metric's data type. Valid values:\n\n Custom data types, `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
         baseMetricId:
           type: string
           description: The UUID of the metric from which this metric is derived.
@@ -25147,7 +25162,7 @@ components:
           description: The metric's formula written in Visier Formula Language (VFL).
         dataType:
           type: string
-          description: "The metric's data type. Valid values:\n\n `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
+          description: "The metric's data type. Valid values:\n\n Custom data types, `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
         visibleInAnalytics:
           type: boolean
           description: If `true`, the object is visible to end users in the solution. Default is `true`.
@@ -25356,7 +25371,7 @@ components:
           description: The metric's formula written in Visier Formula Language (VFL).
         dataType:
           type: string
-          description: "The metric's data type. Valid values:\n\n `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
+          description: "The metric's data type. Valid values:\n\n Custom data types, `Number`, `Integer`, `Ordinal`, `Categorical`, `Currency`, `Boolean`, `Percent`,\n `IntegerPercent`, `PercentNoScaling`, `PercentagePoint`, `String`, `Text`, `LargeText`,\n `Date`, `HourDuration`, `DayDuration`, `MonthDuration`, `YearDuration`."
       description: Information about the metric, such as its formula and data type.
     servicing.v2.objectconfiguration.SimplePropertyTypeDTO:
       type: object

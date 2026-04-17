@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2696
+  version: 22222222.99201.2710
 paths:
   /v1/admin/capabilities:
     get:
@@ -3409,7 +3409,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/designer.crypto.TenantEncryptionKeyDetailsDTO'
+                $ref: '#/components/schemas/designer.crypto.TenantEncryptionKeyDetailListDTO'
     post:
       tags:
         - EncryptionKeys
@@ -5861,6 +5861,15 @@ components:
           type: string
           description: The encryption key value.
       description: The details of an encryption key.
+    designer.crypto.TenantEncryptionKeyDetailListDTO:
+      type: object
+      properties:
+        keyDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.crypto.TenantEncryptionKeyDetailsDTO'
+          description: Information about a list of encryption keys.
+      description: A list of encryption keys.
     designer.crypto.TenantEncryptionKeyDetailsDTO:
       type: object
       properties:

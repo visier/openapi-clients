@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2696
+  version: 22222222.99201.2710
 paths:
   /v1/api/pgp-keys:
     get:
@@ -4442,6 +4442,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.sqlsource.SqlJobTableAccessDTO'
           description: The read and write tables per job.
+        transactionId:
+          type: string
+          description: The transaction ID in which the job was scheduled.
     servicing.sqlsource.SqlSourceExtendTransactionRequestDTO:
       type: object
       properties:
