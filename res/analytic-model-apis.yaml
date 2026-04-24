@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2710
+  version: 22222222.99201.2722
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -3797,6 +3797,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.datamodel.PopulationConfigurationDTO'
           description: "A set of property and dimension references configured by Visier or an administrator to tell the platform what\n properties and dimensions to use when doing population insight calculations. These are the distinguishing\n properties, change history properties, and grouping dimensions to use in AI insights. This field is optional and\n is only available for subjects."
+        defaultSelectionConcept:
+          allOf:
+            - $ref: '#/components/schemas/dataservices.datamodel.SelectionConceptReferenceDTO'
+          description: "The selection concept to use as the default filter in visualizations using this analytic object. Useful for \n filtering visuals to a context that users understand. Returns the object name and the qualifying path to the \n related analytic object. Not returned if no default filter is configured."
       description: Analytic objects are the various items that users can analyze in Visier. Analytic objects include subjects, events, and overlays.
     dataservices.datamodel.AnalyticObjectsDTO:
       type: object
@@ -4437,6 +4441,16 @@ components:
           type: string
           description: The localized explanation of the selection concept.
       description: Selection concepts select a population of subject members of a given subject or event.
+    dataservices.datamodel.SelectionConceptReferenceDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The ID of the selection concept.
+        qualifyingPath:
+          type: string
+          description: "The qualifying path to the selection concept in Visier, such as the analytic object or event the selection\n concept is associated with. If the path has multiple objects, each object is separated by a period."
+      description: The name and qualifying path of a selection concept to query.
     dataservices.datamodel.SelectionConceptsDTO:
       type: object
       properties:
