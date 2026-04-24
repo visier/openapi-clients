@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2710
+  version: 22222222.99201.2722
 paths:
   /v1/admin/capabilities:
     get:
@@ -3723,6 +3723,11 @@ paths:
           description: A list of fields to include in the response, separated by commas. E.g., "displayName,purchasedModules"
           schema:
             type: string
+        - name: dataProfile
+          in: query
+          description: 'Returns tenants with the specified data profile. Valid values: `Regular`, `Integration`, `Demo`, `Cat`, `Test`, `ProductIntelligence`. If omitted, returns all tenants.'
+          schema:
+            type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -7420,6 +7425,9 @@ components:
           items:
             $ref: '#/components/schemas/servicing.SourceSecurityProfileDTO'
           description: The sources this permission grants access to.
+        hasWriteAccessToAllSources:
+          type: boolean
+          description: If `true`, the permission grants full write access to all sources, including the ability to create new sources. Default is `false`.
     servicing.SourceSecurityProfileDTO:
       type: object
       properties:
