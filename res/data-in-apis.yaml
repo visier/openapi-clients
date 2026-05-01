@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2722
+  version: 22222222.99201.2743
 paths:
   /v1/api/pgp-keys:
     get:
@@ -3445,6 +3445,15 @@ components:
           type: string
         privateKey:
           type: string
+    designer.CdkAuthParamsDTO:
+      type: object
+      properties:
+        dockerImage:
+          type: string
+        connectorConfigJson:
+          type: string
+        credentialName:
+          type: string
     designer.CopyS3AuthParamsDTO:
       type: object
       properties:
@@ -3538,6 +3547,7 @@ components:
             - Echo
             - SnowflakeV2
             - SSE
+            - Cdk
           type: string
           description: The data provider associated with the credential.
           format: enum
@@ -3625,6 +3635,8 @@ components:
           $ref: '#/components/schemas/designer.SnowflakeV2AuthParamsDTO'
         sseAuthParams:
           $ref: '#/components/schemas/designer.SSEAuthParamsDTO'
+        cdkAuthParams:
+          $ref: '#/components/schemas/designer.CdkAuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -4707,6 +4719,10 @@ components:
         excludeFromAutoProcessing:
           type: boolean
           description: If `true`, Visier ignores this source when checking which data categories require a processing job during a `process` action with no specified `dataCategoryIds`. Default is `false`.
+        snapshotRetentionDays:
+          type: integer
+          description: "The number of days to retain snapshots for this table. If not set, the global default is used.\n Note: this setting limits how far back a Reset action can target. Snapshots older than the retention\n period are permanently deleted by the vacuum job, so a Reset to a timestamp beyond the retention\n window will fail because the target snapshot no longer exists."
+          format: int32
     servicing.sqlsource.SqlSourceTableListResponseDTO:
       type: object
       properties:

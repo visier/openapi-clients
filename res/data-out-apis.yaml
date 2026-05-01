@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2722
+  version: 22222222.99201.2743
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1100,6 +1100,7 @@ components:
               - VEE_WARNING_TIME_SELECTION_ADJUSTED
               - VEE_WARNING_FILTER_DROPPED
               - VEE_WARNING_ROUNDING_ADJUSTED
+              - VEE_WARNING_FIRST_PERSON_FILTER_DROPPED
             type: string
             format: enum
           description: A list of warnings from Vee that accompanies an unsure answer; for example, Vee might return a close match warning if Vee finds multiple employees named Adam that relate to your question.
