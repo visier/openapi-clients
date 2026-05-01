@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2722
+  version: 22222222.99201.2743
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -11729,7 +11729,7 @@ paths:
       tags:
         - BasicAuthentication
       summary: Request an impersonation token
-      description: Generate an impersonation token for the given username.
+      description: Generate an impersonation token for the given username. The requesting user must have the Impersonator capability and the target user must have the ReadImpersonated (or WriteImpersonated for write mode) capability. Same-tenant users authenticated via OAuth access token are supported in addition to cross-tenant (partner signin) sessions.
       operationId: BasicAuthentication_GenerateImpersonationToken
       parameters:
         - name: TargetTenantID
@@ -11742,6 +11742,12 @@ paths:
           description: The username of the user to impersonate. If provided in both the header and the request body, the header value takes precedence.
           schema:
             type: string
+        - name: write
+          in: query
+          description: If `true`, the returned token grants read-write impersonation (requires the target user to have WriteImpersonated capability). Defaults to read-only impersonation.
+          required: false
+          schema:
+            type: boolean
       requestBody:
         description: Request to generate an impersonation token.
         content:
@@ -11757,7 +11763,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         "200":
-          description: Impersonation token response
+          description: Impersonation token response. The token is returned as a plain-text body and also set as the VisierImpersonationToken cookie. Pass this token in subsequent API requests to execute them as the impersonated user.
           content:
             text/plain:
               schema:
@@ -15156,6 +15162,7 @@ components:
               - VEE_WARNING_TIME_SELECTION_ADJUSTED
               - VEE_WARNING_FILTER_DROPPED
               - VEE_WARNING_ROUNDING_ADJUSTED
+              - VEE_WARNING_FIRST_PERSON_FILTER_DROPPED
             type: string
             format: enum
           description: A list of warnings from Vee that accompanies an unsure answer; for example, Vee might return a close match warning if Vee finds multiple employees named Adam that relate to your question.
@@ -18543,6 +18550,15 @@ components:
           type: string
         privateKey:
           type: string
+    designer.CdkAuthParamsDTO:
+      type: object
+      properties:
+        dockerImage:
+          type: string
+        connectorConfigJson:
+          type: string
+        credentialName:
+          type: string
     designer.CopyS3AuthParamsDTO:
       type: object
       properties:
@@ -18636,6 +18652,7 @@ components:
             - Echo
             - SnowflakeV2
             - SSE
+            - Cdk
           type: string
           description: The data provider associated with the credential.
           format: enum
@@ -18723,6 +18740,8 @@ components:
           $ref: '#/components/schemas/designer.SnowflakeV2AuthParamsDTO'
         sseAuthParams:
           $ref: '#/components/schemas/designer.SSEAuthParamsDTO'
+        cdkAuthParams:
+          $ref: '#/components/schemas/designer.CdkAuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -21599,6 +21618,10 @@ components:
         excludeFromAutoProcessing:
           type: boolean
           description: If `true`, Visier ignores this source when checking which data categories require a processing job during a `process` action with no specified `dataCategoryIds`. Default is `false`.
+        snapshotRetentionDays:
+          type: integer
+          description: "The number of days to retain snapshots for this table. If not set, the global default is used.\n Note: this setting limits how far back a Reset action can target. Snapshots older than the retention\n period are permanently deleted by the vacuum job, so a Reset to a timestamp beyond the retention\n window will fail because the target snapshot no longer exists."
+          format: int32
     servicing.sqlsource.SqlSourceTableListResponseDTO:
       type: object
       properties:
@@ -22870,6 +22893,7 @@ components:
             - UserDirectAssignments
             - DataAccessSets
             - Permissions
+            - Unknown
           type: string
           description: The type of artifact that failed to synchronize.
           format: enum
@@ -23642,7 +23666,7 @@ components:
           description: The sources this permission grants access to.
         hasWriteAccessToAllSources:
           type: boolean
-          description: If `true`, the permission grants full write access to all sources, including the ability to create new sources. Default is `false`.
+          description: If `true`, the permission grants the ability to create, read, update, and delete all sources. Default is `false`.
     servicing.SourceSecurityProfileDTO:
       type: object
       properties:

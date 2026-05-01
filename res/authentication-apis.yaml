@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2722
+  version: 22222222.99201.2743
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -69,7 +69,7 @@ paths:
       tags:
         - BasicAuthentication
       summary: Request an impersonation token
-      description: Generate an impersonation token for the given username.
+      description: Generate an impersonation token for the given username. The requesting user must have the Impersonator capability and the target user must have the ReadImpersonated (or WriteImpersonated for write mode) capability. Same-tenant users authenticated via OAuth access token are supported in addition to cross-tenant (partner signin) sessions.
       operationId: BasicAuthentication_GenerateImpersonationToken
       parameters:
         - name: TargetTenantID
@@ -82,6 +82,12 @@ paths:
           description: The username of the user to impersonate. If provided in both the header and the request body, the header value takes precedence.
           schema:
             type: string
+        - name: write
+          in: query
+          description: If `true`, the returned token grants read-write impersonation (requires the target user to have WriteImpersonated capability). Defaults to read-only impersonation.
+          required: false
+          schema:
+            type: boolean
       requestBody:
         description: Request to generate an impersonation token.
         content:
@@ -97,7 +103,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         '200':
-          description: Impersonation token response
+          description: Impersonation token response. The token is returned as a plain-text body and also set as the VisierImpersonationToken cookie. Pass this token in subsequent API requests to execute them as the impersonated user.
           content:
             text/plain:
               schema:

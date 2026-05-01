@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2722
+  version: 22222222.99201.2743
 paths:
   /v1/admin/capabilities:
     get:
@@ -6837,6 +6837,7 @@ components:
             - UserDirectAssignments
             - DataAccessSets
             - Permissions
+            - Unknown
           type: string
           description: The type of artifact that failed to synchronize.
           format: enum
@@ -7427,7 +7428,7 @@ components:
           description: The sources this permission grants access to.
         hasWriteAccessToAllSources:
           type: boolean
-          description: If `true`, the permission grants full write access to all sources, including the ability to create new sources. Default is `false`.
+          description: If `true`, the permission grants the ability to create, read, update, and delete all sources. Default is `false`.
     servicing.SourceSecurityProfileDTO:
       type: object
       properties:
