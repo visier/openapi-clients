@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2753
+  version: 22222222.99201.2757
 paths:
   /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
     patch:
@@ -176,6 +176,54 @@ components:
             type: string
           description: "The UUIDs of the subplans to include. If not defined, all submitted subplans will be consolidated."
       description: The details of consolidating a subplan.
+    planning.CreateSubplanActionPayload:
+      type: object
+      properties:
+        assignee:
+          type: string
+          description: The username of the subplan owner.
+        dueDate:
+          type: integer
+          description: The due date of the subplan in UTC format. The format is the number of milliseconds since midnight 01 January, 1970 UTC.
+          format: int64
+        comment:
+          type: string
+          description: An optional note or instructions for the subplan.
+        rowMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.DimensionMember'
+          description: "The dimension members that identify the parent row at which the subplan is created.\nProvide one entry per dimension you want to pin. Any dimension not specified defaults to the root (All) member.\n\nFor example, to create a subplan for \"Finance Americas\" in Org Level 2 and \"Male\" in Gender:\n```json\n[\n  { \"dimensionId\": \"Organization\", \"memberId\": \"[Organization].[Finance Americas]\" },\n  { \"dimensionId\": \"Gender\",       \"memberId\": \"[Gender].[Male]\" }\n]\n```\n\nUse `GET /v1alpha/planning/model/plans/{id}?withSchema=true` to discover valid `dimensionId` and `memberId` values."
+        owner:
+          type: string
+          description: The username of the subplan owner.
+      description: The details of creating a subplan identified by dimension members.
+      required:
+        - owner
+        - dueDate
+        - rowMembers
+    planning.CreateSubplansActionPayload:
+      type: object
+      properties:
+        subplans:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.CreateSubplanActionPayload'
+          description: The details of the subplans to be created
+      description: The details of creating a list subplans.
+    planning.DimensionMember:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The unique identifier of the dimension (for example, `Organization`).
+        memberId:
+          type: string
+          description: The unique identifier of the member within the dimension (for example, `[Organization].[Finance Americas]`).
+      description: A dimension member that identifies a position along one dimension in a plan's segmentation.
+      required:
+        - dimensionId
+        - memberId
     planning.EndCollaborationActionPayload:
       type: object
       properties:
@@ -222,6 +270,7 @@ components:
             - Reopen
             - StartCollaboration
             - EndCollaboration
+            - CreateSubplan
           type: string
           description: "The action to perform on the main plan or the subplan, in a specific scenario. Valid values:\n - `Consolidate`: Combine the submitted subplan values into the main plan.\n - `Submit`: Send your completed subplan to the plan coordinator for review.\n - `Reopen`: Reopen consolidated subplans so subplanners can change the values.\n - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.\n - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation."
           format: enum
@@ -245,6 +294,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/planning.EndCollaborationActionPayload'
           description: The details of ending a collaboration project.
+        createSubplanActionPayload:
+          allOf:
+            - $ref: '#/components/schemas/planning.CreateSubplansActionPayload'
+          description: The details of creating a subplan.
       description: If consolidating subplans, starting collaboration, or ending collaboration, this is the main plan to update. Otherwise, this is the subplan to update.
       oneOf:
         - $ref: '#/components/schemas/PlanPatchConsolidateActionRequest'
@@ -252,6 +305,7 @@ components:
         - $ref: '#/components/schemas/PlanPatchReopenActionRequest'
         - $ref: '#/components/schemas/PlanPatchStartCollaborationActionRequest'
         - $ref: '#/components/schemas/PlanPatchEndCollaborationActionRequest'
+        - $ref: '#/components/schemas/PlanPatchCreateSubplanActionRequest'
       discriminator:
         propertyName: actionType
         mapping:
@@ -260,6 +314,7 @@ components:
           Reopen: '#/components/schemas/PlanPatchReopenActionRequest'
           StartCollaboration: '#/components/schemas/PlanPatchStartCollaborationActionRequest'
           EndCollaboration: '#/components/schemas/PlanPatchEndCollaborationActionRequest'
+          CreateSubplan: '#/components/schemas/PlanPatchCreateSubplanActionRequest'
     planning.PlanScenarioPatchResponse:
       type: object
       properties:
@@ -316,6 +371,8 @@ components:
 
             - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
 
+            - `CreateSubplan`: Create a new subplan anchored at a specific row in the parent plan.
+
 '
           type: string
           enum:
@@ -341,6 +398,8 @@ components:
             - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
 
             - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+
+            - `CreateSubplan`: Create a new subplan anchored at a specific row in the parent plan.
 
 '
           type: string
@@ -368,6 +427,8 @@ components:
 
             - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
 
+            - `CreateSubplan`: Create a new subplan anchored at a specific row in the parent plan.
+
 '
           type: string
           enum:
@@ -393,6 +454,8 @@ components:
             - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
 
             - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+
+            - `CreateSubplan`: Create a new subplan anchored at a specific row in the parent plan.
 
 '
           type: string
@@ -420,12 +483,42 @@ components:
 
             - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
 
+            - `CreateSubplan`: Create a new subplan anchored at a specific row in the parent plan.
+
 '
           type: string
           enum:
             - EndCollaboration
         endCollaborationActionPayload:
           $ref: '#/components/schemas/planning.EndCollaborationActionPayload'
+    PlanPatchCreateSubplanActionRequest:
+      type: object
+      title: Create a subplan
+      required:
+        - actionType
+        - createSubplanActionPayload
+      properties:
+        actionType:
+          description: 'The action to perform on the main plan or the subplan, in a specific scenario. Valid values:
+
+            - `Consolidate`: Combine the submitted subplan values into the main plan.
+
+            - `Submit`: Send your completed subplan to the plan coordinator for review.
+
+            - `Reopen`: Reopen consolidated subplans so subplanners can change the values.
+
+            - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
+
+            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+
+            - `CreateSubplan`: Create a new subplan anchored at a specific row in the parent plan.
+
+'
+          type: string
+          enum:
+            - CreateSubplan
+        createSubplanActionPayload:
+          $ref: '#/components/schemas/planning.CreateSubplanActionPayload'
     PlanDataUploadResponseDTO:
       type: object
       properties:
