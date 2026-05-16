@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2788
+  version: 22222222.99201.2799
 paths:
   /v1/admin/capabilities:
     get:
@@ -6591,6 +6591,20 @@ components:
     servicing.ExportSourcesAPIOperationResponseDTO:
       type: object
       properties: {}
+    servicing.ExportSourcesParametersDTO:
+      type: object
+      properties:
+        sourceUuids:
+          type: array
+          items:
+            type: string
+          description: The UUIDs of the sources to export. If specified, exports only the listed sources.
+        sourceObjectNames:
+          type: array
+          items:
+            type: string
+          description: The object names of the sources to export. If specified, exports only the listed sources.
+      description: The parameters for the `exportSources` option. If neither parameter is specified, exports all sources. If both parameters are specified, exports the sources that match values from both parameters.
     servicing.FailedAccessibleTenantProfileAssignmentDTO:
       type: object
       properties:
@@ -7488,8 +7502,12 @@ components:
             - exportSources
             - cloneFilesIntoSource
           type: string
-          description: "The operation to perform. Valid values:\n * `exportSources`: Export all sources from the tenant. If successful, returns a ZIP file containing a compressed JSON file with the sources.\n * `cloneFilesIntoSource`: Clone a source's files into a different source. If successful, returns a receiving job ID. Use the job ID to monitor the cloning results."
+          description: "The operation to perform. Valid values:\n * `exportSources`: Export sources from the tenant. If successful, returns a ZIP file containing a compressed JSON file with the sources.\n * `cloneFilesIntoSource`: Clone a source's files into a different source. If successful, returns a receiving job ID. Use the job ID to monitor the cloning results."
           format: enum
+        exportSourcesParameters:
+          allOf:
+            - $ref: '#/components/schemas/servicing.ExportSourcesParametersDTO'
+          description: The parameters for the `exportSources` option. If neither parameter is specified, exports all sources. If both parameters are specified, exports the sources that match values from both parameters.
         cloneFilesIntoSourceParameters:
           allOf:
             - $ref: '#/components/schemas/servicing.CloneFilesIntoSourceParametersDTO'
