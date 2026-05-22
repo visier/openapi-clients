@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2811
+  version: 22222222.99201.2815
 paths:
   /v1/api/pgp-keys:
     get:
@@ -2394,9 +2394,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a specific job's status
-      description: 'Use this API to retrieve the list of statuses for a specific job with id `jobId`.
-
-        You can retrieve all job statuses or specify a time period to retrieve statuses from.'
+      description: Use this API to retrieve the list of statuses for a specific job with id `jobId`.
       operationId: DataAndJobHandling_JobIdStatus
       parameters:
         - name: jobId
@@ -2417,7 +2415,8 @@ paths:
             application/json:
               schema:
                 type: array
-                $ref: '#/components/schemas/data_in.ReceivingJobStatusResponse'
+                items:
+                  $ref: '#/components/schemas/data_in.JobStatusWithStartTime'
         default:
           description: Default error response
           content:
@@ -3035,6 +3034,9 @@ components:
         startTime:
           type: string
           description: The time that the job started.
+        parentJobId:
+          type: string
+          description: The unique ID of the parent job, if applicable.
     data_in.ProcessingJob:
       type: object
       properties:

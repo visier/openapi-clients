@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2811
+  version: 22222222.99201.2815
 paths:
   /v1/admin/capabilities:
     get:
@@ -3739,7 +3739,7 @@ paths:
       parameters:
         - name: limit
           in: query
-          description: The limit of analytic tenants to return. Default and maximum are 400.
+          description: "The limit of analytic tenants to return. The limit is `1000` if the following fields are not included in the `mask`.\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n\n The limit is `400` if any of the above fields are included in the `mask` or if `mask` is not specified."
           schema:
             type: integer
             format: int32
@@ -3751,7 +3751,7 @@ paths:
             format: int32
         - name: mask
           in: query
-          description: A list of fields to include in the response, separated by commas. E.g., "displayName,purchasedModules"
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`"
           schema:
             type: string
         - name: dataProfile
@@ -3829,7 +3829,7 @@ paths:
             type: string
         - name: mask
           in: query
-          description: A list of fields to include in the response, separated by commas. E.g., "displayName,purchasedModules"
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`"
           schema:
             type: string
         - name: TargetTenantID

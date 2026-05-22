@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2811
+  version: 22222222.99201.2815
 paths:
   /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
     patch:
@@ -184,7 +184,7 @@ components:
           description: "The dimension members that identify the parent row at which the subplan is created.\nProvide one entry per dimension you want to pin. Any dimension not specified defaults to the root (All) member.\n\nFor example, to create a subplan for \"Finance Americas\" in Org Level 2 and \"Male\" in Gender:\n```json\n[\n  { \"segmentId\": \"Organization\", \"memberId\": \"[Organization].[Finance Americas]\" },\n  { \"segmentId\": \"Gender\",       \"memberId\": \"[Gender].[Male]\" }\n]\n```\n\nUse `GET /v1alpha/planning/model/plans/{id}?withSchema=true` to discover valid `segmentId` and `memberId` values."
       description: The details of creating a subplan identified by dimension members.
       required:
-        - owner
+        - assignee
         - dueDate
         - rowMembers
     planning.AssignSubplansActionPayload:
@@ -194,8 +194,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/planning.AssignSubplanActionPayload'
-          description: The details of the subplans to be created
+          description: Assign subplans;
       description: The details of creating a list subplans.
+      title: Assign subplans
+      required:
+        - subplans
     planning.ConsolidateActionPayload:
       type: object
       properties:
@@ -213,13 +216,10 @@ components:
       properties:
         segmentId:
           type: string
-          description: The unique identifier of the dimension (e.g. "Organization").
+          description: The unique identifier of the dimension (for example, `Organization`).
         memberId:
           type: string
           description: The unique identifier of the member within the dimension (for example, `[Organization].[Finance Americas]`).
-        segmentIdId:
-          type: string
-          description: The unique identifier of the dimension (for example, `Organization`).
       description: A dimension member that identifies a position along one dimension in a plan's segmentation.
       required:
         - segmentId
@@ -518,7 +518,7 @@ components:
           enum:
             - AssignSubplan
         assignSubplanActionPayload:
-          $ref: '#/components/schemas/planning.AssignSubplanActionPayload'
+          $ref: '#/components/schemas/planning.AssignSubplansActionPayload'
     PlanDataUploadResponseDTO:
       type: object
       properties:

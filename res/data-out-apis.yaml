@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2811
+  version: 22222222.99201.2815
 paths:
   /v1/data/query/aggregate:
     post:
@@ -390,233 +390,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/systemstatus.VeeStatusDTO'
-  /v1alpha/data/data-out/connectors:
-    get:
-      tags:
-        - DataExportConnectorsAPI
-      summary: Retrieve data export connectors
-      description: "Retrieve a list of data export connectors. Each data export connector defines the Data Exports it runs and the credentials it uses.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataExportConnectorsAPI_ListConnectors
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorListResponse'
-  /v1alpha/data/data-out/connectors/credentials:
-    get:
-      tags:
-        - DataExportConnectorsAPI
-      summary: Retrieve data export connector credentials
-      description: "Retrieve a list of data export connector credentials. The response returns each credential's identifying fields and authentication parameters. Sensitive fields, such as secrets and private keys, are masked.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataExportConnectorsAPI_ListCredentials
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredentialListResponse'
-    post:
-      tags:
-        - DataExportConnectorsAPI
-      summary: Create a data export connector credential
-      description: "Create a data export connector credential. Credentials authenticate with external systems, such as Databricks or Snowflake. When creating a credential, do not provide an `id`. Visier generates the credential ID automatically.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataExportConnectorsAPI_CreateCredential
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredential'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredential'
-  /v1alpha/data/data-out/connectors/credentials/validations:
-    post:
-      tags:
-        - DataExportConnectorsAPI
-      summary: Validate a data export connector credential
-      description: "Validate that a data export connector credential can connect to its destination. Validation runs asynchronously. The response returns an `id` that you can use to poll for the validation result with `GET /v1alpha/data/data-out/connectors/credentials/validations/{id}`.\n\n Specify an `id` to validate an existing credential or `parameters` to validate a new set of credential values without persisting the credentials.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataExportConnectorsAPI_CreateCredentialValidation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredentialValidationRequest'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredentialValidationCreated'
-  /v1alpha/data/data-out/connectors/credentials/validations/{id}:
-    get:
-      tags:
-        - DataExportConnectorsAPI
-      summary: Retrieve a data export connector credential's validation result
-      description: "Retrieve the validation results for a credential. Use the `id` returned by `POST /v1alpha/data/data-out/connectors/credentials/validations`.\n\n Validation runs asynchronously. Poll this endpoint until the result is available.\n * While validation is still in progress, the response is `200 OK` with a `null` body. Continue polling.\n * After validation completes, the response is `200 OK` with a body indicating whether the validation succeeded and listing any errors.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataExportConnectorsAPI_GetCredentialValidation
-      parameters:
-        - name: id
-          in: path
-          description: The unique identifier of the credential validation request.
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredentialValidationResponse'
-  /v1alpha/data/data-out/connectors/credentials/{id}:
-    get:
-      tags:
-        - DataExportConnectorsAPI
-      summary: Retrieve a data export connector credential
-      description: "Retrieve a specific data export connector credential by its unique identifier. Sensitive fields, such as secrets and private keys, are masked.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataExportConnectorsAPI_GetCredential
-      parameters:
-        - name: id
-          in: path
-          description: The unique identifier of the data export connector credential.
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredential'
-    put:
-      tags:
-        - DataExportConnectorsAPI
-      summary: Update a data export connector credential
-      description: "Update an existing data export connector credential. The definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. Provide sensitive fields, such as secrets and private keys, in plain text.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataExportConnectorsAPI_UpdateCredential
-      parameters:
-        - name: id
-          in: path
-          description: The unique identifier of the data export connector credential to update.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredential'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredential'
-    delete:
-      tags:
-        - DataExportConnectorsAPI
-      summary: Delete a data export connector credential
-      description: "Delete a data export connector credential.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataExportConnectorsAPI_DeleteCredential
-      parameters:
-        - name: id
-          in: path
-          description: The unique identifier of the data export connector credential.
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content: {}
-  /v1alpha/data/data-out/connectors/{connectorId}/jobs:
-    post:
-      tags:
-        - DataExportConnectorsAPI
-      summary: Run a data export connector job
-      description: "Dispatch a job for the specified data export connector. The job runs the connector's exports using the production version. The response returns a `jobId` that you can use to monitor the job's progress.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataExportConnectorsAPI_DispatchJob
-      parameters:
-        - name: connectorId
-          in: path
-          description: The unique identifier of the data export connector to run a job for.
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorJobDispatched'
   /v1alpha/data/data-version-exports/data-versions:
     get:
       tags:
@@ -765,6 +538,260 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/designer.DataVersionExportJobStatusDTO'
+  /v1alpha/data/export-connectors/connectors:
+    get:
+      tags:
+        - DataExportConnectorsAPI
+      summary: Retrieve data export connectors
+      description: "Retrieve a list of data export connectors. Each data export connector defines the Data Exports it runs and the credentials it uses.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataExportConnectorsAPI_ListConnectors
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorListResponse'
+  /v1alpha/data/export-connectors/connectors/{connectorId}/jobs:
+    post:
+      tags:
+        - DataExportConnectorsAPI
+      summary: Run a data export connector job
+      description: "Dispatch a job for the specified data export connector. The job runs the connector's exports using the production version. The response returns an `id` that you can use to monitor the job's progress with `GET /v1alpha/data/export-connectors/jobs/{jobId}`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataExportConnectorsAPI_DispatchJob
+      parameters:
+        - name: connectorId
+          in: path
+          description: The unique identifier of the data export connector to run a job for.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorJobDispatched'
+  /v1alpha/data/export-connectors/credentials:
+    get:
+      tags:
+        - DataExportConnectorsAPI
+      summary: Retrieve data export connector credentials
+      description: "Retrieve a list of data export connector credentials. The response returns each credential's identifying fields and authentication parameters. Sensitive fields, such as secrets and private keys, are masked.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataExportConnectorsAPI_ListCredentials
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredentialListResponse'
+    post:
+      tags:
+        - DataExportConnectorsAPI
+      summary: Create a data export connector credential
+      description: "Create a data export connector credential. Credentials authenticate with external systems, such as Databricks or Snowflake. When creating a credential, do not provide an `id`. Visier generates the credential ID automatically.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataExportConnectorsAPI_CreateCredential
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredential'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredential'
+  /v1alpha/data/export-connectors/credentials/validations:
+    post:
+      tags:
+        - DataExportConnectorsAPI
+      summary: Validate a data export connector credential
+      description: "Validate that a data export connector credential can connect to its destination. Validation runs asynchronously. The response returns an `id` that you can use to poll for the validation result with `GET /v1alpha/data/export-connectors/credentials/validations/{id}`.\n\n Specify an `id` to validate an existing credential or `parameters` to validate a new set of credential values without persisting the credentials.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataExportConnectorsAPI_CreateCredentialValidation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredentialValidationRequest'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredentialValidationCreated'
+  /v1alpha/data/export-connectors/credentials/validations/{id}:
+    get:
+      tags:
+        - DataExportConnectorsAPI
+      summary: Retrieve a data export connector credential's validation result
+      description: "Retrieve the validation results for a credential. Use the `id` returned by `POST /v1alpha/data/export-connectors/credentials/validations`.\n\n Validation runs asynchronously. Poll this endpoint until the result is available.\n * While validation is still in progress, the response is `200 OK` with a `null` body. Continue polling.\n * After validation completes, the response is `200 OK` with a body indicating whether the validation succeeded and listing any errors.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataExportConnectorsAPI_GetCredentialValidation
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the credential validation request.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredentialValidationResponse'
+  /v1alpha/data/export-connectors/credentials/{id}:
+    get:
+      tags:
+        - DataExportConnectorsAPI
+      summary: Retrieve a data export connector credential
+      description: "Retrieve a specific data export connector credential by its unique identifier. Sensitive fields, such as secrets and private keys, are masked.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataExportConnectorsAPI_GetCredential
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the data export connector credential.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredential'
+    put:
+      tags:
+        - DataExportConnectorsAPI
+      summary: Update a data export connector credential
+      description: "Update an existing data export connector credential. The definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. Provide sensitive fields, such as secrets and private keys, in plain text.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataExportConnectorsAPI_UpdateCredential
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the data export connector credential to update.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredential'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorCredential'
+    delete:
+      tags:
+        - DataExportConnectorsAPI
+      summary: Delete a data export connector credential
+      description: "Delete a data export connector credential.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataExportConnectorsAPI_DeleteCredential
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the data export connector credential.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content: {}
+  /v1alpha/data/export-connectors/jobs/{id}:
+    get:
+      tags:
+        - DataExportConnectorsAPI
+      summary: Retrieve a data export connector job's status
+      description: "Retrieve the status of a data export connector job. Use the `id` returned by `POST /v1alpha/data/export-connectors/connectors/{connectorId}/jobs`. The response returns the job's status, any error message, and the statuses of its spawned sync jobs. A sync job sends the data from Visier to the target system, such as Databricks or Snowflake.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice, functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataExportConnectorsAPI_GetJobStatus
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the data export connector job.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorJobStatus'
   /v1alpha/op/data/source-files:
     get:
       tags:
@@ -1390,6 +1417,9 @@ components:
         includeRelatedReports:
           type: boolean
           description: If `true`, returns related reports. Default is `false`. Reports are available for Embedded Partners.
+        includeSuggestions:
+          type: boolean
+          description: If `true`, returns suggested follow-up questions. Default is `false`.
     analysis.common.VeeQuestionCategoriesAPIResponseDTO:
       type: object
       properties:
@@ -1514,6 +1544,11 @@ components:
           allOf:
             - $ref: '#/components/schemas/analysis.common.VeeRelatedDocumentListDTO'
           description: A list of related analyses and reports that may be relevant to the question. Reports are available for Embedded Partners.
+        suggestions:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.VeeSuggestionDTO'
+          description: A list of suggested follow-up questions.
       description: The response after asking Vee a question.
     analysis.common.VeeResponseSchemaDTO:
       type: object
@@ -1607,6 +1642,13 @@ components:
         statusMsg:
           type: string
           description: Additional information about whether or not Vee successfully answered the question.
+    analysis.common.VeeSuggestionDTO:
+      type: object
+      properties:
+        suggestion:
+          type: string
+          description: The follow-up question in plain text.
+      description: A suggested follow-up question.
     analysis.common.VeeVisualDTO:
       type: object
       properties:
@@ -3005,11 +3047,6 @@ components:
         query:
           type: string
           description: The SQL-like query string
-        options:
-          deprecated: true
-          allOf:
-            - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
-          description: "This will be removed as of Spring 2026. Use `aggregateQueryOptions` instead.\n If both `options` and `aggregateQueryOptions` are specified, `aggregateQueryOptions` takes precedence.\n\n Optional aggregate query options.\n **Note**: `enableDescendingSpace` is not supported in SQL-like aggregate queries."
         aggregateQueryOptions:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
@@ -3377,10 +3414,28 @@ components:
     servicing.dataexportconnector.DataExportConnectorJobDispatched:
       type: object
       properties:
-        jobId:
+        id:
           type: string
           description: The unique identifier of the job.
       description: Identifies a dispatched data export connector job.
+    servicing.dataexportconnector.DataExportConnectorJobStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the export job.
+        status:
+          type: string
+          description: The current status of the data export connector job (e.g., Pending, Succeeded, Failed).
+        errorMessage:
+          type: string
+          description: The error message if the job failed. Empty for other job statuses.
+        syncJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnectorSyncJobStatus'
+          description: The status of each sync job spawned by this data export connector job.
+      description: The status of a data export connector job and its spawned sync jobs.
     servicing.dataexportconnector.DataExportConnectorLink:
       type: object
       properties:
@@ -3396,6 +3451,19 @@ components:
           items:
             $ref: '#/components/schemas/servicing.dataexportconnector.DataExportConnector'
           description: The list of data export connectors.
+    servicing.dataexportconnector.DataExportConnectorSyncJobStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the sync job.
+        status:
+          type: string
+          description: The current status of the sync job (e.g., Pending, Succeeded, Failed).
+        errorMessage:
+          type: string
+          description: The error message if the sync job failed. Empty for other job statuses.
+      description: The status of a sync job.
     servicing.dataexportconnector.DatabricksCredentialParameters:
       type: object
       properties:
