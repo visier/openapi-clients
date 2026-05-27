@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2826
+  version: 22222222.99201.2851
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -18501,6 +18501,11 @@ components:
         query:
           type: string
           description: The SQL-like query string
+        options:
+          deprecated: true
+          allOf:
+            - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
+          description: "This will be removed as of Spring 2026. Use `aggregateQueryOptions` instead.\n If both `options` and `aggregateQueryOptions` are specified, `aggregateQueryOptions` takes precedence.\n\n Optional aggregate query options.\n **Note**: `enableDescendingSpace` is not supported in SQL-like aggregate queries."
         aggregateQueryOptions:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
