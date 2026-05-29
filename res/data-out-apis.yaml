@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2851
+  version: 22222222.99201.2854
 paths:
   /v1/data/query/aggregate:
     post:
@@ -26,6 +26,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: DataVersionID
+          in: header
+          description: Optionally, specify a data version against which to execute the query. If omitted, the request uses the current project's data version or the production version if no project is specified.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -102,6 +107,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: DataVersionID
+          in: header
+          description: Optionally, specify a data version against which to execute the query. If omitted, the request uses the data version released by the current project or production version, if no project is specified.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -146,6 +156,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: DataVersionID
+          in: header
+          description: Optionally, specify a data version against which to execute the query. If omitted, the request uses the data version released by the current project or production version, if no project is specified.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -190,6 +205,11 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: DataVersionID
+          in: header
+          description: Optionally, specify a data version against which to execute the query. If omitted, the request uses the data version released by the current project or production version, if no project is specified.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
