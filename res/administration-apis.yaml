@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2854
+  version: 22222222.99201.2863
 paths:
   /v1/admin/capabilities:
     get:
@@ -4875,11 +4875,6 @@ components:
           items:
             type: string
           description: A comma-separated list of strings that represent the URLs, or domains, which can be used as values for the idp_url parameter
-        manuallyAddedModules:
-          type: array
-          items:
-            type: string
-          description: The object names of the modules manually added to the analytic tenant. Manually added modules are not part of a purchased module bundle.
     admin.TenantManagementAPIGetResponseDTO:
       type: object
       properties:
@@ -4973,11 +4968,6 @@ components:
           allOf:
             - $ref: '#/components/schemas/admin.TenantIndustryInfoDTO'
           description: The tenant's industry information, including the industry code and classification type. Valid classification systems are `NAICS` and `NACE`.
-        manuallyAddedModules:
-          type: array
-          items:
-            type: string
-          description: The object names of the modules manually added to the analytic tenant. Manually added modules are not part of a purchased module bundle.
     admin.TenantManagementAPIListResponseDTO:
       type: object
       properties:
