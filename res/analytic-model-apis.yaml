@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2867
+  version: 22222222.99201.2869
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -5139,6 +5139,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/platform.RuleSetDTO'
           description: The rules to evaluate the metric, such as the operator (for example, greater than or less than) or another metric to compare against.
+        calendarId:
+          type: string
+          description: The unique identifier of the calendar to use when evaluating the metric.
       description: The metric threshold criteria on which to trigger the alert.
     platform.KeyGroupFilterDTO:
       type: object

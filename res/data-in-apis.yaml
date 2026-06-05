@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2867
+  version: 22222222.99201.2869
 paths:
   /v1/api/pgp-keys:
     get:
@@ -4634,24 +4634,24 @@ components:
       properties:
         enabled:
           type: boolean
-          description: If `true`, this table is a materialized view that automatically updates based on upstream changes.
+          description: If `true`, this table is a materialized view that updates based on upstream changes.
         query:
           type: string
-          description: The SQL query defining the materialized view's content.
+          description: The SQL query that defines the materialized view's content.
         dependencies:
           type: array
           items:
             $ref: '#/components/schemas/servicing.sqlsource.SqlSourceMaterializedViewDependencyDTO'
-          description: The upstream tables whose changes trigger incremental updates to this view.
+          description: The list of upstream data tables whose changes trigger incremental updates to the materialized view.
     servicing.sqlsource.SqlSourceMaterializedViewDependencyDTO:
       type: object
       properties:
         upstreamTable:
           type: string
-          description: The UUID of the upstream table that this materialized view depends on.
+          description: The UUID of the table that this materialized view table depends on.
         joinFilter:
           type: string
-          description: "A SQL condition correlating changed rows in the upstream table ('input') to rows in this view ('output').\n Example: \"input.EmployeeID = output.EmployeeID AND input.EventDate = output.EventDate\""
+          description: 'A SQL condition that correlates the upstream table''s changed rows (''input'') to rows in the materialized view (''output''). Example: "input.EmployeeID = output.EmployeeID AND input.EventDate = output.EventDate".'
     servicing.sqlsource.SqlSourceProcessActionDTO:
       type: object
       properties:
@@ -4766,10 +4766,10 @@ components:
           type: integer
           description: "The number of days to keep snapshots for this table before permanently deleting them. Must be between 1 and 180 days.\n If undefined, the default is 3 days. You cannot reset the table to a timestamp older than the retention period because older snapshots are permanently deleted."
           format: int32
-        materializedViewConfig:
+        materializedView:
           allOf:
             - $ref: '#/components/schemas/servicing.sqlsource.SqlSourceMaterializedViewConfigDTO'
-          description: The materialized view configuration for this table. Omit or leave `enabled` as `false` for regular tables.
+          description: The configuration options for a materialized view. Omit or set `enabled=false` for non-materialized view tables.
     servicing.sqlsource.SqlSourceTableListResponseDTO:
       type: object
       properties:
