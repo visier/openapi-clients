@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2881
+  version: 22222222.99201.2892
 paths:
   /v1/api/pgp-keys:
     get:
@@ -1693,12 +1693,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.sqlsource.SqlSourceGetTableMetadataResponseDTO'
+  /v1alpha/data/table-sources/tables/{tableId}/regenerate:
+    post:
+      tags:
+        - TableSource
+      summary: Regenerate a materialized view
+      description: "Run a SQL job to manually refresh the dataset during troubleshooting, query updates, or when manual data fetching is required.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_RegenerateMaterializedView
+      parameters:
+        - name: tableId
+          in: path
+          description: The unique identifier of the table source.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/data_in.TableSourceRequest'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.sqlsource.SqlSourceExecuteJobResponseDTO'
   /v1alpha/data/table-sources/transactions:
     post:
       tags:
         - TableSource
       summary: Start a transaction
-      description: "Start a transaction for SQL operations on table sources. Transactions provide isolation for multiple operations and allow for rollback if needed.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Start a transaction for SQL operations on table sources. Transactions provide isolation for multiple operations and allow for rollback if needed.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_BeginTransaction
       parameters:
         - name: TargetTenantID
@@ -3271,6 +3309,12 @@ components:
         transferSessionId:
           type: string
           description: The unique identifier associated with the transfer session.
+    data_in.TableSourceRequest:
+      type: object
+      properties:
+        tableId:
+          type: string
+          description: The unique identifier of the table source.
     data_in.Tenant:
       type: object
       properties:
@@ -4414,6 +4458,7 @@ components:
             - UNSPECIFIED
             - STRING
             - TENANT_ID
+            - CUSTOMER_ID
             - INTEGER
             - LONG
             - DOUBLE
@@ -4424,7 +4469,7 @@ components:
             - JSON
             - BINARY
           type: string
-          description: "The SQL type of data stored in the column.\n * `UNSPECIFIED`: The data type is unspecified.\n * `STRING`: The data type is a string.\n * `TENANT_ID`: The data type is a tenant ID.\n * `INTEGER`: The data type is an integer.\n * `LONG`: The data type is a long value.\n * `DOUBLE`: The data type is a double.\n * `DECIMAL`: The data type is a decimal.\n * `BOOLEAN`: The data type is a Boolean value.\n * `DATE_TIME`: The data type is a date and time value. \n * `DATE`: The data type is date.\n * `JSON`: The data type is in JSON format.\n * `BINARY`: The data type is a binary blob."
+          description: "The SQL type of data stored in the column.\n * `UNSPECIFIED`: The data type is unspecified.\n * `STRING`: The data type is a string.\n * `TENANT_ID`: The data type is a tenant code with the administrating tenant code prefix. Example: If the full tenant code is `WFF_j1r~c7o`, the tenant ID is `WFF_j1r~c7o`. If `CUSTOMER_ID` is specified, do not specify `TENANT_ID`.\n * `CUSTOMER_ID`: The data type is an analytic tenant code without the administrating tenant code prefix. Use customer ID to filter inherited data by tenant. Example: If the full tenant code is `WFF_j1r~c7o`, the customer ID is `c7o`. If `TENANT_ID` is specified, do not specify `CUSTOMER_ID`.\n * `INTEGER`: The data type is an integer.\n * `LONG`: The data type is a long value.\n * `DOUBLE`: The data type is a double.\n * `DECIMAL`: The data type is a decimal.\n * `BOOLEAN`: The data type is a Boolean value.\n * `DATE_TIME`: The data type is a date and time value. \n * `DATE`: The data type is date.\n * `JSON`: The data type is in JSON format.\n * `BINARY`: The data type is a binary blob."
           format: enum
         isPrimaryTimestamp:
           type: boolean
@@ -4524,13 +4569,13 @@ components:
           description: The table's key-value pairs that were set by previously-executed jobs or previously-committed transactions.
         recordCount:
           type: string
-          description: The number of records in the table.
+          description: The number of records in the table. Not included for inherited tables if `filterInheritedDataByTenant` is `true`.
         recordsUpdatedAt:
           type: string
-          description: The timestamp when the table records were last updated in ISO 8601 format.
+          description: The timestamp when the table records were last updated in ISO 8601 format. Not included in the response if no data is loaded.
         dataFilesSizeBytes:
           type: string
-          description: The table's data files size in bytes.
+          description: The table's data files size in bytes. Not included in the response if `filterInheritedDataByTenant` is `true`.
     servicing.sqlsource.SqlSourceInputDTO:
       type: object
       properties:
@@ -4770,6 +4815,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.sqlsource.SqlSourceMaterializedViewConfigDTO'
           description: The configuration options for a materialized view. Omit or set `enabled=false` for non-materialized view tables.
+        filterInheritedDataByTenant:
+          type: boolean
+          description: If `true`, analytic tenants only see data from inherited table data for rows where `TENANT_ID` or `CUSTOMER_ID` matches their own tenant code. Requires `canChildrenInheritData=true`.
     servicing.sqlsource.SqlSourceTableListResponseDTO:
       type: object
       properties:
