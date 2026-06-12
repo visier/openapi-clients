@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2881
+  version: 22222222.99201.2892
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -4666,6 +4666,36 @@ components:
           description: The current page number of results that the user is viewing.
           format: int32
       description: A collection of plans.
+    planning.MemberDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The unique identifier of the dimension. Ex. "Location".
+        levelId:
+          type: string
+          description: The dimension level this member belongs to. Ex. "Location_2".
+        memberId:
+          type: string
+          description: The unique identifier of the member. Ex. "[Location].[Canada].[BC]".
+        displayName:
+          type: string
+          description: The display name of the member. Ex. "BC".
+        namePath:
+          type: array
+          items:
+            type: string
+          description: Path of member names from the root member down to the current member. Ex. ["Canada", "BC"].
+      description: A single member at a specific dimension level within the plan's context path.
+    planning.PlanContextDTO:
+      type: object
+      properties:
+        memberPath:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.MemberDTO'
+          description: The members representing the populations of the plan.
+      description: The populations included in this plan.
     planning.PlanDataLoadErrorDTO:
       type: object
       properties:
@@ -4752,6 +4782,10 @@ components:
           items:
             $ref: '#/components/schemas/planning.PlanSegmentLevelMemberListDTO'
           description: "A collection of members grouped by their dimension and level.\n The combination of these member IDs points to a specific row in the plan."
+        planContext:
+          allOf:
+            - $ref: '#/components/schemas/planning.PlanContextDTO'
+          description: "The context the plan is scoped to, with each context member's full ancestor path expanded top-down.\n Omitted for top-level plans that have no context."
       description: Information about a plan's schema.
     planning.PlanSegmentLevelDTO:
       type: object

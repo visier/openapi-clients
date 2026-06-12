@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2881
+  version: 22222222.99201.2892
 paths:
   /v1/admin/capabilities:
     get:
@@ -2020,7 +2020,7 @@ paths:
             type: boolean
         - name: Prefer
           in: header
-          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feaure flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feaure flag.
+          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feature flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feature flag.
 
             Valid values for the `Prefer` header:
 
@@ -2028,7 +2028,7 @@ paths:
 
             * `nvLock=artifact`: Allow API calls in parallel. Parallel API calls only work if the calls do not conflict with each other. If a change wasn''t applied, the request fails and returns the HTTP 409 conflict error. Run the request again until successful.
 
-            * `nvLock=none`: Disable the global lock if the tenant feaure flag is enabled.'
+            * `nvLock=none`: Disable the global lock if the tenant feature flag is enabled.'
           schema:
             type: string
       requestBody:
@@ -2075,7 +2075,7 @@ paths:
             type: boolean
         - name: Prefer
           in: header
-          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feaure flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feaure flag.
+          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feature flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feature flag.
 
             Valid values for the `Prefer` header:
 
@@ -2083,7 +2083,7 @@ paths:
 
             * `nvLock=artifact`: Allow API calls in parallel. Parallel API calls only work if the calls do not conflict with each other. If a change wasn''t applied, the request fails and returns the HTTP 409 conflict error. Run the request again until successful.
 
-            * `nvLock=none`: Disable the global lock if the tenant feaure flag is enabled.'
+            * `nvLock=none`: Disable the global lock if the tenant feature flag is enabled.'
           schema:
             type: string
       requestBody:
@@ -4143,7 +4143,7 @@ paths:
             type: boolean
         - name: Prefer
           in: header
-          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feaure flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feaure flag.
+          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feature flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feature flag.
 
             Valid values for the `Prefer` header:
 
@@ -4151,7 +4151,7 @@ paths:
 
             * `nvLock=artifact`: Allow API calls in parallel. Parallel API calls only work if the calls do not conflict with each other. If a change wasn''t applied, the request fails and returns the HTTP 409 conflict error. Run the request again until successful.
 
-            * `nvLock=none`: Disable the global lock if the tenant feaure flag is enabled.'
+            * `nvLock=none`: Disable the global lock if the tenant feature flag is enabled.'
           schema:
             type: string
       requestBody:

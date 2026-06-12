@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2881
+  version: 22222222.99201.2892
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2212,7 +2212,7 @@ paths:
             type: boolean
         - name: Prefer
           in: header
-          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feaure flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feaure flag.
+          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feature flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feature flag.
 
             Valid values for the `Prefer` header:
 
@@ -2220,7 +2220,7 @@ paths:
 
             * `nvLock=artifact`: Allow API calls in parallel. Parallel API calls only work if the calls do not conflict with each other. If a change wasn''t applied, the request fails and returns the HTTP 409 conflict error. Run the request again until successful.
 
-            * `nvLock=none`: Disable the global lock if the tenant feaure flag is enabled.'
+            * `nvLock=none`: Disable the global lock if the tenant feature flag is enabled.'
           schema:
             type: string
       requestBody:
@@ -2267,7 +2267,7 @@ paths:
             type: boolean
         - name: Prefer
           in: header
-          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feaure flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feaure flag.
+          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feature flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feature flag.
 
             Valid values for the `Prefer` header:
 
@@ -2275,7 +2275,7 @@ paths:
 
             * `nvLock=artifact`: Allow API calls in parallel. Parallel API calls only work if the calls do not conflict with each other. If a change wasn''t applied, the request fails and returns the HTTP 409 conflict error. Run the request again until successful.
 
-            * `nvLock=none`: Disable the global lock if the tenant feaure flag is enabled.'
+            * `nvLock=none`: Disable the global lock if the tenant feature flag is enabled.'
           schema:
             type: string
       requestBody:
@@ -8356,12 +8356,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.sqlsource.SqlSourceGetTableMetadataResponseDTO'
+  /v1alpha/data/table-sources/tables/{tableId}/regenerate:
+    post:
+      tags:
+        - TableSource
+      summary: Regenerate a materialized view
+      description: "Run a SQL job to manually refresh the dataset during troubleshooting, query updates, or when manual data fetching is required.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: TableSource_RegenerateMaterializedView
+      parameters:
+        - name: tableId
+          in: path
+          description: The unique identifier of the table source.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/data_in.TableSourceRequest'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.sqlsource.SqlSourceExecuteJobResponseDTO'
   /v1alpha/data/table-sources/transactions:
     post:
       tags:
         - TableSource
       summary: Start a transaction
-      description: "Start a transaction for SQL operations on table sources. Transactions provide isolation for multiple operations and allow for rollback if needed.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Start a transaction for SQL operations on table sources. Transactions provide isolation for multiple operations and allow for rollback if needed.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_BeginTransaction
       parameters:
         - name: TargetTenantID
@@ -10132,7 +10170,7 @@ paths:
             type: boolean
         - name: Prefer
           in: header
-          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feaure flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feaure flag.
+          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feature flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feature flag.
 
             Valid values for the `Prefer` header:
 
@@ -10140,7 +10178,7 @@ paths:
 
             * `nvLock=artifact`: Allow API calls in parallel. Parallel API calls only work if the calls do not conflict with each other. If a change wasn''t applied, the request fails and returns the HTTP 409 conflict error. Run the request again until successful.
 
-            * `nvLock=none`: Disable the global lock if the tenant feaure flag is enabled.'
+            * `nvLock=none`: Disable the global lock if the tenant feature flag is enabled.'
           schema:
             type: string
       requestBody:
@@ -16330,6 +16368,12 @@ components:
         transferSessionId:
           type: string
           description: The unique identifier associated with the transfer session.
+    data_in.TableSourceRequest:
+      type: object
+      properties:
+        tableId:
+          type: string
+          description: The unique identifier of the table source.
     data_in.Tenant:
       type: object
       properties:
@@ -20259,6 +20303,36 @@ components:
           description: The current page number of results that the user is viewing.
           format: int32
       description: A collection of plans.
+    planning.MemberDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The unique identifier of the dimension. Ex. "Location".
+        levelId:
+          type: string
+          description: The dimension level this member belongs to. Ex. "Location_2".
+        memberId:
+          type: string
+          description: The unique identifier of the member. Ex. "[Location].[Canada].[BC]".
+        displayName:
+          type: string
+          description: The display name of the member. Ex. "BC".
+        namePath:
+          type: array
+          items:
+            type: string
+          description: Path of member names from the root member down to the current member. Ex. ["Canada", "BC"].
+      description: A single member at a specific dimension level within the plan's context path.
+    planning.PlanContextDTO:
+      type: object
+      properties:
+        memberPath:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.MemberDTO'
+          description: The members representing the populations of the plan.
+      description: The populations included in this plan.
     planning.PlanDataLoadErrorDTO:
       type: object
       properties:
@@ -20424,6 +20498,10 @@ components:
           items:
             $ref: '#/components/schemas/planning.PlanSegmentLevelMemberListDTO'
           description: "A collection of members grouped by their dimension and level.\n The combination of these member IDs points to a specific row in the plan."
+        planContext:
+          allOf:
+            - $ref: '#/components/schemas/planning.PlanContextDTO'
+          description: "The context the plan is scoped to, with each context member's full ancestor path expanded top-down.\n Omitted for top-level plans that have no context."
       description: Information about a plan's schema.
     planning.PlanSegmentLevelDTO:
       type: object
@@ -21932,6 +22010,7 @@ components:
             - UNSPECIFIED
             - STRING
             - TENANT_ID
+            - CUSTOMER_ID
             - INTEGER
             - LONG
             - DOUBLE
@@ -21942,7 +22021,7 @@ components:
             - JSON
             - BINARY
           type: string
-          description: "The SQL type of data stored in the column.\n * `UNSPECIFIED`: The data type is unspecified.\n * `STRING`: The data type is a string.\n * `TENANT_ID`: The data type is a tenant ID.\n * `INTEGER`: The data type is an integer.\n * `LONG`: The data type is a long value.\n * `DOUBLE`: The data type is a double.\n * `DECIMAL`: The data type is a decimal.\n * `BOOLEAN`: The data type is a Boolean value.\n * `DATE_TIME`: The data type is a date and time value. \n * `DATE`: The data type is date.\n * `JSON`: The data type is in JSON format.\n * `BINARY`: The data type is a binary blob."
+          description: "The SQL type of data stored in the column.\n * `UNSPECIFIED`: The data type is unspecified.\n * `STRING`: The data type is a string.\n * `TENANT_ID`: The data type is a tenant code with the administrating tenant code prefix. Example: If the full tenant code is `WFF_j1r~c7o`, the tenant ID is `WFF_j1r~c7o`. If `CUSTOMER_ID` is specified, do not specify `TENANT_ID`.\n * `CUSTOMER_ID`: The data type is an analytic tenant code without the administrating tenant code prefix. Use customer ID to filter inherited data by tenant. Example: If the full tenant code is `WFF_j1r~c7o`, the customer ID is `c7o`. If `TENANT_ID` is specified, do not specify `CUSTOMER_ID`.\n * `INTEGER`: The data type is an integer.\n * `LONG`: The data type is a long value.\n * `DOUBLE`: The data type is a double.\n * `DECIMAL`: The data type is a decimal.\n * `BOOLEAN`: The data type is a Boolean value.\n * `DATE_TIME`: The data type is a date and time value. \n * `DATE`: The data type is date.\n * `JSON`: The data type is in JSON format.\n * `BINARY`: The data type is a binary blob."
           format: enum
         isPrimaryTimestamp:
           type: boolean
@@ -22042,13 +22121,13 @@ components:
           description: The table's key-value pairs that were set by previously-executed jobs or previously-committed transactions.
         recordCount:
           type: string
-          description: The number of records in the table.
+          description: The number of records in the table. Not included for inherited tables if `filterInheritedDataByTenant` is `true`.
         recordsUpdatedAt:
           type: string
-          description: The timestamp when the table records were last updated in ISO 8601 format.
+          description: The timestamp when the table records were last updated in ISO 8601 format. Not included in the response if no data is loaded.
         dataFilesSizeBytes:
           type: string
-          description: The table's data files size in bytes.
+          description: The table's data files size in bytes. Not included in the response if `filterInheritedDataByTenant` is `true`.
     servicing.sqlsource.SqlSourceInputDTO:
       type: object
       properties:
@@ -22288,6 +22367,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.sqlsource.SqlSourceMaterializedViewConfigDTO'
           description: The configuration options for a materialized view. Omit or set `enabled=false` for non-materialized view tables.
+        filterInheritedDataByTenant:
+          type: boolean
+          description: If `true`, analytic tenants only see data from inherited table data for rows where `TENANT_ID` or `CUSTOMER_ID` matches their own tenant code. Requires `canChildrenInheritData=true`.
     servicing.sqlsource.SqlSourceTableListResponseDTO:
       type: object
       properties:
