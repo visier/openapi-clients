@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2892
+  version: 22222222.99201.2896
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -20308,21 +20308,21 @@ components:
       properties:
         dimensionId:
           type: string
-          description: The unique identifier of the dimension. Ex. "Location".
+          description: The unique identifier of the dimension. For example, `Location`.
         levelId:
           type: string
-          description: The dimension level this member belongs to. Ex. "Location_2".
+          description: The dimension level this member belongs to. For example, `Location_2`.
         memberId:
           type: string
-          description: The unique identifier of the member. Ex. "[Location].[Canada].[BC]".
+          description: The unique identifier of the member. For example, `[Location].[Canada].[BC]`.
         displayName:
           type: string
-          description: The display name of the member. Ex. "BC".
+          description: The display name of the member. For example, `BC`.
         namePath:
           type: array
           items:
             type: string
-          description: Path of member names from the root member down to the current member. Ex. ["Canada", "BC"].
+          description: The path of member names from the root member down to the current member. For example, `[Canada, BC]`.
       description: A single member at a specific dimension level within the plan's context path.
     planning.PlanContextDTO:
       type: object
@@ -20501,7 +20501,7 @@ components:
         planContext:
           allOf:
             - $ref: '#/components/schemas/planning.PlanContextDTO'
-          description: "The context the plan is scoped to, with each context member's full ancestor path expanded top-down.\n Omitted for top-level plans that have no context."
+          description: "The context the plan is scoped to, with each context member's full ancestor path expanded top-down. For example, a plan might be scoped to women, with a location segmentation down to the state and city levels, and organization levels one to three.\n Omitted for top-level plans that have no context."
       description: Information about a plan's schema.
     planning.PlanSegmentLevelDTO:
       type: object
