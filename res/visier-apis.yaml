@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2896
+  version: 22222222.99201.2909
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -9026,6 +9026,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.JobIdResponse'
+  /v1alpha/planning/data/events/{eventId}:
+    get:
+      tags:
+        - PlanEvents
+      summary: Retrieve a planning event
+      description: "Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1beta/op/webhooks`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanEvents_GetEvent
+      parameters:
+        - name: eventId
+          in: path
+          description: The unique identifier of the event.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlanningEventResponse'
+        "404":
+          description: event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        "500":
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
     patch:
       tags:
@@ -20044,7 +20077,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
-          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered."
+          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered.\n - `planRowPromotionNotification`: A row in a plan was promoted."
         keyName:
           type: string
           description: The display name of the encryption key for the webhook. Encryption key must use `HmacSHA256` algorithm.
@@ -20057,7 +20090,7 @@ components:
       properties:
         eventType:
           type: string
-          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered."
+          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered.\n - `planRowPromotionNotification`: A row in a plan was promoted."
       description: The possible event types for Visier webhooks.
     designer.webhook.WebhookMessageResponseDTO:
       type: object
@@ -20221,6 +20254,20 @@ components:
       description: The details of creating a list subplans.
       required:
         - subplans
+    planning.BulkPromotionDemotionEventData:
+      type: object
+      properties:
+        promotedRows:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PromotedRowDTO'
+          description: The rows that were promoted. Each entry represents one promoted row with its dimension members.
+        demotedRows:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PromotedRowDTO'
+          description: The rows that were demoted. Each entry represents one demoted row with its dimension members.
+      description: Event data for bulkPromotionDemotionEvent events.
     planning.CollaborationInfo:
       type: object
       properties:
@@ -20577,6 +20624,59 @@ components:
             $ref: '#/components/schemas/planning.PlanDataLoadErrorDTO'
           description: The errors that occurred while loading the data.
       description: Details about the plan, including its schema.
+    planning.PlanningEventResponse:
+      type: object
+      properties:
+        eventId:
+          type: string
+          description: Unique identifier of the event.
+        planId:
+          type: string
+          description: Identifier of the plan the event belongs to.
+        scenarioId:
+          type: string
+          description: Identifier of the scenario in which the event occurred. Only present for scenario-scoped events.
+        mainPlanId:
+          type: string
+          description: Identifier of the main plan this plan belongs to. Only present when the plan is a subplan.
+        eventType:
+          enum:
+            - unknownPlanEventType
+            - memberPromoted
+            - autoPromotion
+            - bulkPromotionDemotionEvent
+          type: string
+          description: Type of the event.
+          format: enum
+        createdDate:
+          type: string
+          description: The date that the event was created. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+        user:
+          type: string
+          description: Username of the user who triggered the event.
+        promotionData:
+          $ref: '#/components/schemas/planning.PromotionEventData'
+        bulkPromotionDemotionData:
+          $ref: '#/components/schemas/planning.BulkPromotionDemotionEventData'
+      description: Response for a single planning event.
+    planning.PromotedRowDTO:
+      type: object
+      properties:
+        memberPath:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.MemberDTO'
+          description: One entry per hierarchy level and dimension included in the plan's analysis context.
+      description: The member path for a single promoted row.
+    planning.PromotionEventData:
+      type: object
+      properties:
+        promotedRows:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PromotedRowDTO'
+          description: The rows that were promoted. Each entry represents one promoted row with its dimension members.
+      description: Event data for memberPromoted and autoPromotion events.
     planning.ReopenActionPayload:
       type: object
       properties:
@@ -28081,6 +28181,11 @@ tags:
     description: 'Send data directly to your plan''s scenario and optionally add or remove rows from your plan.
 
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: PlanEvents
+    x-displayName: Plan Events
+    description: 'Retrieve details about planning events such as member promotions and row changes.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: Benchmarks
     description: |
       Get benchmark values.
@@ -28146,6 +28251,7 @@ x-tagGroups:
     tags:
       - PlanAdministration
       - PlanDataLoad
+      - PlanEvents
   - name: compensation benchmarks
     tags:
       - Benchmarks

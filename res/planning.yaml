@@ -5,8 +5,41 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2896
+  version: 22222222.99201.2909
 paths:
+  /v1alpha/planning/data/events/{eventId}:
+    get:
+      tags:
+        - PlanEvents
+      summary: Retrieve a planning event
+      description: "Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1beta/op/webhooks`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanEvents_GetEvent
+      parameters:
+        - name: eventId
+          in: path
+          description: The unique identifier of the event.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlanningEventResponse'
+        '404':
+          description: event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        '500':
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
     patch:
       tags:
@@ -198,6 +231,20 @@ components:
       description: The details of creating a list subplans.
       required:
         - subplans
+    planning.BulkPromotionDemotionEventData:
+      type: object
+      properties:
+        promotedRows:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PromotedRowDTO'
+          description: The rows that were promoted. Each entry represents one promoted row with its dimension members.
+        demotedRows:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PromotedRowDTO'
+          description: The rows that were demoted. Each entry represents one demoted row with its dimension members.
+      description: Event data for bulkPromotionDemotionEvent events.
     planning.ConsolidateActionPayload:
       type: object
       properties:
@@ -244,6 +291,27 @@ components:
           type: string
           description: The details of the error and actions you can take to load the data correctly.
       description: The error details of the unsuccessful action.
+    planning.MemberDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The unique identifier of the dimension. For example, `Location`.
+        levelId:
+          type: string
+          description: The dimension level this member belongs to. For example, `Location_2`.
+        memberId:
+          type: string
+          description: The unique identifier of the member. For example, `[Location].[Canada].[BC]`.
+        displayName:
+          type: string
+          description: The display name of the member. For example, `BC`.
+        namePath:
+          type: array
+          items:
+            type: string
+          description: The path of member names from the root member down to the current member. For example, `[Canada, BC]`.
+      description: A single member at a specific dimension level within the plan's context path.
     planning.PlanScenarioPatchActionResult:
       type: object
       properties:
@@ -323,6 +391,59 @@ components:
             $ref: '#/components/schemas/planning.PlanScenarioPatchActionResult'
           description: The result of the action taken on the main plan or subplan.
       description: The result of the action taken on the subplan if reopening, or the main plan if consolidating.
+    planning.PlanningEventResponse:
+      type: object
+      properties:
+        eventId:
+          type: string
+          description: Unique identifier of the event.
+        planId:
+          type: string
+          description: Identifier of the plan the event belongs to.
+        scenarioId:
+          type: string
+          description: Identifier of the scenario in which the event occurred. Only present for scenario-scoped events.
+        mainPlanId:
+          type: string
+          description: Identifier of the main plan this plan belongs to. Only present when the plan is a subplan.
+        eventType:
+          enum:
+            - unknownPlanEventType
+            - memberPromoted
+            - autoPromotion
+            - bulkPromotionDemotionEvent
+          type: string
+          description: Type of the event.
+          format: enum
+        createdDate:
+          type: string
+          description: The date that the event was created. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+        user:
+          type: string
+          description: Username of the user who triggered the event.
+        promotionData:
+          $ref: '#/components/schemas/planning.PromotionEventData'
+        bulkPromotionDemotionData:
+          $ref: '#/components/schemas/planning.BulkPromotionDemotionEventData'
+      description: Response for a single planning event.
+    planning.PromotedRowDTO:
+      type: object
+      properties:
+        memberPath:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.MemberDTO'
+          description: One entry per hierarchy level and dimension included in the plan's analysis context.
+      description: The member path for a single promoted row.
+    planning.PromotionEventData:
+      type: object
+      properties:
+        promotedRows:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PromotedRowDTO'
+          description: The rows that were promoted. Each entry represents one promoted row with its dimension members.
+      description: Event data for memberPromoted and autoPromotion events.
     planning.ReopenActionPayload:
       type: object
       properties:
@@ -654,6 +775,11 @@ tags:
     description: 'Send data directly to your plan''s scenario and optionally add or remove rows from your plan.
 
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: PlanEvents
+    x-displayName: Plan Events
+    description: 'Retrieve details about planning events such as member promotions and row changes.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
 security:
   - ApiKeyAuth: []
     BearerAuth: []
@@ -666,3 +792,4 @@ x-tagGroups:
     tags:
       - PlanAdministration
       - PlanDataLoad
+      - PlanEvents
