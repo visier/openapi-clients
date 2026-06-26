@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2909
+  version: 22222222.99201.2928
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1712,8 +1712,9 @@ components:
             type: string
           description: "A list of strings representing the members within a dimension path. For example, a dimension for Location\n may have the paths \"Canada, BC, Vancouver\" and \"US, California, San Francisco\"."
         memberId:
+          deprecated: true
           type: string
-          description: The unique identifier of the dimension member. Use `memberId` if the dimension member doesn't have a path, such as SD groups.
+          description: "This will be removed as of Spring 2027. Use `path` to identify dimension members instead.\n\n The unique identifier of the dimension member."
       description: The members of a dimension.
     dataservices.common.MemberValuesDTO:
       type: object

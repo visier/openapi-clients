@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2909
+  version: 22222222.99201.2928
 paths:
   /v1/admin/capabilities:
     get:
@@ -3751,12 +3751,17 @@ paths:
             format: int32
         - name: mask
           in: query
-          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`"
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
           schema:
             type: string
         - name: dataProfile
           in: query
           description: 'Returns tenants with the specified data profile. Valid values: `Regular`, `Integration`, `Demo`, `Cat`, `Test`, `ProductIntelligence`. If omitted, returns all tenants.'
+          schema:
+            type: string
+        - name: tenantCodes
+          in: query
+          description: "A comma-separated string of the tenants to retrieve details for. Specify tenant codes in one of the following formats:\n - Full tenant code. Example: `WFF_j1r~c1o`.\n - Short tenant code. Example: `c1o`.\n\n Use the same format for all tenants. Do not use both formats in one request.\n\n Examples:\n - Full: `tenantCodes=WFF_j1r~c1o,WFF_j1r~e1a,WFF_j1r~i1o`\n - Short: `tenantCodes=c1o,e1a,i1o`\n\n The limit of analytic tenants to return is `1000` if the following fields are not included in the `mask` argument.\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n\n The limit is `400` if any of the above fields are included in the `mask` or if `mask` is not specified.\n\n **Note:** It is recommended to use the request body for long lists of tenant codes. The specified tenant codes are combined (set union)\n with the `tenantCodes` query parameter if values for both are provided."
           schema:
             type: string
         - name: TargetTenantID
@@ -3768,7 +3773,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/admin.MaskMessage'
+              $ref: '#/components/schemas/admin.TenantNamesFilterDTO'
       responses:
         default:
           description: Default error response
@@ -3829,7 +3834,7 @@ paths:
             type: string
         - name: mask
           in: query
-          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`"
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
           schema:
             type: string
         - name: TargetTenantID
@@ -3837,6 +3842,11 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin.MaskMessage'
       responses:
         default:
           description: Default error response
@@ -3850,11 +3860,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/admin.TenantManagementAPIGetResponseDTO'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/admin.MaskMessage'
     put:
       tags:
         - TenantsV2
@@ -4673,14 +4678,11 @@ components:
           type: string
           description: The encryption key's display name. The name may only contain alphanumeric or dash (-) characters and must be between 3 and 36 characters long.
     admin.MaskMessage:
-      example:
-        mask: tenantDisplayName,purchasedModules
       type: object
       properties:
         mask:
           type: string
-          description: A comma-separated list of strings that specifies which fields to include in the response.
-          format: field-mask
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
     admin.PermissionsListDTO:
       type: object
       properties:
@@ -5148,6 +5150,18 @@ components:
         forceLoginsWithSessionBasedPermissions:
           type: boolean
           description: If `true`, user sign in must also provide a `SessionRepoId`. Only set if `SessionBasedPermissions` feature is enabled. Default is `false`.
+    admin.TenantNamesFilterDTO:
+      type: object
+      properties:
+        tenantCodes:
+          type: array
+          items:
+            type: string
+          description: "The tenants to retrieve details for. Specify tenant codes in one of the following formats:\n - Full tenant code. Example: `WFF_j1r~c7o`.\n - Short tenant code. Example: `c1o`.\n\n Use the same format for all tenants. Do not use both formats in one request.\n The limit of analytic tenants to return is `1000` if the following fields are not included in the `mask` argument.\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n\n The limit is `400` if any of the above fields are included in the `mask` or if `mask` is not specified."
+        mask:
+          type: string
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
+      description: Optionally, specify the tenants to retrieve. The specified tenant codes are combined (set union) with the `tenantCodes` query parameter.
     admin.TenantProvisionAPIDTO:
       required:
         - tenantCode
