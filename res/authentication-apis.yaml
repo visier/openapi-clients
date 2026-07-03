@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2931
+  version: 22222222.99201.2942
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -69,7 +69,7 @@ paths:
       tags:
         - BasicAuthentication
       summary: Request an impersonation token
-      description: Generate an impersonation token for the given username. The requesting user must have the Impersonator profile capability. The impersonated user must have the ReadImpersonated or WriteImpersonated profile capability. Supports impersonating users within the same tenant or in an analytic tenant by specifying a`TargetTenantID`.
+      description: Generate an impersonation token for the given username. The requesting user must have the Impersonator profile. The impersonated user must have the Read Impersonated or Write Impersonated profile. Supports impersonating users within the same tenant or in an analytic tenant by specifying a`TargetTenantID`. After receiving the token, use the header `Cookie:VisierImpersonationToken` to make API requests as the impersonated user.
       operationId: BasicAuthentication_GenerateImpersonationToken
       parameters:
         - name: TargetTenantID
@@ -351,6 +351,7 @@ components:
             - QueryMcpServer
             - ImplementationPartnerSuperUserCapability
             - DataVersionSnapshot
+            - PreviewAsUser
           type: string
           format: enum
         accessLevel:

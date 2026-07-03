@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2931
+  version: 22222222.99201.2942
 paths:
   /v1/admin/capabilities:
     get:
@@ -1559,7 +1559,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/admin/security-artifacts/sync:
+  /v1/admin/security-artifacts/sync-to-non-versioned:
     post:
       tags:
         - Permissions

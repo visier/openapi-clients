@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2931
+  version: 22222222.99201.2942
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1655,7 +1655,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1/admin/security-artifacts/sync:
+  /v1/admin/security-artifacts/sync-to-non-versioned:
     post:
       tags:
         - Permissions
@@ -9026,12 +9026,86 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.JobIdResponse'
+  /v1alpha/planning/data/events:
+    get:
+      tags:
+        - PlanEvents
+      summary: Retrieve planning events
+      description: "Retrieve planning events in bulk. Specify one of `planId` or `mainPlanId`. Use `planId` to retrieve events for a single plan, or `mainPlanId` to retrieve events for a main plan and all its subplans. If both are provided, `planId` takes precedence. If neither are provided, the response includes events for all plans you have access to. Results are sorted oldest first for stable forward pagination.\n\n To retrieve the full details of a single event, including promoted member paths, see `GET /v1alpha/planning/data/events/{eventId}`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanEvents_GetEvents
+      parameters:
+        - name: planId
+          in: query
+          description: "Optionally, specify the unique identifier of the plan to retrieve events for. Specify one of `planId` or `mainPlanId`. If both are provided, `planId` takes precedence and `mainPlanId` is ignored. If both are omitted, the response includes events for all plans you have access to."
+          schema:
+            type: string
+        - name: mainPlanId
+          in: query
+          description: "Optionally, specify the unique identifier of the main plan. When provided, the response includes events for the main plan and all its subplans. Specify one of `planId` or `mainPlanId`. If both are provided, `planId` takes precedence and `mainPlanId` is ignored. If both are omitted, the response includes events for all plans you have access to."
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          description: Optionally, specify a start date to filter by and return only the events created after it. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+          schema:
+            type: string
+        - name: toDate
+          in: query
+          description: Optionally, specify an end date to filter by and return only the events created before it. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+          schema:
+            type: string
+        - name: eventTypes
+          in: query
+          description: Optionally, specify one or more event types to filter by. If omitted, the response includes all event types.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: userFilter
+          in: query
+          description: Optionally, specify the username of the user who triggered the events. If omitted, the response includes events triggered by all users.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The maximum number of events to return. Default and maximum is 50.
+          schema:
+            type: integer
+            format: int32
+        - name: start
+          in: query
+          description: The index to start retrieving events from, also known as offset. The index begins at 0.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.GetEventsResponse'
+        "404":
+          description: plan not found or not accessible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        "500":
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1alpha/planning/data/events/{eventId}:
     get:
       tags:
         - PlanEvents
       summary: Retrieve a planning event
-      description: "Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1beta/op/webhooks`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: 'Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1beta/op/webhooks`.
+
+
+        **Note:** *This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).*'
       operationId: PlanEvents_GetEvent
       parameters:
         - name: eventId
@@ -12123,7 +12197,7 @@ paths:
       tags:
         - BasicAuthentication
       summary: Request an impersonation token
-      description: Generate an impersonation token for the given username. The requesting user must have the Impersonator profile capability. The impersonated user must have the ReadImpersonated or WriteImpersonated profile capability. Supports impersonating users within the same tenant or in an analytic tenant by specifying a`TargetTenantID`.
+      description: Generate an impersonation token for the given username. The requesting user must have the Impersonator profile. The impersonated user must have the Read Impersonated or Write Impersonated profile. Supports impersonating users within the same tenant or in an analytic tenant by specifying a`TargetTenantID`. After receiving the token, use the header `Cookie:VisierImpersonationToken` to make API requests as the impersonated user.
       operationId: BasicAuthentication_GenerateImpersonationToken
       parameters:
         - name: TargetTenantID
@@ -20355,6 +20429,151 @@ components:
           type: string
           description: The details of the error and actions you can take to load the data correctly.
       description: The error details of the unsuccessful action.
+    planning.EventSummaryDTO:
+      type: object
+      properties:
+        eventId:
+          type: string
+          description: The unique identifier of the event.
+        planId:
+          type: string
+          description: The unique identifier of the plan the event belongs to.
+        scenarioId:
+          type: string
+          description: The unique identifier of the scenario in which the event occurred. Only present for scenario-scoped events.
+        mainPlanId:
+          type: string
+          description: The unique identifier of the main plan this plan belongs to. Only present when the plan is a subplan.
+        eventType:
+          enum:
+            - unknownPlanEventType
+            - memberPromoted
+            - autoPromotion
+            - bulkPromotionDemotionEvent
+            - planCreationEvent
+            - planDeletionEvent
+            - planTreeAutoDeletionEvent
+            - orphanedSubplanDeletionEvent
+            - planRenameEvent
+            - planContextAndParameterRenameEvent
+            - planClonedEvent
+            - planPublishedEvent
+            - planOpeningEvent
+            - planSubmissionEvent
+            - planAcceptedEvent
+            - planForceAcceptedEvent
+            - dataLoadEvent
+            - subPlanCreationEvent
+            - subPlanDeletionEvent
+            - subPlanReassignEvent
+            - subPlanPushedEvent
+            - subPlanReopenedEvent
+            - subPlanMergedEvent
+            - planSharingEvent
+            - planUnsharingEvent
+            - sharedUserEditAccessGrantedEvent
+            - sharedUserEditAccessRevokedEvent
+            - collaborationStarted
+            - collaborationEnded
+            - metaDataModifiedEvent
+            - metaDataDimensionsModifiedEvent
+            - metaDataDimensionsAddedEvent
+            - MetaDataDimensionsRemovedEvent
+            - metaDataTimelineModifiedEvent
+            - metaDataVisibleHistoricalPeriodsModifiedEvent
+            - metaDataSeedDateModifiedEvent
+            - metaDataCostsAddedModifiedEvent
+            - metaDataCostsRemovedModifiedEvent
+            - metaDataCostsModifiedEvent
+            - metaDataPlanUsingActualsEvent
+            - metaDataPlanUsingBudgetedEvent
+            - metaDataListPlanInAnalysisEvent
+            - metaDataDontListPlanInAnalysisEvent
+            - addMeasureToMetricBindingEvent
+            - removeMeasureToMetricBindingEvent
+            - modifyMeasureToMetricBindingEvent
+            - scenarioCreationEvent
+            - scenarioResetEvent
+            - scenarioCloneEvent
+            - scenarioRevertEvent
+            - scenarioRevertToSnapshotEvent
+            - scenarioUpdateEvent
+            - scenarioDeletionEvent
+            - scenarioDataChangeEvent
+            - scenarioCostChangeEvent
+            - scenarioSubmissionEvent
+            - scenarioRejectionEvent
+            - scenarioAddedToSubPlan
+            - scenarioDataFixedByPreviousVersionEvent
+            - scenarioDataFitToHeadcountEvent
+            - scenarioDataFitToCostEvent
+            - scenarioDataFitToFTEEvent
+            - scenarioDataFitToCostAndHeadcountEvent
+            - scenarioDataRevenueOptimizationEvent
+            - scenarioDataCostOptimizationEvent
+            - scenarioDataFreezeHiresEvent
+            - attachAssumptionEvent
+            - detachAssumptionEvent
+            - automaticDetachAssumptionEvent
+            - reloadAssumptionEvent
+            - memberAdded
+            - memberRenamed
+            - memberResolvedAsMapped
+            - memberResolvedAsPreserved
+            - memberResolvedAsRemoved
+            - memberResolvedAsAdded
+            - memberRemoved
+            - planCostBudgetChangeEvent
+            - planHeadcountBudgetChangeEvent
+            - scenarioDrillThroughExportEvent
+            - planExportHeadcountEvent
+            - planExportHirecountEvent
+            - planExportTCOWEvent
+            - planExportEvent
+            - planActivityExportEvent
+            - planConsolidationCurrencyUpdateEvent
+            - planDisplayCurrencyUpdateEvent
+            - snapshotCreationEvent
+            - snapshotDeletionEvent
+            - snapshotRenameEvent
+            - explorationSnapshotRenameEvent
+            - updateBaselineEvent
+            - planOfRecordAddEvent
+            - planOfRecordRemoveEvent
+            - copyScenarioDataToCollaborationEvent
+            - backupScenarioCreationEvent
+            - lostSyncedLimitsEvent
+            - planComment
+            - cellComment
+            - cellDeleteComment
+            - cellEditComment
+          type: string
+          description: The type of event.
+          format: enum
+        createdDate:
+          type: string
+          description: The date that the event was created. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+        user:
+          type: string
+          description: The username of the user who triggered the event.
+      description: Summary of a single planning event without type-specific payload.
+    planning.GetEventsResponse:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.EventSummaryDTO'
+          description: The list of events matching the query filters.
+        limit:
+          type: integer
+          description: The maximum number of events returned. Maximum is 50.
+          format: int32
+        start:
+          type: integer
+          description: The index to start retrieving events from, also known as offset. The index begins at 0.
+          format: int32
+      description: Response for the bulk events listing endpoint.
     planning.GetPlanListResponseDTO:
       type: object
       properties:
@@ -20647,31 +20866,128 @@ components:
       properties:
         eventId:
           type: string
-          description: Unique identifier of the event.
+          description: The unique identifier of the event.
         planId:
           type: string
-          description: Identifier of the plan the event belongs to.
+          description: The unique identifier of the plan the event belongs to.
         scenarioId:
           type: string
-          description: Identifier of the scenario in which the event occurred. Only present for scenario-scoped events.
+          description: The unique identifier of the scenario in which the event occurred. Only present for scenario-scoped events.
         mainPlanId:
           type: string
-          description: Identifier of the main plan this plan belongs to. Only present when the plan is a subplan.
+          description: The unique identifier of the main plan this plan belongs to. Only present when the plan is a subplan.
         eventType:
           enum:
             - unknownPlanEventType
             - memberPromoted
             - autoPromotion
             - bulkPromotionDemotionEvent
+            - planCreationEvent
+            - planDeletionEvent
+            - planTreeAutoDeletionEvent
+            - orphanedSubplanDeletionEvent
+            - planRenameEvent
+            - planContextAndParameterRenameEvent
+            - planClonedEvent
+            - planPublishedEvent
+            - planOpeningEvent
+            - planSubmissionEvent
+            - planAcceptedEvent
+            - planForceAcceptedEvent
+            - dataLoadEvent
+            - subPlanCreationEvent
+            - subPlanDeletionEvent
+            - subPlanReassignEvent
+            - subPlanPushedEvent
+            - subPlanReopenedEvent
+            - subPlanMergedEvent
+            - planSharingEvent
+            - planUnsharingEvent
+            - sharedUserEditAccessGrantedEvent
+            - sharedUserEditAccessRevokedEvent
+            - collaborationStarted
+            - collaborationEnded
+            - metaDataModifiedEvent
+            - metaDataDimensionsModifiedEvent
+            - metaDataDimensionsAddedEvent
+            - MetaDataDimensionsRemovedEvent
+            - metaDataTimelineModifiedEvent
+            - metaDataVisibleHistoricalPeriodsModifiedEvent
+            - metaDataSeedDateModifiedEvent
+            - metaDataCostsAddedModifiedEvent
+            - metaDataCostsRemovedModifiedEvent
+            - metaDataCostsModifiedEvent
+            - metaDataPlanUsingActualsEvent
+            - metaDataPlanUsingBudgetedEvent
+            - metaDataListPlanInAnalysisEvent
+            - metaDataDontListPlanInAnalysisEvent
+            - addMeasureToMetricBindingEvent
+            - removeMeasureToMetricBindingEvent
+            - modifyMeasureToMetricBindingEvent
+            - scenarioCreationEvent
+            - scenarioResetEvent
+            - scenarioCloneEvent
+            - scenarioRevertEvent
+            - scenarioRevertToSnapshotEvent
+            - scenarioUpdateEvent
+            - scenarioDeletionEvent
+            - scenarioDataChangeEvent
+            - scenarioCostChangeEvent
+            - scenarioSubmissionEvent
+            - scenarioRejectionEvent
+            - scenarioAddedToSubPlan
+            - scenarioDataFixedByPreviousVersionEvent
+            - scenarioDataFitToHeadcountEvent
+            - scenarioDataFitToCostEvent
+            - scenarioDataFitToFTEEvent
+            - scenarioDataFitToCostAndHeadcountEvent
+            - scenarioDataRevenueOptimizationEvent
+            - scenarioDataCostOptimizationEvent
+            - scenarioDataFreezeHiresEvent
+            - attachAssumptionEvent
+            - detachAssumptionEvent
+            - automaticDetachAssumptionEvent
+            - reloadAssumptionEvent
+            - memberAdded
+            - memberRenamed
+            - memberResolvedAsMapped
+            - memberResolvedAsPreserved
+            - memberResolvedAsRemoved
+            - memberResolvedAsAdded
+            - memberRemoved
+            - planCostBudgetChangeEvent
+            - planHeadcountBudgetChangeEvent
+            - scenarioDrillThroughExportEvent
+            - planExportHeadcountEvent
+            - planExportHirecountEvent
+            - planExportTCOWEvent
+            - planExportEvent
+            - planActivityExportEvent
+            - planConsolidationCurrencyUpdateEvent
+            - planDisplayCurrencyUpdateEvent
+            - snapshotCreationEvent
+            - snapshotDeletionEvent
+            - snapshotRenameEvent
+            - explorationSnapshotRenameEvent
+            - updateBaselineEvent
+            - planOfRecordAddEvent
+            - planOfRecordRemoveEvent
+            - copyScenarioDataToCollaborationEvent
+            - backupScenarioCreationEvent
+            - lostSyncedLimitsEvent
+            - planComment
+            - cellComment
+            - cellDeleteComment
+            - cellEditComment
           type: string
-          description: Type of the event.
+          description: The type of event.
           format: enum
         createdDate:
           type: string
           description: The date that the event was created. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
         user:
           type: string
-          description: Username of the user who triggered the event.
+          description: The username of the user who triggered the event.
         promotionData:
           $ref: '#/components/schemas/planning.PromotionEventData'
         bulkPromotionDemotionData:
@@ -26683,6 +26999,7 @@ components:
             - QueryMcpServer
             - ImplementationPartnerSuperUserCapability
             - DataVersionSnapshot
+            - PreviewAsUser
           type: string
           format: enum
         accessLevel:
