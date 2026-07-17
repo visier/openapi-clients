@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2960
+  version: 22222222.99201.2984
 paths:
   /v1/admin/capabilities:
     get:
@@ -148,6 +148,13 @@ paths:
           description: Specify the tenant to retrieve a content package from.
           schema:
             type: string
+        - name: with
+          in: query
+          description: "Controls the amount of detail to return in the response. Omit to return basic information.\n * `details`: Include the content package's artifacts, grouped by artifact type."
+          schema:
+            type: array
+            items:
+              type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -578,6 +585,11 @@ paths:
           description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
+        - name: FastMode
+          in: header
+          description: If `true`, the API skips loading the tenant's data environment. Use `FastMode` to reduce latency when you don't need to perform dynamic permission checks, such as checking for the Super Admin permission assignment. Without the environment, permission checks that depend on dynamic, data-driven security, such as group assignments using dynamic populations, fall back to checks resolvable from the requesting user's static user group or direct assignments. Default is `false`.
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -623,6 +635,11 @@ paths:
         - name: NonVersioned
           in: header
           description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
+          schema:
+            type: boolean
+        - name: FastMode
+          in: header
+          description: If `true`, the API skips loading the tenant's data environment. Use `FastMode` to reduce latency when you don't need to perform dynamic permission checks, such as checking for the Super Admin permission assignment. Without the environment, permission checks that depend on dynamic, data-driven security, such as group assignments using dynamic populations, fall back to checks resolvable from the requesting user's static user group or direct assignments. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -1563,8 +1580,8 @@ paths:
     post:
       tags:
         - Permissions
-      summary: Synchronize security artifacts
-      description: "Copies permissions, data access sets, user groups, and user direct assignments from the versioned environment to the non-versioned environment. This operation immediately applies the security configurations, independent of data versioning.\n\n The versioned environment utilizes projects and data versions while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions and data access sets. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Use this to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants.\n\n <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>"
+      summary: Synchronize versioned security artifacts
+      description: "Copies permissions, data access sets, user groups, and user direct assignments from the versioned environment to the non-versioned environment. This operation immediately applies the security configurations, independent of data versioning.\n\n The versioned environment utilizes projects and data versions while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions and data access sets. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Use this to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants."
       operationId: Permissions_SyncToNonVersioned
       parameters:
         - name: TargetTenantID
@@ -4455,6 +4472,19 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: Prefer
+          in: header
+          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feature flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feature flag.
+
+            Valid values for the `Prefer` header:
+
+            * `nvLock=global`: Run API calls sequentially. Sequential API calls prevent calls from unintentionally overwriting each other.
+
+            * `nvLock=artifact`: Allow API calls in parallel. Parallel API calls only work if the calls do not conflict with each other. If a change wasn''t applied, the request fails and returns the HTTP 409 conflict error. Run the request again until successful.
+
+            * `nvLock=none`: Disable the global lock if the tenant feature flag is enabled.'
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -6400,6 +6430,35 @@ components:
         description:
           type: string
           description: A description of the committed change.
+    servicing.ContentPackageArtifactDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The unique identifier of the artifact, if it is identified by a UUID rather than an object name.
+        objectName:
+          type: string
+          description: The object name of the artifact, if it is identified by object name rather than a UUID.
+        displayName:
+          type: string
+          description: The display name of the artifact, if resolvable.
+        canFilterBy:
+          type: boolean
+          description: If `true`, this artifact is available to filter by. Only present for `dimension` and `keyGroup` artifacts.
+        canGroupBy:
+          type: boolean
+          description: If `true`, this artifact is available to group by. Only present for `dimension` and `keyGroup` artifacts.
+    servicing.ContentPackageArtifactTypeDTO:
+      type: object
+      properties:
+        artifactType:
+          type: string
+          description: The category of the content package item, such as `metric`, `dimension`, `keyGroup`, `planModel`, `guidebookTopic`, `analysis`, `report`, or `dataConnector`.
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ContentPackageArtifactDTO'
+          description: The items of this category included in the content package.
     servicing.ContentPackageDTO:
       type: object
       properties:
@@ -6412,6 +6471,11 @@ components:
         description:
           type: string
           description: A description of the content package.
+        artifactsByType:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ContentPackageArtifactTypeDTO'
+          description: The artifacts explicitly included in the content package, grouped by artifact type. Only populated when the request includes `with=details`.
     servicing.DataAccessSetDTO:
       type: object
       properties:

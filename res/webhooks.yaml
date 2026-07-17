@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2960
+  version: 22222222.99201.2984
 paths:
   /v1beta/op/webhooks:
     get:
@@ -63,6 +63,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/designer.webhook.WebhookDTO'
+  /v1beta/op/webhooks-status:
+    get:
+      tags:
+        - Webhooks
+      summary: Retrieve webhook statuses
+      description: "Retrieve the statuses of all webhooks, such as their active status and the event types they're listening for. API users can call this endpoint without any special capabilities.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: Webhooks_GetWebhooksStatus
+      parameters:
+        - name: event
+          in: query
+          description: Retrieve all webhooks listening for the specified event type. Default is to retrieve all webhooks.
+          schema:
+            type: string
+        - name: isActive
+          in: query
+          description: If `true`, retrieve active webhooks only. If `false`, retrieve active and inactive webhooks. Default is `false`.
+          schema:
+            type: boolean
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookStatusesDTO'
   /v1beta/op/webhooks/{webhookId}:
     get:
       tags:
@@ -334,6 +365,38 @@ components:
             - $ref: '#/components/schemas/designer.webhook.WebhookCredentialsDTO'
           description: The webhook's credentials, such as a username and password or access token.
       description: The details and credentials for a webhook. Not required if your endpoint doesn't have authentication.
+    designer.webhook.WebhookStatusDTO:
+      type: object
+      properties:
+        webhookId:
+          type: string
+          description: The unique identifier of the webhook.
+        details:
+          allOf:
+            - $ref: '#/components/schemas/designer.webhook.WebhookStatusDetailsDTO'
+          description: The webhook's details, such as its active status and the event types it's listening for.
+      description: The webhook's status.
+    designer.webhook.WebhookStatusDetailsDTO:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+          description: If `true`, the webhook is active.
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
+          description: The events that the webhook is listening for.
+      description: The webhook's details, such as its active status and the event types it's listening for.
+    designer.webhook.WebhookStatusesDTO:
+      type: object
+      properties:
+        webhooks:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.webhook.WebhookStatusDTO'
+          description: The webhook statuses.
+      description: The returned list of webhook statuses.
     designer.webhook.WebhooksDTO:
       type: object
       properties:
