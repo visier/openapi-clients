@@ -5,14 +5,98 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2960
+  version: 22222222.99201.2984
 paths:
+  /v1/planning/data/events/{eventId}:
+    get:
+      tags:
+        - PlanEvents
+      summary: Retrieve a planning event
+      description: Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1beta/op/webhooks`.
+      operationId: PlanEvents_GetEvent
+      parameters:
+        - name: eventId
+          in: path
+          description: The unique identifier of the event.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlanningEventResponse'
+        '404':
+          description: event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        '500':
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/planning/data/plans/{planId}/scenarios/{scenarioId}:
+    patch:
+      tags:
+        - PlanAdministration
+      summary: Partially update a plan scenario
+      description: "Make partial changes to a scenario in an existing plan. The response returns whether the scenario was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition. To retrieve plan IDs and scenario IDs, see `GET /v1/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the scenario without affecting omitted fields."
+      operationId: PlanAdministration_PatchPlan
+      parameters:
+        - name: planId
+          in: path
+          description: The unique identifier of the main plan or subplan. Use the main plan ID for consolidating, starting collaboration, or ending collaboration. Otherwise, use the subplan ID.
+          required: true
+          schema:
+            type: string
+        - name: scenarioId
+          in: path
+          description: The unique identifier of the plan scenario.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/planning.PlanScenarioPatchRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlanScenarioPatchResponse'
+        '500':
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        '404':
+          description: plan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
   /v1alpha/planning/data/events:
     get:
       tags:
         - PlanEvents
       summary: Retrieve planning events
-      description: "Retrieve planning events in bulk. Specify one of `planId` or `mainPlanId`. Use `planId` to retrieve events for a single plan, or `mainPlanId` to retrieve events for a main plan and all its subplans. If both are provided, `planId` takes precedence. If neither are provided, the response includes events for all plans you have access to. Results are sorted oldest first for stable forward pagination.\n\n To retrieve the full details of a single event, including promoted member paths, see `GET /v1alpha/planning/data/events/{eventId}`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Retrieve planning events in bulk. Specify one of `planId` or `mainPlanId`. Use `planId` to retrieve events for a single plan, or `mainPlanId` to retrieve events for a main plan and all its subplans. If both are provided, `planId` takes precedence. If neither are provided, the response includes events for all plans you have access to. Results are sorted oldest first for stable forward pagination.\n\n To retrieve the full details of a single event, including promoted member paths, see `GET /v1/planning/data/events/{eventId}`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: PlanEvents_GetEvents
       parameters:
         - name: planId
@@ -78,99 +162,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/planning/data/events/{eventId}:
-    get:
-      tags:
-        - PlanEvents
-      summary: Retrieve a planning event
-      description: 'Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1beta/op/webhooks`.
-
-
-        **Note:** *This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).*'
-      operationId: PlanEvents_GetEvent
-      parameters:
-        - name: eventId
-          in: path
-          description: The unique identifier of the event.
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.PlanningEventResponse'
-        '404':
-          description: event not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.ErrorSummary'
-        '500':
-          description: default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-  /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
-    patch:
-      tags:
-        - PlanAdministration
-      summary: Partially update a subplan
-      description: "Make partial changes to existing subplans. The response returns whether each subplan was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition. To retrieve main plan or subplan IDs and scenario IDs, see `GET /v1alpha/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the subplan without affecting omitted fields.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: PlanAdministration_PatchPlan
-      parameters:
-        - name: planId
-          in: path
-          description: The unique identifier of the main plan or subplan. Use the main plan ID for consolidating, starting collaboration, or ending collaboration. Otherwise, use the subplan ID.
-          required: true
-          schema:
-            type: string
-        - name: scenarioId
-          in: path
-          description: The unique identifier of the plan scenario.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/planning.PlanScenarioPatchRequest'
-        required: true
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.PlanScenarioPatchResponse'
-        '500':
-          description: default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        '400':
-          description: bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.ErrorSummary'
-        '404':
-          description: plan not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.ErrorSummary'
-  /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}/cells:
+  /v1/planning/data/plans/{planId}/scenarios/{scenarioId}/cells:
     patch:
       tags:
         - PlanDataLoad
       summary: Upload plan data
-      description: "Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.\nThe data file must contain the following columns:\n  - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.\n  - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.\n  - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1/planning/model/plans/{id}?withSchema=true`.\nThe data file must contain the following columns:\n  - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.\n  - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.\n  - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value."
       operationId: PlanDataLoad_PlanDataUpload
       parameters:
         - name: planId
@@ -288,7 +285,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/planning.DimensionMember'
-          description: "The dimension members that identify the parent row at which the subplan is created.\nProvide one entry per dimension you want to pin. Any dimension not specified defaults to the root (All) member.\n\nFor example, to create a subplan for \"Finance Americas\" in Org Level 2 and \"Male\" in Gender:\n```json\n[\n  { \"segmentId\": \"Organization\", \"memberId\": \"[Organization].[Finance Americas]\" },\n  { \"segmentId\": \"Gender\",       \"memberId\": \"[Gender].[Male]\" }\n]\n```\n\nUse `GET /v1alpha/planning/model/plans/{id}?withSchema=true` to discover valid `segmentId` and `memberId` values."
+          description: "The dimension members that identify the parent row at which the subplan is created.\nProvide one entry per dimension you want to pin. Any dimension not specified defaults to the root (All) member.\n\nFor example, to create a subplan for \"Finance Americas\" in Org Level 2 and \"Male\" in Gender:\n```json\n[\n  { \"segmentId\": \"Organization\", \"memberId\": \"[Organization].[Finance Americas]\" },\n  { \"segmentId\": \"Gender\",       \"memberId\": \"[Gender].[Male]\" }\n]\n```\n\nUse `GET /v1/planning/model/plans/{id}?withSchema=true` to discover valid `segmentId` and `memberId` values."
       description: The details of creating a subplan identified by dimension members.
       required:
         - assignee
@@ -1083,19 +1080,13 @@ components:
 tags:
   - name: PlanAdministration
     x-displayName: Plan Administration
-    description: 'Manage your subplans, such as consolidating and reopening.
-
-      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+    description: Manage collaboration projects in your plans, including actions such as consolidating and reopening subplans.
   - name: PlanDataLoad
     x-displayName: Plan Data Load
-    description: 'Send data directly to your plan''s scenario and optionally add or remove rows from your plan.
-
-      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+    description: Send data directly to your plan's scenario and optionally add or remove rows from your plan.
   - name: PlanEvents
     x-displayName: Plan Events
-    description: 'Retrieve details about planning events such as member promotions and row changes.
-
-      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+    description: Retrieve details about planning events such as member promotions and row changes.
 security:
   - ApiKeyAuth: []
     BearerAuth: []

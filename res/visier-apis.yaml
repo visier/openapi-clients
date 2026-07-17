@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2960
+  version: 22222222.99201.2984
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -244,6 +244,13 @@ paths:
           description: Specify the tenant to retrieve a content package from.
           schema:
             type: string
+        - name: with
+          in: query
+          description: "Controls the amount of detail to return in the response. Omit to return basic information.\n * `details`: Include the content package's artifacts, grouped by artifact type."
+          schema:
+            type: array
+            items:
+              type: string
         - name: TargetTenantID
           in: header
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
@@ -674,6 +681,11 @@ paths:
           description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
           schema:
             type: boolean
+        - name: FastMode
+          in: header
+          description: If `true`, the API skips loading the tenant's data environment. Use `FastMode` to reduce latency when you don't need to perform dynamic permission checks, such as checking for the Super Admin permission assignment. Without the environment, permission checks that depend on dynamic, data-driven security, such as group assignments using dynamic populations, fall back to checks resolvable from the requesting user's static user group or direct assignments. Default is `false`.
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -719,6 +731,11 @@ paths:
         - name: NonVersioned
           in: header
           description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
+          schema:
+            type: boolean
+        - name: FastMode
+          in: header
+          description: If `true`, the API skips loading the tenant's data environment. Use `FastMode` to reduce latency when you don't need to perform dynamic permission checks, such as checking for the Super Admin permission assignment. Without the environment, permission checks that depend on dynamic, data-driven security, such as group assignments using dynamic populations, fall back to checks resolvable from the requesting user's static user group or direct assignments. Default is `false`.
           schema:
             type: boolean
       requestBody:
@@ -1659,8 +1676,8 @@ paths:
     post:
       tags:
         - Permissions
-      summary: Synchronize security artifacts
-      description: "Copies permissions, data access sets, user groups, and user direct assignments from the versioned environment to the non-versioned environment. This operation immediately applies the security configurations, independent of data versioning.\n\n The versioned environment utilizes projects and data versions while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions and data access sets. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Use this to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants.\n\n <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>"
+      summary: Synchronize versioned security artifacts
+      description: "Copies permissions, data access sets, user groups, and user direct assignments from the versioned environment to the non-versioned environment. This operation immediately applies the security configurations, independent of data versioning.\n\n The versioned environment utilizes projects and data versions while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions and data access sets. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Use this to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants."
       operationId: Permissions_SyncToNonVersioned
       parameters:
         - name: TargetTenantID
@@ -6661,6 +6678,218 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dp_automation.TenantPreviewEntriesSummaryDTO'
+  /v1/planning/data/events/{eventId}:
+    get:
+      tags:
+        - PlanEvents
+      summary: Retrieve a planning event
+      description: Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1beta/op/webhooks`.
+      operationId: PlanEvents_GetEvent
+      parameters:
+        - name: eventId
+          in: path
+          description: The unique identifier of the event.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlanningEventResponse'
+        "404":
+          description: event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        "500":
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1/planning/data/plans/{planId}/scenarios/{scenarioId}:
+    patch:
+      tags:
+        - PlanAdministration
+      summary: Partially update a plan scenario
+      description: "Make partial changes to a scenario in an existing plan. The response returns whether the scenario was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition. To retrieve plan IDs and scenario IDs, see `GET /v1/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the scenario without affecting omitted fields."
+      operationId: PlanAdministration_PatchPlan
+      parameters:
+        - name: planId
+          in: path
+          description: The unique identifier of the main plan or subplan. Use the main plan ID for consolidating, starting collaboration, or ending collaboration. Otherwise, use the subplan ID.
+          required: true
+          schema:
+            type: string
+        - name: scenarioId
+          in: path
+          description: The unique identifier of the plan scenario.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/planning.PlanScenarioPatchRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlanScenarioPatchResponse'
+        "500":
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        "404":
+          description: plan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+  /v1/planning/model/plans:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a list of plans
+      description: Retrieve all the plans you have access to. The response returns plan information you can use to call the Plan Data Load API and Plan Administration API.
+      operationId: DataModel_PlanDataLoadlList
+      parameters:
+        - name: displayName
+          in: query
+          description: Returns plans that match the specified display name. Ignores text case and includes partial matches. For example, `displayName=WFP Plan` returns plans named "WFP Plan 2024", "WFP plan v1", and "WFP plan - Product".
+          schema:
+            type: string
+        - name: model
+          in: query
+          description: Returns plans that belong to the specified planning model ID.
+          schema:
+            type: string
+        - name: planStatus
+          in: query
+          description: "Returns plans with the specified plan status. Valid values:\n - **ASSIGNED**: The subplan has been assigned to a subplanner.\n - **IN_PROGRESS**: The subplanner has opened the subplan.\n - **OVERDUE**: The subplan was not completed on time.\n - **SUBMITTED**: The subplan has been submitted for review.\n - **SENT_BACK**: The subplan was rejected and returned to the subplanner for editing.\n - **CONSOLIDATED**: The subplan has been accepted and combined into the primary plan."
+          schema:
+            type: string
+        - name: createdStart
+          in: query
+          description: Returns plans created on or after this date. The format is YYYY-MM-DD.
+          schema:
+            type: string
+        - name: createdEnd
+          in: query
+          description: Return plans created on or before this date. The format is YYYY-MM-DD.
+          schema:
+            type: string
+        - name: editedStart
+          in: query
+          description: Returns plans edited on or after this date. The format is YYYY-MM-DD.
+          schema:
+            type: string
+        - name: editedEnd
+          in: query
+          description: Returns plans edited on or before this date. The format is YYYY-MM-DD.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: "Orders plan results by the specified value. Valid values:\n - **LAST_EDITED_DATE**: Orders plans by the last edited date. This is the default.\n - **CREATED_DATE**: Orders plans by the creation date.\n - **PLAN_MODEL**: Orders plans alphabetically by planning model."
+          schema:
+            type: string
+        - name: sortOrder
+          in: query
+          description: Sorts plan results by the specified value. Valid values are `ASCENDING` or `DESCENDING`. Default is `DESCENDING`.
+          schema:
+            type: string
+        - name: excludeSubplans
+          in: query
+          description: If `true`, the response doesn't return subplans. Default is `true`.
+          schema:
+            type: boolean
+        - name: maxResults
+          in: query
+          description: Sets the maximum number of results to return per page. Default is 50.
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Sets the results page to return. If undefined, returns the first 50 results. To get the next 50 results, specify `page=2`.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.GetPlanListResponseDTO'
+  /v1/planning/model/plans/{id}:
+    get:
+      tags:
+        - DataModel
+      summary: Retrieve a plan's details
+      description: Retrieve the details of a specific plan. The response returns plan information you can use to call the Plan Data Load API.
+      operationId: DataModel_PlanInfoWithSchema
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the plan.
+          required: true
+          schema:
+            type: string
+        - name: withSchema
+          in: query
+          description: If `true`, the response returns the plan's schema. Default is `false`.
+          schema:
+            type: boolean
+        - name: segmentIdFilter
+          in: query
+          description: If defined, returns segment levels and members for the specified segment.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlanWithSchemaDTO'
   /v1/vee/feedback:
     post:
       tags:
@@ -9031,7 +9260,7 @@ paths:
       tags:
         - PlanEvents
       summary: Retrieve planning events
-      description: "Retrieve planning events in bulk. Specify one of `planId` or `mainPlanId`. Use `planId` to retrieve events for a single plan, or `mainPlanId` to retrieve events for a main plan and all its subplans. If both are provided, `planId` takes precedence. If neither are provided, the response includes events for all plans you have access to. Results are sorted oldest first for stable forward pagination.\n\n To retrieve the full details of a single event, including promoted member paths, see `GET /v1alpha/planning/data/events/{eventId}`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Retrieve planning events in bulk. Specify one of `planId` or `mainPlanId`. Use `planId` to retrieve events for a single plan, or `mainPlanId` to retrieve events for a main plan and all its subplans. If both are provided, `planId` takes precedence. If neither are provided, the response includes events for all plans you have access to. Results are sorted oldest first for stable forward pagination.\n\n To retrieve the full details of a single event, including promoted member paths, see `GET /v1/planning/data/events/{eventId}`.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: PlanEvents_GetEvents
       parameters:
         - name: planId
@@ -9097,221 +9326,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/planning/data/events/{eventId}:
-    get:
-      tags:
-        - PlanEvents
-      summary: Retrieve a planning event
-      description: 'Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1beta/op/webhooks`.
-
-
-        **Note:** *This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).*'
-      operationId: PlanEvents_GetEvent
-      parameters:
-        - name: eventId
-          in: path
-          description: The unique identifier of the event.
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.PlanningEventResponse'
-        "404":
-          description: event not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.ErrorSummary'
-        "500":
-          description: default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-  /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}:
-    patch:
-      tags:
-        - PlanAdministration
-      summary: Partially update a subplan
-      description: "Make partial changes to existing subplans. The response returns whether each subplan was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition. To retrieve main plan or subplan IDs and scenario IDs, see `GET /v1alpha/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the subplan without affecting omitted fields.\n \n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: PlanAdministration_PatchPlan
-      parameters:
-        - name: planId
-          in: path
-          description: The unique identifier of the main plan or subplan. Use the main plan ID for consolidating, starting collaboration, or ending collaboration. Otherwise, use the subplan ID.
-          required: true
-          schema:
-            type: string
-        - name: scenarioId
-          in: path
-          description: The unique identifier of the plan scenario.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/planning.PlanScenarioPatchRequest'
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.PlanScenarioPatchResponse'
-        "500":
-          description: default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "400":
-          description: bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.ErrorSummary'
-        "404":
-          description: plan not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.ErrorSummary'
-  /v1alpha/planning/model/plans:
-    get:
-      tags:
-        - DataModel
-      summary: Retrieve a list of plans
-      description: "Retrieve all the plans you have access to. The response returns plan information you can use to call the Plan Data Load API and Plan Administration API.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_PlanDataLoadlList
-      parameters:
-        - name: displayName
-          in: query
-          description: Returns plans that match the specified display name. Ignores text case and includes partial matches. For example, `displayName=WFP Plan` returns plans named "WFP Plan 2024", "WFP plan v1", and "WFP plan - Product".
-          schema:
-            type: string
-        - name: model
-          in: query
-          description: Returns plans that belong to the specified planning model ID.
-          schema:
-            type: string
-        - name: planStatus
-          in: query
-          description: "Returns plans with the specified plan status. Valid values:\n - **ASSIGNED**: The subplan has been assigned to a subplanner.\n - **IN_PROGRESS**: The subplanner has opened the subplan.\n - **OVERDUE**: The subplan was not completed on time.\n - **SUBMITTED**: The subplan has been submitted for review.\n - **SENT_BACK**: The subplan was rejected and returned to the subplanner for editing.\n - **CONSOLIDATED**: The subplan has been accepted and combined into the primary plan."
-          schema:
-            type: string
-        - name: createdStart
-          in: query
-          description: Returns plans created on or after this date. The format is YYYY-MM-DD.
-          schema:
-            type: string
-        - name: createdEnd
-          in: query
-          description: Return plans created on or before this date. The format is YYYY-MM-DD.
-          schema:
-            type: string
-        - name: editedStart
-          in: query
-          description: Returns plans edited on or after this date. The format is YYYY-MM-DD.
-          schema:
-            type: string
-        - name: editedEnd
-          in: query
-          description: Returns plans edited on or before this date. The format is YYYY-MM-DD.
-          schema:
-            type: string
-        - name: orderBy
-          in: query
-          description: "Orders plan results by the specified value. Valid values:\n - **LAST_EDITED_DATE**: Orders plans by the last edited date. This is the default.\n - **CREATED_DATE**: Orders plans by the creation date.\n - **PLAN_MODEL**: Orders plans alphabetically by planning model."
-          schema:
-            type: string
-        - name: sortOrder
-          in: query
-          description: Sorts plan results by the specified value. Valid values are `ASCENDING` or `DESCENDING`. Default is `DESCENDING`.
-          schema:
-            type: string
-        - name: excludeSubplans
-          in: query
-          description: If `true`, the response doesn't return subplans. Default is `true`.
-          schema:
-            type: boolean
-        - name: maxResults
-          in: query
-          description: Sets the maximum number of results to return per page. Default is 50.
-          schema:
-            type: string
-        - name: page
-          in: query
-          description: Sets the results page to return. If undefined, returns the first 50 results. To get the next 50 results, specify `page=2`.
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.GetPlanListResponseDTO'
-  /v1alpha/planning/model/plans/{id}:
-    get:
-      tags:
-        - DataModel
-      summary: Retrieve a plan's details
-      description: "Retrieve the details of a specific plan. The response returns plan information you can use to call the Plan Data Load API.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: DataModel_PlanInfoWithSchema
-      parameters:
-        - name: id
-          in: path
-          description: The unique identifier of the plan.
-          required: true
-          schema:
-            type: string
-        - name: withSchema
-          in: query
-          description: If `true`, the response returns the plan's schema. Default is `false`.
-          schema:
-            type: boolean
-        - name: segmentIdFilter
-          in: query
-          description: If defined, returns segment levels and members for the specified segment.
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/planning.PlanWithSchemaDTO'
   /v1alpha/reporting/reports:
     get:
       tags:
@@ -9686,6 +9700,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/designer.webhook.WebhookDTO'
+  /v1beta/op/webhooks-status:
+    get:
+      tags:
+        - Webhooks
+      summary: Retrieve webhook statuses
+      description: "Retrieve the statuses of all webhooks, such as their active status and the event types they're listening for. API users can call this endpoint without any special capabilities.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: Webhooks_GetWebhooksStatus
+      parameters:
+        - name: event
+          in: query
+          description: Retrieve all webhooks listening for the specified event type. Default is to retrieve all webhooks.
+          schema:
+            type: string
+        - name: isActive
+          in: query
+          description: If `true`, retrieve active webhooks only. If `false`, retrieve active and inactive webhooks. Default is `false`.
+          schema:
+            type: boolean
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookStatusesDTO'
   /v1beta/op/webhooks/{webhookId}:
     get:
       tags:
@@ -11960,6 +12005,19 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: Prefer
+          in: header
+          description: 'When `NonVersioned: true`, use `Prefer` to optionally specify if API calls should be subject to locking. Locking prevents incremental changes in multiple API calls from overwriting each other. The `Prefer` header works alongside a tenant feature flag. When enabled, the default is `nvLock=global`. When disabled, the default is not to lock API calls. Contact Visier Technical Support to enable the tenant feature flag.
+
+            Valid values for the `Prefer` header:
+
+            * `nvLock=global`: Run API calls sequentially. Sequential API calls prevent calls from unintentionally overwriting each other.
+
+            * `nvLock=artifact`: Allow API calls in parallel. Parallel API calls only work if the calls do not conflict with each other. If a change wasn''t applied, the request fails and returns the HTTP 409 conflict error. Run the request again until successful.
+
+            * `nvLock=none`: Disable the global lock if the tenant feature flag is enabled.'
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -12607,12 +12665,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1alpha/planning/data/plans/{planId}/scenarios/{scenarioId}/cells:
+  /v1/planning/data/plans/{planId}/scenarios/{scenarioId}/cells:
     patch:
       tags:
         - PlanDataLoad
       summary: Upload plan data
-      description: "Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1alpha/planning/model/plans/{id}?withSchema=true`.\nThe data file must contain the following columns:\n  - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.\n  - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.\n  - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1/planning/model/plans/{id}?withSchema=true`.\nThe data file must contain the following columns:\n  - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.\n  - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.\n  - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value."
       operationId: PlanDataLoad_PlanDataUpload
       parameters:
         - name: planId
@@ -15971,12 +16029,12 @@ components:
     authentication.OAuth2UserInfoDTO:
       type: object
       properties:
-        subject:
-          type: string
-          description: The user's display name.
-        name:
+        sub:
           type: string
           description: The user's Common Name.
+        name:
+          type: string
+          description: The user's display name.
         email:
           type: string
           description: The user's email address.
@@ -20213,6 +20271,38 @@ components:
             - $ref: '#/components/schemas/designer.webhook.WebhookCredentialsDTO'
           description: The webhook's credentials, such as a username and password or access token.
       description: The details and credentials for a webhook. Not required if your endpoint doesn't have authentication.
+    designer.webhook.WebhookStatusDTO:
+      type: object
+      properties:
+        webhookId:
+          type: string
+          description: The unique identifier of the webhook.
+        details:
+          allOf:
+            - $ref: '#/components/schemas/designer.webhook.WebhookStatusDetailsDTO'
+          description: The webhook's details, such as its active status and the event types it's listening for.
+      description: The webhook's status.
+    designer.webhook.WebhookStatusDetailsDTO:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+          description: If `true`, the webhook is active.
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
+          description: The events that the webhook is listening for.
+      description: The webhook's details, such as its active status and the event types it's listening for.
+    designer.webhook.WebhookStatusesDTO:
+      type: object
+      properties:
+        webhooks:
+          type: array
+          items:
+            $ref: '#/components/schemas/designer.webhook.WebhookStatusDTO'
+          description: The webhook statuses.
+      description: The returned list of webhook statuses.
     designer.webhook.WebhooksDTO:
       type: object
       properties:
@@ -20329,7 +20419,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/planning.DimensionMember'
-          description: "The dimension members that identify the parent row at which the subplan is created.\nProvide one entry per dimension you want to pin. Any dimension not specified defaults to the root (All) member.\n\nFor example, to create a subplan for \"Finance Americas\" in Org Level 2 and \"Male\" in Gender:\n```json\n[\n  { \"segmentId\": \"Organization\", \"memberId\": \"[Organization].[Finance Americas]\" },\n  { \"segmentId\": \"Gender\",       \"memberId\": \"[Gender].[Male]\" }\n]\n```\n\nUse `GET /v1alpha/planning/model/plans/{id}?withSchema=true` to discover valid `segmentId` and `memberId` values."
+          description: "The dimension members that identify the parent row at which the subplan is created.\nProvide one entry per dimension you want to pin. Any dimension not specified defaults to the root (All) member.\n\nFor example, to create a subplan for \"Finance Americas\" in Org Level 2 and \"Male\" in Gender:\n```json\n[\n  { \"segmentId\": \"Organization\", \"memberId\": \"[Organization].[Finance Americas]\" },\n  { \"segmentId\": \"Gender\",       \"memberId\": \"[Gender].[Male]\" }\n]\n```\n\nUse `GET /v1/planning/model/plans/{id}?withSchema=true` to discover valid `segmentId` and `memberId` values."
       description: The details of creating a subplan identified by dimension members.
       required:
         - assignee
@@ -23360,6 +23450,35 @@ components:
         metricId:
           type: string
           description: The unique identifier of the metric to which the concept applies.
+    servicing.ContentPackageArtifactDTO:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: The unique identifier of the artifact, if it is identified by a UUID rather than an object name.
+        objectName:
+          type: string
+          description: The object name of the artifact, if it is identified by object name rather than a UUID.
+        displayName:
+          type: string
+          description: The display name of the artifact, if resolvable.
+        canFilterBy:
+          type: boolean
+          description: If `true`, this artifact is available to filter by. Only present for `dimension` and `keyGroup` artifacts.
+        canGroupBy:
+          type: boolean
+          description: If `true`, this artifact is available to group by. Only present for `dimension` and `keyGroup` artifacts.
+    servicing.ContentPackageArtifactTypeDTO:
+      type: object
+      properties:
+        artifactType:
+          type: string
+          description: The category of the content package item, such as `metric`, `dimension`, `keyGroup`, `planModel`, `guidebookTopic`, `analysis`, `report`, or `dataConnector`.
+        artifacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ContentPackageArtifactDTO'
+          description: The items of this category included in the content package.
     servicing.ContentPackageDTO:
       type: object
       properties:
@@ -23372,6 +23491,11 @@ components:
         description:
           type: string
           description: A description of the content package.
+        artifactsByType:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ContentPackageArtifactTypeDTO'
+          description: The artifacts explicitly included in the content package, grouped by artifact type. Only populated when the request includes `with=details`.
     servicing.DataAccessSetDTO:
       type: object
       properties:
@@ -27001,6 +27125,8 @@ components:
             - DataVersionSnapshot
             - PreviewAsUser
             - FeaturePreviewManagement
+            - SettingsReadOnly
+            - FeatureToggleReadOnly
           type: string
           format: enum
         accessLevel:
@@ -28512,19 +28638,13 @@ tags:
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: PlanAdministration
     x-displayName: Plan Administration
-    description: 'Manage your subplans, such as consolidating and reopening.
-
-      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+    description: Manage collaboration projects in your plans, including actions such as consolidating and reopening subplans.
   - name: PlanDataLoad
     x-displayName: Plan Data Load
-    description: 'Send data directly to your plan''s scenario and optionally add or remove rows from your plan.
-
-      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+    description: Send data directly to your plan's scenario and optionally add or remove rows from your plan.
   - name: PlanEvents
     x-displayName: Plan Events
-    description: 'Retrieve details about planning events such as member promotions and row changes.
-
-      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+    description: Retrieve details about planning events such as member promotions and row changes.
   - name: Benchmarks
     description: |
       Get benchmark values.
