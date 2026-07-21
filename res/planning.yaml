@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.2991
+  version: 22222222.99201.3000
 paths:
   /v1/planning/data/events/{eventId}:
     get:
@@ -185,6 +185,57 @@ paths:
                 $ref: '#/components/schemas/planning.PlanningEventResponse'
         '404':
           description: event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        '500':
+          description: default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /v1alpha/planning/data/plans/{planId}:
+    patch:
+      tags:
+        - PlanAdministration
+      summary: Partially update a plan
+      description: "Make partial changes to existing plans. The response returns whether each plan was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition. To retrieve main plan or subplan IDs, see `GET /v1/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan. Use `PATCH` to change specific fields in the plan without affecting omitted fields.\n\n <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PlanAdministration_PlanAction
+      parameters:
+        - name: planId
+          in: path
+          description: The unique identifier of the plan.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/planning.PlanPatchRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.PlanPatchResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        '403':
+          description: caller is not permitted to share this plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        '404':
+          description: plan not found
           content:
             application/json:
               schema:
@@ -574,6 +625,20 @@ components:
           type: string
           description: The username of the user who triggered the event.
       description: Summary of a single planning event without type-specific payload.
+    planning.FailedShareEntry:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The username of the unsuccessful user.
+        errorCode:
+          enum:
+            - PLAN_SHARE_ERROR_UNKNOWN
+            - PLAN_SHARE_ERROR_USER_NOT_FOUND
+            - PLAN_SHARE_ERROR_PERSISTENCE_FAILURE
+          type: string
+          description: The reason that the Share action was unsuccessful.
+          format: enum
     planning.GetEventsResponse:
       type: object
       properties:
@@ -612,6 +677,40 @@ components:
             type: string
           description: The path of member names from the root member down to the current member. For example, `[Canada, BC]`.
       description: A single member at a specific dimension level within the plan's context path.
+    planning.PlanPatchActionResult:
+      type: object
+      properties:
+        planId:
+          type: string
+          description: The UUID of the plan.
+        success:
+          type: boolean
+          description: If `true`, the plan was shared with every requested user.
+        error:
+          allOf:
+            - $ref: '#/components/schemas/planning.ErrorSummary'
+          description: The error details of the unsuccessful action.
+        shareResult:
+          allOf:
+            - $ref: '#/components/schemas/planning.ShareActionResult'
+          description: The result of the Share action.
+    planning.PlanPatchRequest:
+      type: object
+      properties:
+        shareActionPayload:
+          allOf:
+            - $ref: '#/components/schemas/planning.ShareActionPayload'
+          description: The details of sharing a plan.
+      description: "A plan-level action request. Parallel to PlanScenarioPatchRequest but operates on a plan\n (no scenario). Designed to host further plan-level actions over time. The action is\n discriminated by which member of `actionPayload` is set; an unset oneof is a bad request."
+    planning.PlanPatchResponse:
+      type: object
+      properties:
+        actionResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PlanPatchActionResult'
+          description: The result of the action taken on the plan.
+      description: Response envelope for the plan-level action route.
     planning.PlanScenarioPatchActionResult:
       type: object
       properties:
@@ -691,6 +790,20 @@ components:
             $ref: '#/components/schemas/planning.PlanScenarioPatchActionResult'
           description: The result of the action taken on the main plan or subplan.
       description: The result of the action taken on the subplan if reopening, or the main plan if consolidating.
+    planning.PlanUserShareEntry:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The username of the user to share the plan with.
+        accessRight:
+          enum:
+            - Viewer
+            - Editor
+            - CoOwner
+          type: string
+          description: "The access level to grant to the user. Valid values:\n - `Viewer`: The user can view the plan but cannot make changes.\n - `Editor`: The user can view and edit the plan.\n - `CoOwner`: The user has the same rights as the plan owner, including sharing the plan."
+          format: enum
     planning.PlanningEventResponse:
       type: object
       properties:
@@ -851,6 +964,30 @@ components:
           type: string
           description: "The due date of the subplan in UTC format. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.\n The due date cannot be earlier than today.\n If not defined, the default is based on the length of the collaboration window:\n - Collaboration window between 2 and 14 days: The due date is set to one day before the collaboration window ends.\n - Collaboration window longer than 14 days: The due date is automatically set to 14 days from the start of the collaboration.\n - Collaboration window shorter than 2 days: The due date is automatically set to today."
       description: The details of reopening a subplan.
+    planning.ShareActionPayload:
+      type: object
+      properties:
+        shares:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.PlanUserShareEntry'
+          description: The list of users the plan is shared with and their access level.
+        comment:
+          type: string
+          description: Optional message included in the notification email.
+        notifyRecipients:
+          type: boolean
+          description: If true, notification emails will be sent to newly shared users. Default is false.
+      description: "The desired sharing state for a plan. `shares` is the complete set of individual user shares\n (full-replace): users not listed lose their individual access."
+    planning.ShareActionResult:
+      type: object
+      properties:
+        failedShares:
+          type: array
+          items:
+            $ref: '#/components/schemas/planning.FailedShareEntry'
+          description: The users from the Share request that were unsuccessful.
+      description: Per-user outcome detail for a Share action.
     planning.StartCollaborationActionPayload:
       type: object
       properties:
