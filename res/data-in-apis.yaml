@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3000
+  version: 22222222.99201.3009
 paths:
   /v1/api/pgp-keys:
     get:
@@ -3684,6 +3684,8 @@ components:
           $ref: '#/components/schemas/designer.CdkAuthParamsDTO'
         vivaGlintAuthParams:
           $ref: '#/components/schemas/designer.VivaGlintAuthParamsDTO'
+        databricksOidcAuthParams:
+          $ref: '#/components/schemas/designer.DatabricksOIDCAuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -3721,6 +3723,21 @@ components:
         endpoint:
           type: string
         expirationTime:
+          type: string
+        tenantCodeColumn:
+          type: string
+    designer.DatabricksOIDCAuthParamsDTO:
+      type: object
+      properties:
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+        tokenEndpoint:
+          type: string
+        endpoint:
+          type: string
+        scope:
           type: string
         tenantCodeColumn:
           type: string
