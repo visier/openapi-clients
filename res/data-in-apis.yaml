@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3009
+  version: 22222222.99201.3040
 paths:
   /v1/api/pgp-keys:
     get:
@@ -4728,6 +4728,9 @@ components:
           items:
             type: string
           description: "The data category IDs to spawn processing jobs for. If not specified, all data categories\n used by tables that were locked by the transaction are processed."
+        deferTimeNotAfter:
+          type: string
+          description: "The latest time to schedule the processing job in ISO 8601 format, such as `2025-04-01T12:00:00Z`.\n If not specified, the processing job schedules immediately. If a deferred job already exists for\n the same parameters, the earlier time takes precedence."
       description: A process action. Spawns a processing job for the specified data categories.
     servicing.sqlsource.SqlSourceQueryActionDTO:
       type: object
@@ -4826,7 +4829,7 @@ components:
           description: If `true`, Visier ignores this source when checking which data categories require a processing job during a `process` action with no specified `dataCategoryIds`. Default is `false`.
         snapshotRetentionDays:
           type: integer
-          description: "The number of days to keep snapshots for this table before permanently deleting them. Must be between 1 and 180 days.\n If undefined, the default is 3 days. You cannot reset the table to a timestamp older than the retention period because older snapshots are permanently deleted."
+          description: "The number of days to keep snapshots for this table before permanently deleting them. Must be between 1 and 180 days.\n If undefined, the default is 7 days. You cannot reset the table to a timestamp older than the retention period because older snapshots are permanently deleted."
           format: int32
         materializedView:
           allOf:

@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3009
+  version: 22222222.99201.3040
 paths:
   /v1/admin/capabilities:
     get:
@@ -3768,7 +3768,7 @@ paths:
             format: int32
         - name: mask
           in: query
-          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `dataVersionDate`\n  - `provisionDate`\n  - `vanityUrlName`\n  - `status`\n  - `canAdministerOtherTenants`\n  - `industryCode`\n  - `industryInfo`\n  - `purchasedModules`\n  - `manuallyAddedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `clickThroughLinkEnabled`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
           schema:
             type: string
         - name: dataProfile
@@ -3851,7 +3851,7 @@ paths:
             type: string
         - name: mask
           in: query
-          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `dataVersionDate`\n  - `provisionDate`\n  - `vanityUrlName`\n  - `status`\n  - `canAdministerOtherTenants`\n  - `industryCode`\n  - `industryInfo`\n  - `purchasedModules`\n  - `manuallyAddedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `clickThroughLinkEnabled`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
           schema:
             type: string
         - name: TargetTenantID
@@ -4712,7 +4712,7 @@ components:
       properties:
         mask:
           type: string
-          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `dataVersionDate`\n  - `provisionDate`\n  - `vanityUrlName`\n  - `status`\n  - `canAdministerOtherTenants`\n  - `industryCode`\n  - `industryInfo`\n  - `purchasedModules`\n  - `manuallyAddedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `clickThroughLinkEnabled`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
     admin.PermissionsListDTO:
       type: object
       properties:
@@ -5190,7 +5190,7 @@ components:
           description: "The tenants to retrieve details for. Specify tenant codes in one of the following formats:\n - Full tenant code. Example: `WFF_j1r~c7o`.\n - Short tenant code. Example: `c1o`.\n\n Use the same format for all tenants. Do not use both formats in one request.\n The limit of analytic tenants to return is `1000` if the following fields are not included in the `mask` argument.\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n\n The limit is `400` if any of the above fields are included in the `mask` or if `mask` is not specified."
         mask:
           type: string
-          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `dataVersionDate`\n  - `provisionDate`\n  - `vanityUrlName`\n  - `status`\n  - `canAdministerOtherTenants`\n  - `industryCode`\n  - `industryInfo`\n  - `purchasedModules`\n  - `manuallyAddedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `clickThroughLinkEnabled`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
       description: Optionally, specify the tenants to retrieve. The specified tenant codes are combined (set union) with the `tenantCodes` query parameter.
     admin.TenantProvisionAPIDTO:
       required:

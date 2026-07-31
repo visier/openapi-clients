@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3009
+  version: 22222222.99201.3040
 paths:
   /v1/planning/data/events:
     get:
@@ -83,7 +83,7 @@ paths:
       tags:
         - PlanEvents
       summary: Retrieve a planning event
-      description: Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1beta/op/webhooks`.
+      description: Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1/op/webhooks`.
       operationId: PlanEvents_GetEvent
       parameters:
         - name: eventId
