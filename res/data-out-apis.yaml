@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3009
+  version: 22222222.99201.3040
 paths:
   /v1/data/query/aggregate:
     post:
@@ -3329,6 +3329,27 @@ components:
         messages:
           type: string
           description: A description of the request status.
+    servicing.dataexportconnector.BigQueryServiceAccountCredentialParameters:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          description: The BigQuery dataset that holds the destination tables.
+        projectId:
+          type: string
+          description: The Google Cloud Project that owns the data and is billed for the export.
+        privateKeyId:
+          type: string
+          description: The unique identifier of the private key.
+        privateKey:
+          type: string
+          description: The private key to authenticate with Google BigQuery. Returned as the string `********`. The actual value is never returned. To update the value, provide the value in plain text.
+        clientEmail:
+          type: string
+          description: The Google BigQuery service account email address.
+        clientId:
+          type: string
+          description: The OAuth client ID to authenticate with Google BigQuery.
     servicing.dataexportconnector.DataExportConnector:
       type: object
       properties:
@@ -3394,6 +3415,14 @@ components:
               allOf:
                 - $ref: '#/components/schemas/servicing.dataexportconnector.SnowflakeCredentialParameters'
               description: Credentials for Snowflake.
+        - title: DataExportConnectorCredentialParameters with BigQueryServiceAccount
+          required:
+            - bigQueryServiceAccount
+          properties:
+            bigQueryServiceAccount:
+              allOf:
+                - $ref: '#/components/schemas/servicing.dataexportconnector.BigQueryServiceAccountCredentialParameters'
+              description: Credentials for Google BigQuery using a service account key.
     servicing.dataexportconnector.DataExportConnectorCredentialValidationCreated:
       type: object
       properties:

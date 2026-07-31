@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3009
+  version: 22222222.99201.3040
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -6678,6 +6678,270 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dp_automation.TenantPreviewEntriesSummaryDTO'
+  /v1/op/webhooks:
+    get:
+      tags:
+        - Webhooks
+      summary: Retrieve a list of webhooks
+      description: Retrieve a list of all webhooks. The response returns each webhook's definition, such as its endpoint URL, active status, and event types.
+      operationId: Webhooks_GetAllWebhooks
+      parameters:
+        - name: event
+          in: query
+          description: "Retrieve all webhooks listening for the specified event type. Default is to retrieve all webhooks.\n\n The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered.\n - `planRowPromotionNotification`: A row in a plan was promoted.\n - `auditEvent`: An audit event was triggered."
+          schema:
+            type: string
+        - name: isActive
+          in: query
+          description: If `true`, retrieve active webhooks only. If `false`, retrieve active and inactive webhooks. Default is `false`.
+          schema:
+            type: boolean
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhooksDTO'
+    post:
+      tags:
+        - Webhooks
+      summary: Create a webhook
+      description: Create a new webhook with Visier. You must specify the webhook's endpoint URL, its active status, the event types to listen for, and the credentials to authenticate calls to the webhook endpoint.
+      operationId: Webhooks_CreateWebhook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.webhook.WebhookRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
+  /v1/op/webhooks-status:
+    get:
+      tags:
+        - Webhooks
+      summary: Retrieve webhook statuses
+      description: Retrieve the statuses of all webhooks, such as their active status and the event types they're listening for. API users can call this endpoint without any special capabilities.
+      operationId: Webhooks_GetWebhooksStatus
+      parameters:
+        - name: event
+          in: query
+          description: "Retrieve all webhooks listening for the specified event type. Default is to retrieve all webhooks.\n\n The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered.\n - `planRowPromotionNotification`: A row in a plan was promoted.\n - `auditEvent`: An audit event was triggered."
+          schema:
+            type: string
+        - name: isActive
+          in: query
+          description: If `true`, retrieve active webhooks only. If `false`, retrieve active and inactive webhooks. Default is `false`.
+          schema:
+            type: boolean
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookStatusesDTO'
+  /v1/op/webhooks/{webhookId}:
+    get:
+      tags:
+        - Webhooks
+      summary: Retrieve a webhook's details
+      description: Retrieve the details of a specific webhook. You must know the ID of the webhook to retrieve its details. To retrieve webhook IDs, see `GET /v1/op/webhooks`.
+      operationId: Webhooks_GetWebhook
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
+    put:
+      tags:
+        - Webhooks
+      summary: Update a webhook's details
+      description: "Update the details of an existing webhook, such as its URL and active status. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1/op/webhooks`. To update a webhook's credentials, see `PUT /v1/op/webhooks/{webhookId}/credentials`.\n\n When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values."
+      operationId: Webhooks_UpdateWebhook
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.webhook.WebhookDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
+    delete:
+      tags:
+        - Webhooks
+      summary: Delete a webhook
+      description: Delete a specific webhook. You must know the ID of the webhook to delete it. To retrieve webhook IDs, see `GET /v1/op/webhooks`.
+      operationId: Webhooks_DeleteWebhook
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
+  /v1/op/webhooks/{webhookId}/credentials:
+    put:
+      tags:
+        - Webhooks
+      summary: Update a webhook's credentials
+      description: "Update the credentials to authenticate calls to the webhook endpoint. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1/op/webhooks`. To update a webhook's details, see `PUT /v1/op/webhooks/{webhookId}`.\n\n When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values."
+      operationId: Webhooks_UpdateWebhookCredentials
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.webhook.WebhookCredentialsDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
+    delete:
+      tags:
+        - Webhooks
+      summary: Delete a webhook's credentials
+      description: Delete the credentials for a webhook. You must know the ID of the webhook to delete its credentials. To retrieve webhook IDs, see `GET /v1/op/webhooks`.
+      operationId: Webhooks_DeleteWebhookCredentials
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
+  /v1/op/webhooks/{webhookId}/testEvent:
+    post:
+      tags:
+        - Webhooks
+      summary: Test a webhook
+      description: Send a test event to an existing webhook. This validates whether the webhook works. You must specify the webhook ID and an event type.
+      operationId: Webhooks_SendTestEvent
+      parameters:
+        - name: webhookId
+          in: path
+          description: The unique identifier of the webhook.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.webhook.WebhookMessageResponseDTO'
   /v1/planning/data/events:
     get:
       tags:
@@ -6754,7 +7018,7 @@ paths:
       tags:
         - PlanEvents
       summary: Retrieve a planning event
-      description: Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1beta/op/webhooks`.
+      description: Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1/op/webhooks`.
       operationId: PlanEvents_GetEvent
       parameters:
         - name: eventId
@@ -9695,270 +9959,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-  /v1beta/op/webhooks:
-    get:
-      tags:
-        - Webhooks
-      summary: Retrieve a list of webhooks
-      description: "Retrieve a list of all webhooks. The response returns each webhook's definition, such as its endpoint URL, active status, and event types.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: Webhooks_GetAllWebhooks
-      parameters:
-        - name: event
-          in: query
-          description: Retrieve all webhooks listening for the specified event type. Default is to retrieve all webhooks.
-          schema:
-            type: string
-        - name: isActive
-          in: query
-          description: If `true`, retrieve active webhooks only. If `false`, retrieve active and inactive webhooks. Default is `false`.
-          schema:
-            type: boolean
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/designer.webhook.WebhooksDTO'
-    post:
-      tags:
-        - Webhooks
-      summary: Create a webhook
-      description: "Create a new webhook with Visier. You must specify the webhook's endpoint URL, its active status, the event types to listen for, and the credentials to authenticate calls to the webhook endpoint.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: Webhooks_CreateWebhook
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/designer.webhook.WebhookRequestDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
-  /v1beta/op/webhooks-status:
-    get:
-      tags:
-        - Webhooks
-      summary: Retrieve webhook statuses
-      description: "Retrieve the statuses of all webhooks, such as their active status and the event types they're listening for. API users can call this endpoint without any special capabilities.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: Webhooks_GetWebhooksStatus
-      parameters:
-        - name: event
-          in: query
-          description: Retrieve all webhooks listening for the specified event type. Default is to retrieve all webhooks.
-          schema:
-            type: string
-        - name: isActive
-          in: query
-          description: If `true`, retrieve active webhooks only. If `false`, retrieve active and inactive webhooks. Default is `false`.
-          schema:
-            type: boolean
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/designer.webhook.WebhookStatusesDTO'
-  /v1beta/op/webhooks/{webhookId}:
-    get:
-      tags:
-        - Webhooks
-      summary: Retrieve a webhook's details
-      description: "Retrieve the details of a specific webhook. You must know the ID of the webhook to retrieve its details. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: Webhooks_GetWebhook
-      parameters:
-        - name: webhookId
-          in: path
-          description: The unique identifier of the webhook.
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
-    put:
-      tags:
-        - Webhooks
-      summary: Update a webhook's details
-      description: "Update the details of an existing webhook, such as its URL and active status. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`. To update a webhook's credentials, see `PUT /v1beta/op/webhooks/{webhookId}/credentials`.\n\n When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: Webhooks_UpdateWebhook
-      parameters:
-        - name: webhookId
-          in: path
-          description: The unique identifier of the webhook.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/designer.webhook.WebhookDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
-    delete:
-      tags:
-        - Webhooks
-      summary: Delete a webhook
-      description: "Delete a specific webhook. You must know the ID of the webhook to delete it. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: Webhooks_DeleteWebhook
-      parameters:
-        - name: webhookId
-          in: path
-          description: The unique identifier of the webhook.
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
-  /v1beta/op/webhooks/{webhookId}/credentials:
-    put:
-      tags:
-        - Webhooks
-      summary: Update a webhook's credentials
-      description: "Update the credentials to authenticate calls to the webhook endpoint. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`. To update a webhook's details, see `PUT /v1beta/op/webhooks/{webhookId}`.\n\n When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: Webhooks_UpdateWebhookCredentials
-      parameters:
-        - name: webhookId
-          in: path
-          description: The unique identifier of the webhook.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/designer.webhook.WebhookCredentialsDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
-    delete:
-      tags:
-        - Webhooks
-      summary: Delete a webhook's credentials
-      description: "Delete the credentials for a webhook. You must know the ID of the webhook to delete its credentials. To retrieve webhook IDs, see `GET /v1beta/op/webhooks`.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: Webhooks_DeleteWebhookCredentials
-      parameters:
-        - name: webhookId
-          in: path
-          description: The unique identifier of the webhook.
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/designer.webhook.WebhookDTO'
-  /v1beta/op/webhooks/{webhookId}/testEvent:
-    post:
-      tags:
-        - Webhooks
-      summary: Test a webhook
-      description: "Send a test event to an existing webhook. This validates whether the webhook works. You must specify the webhook ID and an event type.\n\n <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
-      operationId: Webhooks_SendTestEvent
-      parameters:
-        - name: webhookId
-          in: path
-          description: The unique identifier of the webhook.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
-        required: true
-      responses:
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/designer.webhook.WebhookMessageResponseDTO'
   /v2/admin/tenants:
     get:
       tags:
@@ -9981,7 +9981,7 @@ paths:
             format: int32
         - name: mask
           in: query
-          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `dataVersionDate`\n  - `provisionDate`\n  - `vanityUrlName`\n  - `status`\n  - `canAdministerOtherTenants`\n  - `industryCode`\n  - `industryInfo`\n  - `purchasedModules`\n  - `manuallyAddedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `clickThroughLinkEnabled`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
           schema:
             type: string
         - name: dataProfile
@@ -10064,7 +10064,7 @@ paths:
             type: string
         - name: mask
           in: query
-          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `dataVersionDate`\n  - `provisionDate`\n  - `vanityUrlName`\n  - `status`\n  - `canAdministerOtherTenants`\n  - `industryCode`\n  - `industryInfo`\n  - `purchasedModules`\n  - `manuallyAddedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `clickThroughLinkEnabled`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
           schema:
             type: string
         - name: TargetTenantID
@@ -14021,7 +14021,7 @@ components:
       properties:
         mask:
           type: string
-          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `dataVersionDate`\n  - `provisionDate`\n  - `vanityUrlName`\n  - `status`\n  - `canAdministerOtherTenants`\n  - `industryCode`\n  - `industryInfo`\n  - `purchasedModules`\n  - `manuallyAddedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `clickThroughLinkEnabled`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
     admin.PermissionsListDTO:
       type: object
       properties:
@@ -14650,7 +14650,7 @@ components:
           description: "The tenants to retrieve details for. Specify tenant codes in one of the following formats:\n - Full tenant code. Example: `WFF_j1r~c7o`.\n - Short tenant code. Example: `c1o`.\n\n Use the same format for all tenants. Do not use both formats in one request.\n The limit of analytic tenants to return is `1000` if the following fields are not included in the `mask` argument.\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n\n The limit is `400` if any of the above fields are included in the `mask` or if `mask` is not specified."
         mask:
           type: string
-          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `traits.aggregationRights`\n  - `traits.tenantType`\n  - `traits.dataProfileType`\n  - `dataVersionDate`\n  - `vanityUrlName`\n  - `enabled`\n  - `status`\n  - `industryCode`\n  - `industryInfo.industryCode`\n  - `industryInfo.industryClassificationType`\n  - `purchasedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
+          description: "A list of fields to include in the response, separated by commas. If not specified, includes all fields in the response. Valid values:\n  - `tenantCode`\n  - `tenantDisplayName`\n  - `currentDataVersion`\n  - `traits`\n  - `dataVersionDate`\n  - `provisionDate`\n  - `vanityUrlName`\n  - `status`\n  - `canAdministerOtherTenants`\n  - `industryCode`\n  - `industryInfo`\n  - `purchasedModules`\n  - `manuallyAddedModules`\n  - `embeddableDomains`\n  - `allowedOAuthIdpUrlDomains`\n  - `customProperties`\n  - `ssoInstanceIssuers`\n  - `homeAnalysisId`\n  - `homeAnalysisByUserGroup`\n  - `clickThroughLink`\n  - `clickThroughLinkEnabled`\n  - `defaultCurrency`\n  - `primaryBusinessLocation`\n  - `effectiveIndustryCode`\n  - `companySize`\n\n If `mask` is specified in both request body and on the query string, the effective `mask` is the set union of both inputs."
       description: Optionally, specify the tenants to retrieve. The specified tenant codes are combined (set union) with the `tenantCodes` query parameter.
     admin.TenantProvisionAPIDTO:
       required:
@@ -20295,7 +20295,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.webhook.WebhookEventTypeDTO'
-          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered.\n - `planRowPromotionNotification`: A row in a plan was promoted."
+          description: "The events that the webhook is listening for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered.\n - `planRowPromotionNotification`: A row in a plan was promoted.\n - `auditEvent`: An audit event was triggered."
         keyName:
           type: string
           description: The display name of the encryption key for the webhook. Encryption key must use `HmacSHA256` algorithm.
@@ -20308,7 +20308,7 @@ components:
       properties:
         eventType:
           type: string
-          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered.\n - `planRowPromotionNotification`: A row in a plan was promoted."
+          description: "The possible event types to listen for. Valid values:\n - `jobResultSuccess`: A job completed successfully.\n - `jobResultFailure`: A job failed to complete.\n - `jobReschedule`: A job was rescheduled.\n - `dvPublish`: A data version published to production.\n - `alertNotification`: A personalized alert notification was triggered.\n - `smartCompNotification`: A Smart Compensation event notification was triggered. This is available for Embedded Partners.\n - `dataUploadNotification`: A data file was uploaded.\n - `systemAlertNotification`: A system event alert notification was triggered.\n - `planRowPromotionNotification`: A row in a plan was promoted.\n - `auditEvent`: An audit event was triggered."
       description: The possible event types for Visier webhooks.
     designer.webhook.WebhookMessageResponseDTO:
       type: object
@@ -22106,6 +22106,27 @@ components:
           type: string
           description: The unique identifier of the versioned scenario the parameter is based on.
       description: The value for a parameter on a planning metric, including the parameter ID and the versioned plan the parameter is based on.
+    servicing.dataexportconnector.BigQueryServiceAccountCredentialParameters:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          description: The BigQuery dataset that holds the destination tables.
+        projectId:
+          type: string
+          description: The Google Cloud Project that owns the data and is billed for the export.
+        privateKeyId:
+          type: string
+          description: The unique identifier of the private key.
+        privateKey:
+          type: string
+          description: The private key to authenticate with Google BigQuery. Returned as the string `********`. The actual value is never returned. To update the value, provide the value in plain text.
+        clientEmail:
+          type: string
+          description: The Google BigQuery service account email address.
+        clientId:
+          type: string
+          description: The OAuth client ID to authenticate with Google BigQuery.
     servicing.dataexportconnector.DataExportConnector:
       type: object
       properties:
@@ -22171,6 +22192,14 @@ components:
               allOf:
                 - $ref: '#/components/schemas/servicing.dataexportconnector.SnowflakeCredentialParameters'
               description: Credentials for Snowflake.
+        - title: DataExportConnectorCredentialParameters with BigQueryServiceAccount
+          required:
+            - bigQueryServiceAccount
+          properties:
+            bigQueryServiceAccount:
+              allOf:
+                - $ref: '#/components/schemas/servicing.dataexportconnector.BigQueryServiceAccountCredentialParameters'
+              description: Credentials for Google BigQuery using a service account key.
     servicing.dataexportconnector.DataExportConnectorCredentialValidationCreated:
       type: object
       properties:
@@ -22944,6 +22973,9 @@ components:
           items:
             type: string
           description: "The data category IDs to spawn processing jobs for. If not specified, all data categories\n used by tables that were locked by the transaction are processed."
+        deferTimeNotAfter:
+          type: string
+          description: "The latest time to schedule the processing job in ISO 8601 format, such as `2025-04-01T12:00:00Z`.\n If not specified, the processing job schedules immediately. If a deferred job already exists for\n the same parameters, the earlier time takes precedence."
       description: A process action. Spawns a processing job for the specified data categories.
     servicing.sqlsource.SqlSourceQueryActionDTO:
       type: object
@@ -23042,7 +23074,7 @@ components:
           description: If `true`, Visier ignores this source when checking which data categories require a processing job during a `process` action with no specified `dataCategoryIds`. Default is `false`.
         snapshotRetentionDays:
           type: integer
-          description: "The number of days to keep snapshots for this table before permanently deleting them. Must be between 1 and 180 days.\n If undefined, the default is 3 days. You cannot reset the table to a timestamp older than the retention period because older snapshots are permanently deleted."
+          description: "The number of days to keep snapshots for this table before permanently deleting them. Must be between 1 and 180 days.\n If undefined, the default is 7 days. You cannot reset the table to a timestamp older than the retention period because older snapshots are permanently deleted."
           format: int32
         materializedView:
           allOf:
@@ -28784,12 +28816,7 @@ tags:
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: Webhooks
     x-displayName: Webhooks
-    description: 'Create, manage, and retrieve webhook definitions. Use webhooks to register your own HTTPS endpoints with Visier and listen for specific events. When these events occur, Visier sends an API request to your registered endpoint. For example, you can create a webhook to monitor job status events with Visier. Visier sends you a success or failure notification to your registered endpoint after the job completes.
-
-
-      <br>**Note:** <em>This API is in **beta**. While in beta, APIs are interface-stable and implementation may change without notice. Rarely, interface changes may occur that are not backwards-compatible and require advance communication.
-
-      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+    description: Create, manage, and retrieve webhook definitions. Use webhooks to register your own HTTPS endpoints with Visier and listen for specific events. When these events occur, Visier sends an API request to your registered endpoint. For example, you can create a webhook to monitor job status events with Visier. Visier sends you a success or failure notification to your registered endpoint after the job completes.
   - name: PlanAdministration
     x-displayName: Plan Administration
     description: Manage collaboration projects in your plans, including actions such as consolidating and reopening subplans.
