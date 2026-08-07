@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3040
+  version: 22222222.99201.3062
 paths:
   /v1/data/query/aggregate:
     post:
@@ -2314,7 +2314,7 @@ components:
         dimensionDataMemberSelection:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryDimensionDataMemberSelectionDTO'
-          description: An axis comprised of all leaf, including data, members of an existing dimension in Visier.
+          description: An axis comprised of all leaf members and data members for an existing dimension in Visier.
         dimensionLevelWithUncategorizedValueSelection:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryDimensionLevelSelectionDTO'
@@ -2400,7 +2400,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
           description: A dimension and its qualifying path to query.
-      description: "A QueryDimensionLeafSelection allows you to define a member set consisting exclusively\n of leaf-level, including data, members for the given dimension. Leaf members are those members that have\n no descendents. A member may be a leaf member regardless of the level it is positioned at."
+      description: Defines a member set consisting exclusively of leaf members and data members for a dimension. Leaf members are members that have no descendants. A member can be a leaf member regardless of its hierarchy level.
     dataservices.query.QueryDimensionLeafSelectionDTO:
       type: object
       properties:
@@ -3070,11 +3070,6 @@ components:
         query:
           type: string
           description: The SQL-like query string
-        options:
-          deprecated: true
-          allOf:
-            - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
-          description: "This will be removed as of Spring 2026. Use `aggregateQueryOptions` instead.\n If both `options` and `aggregateQueryOptions` are specified, `aggregateQueryOptions` takes precedence.\n\n Optional aggregate query options.\n **Note**: `enableDescendingSpace` is not supported in SQL-like aggregate queries."
         aggregateQueryOptions:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
