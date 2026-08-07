@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3040
+  version: 22222222.99201.3062
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -7905,6 +7905,123 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/admin.ConsolidatedAnalyticsAPISourceTenantListDTO'
+  /v1alpha/admin/data-version-snapshots:
+    get:
+      tags:
+        - DataVersionSnapshot
+      summary: Retrieve all data version snapshots
+      description: "Retrieve all data version snapshots in the tenant.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataVersionSnapshot_GetDataVersionSnapshots
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataversionsnapshot.DataVersionSnapshotListResponseDTO'
+    post:
+      tags:
+        - DataVersionSnapshot
+      summary: Create a data version snapshot
+      description: "Create a data version snapshot. If omitted, the snapshot defaults to the latest data and production versions.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataVersionSnapshot_CreateDataVersionSnapshot
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.dataversionsnapshot.CreateDataVersionSnapshotRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataversionsnapshot.DataVersionSnapshotDTO'
+  /v1alpha/admin/data-version-snapshots/{id}:
+    get:
+      tags:
+        - DataVersionSnapshot
+      summary: Retrieve a data version snapshot
+      description: "Retrieve the details of a data version snapshot. You must know the ID of the snapshot to retrieve its details. To retrieve snapshot IDs, see `GET /v1alpha/admin/data-version-snapshots`.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataVersionSnapshot_GetDataVersionSnapshot
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the data version snapshot you want to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.dataversionsnapshot.DataVersionSnapshotDTO'
+    delete:
+      tags:
+        - DataVersionSnapshot
+      summary: Delete a data version snapshot
+      description: "Delete a data version snapshot. Deleting the last snapshot for a data version allows routine cleanup to remove that data version.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: DataVersionSnapshot_DeleteDataVersionSnapshot
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the data version snapshot you want to delete.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content: {}
   /v1alpha/admin/email-domains:
     get:
       tags:
@@ -18055,7 +18172,7 @@ components:
         dimensionDataMemberSelection:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryDimensionDataMemberSelectionDTO'
-          description: An axis comprised of all leaf, including data, members of an existing dimension in Visier.
+          description: An axis comprised of all leaf members and data members for an existing dimension in Visier.
         dimensionLevelWithUncategorizedValueSelection:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryDimensionLevelSelectionDTO'
@@ -18141,7 +18258,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/dataservices.datamodel.DimensionReferenceDTO'
           description: A dimension and its qualifying path to query.
-      description: "A QueryDimensionLeafSelection allows you to define a member set consisting exclusively\n of leaf-level, including data, members for the given dimension. Leaf members are those members that have\n no descendents. A member may be a leaf member regardless of the level it is positioned at."
+      description: Defines a member set consisting exclusively of leaf members and data members for a dimension. Leaf members are members that have no descendants. A member can be a leaf member regardless of its hierarchy level.
     dataservices.query.QueryDimensionLeafSelectionDTO:
       type: object
       properties:
@@ -18811,11 +18928,6 @@ components:
         query:
           type: string
           description: The SQL-like query string
-        options:
-          deprecated: true
-          allOf:
-            - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
-          description: "This will be removed as of Spring 2026. Use `aggregateQueryOptions` instead.\n If both `options` and `aggregateQueryOptions` are specified, `aggregateQueryOptions` takes precedence.\n\n Optional aggregate query options.\n **Note**: `enableDescendingSpace` is not supported in SQL-like aggregate queries."
         aggregateQueryOptions:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
@@ -22352,6 +22464,56 @@ components:
         role:
           type: string
           description: The Snowflake role to use for the connection.
+    servicing.dataversionsnapshot.CreateDataVersionSnapshotRequestDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The display name of the snapshot.
+        description:
+          type: string
+          description: An optional description of the snapshot.
+        dataVersionId:
+          type: string
+          description: The data version to capture. Default is the latest production version.
+        productionVersionId:
+          type: string
+          description: The production version to associate with the snapshot. Default is the latest production version.
+      description: Request body for creating a data version snapshot.
+    servicing.dataversionsnapshot.DataVersionSnapshotDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the snapshot.
+        name:
+          type: string
+          description: The display name of the snapshot.
+        description:
+          type: string
+          description: The description of the snapshot.
+        dataVersionId:
+          type: string
+          description: The data version captured by the snapshot.
+        productionVersionId:
+          type: string
+          description: The production version associated with the snapshot.
+        createdAt:
+          type: string
+          description: The time at which the snapshot was created in ISO 8601 format.
+        creatorId:
+          type: string
+          description: The unique identifier of the user who created the snapshot.
+      description: A data version snapshot.
+    servicing.dataversionsnapshot.DataVersionSnapshotListResponseDTO:
+      type: object
+      properties:
+        dataVersionSnapshots:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.dataversionsnapshot.DataVersionSnapshotDTO'
+          description: The data version snapshots.
+      description: Response body containing a list of data version snapshots.
     servicing.objectconfiguration.CalculatedPropertyTypeDTO:
       type: object
       properties:
@@ -28775,6 +28937,13 @@ tags:
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
 
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: DataVersionSnapshot
+    x-displayName: Data Version Snapshots
+    description: 'Create and manage data version snapshots. Creating a snapshot retains a specific data version so that it remains available and is not removed by routine cleanup.
+
+      <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: DataModel
     x-displayName: Data Model
     description: "Discover the objects that make up your Visier solution and provide detailed information on the object's schema.\nYou can retrieve detailed information about objects in Visier by retrieving a list of all objects or retrieving information about an object by object ID.\nThe types of objects you can retrieve using the data model API are:\n  * Analytic objects\n  * Properties\n  * Dimensions\n  * Selection concepts\n  * Metrics\n  * Predictions\n  * Vee sample questions and categories"
@@ -28875,6 +29044,7 @@ x-tagGroups:
       - SidecarSolutions
       - ReleaseVersionConfiguration
       - VeeConfiguration
+      - DataVersionSnapshot
   - name: analytic model
     tags:
       - DataModel
