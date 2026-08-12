@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3062
+  version: 22222222.99201.3074
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -7168,7 +7168,7 @@ paths:
             type: string
         - name: planStatus
           in: query
-          description: "Returns plans with the specified plan status. Valid values:\n - **ASSIGNED**: The subplan has been assigned to a subplanner.\n - **IN_PROGRESS**: The subplanner has opened the subplan.\n - **OVERDUE**: The subplan was not completed on time.\n - **SUBMITTED**: The subplan has been submitted for review.\n - **SENT_BACK**: The subplan was rejected and returned to the subplanner for editing.\n - **CONSOLIDATED**: The subplan has been accepted and combined into the primary plan."
+          description: "Returns plans with the specified plan status. Any other value returns an error. Valid values:\n - **ASSIGNED**: The plan was created but work on it has not started. A primary plan always has this status.\n - **IN_PROGRESS**: The subplanner has opened the subplan.\n - **AWAITS_USER_ACTION**: The subplan is open but is blocked and cannot be worked on until its subplanner resolves what is blocking it. One case is a subplan whose promoted rows must be reconciled after its primary plan was rebaselined. Other blocking conditions may use this status in future, so don't assume a specific cause.\n - **SUBMITTED**: The subplan has been submitted for review.\n - **SENT_BACK**: The subplan was rejected and returned to the subplanner for editing.\n - **CONSOLIDATED**: The subplan is closed. This includes subplans combined into the primary plan, and subplans closed when the collaboration ended without ever being combined."
           schema:
             type: string
         - name: createdStart
@@ -20943,6 +20943,18 @@ components:
         currencyCode:
           type: string
           description: The 3-digit ISO 4217 currency code of the plan's data.
+        planStatus:
+          enum:
+            - PLAN_STATUS_UNSPECIFIED
+            - ASSIGNED
+            - IN_PROGRESS
+            - SUBMITTED
+            - SENT_BACK
+            - CONSOLIDATED
+            - AWAITS_USER_ACTION
+          type: string
+          description: "The status of the plan. Valid values:\n - `ASSIGNED`: The plan was created but work on it has not started.\n - `IN_PROGRESS`: The subplan is being worked on.\n - `SUBMITTED`: The subplan was submitted to its parent plan for review.\n - `SENT_BACK`: The subplan was sent back to its owner by the reviewer.\n - `CONSOLIDATED`: The subplan is closed.\n - `AWAITS_USER_ACTION`: The subplan is open but blocked until its owner resolves something."
+          format: enum
       description: Information about a plan and its scenarios.
     planning.PlanItemDTO:
       type: object
