@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3074
+  version: 22222222.99201.3078
 paths:
   /v1/admin/capabilities:
     get:
@@ -1608,6 +1608,298 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.NonVersionedSyncResponseDTO'
+  /v1/admin/security-filters:
+    get:
+      tags:
+        - Permissions
+      summary: Retrieve all security filters
+      description: "Retrieve all shareable security filters. Security filters define the population of members that users have access to for the analytic object in a permission.\n You can assign security filters to a permission when creating or updating permissions.\n\n To specify the project in which to retrieve the shareable security filters, provide a project UUID in the `ProjectID` request header."
+      operationId: Permissions_GetSecurityFilters
+      parameters:
+        - name: analyticObjectId
+          in: query
+          description: The unique identifier of the analytic object to retrieve shareable security filters for. Default is all analytic objects.
+          schema:
+            type: string
+        - name: with
+          in: query
+          description: "The security filter information to include in the response.\n * If unspecified, returns basic information for the security filter, including its unique identifier, display name, description, and analytic object ID.\n * If `details`, returns basic information and dimension filters that define the population in `dimensionFilters`."
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          in: query
+          description: The maximum number of security filters to return. Default is 100. Maximum is 1000.
+          schema:
+            type: integer
+            format: int32
+        - name: correlationIds
+          in: query
+          description: "Filter the security filters to return by correlation ID.\n Specify multiple correlation IDs as a comma-separated list. For example, `correlationIds=123,abc,456`.\n\n **Note**:\n - Correlation IDs must be between 3 and 64 characters long and contain only alphanumeric characters, underscores, and hyphens.\n - Correlation IDs expire 7 days after creation. After expiration, retrieve specific security filters using the security filter ID.\n - Correlation IDs are optional during security filter creation. They apply only to objects created with a defined correlation ID."
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
+          schema:
+            type: boolean
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.GetSecurityFiltersAPIResponseDTO'
+    put:
+      tags:
+        - Permissions
+      summary: Update shareable security filters
+      description: "Update shareable security filters. Shareable security filters let you reuse a common population in multiple permissions.\n\n To specify the project in which to update shareable security filters, provide a project UUID in the `ProjectID` request header."
+      operationId: Permissions_UpdateSecurityFilters
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
+          schema:
+            type: boolean
+        - name: FastMode
+          in: header
+          description: If `true`, the API skips loading the tenant's data environment. Use `FastMode` to reduce latency when you don't need to perform dynamic permission checks, such as checking for the Super Admin permission assignment. Without the environment, permission checks that depend on dynamic, data-driven security, such as group assignments using dynamic populations, fall back to checks resolvable from the requesting user's static user group or direct assignments. If your access to all data comes only from a dynamic assignment, the request fails with HTTP 403. Default is `false`.
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.BulkSecurityFilterRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.BulkSecurityFilterResponseDTO'
+    post:
+      tags:
+        - Permissions
+      summary: Create shareable security filters
+      description: "Create shareable security filters. Shareable security filters let you reuse a common population in multiple permissions.\n\n To specify the project in which to create shareable security filters, provide a project UUID in the `ProjectID` request header."
+      operationId: Permissions_CreateSecurityFilters
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
+          schema:
+            type: boolean
+        - name: FastMode
+          in: header
+          description: If `true`, the API skips loading the tenant's data environment. Use `FastMode` to reduce latency when you don't need to perform dynamic permission checks, such as checking for the Super Admin permission assignment. Without the environment, permission checks that depend on dynamic, data-driven security, such as group assignments using dynamic populations, fall back to checks resolvable from the requesting user's static user group or direct assignments. If your access to all data comes only from a dynamic assignment, the request fails with HTTP 403. Default is `false`.
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.BulkSecurityFilterRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.BulkSecurityFilterResponseDTO'
+    delete:
+      tags:
+        - Permissions
+      summary: Delete shareable security filters
+      description: "Delete shareable security filters.\n\n To specify the project in which to delete shareable security filters, provide a project UUID in the `ProjectID` request header."
+      operationId: Permissions_DeleteSecurityFilters
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
+          schema:
+            type: boolean
+        - name: FastMode
+          in: header
+          description: If `true`, the API skips loading the tenant's data environment. Use `FastMode` to reduce latency when you don't need to perform dynamic permission checks, such as checking for the Super Admin permission assignment. Without the environment, permission checks that depend on dynamic, data-driven security, such as group assignments using dynamic populations, fall back to checks resolvable from the requesting user's static user group or direct assignments. If your access to all data comes only from a dynamic assignment, the request fails with HTTP 403. Default is `false`.
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.BulkSecurityFilterDeleteRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.BulkSecurityFilterResponseDTO'
+  /v1/admin/security-filters/revert-to-parent:
+    post:
+      tags:
+        - Permissions
+      summary: Revert security filters
+      description: "Revert a shareable security filter to its parent version. For example, if you revert a:\n - Tenant override object: The object reverts to the Blueprint version or, for administrating tenants who revert an analytic tenant's object, the administrating tenant's object version.\n - Tenant object: The API request fails. The object is unique to your tenant and no parent version exists.\n - Blueprint object: Nothing happens. The object is inherited from the parent and there is nothing to revert on this tenant."
+      operationId: Permissions_RevertSecurityFiltersToParent
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
+          schema:
+            type: boolean
+        - name: FastMode
+          in: header
+          description: If `true`, the API skips loading the tenant's data environment. Use `FastMode` to reduce latency when you don't need to perform dynamic permission checks, such as checking for the Super Admin permission assignment. Without the environment, permission checks that depend on dynamic, data-driven security, such as group assignments using dynamic populations, fall back to checks resolvable from the requesting user's static user group or direct assignments. If your access to all data comes only from a dynamic assignment, the request fails with HTTP 403. Default is `false`.
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.BulkSecurityFilterRevertRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.BulkSecurityFilterResponseDTO'
+  /v1/admin/security-filters/{securityFilterId}:
+    get:
+      tags:
+        - Permissions
+      summary: Retrieve a security filter
+      description: "Retrieve a specific shareable security filter. You must know the ID of the security filter to retrieve its details. To retrieve security filter IDs, see `GET v1/admin/security-filters`.\n\n To specify the project in which to retrieve the shareable security filter, provide a project UUID in the `ProjectID` request header."
+      operationId: Permissions_GetSecurityFilter
+      parameters:
+        - name: securityFilterId
+          in: path
+          description: The unique identifier of the security filter to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+        - name: ProjectID
+          in: header
+          description: Optionally, specify a project in which to make the request.
+          schema:
+            type: string
+            format: uuid
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
+          schema:
+            type: boolean
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SecurityFilterDTO'
   /v1/admin/system-status:
     get:
       tags:
@@ -6540,6 +6832,43 @@ components:
           items:
             $ref: '#/components/schemas/servicing.DataAccessSetIdDTO'
           description: The data access sets to be reverted.
+    servicing.BulkSecurityFilterDeleteRequestDTO:
+      type: object
+      properties:
+        securityFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SecurityFilterIdDTO'
+          description: The security filters to delete.
+    servicing.BulkSecurityFilterRequestDTO:
+      type: object
+      properties:
+        securityFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SecurityFilterDTO'
+          description: The security filters to create or update.
+    servicing.BulkSecurityFilterResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SecurityFilterSuccessDTO'
+          description: The successfully updated security filters.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SecurityFilterFailureDTO'
+          description: The security filters that failed to update and any relevant error information.
+    servicing.BulkSecurityFilterRevertRequestDTO:
+      type: object
+      properties:
+        securityFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SecurityFilterIdDTO'
+          description: The security filters to revert.
     servicing.CapabilitiesDTO:
       type: object
       properties:
@@ -6967,6 +7296,14 @@ components:
           items:
             $ref: '#/components/schemas/servicing.ProjectDTO'
           description: A list of objects representing the accessible archived projects for the user.
+    servicing.GetSecurityFiltersAPIResponseDTO:
+      type: object
+      properties:
+        securityFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.SecurityFilterDTO'
+          description: A list of shareable security filters.
     servicing.HierarchyPropertyDTO:
       type: object
       properties:
@@ -7691,6 +8028,72 @@ components:
         referenceSymbolName:
           type: string
           description: The reference symbol name.
+    servicing.SecurityFilterDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the security filter.
+        displayName:
+          type: string
+          description: The security filter name to display in Visier, such as "North America Employees".
+        description:
+          type: string
+          description: A description of the security filter.
+        analyticObjectId:
+          type: string
+          description: The unique identifier of the analytic object that the security filter applies to.
+        dimensionFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.DimensionFilterDTO'
+          description: The dimension filters that define the population that the security filter grants access to.
+        correlationId:
+          type: string
+          description: "An optional identifier to associate bulk request fields with their corresponding response fields. Correlation IDs can be between 3 and 64 characters long and\n consist of alphanumeric characters, `-`, and `_`.\n\n **Note**:\n - Each request field must have a unique `correlationId`.\n - You can't reuse a `correlationId` in subsequent `POST` requests while the ID is active. A `correlationId` is active for 7 days after creation."
+    servicing.SecurityFilterErrorDTO:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message.
+        rci:
+          type: string
+          description: A root cause identifier that allows Visier to determine the source of the problem.
+    servicing.SecurityFilterFailureDTO:
+      type: object
+      properties:
+        securityFilterId:
+          type: string
+          description: The unique identifier of the security filter.
+        displayName:
+          type: string
+          description: The security filter name to display in Visier, such as "North America Employees".
+        error:
+          allOf:
+            - $ref: '#/components/schemas/servicing.SecurityFilterErrorDTO'
+          description: The error associated with the failure.
+        correlationId:
+          type: string
+          description: The correlation identifier for the matching request field. Only returned if you defined a `correlationId` in the request.
+    servicing.SecurityFilterIdDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the security filter.
+    servicing.SecurityFilterSuccessDTO:
+      type: object
+      properties:
+        securityFilterId:
+          type: string
+          description: The unique identifier of the security filter.
+        displayName:
+          type: string
+          description: The security filter name to display in Visier, such as "North America Employees".
+        correlationId:
+          type: string
+          description: The correlation identifier for the matching request field. Only returned if you defined a `correlationId` in the request.
     servicing.SettingsDTO:
       type: object
       properties:

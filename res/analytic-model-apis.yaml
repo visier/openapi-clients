@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3074
+  version: 22222222.99201.3078
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -199,6 +199,157 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/designer.api.ConceptConfigurationResultDTO'
+  /v1/analysis-labels/labels:
+    get:
+      tags:
+        - ContentLabels
+      summary: Retrieve all labels and assignments
+      description: Retrieve all labels and assignments for the current user. The response returns each label ID, display name, color, and assigned content items.
+      operationId: ContentLabels_GetLabelsAndAssignments
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.ContentLabelsAndAssignmentsAPIDTO'
+    put:
+      tags:
+        - ContentLabels
+      summary: Create a label
+      description: Create a new label. You must specify the display name and color as a hex value. Maximum is 150 characters for the display name. Optionally, provide a content ID to automatically assign the label. If auto-assignment fails, the label is still created. You can create up to 100 labels.
+      operationId: ContentLabels_CreateLabel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/analysis.common.CreateContentLabelRequestAPIDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.CreateContentLabelResponseAPIDTO'
+    post:
+      tags:
+        - ContentLabels
+      summary: Update a label
+      description: Update an existing label display name or color. Provide the entire definition in the request. If you omit values, the request fails. Display name maximum is 150 characters. Color must be a hex value.
+      operationId: ContentLabels_UpdateLabel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/analysis.common.ContentLabelAPIDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.ContentLabelAPIDTO'
+  /v1/analysis-labels/labels/{labelId}:
+    delete:
+      tags:
+        - ContentLabels
+      summary: Delete a label
+      description: Delete a specific label. You must provide the unique identifier of the label. To retrieve label IDs, see GET /v1/analysis-labels/labels. Deleting a label removes all assignments of that label to analyses and reports.
+      operationId: ContentLabels_DeleteLabel
+      parameters:
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content: {}
+  /v1/analysis-labels/labels/{labelId}/contents/{contentId}:
+    put:
+      tags:
+        - ContentLabels
+      summary: Assign a label
+      description: Create a label assignment to associate a label with an analysis or report. Specify the label ID and content ID. Content items can have multiple assigned labels. To retrieve label IDs, see GET /v1/analysis-labels/labels. Maximum is 250 label assignments across all content.
+      operationId: ContentLabels_CreateLabelAssignment
+      parameters:
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: contentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analysis.common.ContentLabelAssignmentAPIDTO'
+    delete:
+      tags:
+        - ContentLabels
+      summary: Unassign a label
+      description: Delete a label assignment to remove the association between a label and content item. Specify the label ID and content ID. To retrieve IDs, see GET /v1/analysis-labels/labels.
+      operationId: ContentLabels_DeleteLabelAssignment
+      parameters:
+        - name: labelId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: contentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content: {}
   /v1/data/model/analytic-objects:
     get:
       tags:
@@ -3684,6 +3835,74 @@ paths:
                 $ref: '#/components/schemas/servicing.v2.objectconfiguration.MetricResponseDTO'
 components:
   schemas:
+    analysis.common.ContentLabelAPIDTO:
+      type: object
+      properties:
+        labelId:
+          type: string
+          description: The unique identifier of the label.
+        displayName:
+          type: string
+          description: The display name of the label. Maximum is 150 characters.
+        color:
+          type: string
+          description: 'The color of the label as a hex value. Example: `#FF5733`.'
+      description: The details of a label.
+    analysis.common.ContentLabelAssignmentAPIDTO:
+      type: object
+      properties:
+        labelId:
+          type: string
+          description: The unique identifier of the label.
+        contentId:
+          type: string
+          description: The unique identifier of the analysis or report.
+      description: The association between a label and a content item.
+    analysis.common.ContentLabelsAndAssignmentsAPIDTO:
+      type: object
+      properties:
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.ContentLabelAPIDTO'
+          description: The list of labels.
+        assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/analysis.common.ContentLabelAssignmentAPIDTO'
+          description: The list of label assignments.
+      description: All labels and their assignments for the current user.
+    analysis.common.CreateContentLabelRequestAPIDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The display name of the label. Maximum is 150 characters.
+        color:
+          type: string
+          description: 'The color of the label as a hex value. Example: `#FF5733`.'
+        contentId:
+          type: string
+          description: Optional. The unique identifier of an analysis or report to automatically assign the label to upon creation.
+      description: The request body to create a new label. You can create up to 100 labels.
+    analysis.common.CreateContentLabelResponseAPIDTO:
+      type: object
+      properties:
+        createdLabel:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.ContentLabelAPIDTO'
+          description: The label that was created.
+        hasNoAutoAssignment:
+          type: boolean
+          description: If `true`, no content ID was provided in the request, so no auto-assignment was attempted.
+        labelAssignment:
+          allOf:
+            - $ref: '#/components/schemas/analysis.common.ContentLabelAssignmentAPIDTO'
+          description: The label assignment that was successfully created.
+        labelAssignmentError:
+          type: string
+          description: An error message if the auto-assignment failed. The label is still created even if the auto-assignment fails.
+      description: The response after creating a label. Contains the created label and the result of any auto-assignment.
     dataservices.common.DimensionMemberReferenceDTO:
       type: object
       properties:
@@ -7717,6 +7936,9 @@ tags:
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
 
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: ContentLabels
+    x-displayName: Labels
+    description: Create, manage, and retrieve labels for analyses and reports. Labels are personalized tags visible only to you. They help organize and categorize your Visier content. For example, create labels like "Compensation" and assign them to content. You can create up to 100 labels and 250 total label assignments.
 security:
   - ApiKeyAuth: []
     BearerAuth: []
@@ -7734,3 +7956,4 @@ x-tagGroups:
       - AnalyticObjectsV2
       - MetricsV2
       - PersonalizedAlerts
+      - ContentLabels
