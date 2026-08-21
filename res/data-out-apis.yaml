@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3078
+  version: 22222222.99201.3114
 paths:
   /v1/data/query/aggregate:
     post:
@@ -26,11 +26,6 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: DataVersionID
-          in: header
-          description: Optionally, specify a data version against which to execute the query. If omitted, the request uses the current project's data version or the production version if no project is specified.
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -107,11 +102,6 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: DataVersionID
-          in: header
-          description: Optionally, specify a data version against which to execute the query. If omitted, the request uses the data version released by the current project or production version, if no project is specified.
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -156,11 +146,6 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: DataVersionID
-          in: header
-          description: Optionally, specify a data version against which to execute the query. If omitted, the request uses the data version released by the current project or production version, if no project is specified.
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -205,11 +190,6 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: DataVersionID
-          in: header
-          description: Optionally, specify a data version against which to execute the query. If omitted, the request uses the data version released by the current project or production version, if no project is specified.
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -1839,6 +1819,9 @@ components:
           type: string
           description: "If `axes` is defined, use `axesOverallValueMode` to specify the type of overall values to return across the axes. Valid values:\n\n * `NONE`: Returns the metric's values for the selected axes and doesn't return overall values. This is the default.\n * `AGGREGATE`: Returns the metric's overall values for the selected axes members.\n * `OVERALL`: Returns the metric's overall values for all axes members.\n\n **Note**: `AGGREGATE` is not supported for lookup overlays because the overall values of selected members cannot be calculated directly from the data.\n\n Example: Let's say you want to know the Headcount of the locations Canada and US and the genders Male and Female. \n\n When `axesOverallValueMode` is `NONE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n \n When `axesOverallValueMode` is `AGGREGATE`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 400 (Overall, Overall)\n * 200 (Overall, Male)\n * 200 (Overall, Female)\n * 200 (Canada, Overall)\n * 200 (US, Overall)\n\n When `axesOverallValueMode` is `OVERALL`, the query returns these values:\n * 100 (Canada, Male)\n * 100 (US, Male)\n * 100 (Canada, Female)\n * 100 (US, Female)\n * 800 (Overall, Overall)\n * 400 (Overall, Male)\n * 400 (Overall, Female)\n * 400 (Canada, Overall)\n * 400 (US, Overall)\n \n In this example, `OVERALL` returns higher overall values than `AGGREGATE` because `AGGREGATE` returns the overall values for the selected locations (Canada, US) and genders (Male, Female), whereas `OVERALL` returns the overall values across all locations and genders in the data."
           format: enum
+        calendarId:
+          type: string
+          description: The unique ID of the calendar to use in time calculations unless explicitly overridden in the calculation. If both `calendarId` and `calendarType` are specified, `calendarId` takes precedence over `calendarType`.
       description: An AggregateQueryExecutionOptions provides additional instructions to perform an aggregate query.
     dataservices.query.AggregationQueryDTO:
       type: object
@@ -2195,6 +2178,9 @@ components:
           type: string
           description: "Control how date-time values are displayed in the result set.\n Supported values:\n * `EPOCH`: The number of elapsed milliseconds since January 1, 1970 in UTC timezone. This is the default.\n * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format."
           format: enum
+        calendarId:
+          type: string
+          description: The unique ID of the calendar to use in time calculations unless explicitly overridden in the calculation. If both `calendarId` and `calendarType` are specified, `calendarId` takes precedence over `calendarType`.
       description: A ListQueryExecutionOptions provides additional instructions to perform a list query.
     dataservices.query.ListQuerySourceDTO:
       type: object
@@ -2738,6 +2724,8 @@ components:
               enum:
                 - SOURCE
                 - COMPLETE_PERIOD
+                - CURRENT_DATE
+                - CURRENT_DATE_COMPLETE_PERIOD
               type: string
               description: "Dynamically select the date from which to extend in the specified `direction`. Valid values are `SOURCE` or `COMPLETE_PERIOD`. Both options determine the date using the request's `source` field. Whether the source is a metric, formula, or metrics, each source has earliest and latest data available dates to use. The `direction` determines whether the earliest or latest date is used.\n\n * If `dynamicDateFrom` is `SOURCE`, the query returns data from a date determined by the `source` query definition element. If `dynamicDateFrom` is `COMPLETE_PERIOD`, the query returns data starting from the latest or earliest date with a complete period of data. `COMPLETE_PERIOD` returns periods defined by `intervalPeriodType`. If the period type is MONTH, it returns full months of data. If the period type is YEAR, it returns full years of data. When `dynamicDateFrom` is specified:\n * If `source` is `metric`, then `dynamicDateFrom` considers the date range of available data for the metric.\n * If `source` is `formula`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n * If `source` is `analyticObject`, then `dynamicDateFrom` considers the date range of available data for the analytic object.\n Then, if `direction` is `BACKWARD`, query backward from the data **end** date and if `direction` is `FORWARD`, query forward from the data **start** date.\n This allows you to keep getting the latest or earliest data without changing your query every time there's new or updated data. \n\n Example: If a tenant has Headcount metric data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD`\n means the query will retrieve data backward from 2024-01-01. The effect is the same as if specifying a `fromDateTime` of 2024-01-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-01-01. The effect is the same as if specifying a `fromDateTime` of 2023-01-01'T'00:00:00.000.\n\n Example: If a tenant has Employee subject data available from 2023-01-10 to 2023-04-01 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-02-01. The effect is the same as if specifying a `fromDateTime` of 2023-02-01'T'00:00:00.000.\n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2023-03-15 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2023-03-01. The effect is the same as if specifying a `fromDateTime` of 2023-03-01'T'00:00:00.000.\n\n Example: Retrieve a list of EmployeeIDs for the formula extending 1 month backward from the dynamic source date\n\n ```\n {\n   \"source\": {\n     \"formula\": \"on Employee validUntil instant filterBy(isActiveEmployee) aggregate count(Employee.EmployeeID)\"\n   },\n   \"columns\": [\n     {\n       \"columnDefinition\": {\n         \"property\": {\n           \"name\": \"Employee.EmployeeID\",\n           \"qualifyingPath\": \"Employee\"\n         }\n       }\n     },\n     {\n       \"columnDefinition\": {\n         \"effectiveDateProperty\": {}\n       }\n     }\n   ],\n   \"timeInterval\": {\n     \"dynamicDateFrom\": \"SOURCE\",\n     \"intervalPeriodType\": \"MONTH\",\n     \"intervalPeriodCount\": 1,\n     \"direction\": \"BACKWARD\"\n   }\n }\n ```"
               format: enum
@@ -2922,6 +2910,8 @@ components:
               enum:
                 - SOURCE
                 - COMPLETE_PERIOD
+                - CURRENT_DATE
+                - CURRENT_DATE_COMPLETE_PERIOD
               type: string
               description: "Dynamically select the date from which to extend. Valid values are `SOURCE` or `COMPLETE_PERIOD`. Both options use the `source` query definition element to determine the date.\n\n If `dynamicDateFrom` is `SOURCE`, the query returns data from a date determined by the `source` query definition element. If `dynamicDateFrom` is `COMPLETE_PERIOD`, the query returns data starting from the latest or earliest date with a complete period of data. When `dynamicDateFrom` is specified:\n * If `source` is `metric`, then `dynamicDateFrom` considers the date range of available data for the metric.\n * If `source` is `formula`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n * If `source` is `metrics`, then `dynamicDateFrom` considers the date range of available data for the metric in the formula.\n Then, if `direction` is `BACKWARD`, query backward from the data **end** date and if `direction` is `FORWARD`, query forward from the data **start** date. \n This allows you to keep getting the latest or earliest data without changing your query every time there's new or updated data.\n\n Note: For multi-metric queries, if `direction` is `BACKWARD`, query backward from the earliest data end date of all metrics and if `direction` is `FORWARD`, query forward from the latest data start date of all metrics. \n This ensures that all metrics have data in the specified time range.\n\n Example: If a tenant has Headcount metric data available from 2023-01-01 to 2024-01-01 (End date exclusive), specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2024-01-01. The effect is the same as if specifying a `fromDateTime` of 2024-01-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-10 to 2023-04-01 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `FORWARD` \n means the query will retrieve data forward from 2023-02-01. The effect is the same as if specifying a `fromDateTime` of 2023-02-01'T'00:00:00.000. \n\n Example: If a tenant has Employee subject data available from 2023-01-01 to 2023-03-15 (End date exclusive), specifying `dynamicDateFrom`: `COMPLETE_PERIOD` with `direction`: `BACKWARD` \n means the query will retrieve data backward from 2023-03-01. The effect is the same as if specifying a `fromDateTime` of 2023-03-01'T'00:00:00.000. \n\n Example: If a tenant has Headcount data available from 2023-01-01 to 2024-09-01 and Exit Count data available from 2023-01-01 to 2024-01-01, specifying `dynamicDateFrom`: `SOURCE` with `direction`: `BACKWARD` means the query will retrieve data backward from 2024-01-01. \n Exit Count has an earlier data end date than Headcount, so `dynamicDateFrom` retrieves data backward from Exit Count's data end date to ensure both metrics have data in the specified time range.\n\n Example: Retrieve Headcount (employeeCount) extending 1 month backward from Headcount's dynamic source date\n\n ```\n {\n   \"query\": {\n     \"source\": {\n       \"metric\": \"employeeCount\"\n     },\n     \"timeIntervals\": {\n       \"dynamicDateFrom\": \"SOURCE\",\n       \"intervalPeriodType\": \"MONTH\",\n       \"intervalCount\": 1,\n       \"direction\": \"BACKWARD\"\n     }\n   }\n }\n ```"
               format: enum
@@ -3048,6 +3038,9 @@ components:
           type: string
           description: "Control how date-time values are displayed in the result set.\n Supported values:\n * `EPOCH`: The number of elapsed milliseconds since January 1, 1970 in UTC timezone. This is the default.\n * `DATETIME`: The date-time value displayed in `yyyy-MM-dd HH:mm:ssZZ` format."
           format: enum
+        calendarId:
+          type: string
+          description: The unique ID of the calendar to use in time calculations unless explicitly overridden in the calculation. If both `calendarId` and `calendarType` are specified, `calendarId` takes precedence over `calendarType`.
       description: A SnapshotQueryExecutionOptions provides additional instructions to perform a snapshot query.
     dataservices.query.SortOptionDTO:
       type: object
