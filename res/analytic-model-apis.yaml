@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3114
+  version: 22222222.99201.3135
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -274,11 +274,12 @@ paths:
       tags:
         - ContentLabels
       summary: Delete a label
-      description: Delete a specific label. You must provide the unique identifier of the label. To retrieve label IDs, see GET /v1/analysis-labels/labels. Deleting a label removes all assignments of that label to analyses and reports.
+      description: Delete a specific label. You must provide the unique identifier of the label. To retrieve label IDs, see `GET /v1/analysis-labels/labels`. Deleting a label removes all assignments of that label to analyses and reports.
       operationId: ContentLabels_DeleteLabel
       parameters:
         - name: labelId
           in: path
+          description: The unique identifier of the label.
           required: true
           schema:
             type: string
@@ -297,16 +298,18 @@ paths:
       tags:
         - ContentLabels
       summary: Assign a label
-      description: Create a label assignment to associate a label with an analysis or report. Specify the label ID and content ID. Content items can have multiple assigned labels. To retrieve label IDs, see GET /v1/analysis-labels/labels. Maximum is 250 label assignments across all content.
+      description: Create a label assignment to associate a label with an analysis or report. Specify the label ID and content ID. Content items can have multiple assigned labels. To retrieve label IDs, see `GET /v1/analysis-labels/labels`. Maximum is 250 label assignments across all content.
       operationId: ContentLabels_CreateLabelAssignment
       parameters:
         - name: labelId
           in: path
+          description: The unique identifier of the label.
           required: true
           schema:
             type: string
         - name: contentId
           in: path
+          description: The unique identifier of the content item to assign to the label.
           required: true
           schema:
             type: string
@@ -327,16 +330,18 @@ paths:
       tags:
         - ContentLabels
       summary: Unassign a label
-      description: Delete a label assignment to remove the association between a label and content item. Specify the label ID and content ID. To retrieve IDs, see GET /v1/analysis-labels/labels.
+      description: Delete a label assignment to remove the association between a label and content item. Specify the label ID and content ID. To retrieve IDs, see `GET /v1/analysis-labels/labels`.
       operationId: ContentLabels_DeleteLabelAssignment
       parameters:
         - name: labelId
           in: path
+          description: The unique identifier of the label.
           required: true
           schema:
             type: string
         - name: contentId
           in: path
+          description: The unique identifier of the content item to unassign from the label.
           required: true
           schema:
             type: string
@@ -5106,6 +5111,23 @@ components:
           type: string
           description: If the scenario belongs to a managed plan, the response returns the scenario's user-readable symbol name.
       description: Information about a plan's scenario.
+    platform.AdvancedFilterDTO:
+      type: object
+      properties:
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.FilterDTO'
+          description: The list of filters combined by the operation.
+        operation:
+          enum:
+            - UNSPECIFIED
+            - AND
+            - OR
+          type: string
+          description: "The operation to combine the list of filters. Valid values:\n - `AND`: Includes a record if it meets all filter criteria.\n - `OR`: Includes a record if it meets at least 1 filter criterion."
+          format: enum
+      description: "Combines a list of filters using a specified operation, such as `AND` or `OR`.\n\n Advanced filters support up to 1 nested advanced filter. For example, `(US AND Manager) OR Minority`."
     platform.AggregationTypeParameterValueDTO:
       type: object
       properties:
@@ -5345,6 +5367,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/platform.NumericRangeFilterDTO'
           description: A filter that uses a numeric range.
+        advancedFilter:
+          allOf:
+            - $ref: '#/components/schemas/platform.AdvancedFilterDTO'
+          description: "A compound filter that combines a list of filters with `AND` or `OR`.\n \n **Note**: Advanced filters are not available until Fall 2026."
       description: A filter selects specific data points within a population.
     platform.FixedTimeTypeDTO:
       type: object

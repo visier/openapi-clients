@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3114
+  version: 22222222.99201.3135
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -3401,11 +3401,12 @@ paths:
       tags:
         - ContentLabels
       summary: Delete a label
-      description: Delete a specific label. You must provide the unique identifier of the label. To retrieve label IDs, see GET /v1/analysis-labels/labels. Deleting a label removes all assignments of that label to analyses and reports.
+      description: Delete a specific label. You must provide the unique identifier of the label. To retrieve label IDs, see `GET /v1/analysis-labels/labels`. Deleting a label removes all assignments of that label to analyses and reports.
       operationId: ContentLabels_DeleteLabel
       parameters:
         - name: labelId
           in: path
+          description: The unique identifier of the label.
           required: true
           schema:
             type: string
@@ -3424,16 +3425,18 @@ paths:
       tags:
         - ContentLabels
       summary: Assign a label
-      description: Create a label assignment to associate a label with an analysis or report. Specify the label ID and content ID. Content items can have multiple assigned labels. To retrieve label IDs, see GET /v1/analysis-labels/labels. Maximum is 250 label assignments across all content.
+      description: Create a label assignment to associate a label with an analysis or report. Specify the label ID and content ID. Content items can have multiple assigned labels. To retrieve label IDs, see `GET /v1/analysis-labels/labels`. Maximum is 250 label assignments across all content.
       operationId: ContentLabels_CreateLabelAssignment
       parameters:
         - name: labelId
           in: path
+          description: The unique identifier of the label.
           required: true
           schema:
             type: string
         - name: contentId
           in: path
+          description: The unique identifier of the content item to assign to the label.
           required: true
           schema:
             type: string
@@ -3454,16 +3457,18 @@ paths:
       tags:
         - ContentLabels
       summary: Unassign a label
-      description: Delete a label assignment to remove the association between a label and content item. Specify the label ID and content ID. To retrieve IDs, see GET /v1/analysis-labels/labels.
+      description: Delete a label assignment to remove the association between a label and content item. Specify the label ID and content ID. To retrieve IDs, see `GET /v1/analysis-labels/labels`.
       operationId: ContentLabels_DeleteLabelAssignment
       parameters:
         - name: labelId
           in: path
+          description: The unique identifier of the label.
           required: true
           schema:
             type: string
         - name: contentId
           in: path
+          description: The unique identifier of the content item to unassign from the label.
           required: true
           schema:
             type: string
@@ -12812,6 +12817,58 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /v1/admin/users/reports/vee-logs:
+    get:
+      tags:
+        - UsersV1
+      summary: Retrieve the Vee Logs
+      description: "This API allows you to download the Vee Logs for a tenant. The Vee Logs track\n information about Vee queries executed by your users, including query content, execution status,\n processing time, and user feedback. Performing regular audits will help you understand how users\n are interacting with Vee and identify potential issues.\n\n Administrating tenant users can export Vee Logs for the administrating tenant and the\n analytic tenants those users belong to."
+      operationId: UsersV1_GetVeeLogsXLSX
+      parameters:
+        - name: startTime
+          in: query
+          description: An inclusive date-time to start retrieving Vee Logs from in milliseconds since the Unix epoch.
+          required: true
+          schema:
+            type: string
+          examples:
+            startTime:
+              value: 1738368000000
+              description: The start time `2025-02-01:00:00:00 UTC` in milliseconds.
+        - name: endTime
+          in: query
+          description: An exclusive date-time to stop retrieving Vee Logs from in milliseconds since the Unix epoch.
+          required: true
+          schema:
+            type: string
+          examples:
+            endTime:
+              value: 1740787200000
+              description: The end time `2025-03-01:00:00:00 UTC` in milliseconds.
+        - name: tenantCode
+          in: query
+          description: Specify the tenant to retrieve Vee Logs from.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: An XLSX file.
+          content:
+            application/vnd.ms-excel:
+              schema:
+                type: string
+                format: binary
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/admin/visierSecureToken:
     post:
       tags:
@@ -21923,6 +21980,23 @@ components:
           type: string
           description: A note or instructions to include when submitting a subplan.
       description: The details of submitting a subplan.
+    platform.AdvancedFilterDTO:
+      type: object
+      properties:
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/platform.FilterDTO'
+          description: The list of filters combined by the operation.
+        operation:
+          enum:
+            - UNSPECIFIED
+            - AND
+            - OR
+          type: string
+          description: "The operation to combine the list of filters. Valid values:\n - `AND`: Includes a record if it meets all filter criteria.\n - `OR`: Includes a record if it meets at least 1 filter criterion."
+          format: enum
+      description: "Combines a list of filters using a specified operation, such as `AND` or `OR`.\n\n Advanced filters support up to 1 nested advanced filter. For example, `(US AND Manager) OR Minority`."
     platform.AggregationTypeParameterValueDTO:
       type: object
       properties:
@@ -22162,6 +22236,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/platform.NumericRangeFilterDTO'
           description: A filter that uses a numeric range.
+        advancedFilter:
+          allOf:
+            - $ref: '#/components/schemas/platform.AdvancedFilterDTO'
+          description: "A compound filter that combines a list of filters with `AND` or `OR`.\n \n **Note**: Advanced filters are not available until Fall 2026."
       description: A filter selects specific data points within a population.
     platform.FixedTimeTypeDTO:
       type: object
@@ -24520,6 +24598,11 @@ components:
           type: string
           description: "The analytic object's validity status. Valid values: Valid, NoData, NotFound.\n * **Valid**: The object exists and has loaded data.\n * **NoData**: The object exists but doesn't have loaded data.\n * **NotFound**: The object doesn't exist."
           format: enum
+        shareableSecurityFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ShareableSecurityFilterDTO'
+          description: "The shareable security filters linked to this item in the permission. You can link\n shareable security filters in multiple permissions and manage them through\n `/v1/admin/security-filters`. Each linked filter defines population access in\n the same way as a filter in `memberFilterConfigs`. You can combine both filter types.\n\n **Note**:\n - The `analyticObjectId` of the linked filter must match the `analyticObjectId` of this item.\n - On update, omitting `shareableSecurityFilters` unlinks all previously linked security filters from this item. This action does not delete the security filters.\n - You cannot define this field if `allDataPointAccess` is `true`.\n - The request does not return validity statuses for linked security filters. To retrieve them, see `GET /v1/admin/security-filters`."
     servicing.DateRangeDTO:
       type: object
       properties:
@@ -24959,6 +25042,11 @@ components:
           items:
             $ref: '#/components/schemas/servicing.MemberFilterConfigDTO'
           description: Custom filters that define population access for an inherited analytic object in the permission.
+        shareableSecurityFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ShareableSecurityFilterDTO'
+          description: "The shareable security filters linked to the inherited analytic object. Each linked filter defines population\n access in the same way as a filter in `memberFilterConfigs`. You can combine both filter types.\n\n **Note**:\n - The `analyticObjectId` of the linked filter must match the `analyticObjectId` of this inherited access configuration.\n - On update, omitting `shareableSecurityFilters` unlinks all previously linked security filters from this inherited analytic object. This action does not delete the security filters.\n - The request does not return validity statuses for linked security filters. To retrieve them, see `GET /v1/admin/security-filters`."
     servicing.InheritedReferenceMemberFilterConfigDTO:
       type: object
       properties:
@@ -25886,6 +25974,12 @@ components:
         dataAccessSetId:
           type: string
           description: The unique identifier of the shareable data access set.
+    servicing.ShareableSecurityFilterDTO:
+      type: object
+      properties:
+        securityFilterId:
+          type: string
+          description: The unique identifier of the shareable security filter.
     servicing.SidecarSolutionSettingsDTO:
       type: object
       properties:
@@ -29458,8 +29552,6 @@ tags:
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: Reporting
     description: 'Create, retrieve, delete, copy, and download reports.
-
-      <br>**Note**: This API is available for Embedded Partners.
 
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
 

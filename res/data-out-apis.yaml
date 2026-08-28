@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3114
+  version: 22222222.99201.3135
 paths:
   /v1/data/query/aggregate:
     post:
@@ -3887,8 +3887,6 @@ tags:
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: Reporting
     description: 'Create, retrieve, delete, copy, and download reports.
-
-      <br>**Note**: This API is available for Embedded Partners.
 
       <br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
 
