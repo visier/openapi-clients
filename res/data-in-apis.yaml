@@ -5,14 +5,14 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3135
+  version: 22222222.99201.3152
 paths:
   /v1/api/pgp-keys:
     get:
       tags:
         - PGPKeys
-      summary: Retrieve all PGP public keys
-      description: Retrieve a list of all PGP public keys in your tenant.
+      summary: Retrieve PGP public keys
+      description: Retrieve all PGP public keys in your tenant.
       operationId: PGPKeys_GetAllPGPPublicKeys
       parameters:
         - name: TargetTenantID
@@ -37,7 +37,7 @@ paths:
       tags:
         - PGPKeys
       summary: Download a public encryption key
-      description: "Generate a key pair and retrieve the public key that you can use to encrypt your data to send to Visier. \n \n In the request body, optionally set the UTC expiration date for the key pair in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years."
+      description: "Generate a PGP key pair and retrieve the public encryption key.\n \n Set key expiration in UTC using ISO 8601 format in the request body. Expiration must be between 2 and 10 years. Default is 2 years."
       operationId: PGPKeys_GeneratePGPKeyPair
       parameters:
         - name: TargetTenantID
@@ -68,13 +68,13 @@ paths:
     get:
       tags:
         - PGPKeys
-      summary: Retrieve a PGP public key using the key ID
-      description: If you know your PGP key ID, use it to retrieve the PGP public key. To get a list of all key IDs, see `Retrieve all PGP public keys`.
+      summary: Retrieve a PGP public key
+      description: Retrieve a PGP public key using its key ID. You must know the ID of a key to retrieve its details. To retrieve key IDs, see `GET /v1/api/pgp-keys`.
       operationId: PGPKeys_GetPGPPublicKey
       parameters:
         - name: keyID
           in: path
-          description: The key ID of the generated key pair in 16-letter hexadecimal format, including leading zeros.
+          description: The unique identifier of the generated key pair in 16-letter hexadecimal format, including leading zeros.
           required: true
           schema:
             type: string
@@ -100,12 +100,12 @@ paths:
       tags:
         - PGPKeys
       summary: Delete a PGP key pair
-      description: Delete a PGP key pair using a key ID.
+      description: Delete a PGP key pair using its key ID.
       operationId: PGPKeys_DeletePGPKeyPair
       parameters:
         - name: keyID
           in: path
-          description: The key ID of the generated key pair in 16-letter hexadecimal format, including leading zeros.
+          description: The unique identifier of the generated key pair in 16-letter hexadecimal format, including leading zeros.
           required: true
           schema:
             type: string
@@ -131,8 +131,8 @@ paths:
     get:
       tags:
         - DirectDataIntake
-      summary: Get the direct data intake configuration
-      description: Get the direct data intake configuration.
+      summary: Retrieve the direct data intake configuration
+      description: Retrieve the direct data intake configuration.
       operationId: DirectDataIntake_GetConfig
       parameters:
         - name: draftId
@@ -163,7 +163,7 @@ paths:
       tags:
         - DirectDataIntake
       summary: Update the direct data intake configuration
-      description: "Configure the data intake settings, such as the direct data intake job type. Only provide values for the configuration options that should change.\n\n Configuration options that are not present in the PUT request are ignored and left unchanged."
+      description: "Configure the data intake settings, such as the direct data intake job type. Only provide values for settings that you want to change.\n\n Settings that aren't present in the request body are ignored and remain unchanged."
       operationId: DirectDataIntake_PutConfig
       parameters:
         - name: draftId
@@ -201,7 +201,7 @@ paths:
       tags:
         - DirectDataIntake
       summary: Retrieve an object's data load schema
-      description: "Gets the load schema for a specified object. The object's load schema represents the structure that the data upload file must follow to upload data to the object.\n\n In the load schema, the listed columns must be present in the data file as column headers and exactly match the load schema (case sensitive), however,  only the columns whose `isMandatory` field is `true` must contain values in the data file."
+      description: "Retrieve the data load schema for an object. The load schema defines the required structure for uploading data files to the object.\n\n Your data file must include column headers that match the schema exactly. Column names are case sensitive. Only columns with `isMandatory` set to `true` require values."
       operationId: DirectDataIntake_ObjectSchema
       parameters:
         - name: draftId
@@ -238,13 +238,13 @@ paths:
     get:
       tags:
         - DirectDataIntake
-      summary: Retrieve a list of open transactions
-      description: Get a list of all open transactions. Doesn't return committed transactions or rolled back transactions.
+      summary: Retrieve open transactions
+      description: Retrieve all open transactions. Doesn't return committed or rolled back transactions.
       operationId: DirectDataIntake_ListTransactions
       parameters:
         - name: draftId
           in: path
-          description: Optionally specify the unique identifier of a project to retrieve open transactions from. Currently, the only supported value is `prod` to retrieve open transactions for the production version.
+          description: The unique identifier of the project to retrieve open transactions from. Currently, the only supported value is `prod` to retrieve open transactions for the production version.
           required: true
           schema:
             type: string
@@ -269,8 +269,8 @@ paths:
     post:
       tags:
         - DirectDataIntake
-      summary: Start a direct data intake transaction
-      description: "Create a transaction to contain your data files. To upload files to objects in Visier, you must first start a transaction.\n\n After starting a transaction and uploading files to the transaction, you can commit the transaction to process the uploaded files or roll back the transaction to discard the uploaded files."
+      summary: Start a transaction
+      description: "Start a transaction to contain your data files. You can then upload files to objects in Visier.\n\n After starting a transaction and uploading files, commit the transaction to process the files. You can also roll back the transaction to discard the files."
       operationId: DirectDataIntake_StartTransaction
       parameters:
         - name: draftId
@@ -301,8 +301,8 @@ paths:
     get:
       tags:
         - DirectDataIntake
-      summary: Check transaction status
-      description: Retrieve the status of a committed transaction's processing job.
+      summary: Retrieve transaction status
+      description: Retrieve the job status for a committed transaction.
       operationId: DirectDataIntake_JobStatus
       parameters:
         - name: draftId
@@ -339,7 +339,7 @@ paths:
       tags:
         - DirectDataIntake
       summary: Commit a transaction
-      description: "Process a transaction and its uploaded data files. This starts a processing job to load the data files into Visier.\n\n After committing a transaction, you cannot upload additional files to the transaction. Use the `Check transaction status` endpoint to monitor the progress of the processing job."
+      description: "Process a transaction and its uploaded data files. This starts a processing job to load the files into Visier.\n\n After committing a transaction, you can't upload more files to it. Monitor the job status using `GET /v1/data/directloads/{draftId}/transactions/{transactionId}`."
       operationId: DirectDataIntake_CommitTransaction
       parameters:
         - name: draftId
@@ -376,7 +376,7 @@ paths:
       tags:
         - DirectDataIntake
       summary: Roll back a transaction
-      description: "Rolls back the specified transaction. This discards all files uploaded within the transaction and deletes the transaction.\n\n After rolling back a transaction, you cannot use the transaction to upload data files."
+      description: "Roll back a transaction. This deletes the transaction and discards all uploaded files.\n\n After rolling back a transaction, you can't use it to upload data files."
       operationId: DirectDataIntake_RollbackTransaction
       parameters:
         - name: draftId
@@ -414,27 +414,25 @@ paths:
       tags:
         - DirectDataIntake
       summary: Load sample data
-      description: Load sample data in a previously-created transaction. The data is not processed in Visier until you commit the transaction. Sample data is available for `employee`, `employee_exit`, `employment_start`, and `organization_hierarchy`.
+      description: Load sample data in an open transaction. Visier doesn't process data until you commit the transaction. Sample data is available for `employee`, `employee_exit`, `employment_start`, and `organization_hierarchy`.
       operationId: DirectDataIntake_LoadSampleData
       parameters:
         - name: draftId
           in: path
+          description: The unique identifier of the project to load data into. Currently, the only supported value is `prod` to update the production version.
           required: true
           schema:
             type: string
         - name: transactionId
           in: path
+          description: The unique identifier of the transaction.
           required: true
           schema:
             type: string
         - name: objectName
           in: path
+          description: The object name of the analytic object to load sample data into.
           required: true
-          schema:
-            type: string
-        - name: sampleName
-          in: query
-          description: "The name of the target object to load sample data. Sample data is available for:\n * `employee`: The Employee subject.\n * `employee_exit`: The Employee Exit event.\n * `employment_start`: The Employment Start event.\n * `organization_hierarchy`: The Organization Hierarchy dimension."
           schema:
             type: string
         - name: TargetTenantID
@@ -442,6 +440,12 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.DirectDataSampleDataDTO'
+        required: true
       responses:
         '200':
           description: OK
@@ -453,24 +457,24 @@ paths:
     get:
       tags:
         - DataAndJobHandling
-      summary: Retrieve a list of all data connector credentials
-      description: "Retrieve a list of the connector credentials in a specified tenant. Connector credentials allow\n Visier to retrieve data from your source systems through an integration user in the source system."
+      summary: Retrieve data connector credentials
+      description: Retrieve data connector credentials for a tenant. Connector credentials allow Visier to fetch data from source systems.
       operationId: DataAndJobHandling_DataConnectorCredentials
       parameters:
         - name: tenantCode
           in: query
-          description: The tenant code of a specific analytic tenant that you want to retrieve for.
+          description: The tenant code of a specific analytic tenant to retrieve for.
           schema:
             type: string
         - name: limit
           in: query
-          description: The limit to retrieve.
+          description: The maximum number of items to return. Default is 100.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           schema:
             type: integer
             format: int32
@@ -496,12 +500,12 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Create a connector credential
-      description: "Create credentials for a data connector. Connector credentials allow Visier to retrieve data from your source systems through an integration user in the source system. \n \n In the request body, specify one data provider in the `dataProviderAuthParams` parameter. For example, to create connector credentials for a UKG data connector, your request body might look like the following sample.\n ```json\n {\n   model={\n     \"dataProviderAuthParams\": {\n        \"provider\": \"UKG\",\n        \"ultimateAuthParams\": {\n           \"hostDomainName\": \"exampleHostDomain\",\n           \"apiKey\": \"apiKey1234\",\n           \"username\": \"username1234\",\n           \"password\": \"password1234\",\n           \"userAccessKey\": \"accessKey1234\"\n        }\n     },\n     \"dataProviderBasicInformation\": {\n        \"displayName\": \"exampleDisplayName\",\n        \"description\": \"exampleDescription\"\n     }\n }\n ```"
+      description: "Create credentials for a data connector. Connector credentials allow Visier to retrieve data from your source systems through an integration user in the source system.\n \n Specify one provider in `dataProviderAuthParams`. Example UKG request body:\n ```json\n {\n   model={\n     \"dataProviderAuthParams\": {\n        \"provider\": \"UKG\",\n        \"ultimateAuthParams\": {\n           \"hostDomainName\": \"exampleHostDomain\",\n           \"apiKey\": \"apiKey1234\",\n           \"username\": \"username1234\",\n           \"password\": \"password1234\",\n           \"userAccessKey\": \"accessKey1234\"\n        }\n     },\n     \"dataProviderBasicInformation\": {\n        \"displayName\": \"exampleDisplayName\",\n        \"description\": \"exampleDescription\"\n     }\n   }\n }\n ```"
       operationId: DataAndJobHandling_CreateConnectorCredential
       parameters:
         - name: tenantCode
           in: query
-          description: The tenant code of a specific analytic tenant that you want to create the credential for.
+          description: The tenant code of a specific analytic tenant to create the credential for.
           schema:
             type: string
         - name: TargetTenantID
@@ -532,24 +536,24 @@ paths:
     get:
       tags:
         - DataAndJobHandling
-      summary: Retrieve a list of all data connectors
-      description: "Retrieve a list of the data connectors in a specified tenant. Data connectors are an alternative\n to generating flat files and transferring them to Visier via SFTP."
+      summary: Retrieve data connectors
+      description: Retrieve data connectors for a tenant. Data connectors connect and extract the raw data directly from your source systems, subsequently transforming and processing it within the Visier platform. Data connectors are an alternative to generating flat files and transferring them to Visier via SFTP.
       operationId: DataAndJobHandling_DataConnectors
       parameters:
         - name: tenantCode
           in: query
-          description: The tenant code of a specific analytic tenant that you want to retrieve for.
+          description: The tenant code of a specific analytic tenant to retrieve for.
           schema:
             type: string
         - name: limit
           in: query
-          description: The limit to retrieve.
+          description: The maximum number of items to return. Default is 100.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           schema:
             type: integer
             format: int32
@@ -575,7 +579,7 @@ paths:
     post:
       tags:
         - DataAndJobHandling
-      summary: Assign connector credentials to data connectors
+      summary: Assign connector credentials
       description: Assign a connector credential to a data connector.
       operationId: DataAndJobHandling_AssignConnectorCredential
       parameters:
@@ -608,7 +612,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve data connector settings
-      description: Get a list of settings for all data connectors. This request retrieves data connectors from the production environment. The response returns a list of settings, if available, for each data connector in the tenant.
+      description: Retrieve settings for all production data connectors in the tenant. The response returns a list of settings, if available, for each data connector in the tenant.
       operationId: DataAndJobHandling_ListConnectorSettings
       parameters:
         - name: TargetTenantID
@@ -633,7 +637,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Update data connector settings
-      description: Define the settings for one or more data connectors. To find the available settings, see `Retrieve data connector settings`.
+      description: Configure settings for data connectors. To retrieve the available settings, see `GET /v1/op/data-connectors/connector-settings`.
       operationId: DataAndJobHandling_SetConnectorSetting
       parameters:
         - name: TargetTenantID
@@ -664,8 +668,8 @@ paths:
     get:
       tags:
         - DataIntake
-      summary: Retrieve a list of sources
-      description: "Prior to transferring data to Visier, you must identify the sources you want to target. Sources store data for\n the solution and are used to map data to Visier's data model.\n\n **Note:** To set up sources in your tenant, contact Visier Customer Success.\n This API allows you to query the list of available sources, and identify the source schema and required fields."
+      summary: Retrieve sources
+      description: "Retrieve target sources before transferring data. Sources store data and map it to the Visier data model.\n\n Contact Visier Customer Success to set up new sources. Query this endpoint to list available sources, schemas, and required fields."
       operationId: DataIntake_GetSources
       parameters:
         - name: TargetTenantID
@@ -691,7 +695,7 @@ paths:
       tags:
         - DataIntake
       summary: Start a transfer session
-      description: "Start a new transfer session. A transfer session can include one or more batches of records to be\n sent to Visier. Batches of records may be transferred as JSON or file payloads.\n\n Recommended: For optimal performance, please include all batches of records in a single transfer session."
+      description: "Start a transfer session. Transfer sessions contain one or more record batches sent as JSON or file payloads.\n\n For optimal performance, include all record batches in one transfer session."
       operationId: DataIntake_StartTransfer
       parameters:
         - name: TargetTenantID
@@ -717,29 +721,29 @@ paths:
       tags:
         - DataIntake
       summary: Transfer data to sources via JSON
-      description: "Transfer data to Visier in batches of records. Each request includes a batch of records\n formatted as a comma separated array with the first row containing the column headers in the request body. Each\n subsequent request should also include the first row as a header.\n\n Each request transfers a batch of records to a single source. Transfer sessions may include one or more batches before completion.\n\n Each batch is identified by a sequence number. Sequence numbers help identify any batches  that were delivered incorrectly.\n\n Each batch is limited to the following request size:\n - Batch size limit: 10 MB\n - Record count limit: 300,000 rows"
+      description: "Transfer record batches to Visier. Provide data as a comma-separated array with headers in the first row. Include header rows in all subsequent requests.\n\n Each request transfers a batch to one source. Transfer sessions support multiple batches before completion.\n\n Use sequence numbers to track and identify delivery issues across batches.\n\n Batch limits:\n - Batch size: 10 MB\n - Record count: 300,000 rows"
       operationId: DataIntake_PushData
       parameters:
         - name: transferSessionId
           in: path
-          description: The transfer session ID returned after the data transfer session starts.
+          description: The unique identifier of the transfer session.
           required: true
           schema:
             type: string
         - name: sourceId
           in: query
-          description: The unique identifier associated with the source you want to transfer data to.
+          description: The unique identifier of the source to transfer data to.
           schema:
             type: string
         - name: sequence
           in: query
-          description: The unique sequence number associated with a batch of records.
+          description: The unique sequence number of a batch of records.
           schema:
             type: integer
             format: uint32
         - name: tenantCode
           in: query
-          description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
+          description: The code of the tenant to transfer data to. For example, `WFF_j1r` or `WFF_j1r~c7o`.
           schema:
             type: string
         - name: TargetTenantID
@@ -771,12 +775,12 @@ paths:
       tags:
         - DataIntake
       summary: Cancel a transfer session
-      description: "Cancel a transfer session after starting it. If a transfer session is cancelled, all\n records within the transfer session do not persist in Visier's data store.\n\n If you cancel a transfer session, please start a new transfer session and resend the complete data set.\n\n You might cancel a transfer session if:\n - A request to send a batch of records failed.\n - The original set of records is incomplete.\n - An infrastructure error occurs."
+      description: "Cancel an active transfer session. Cancelled sessions don't persist data in Visier.\n\n Start a new session and resend all data if you cancel a transfer.\n\n Cancel sessions when:\n - A batch request fails.\n - Data records are incomplete.\n - Infrastructure errors occur."
       operationId: DataIntake_PushDataCancel
       parameters:
         - name: transferSessionId
           in: path
-          description: The transfer session ID to cancel.
+          description: The unique identifier of the transfer session to cancel.
           required: true
           schema:
             type: string
@@ -802,30 +806,30 @@ paths:
     get:
       tags:
         - DataAndJobHandling
-      summary: Retrieve the latest enabled data versions for all analytic tenants
-      description: "If you discover any inconsistencies after running metric value validation, you may want to find the data versions\n causing inconsistencies so you can later disable them.\n\n Retrieve up to five (5) of the latest enabled data versions for all your analytic tenants or a\n single specified analytic tenant."
+      summary: Retrieve the latest enabled data versions
+      description: Retrieve up to five of the latest enabled data versions for all analytic tenants or a single tenant. Use this endpoint to locate data versions that cause validation inconsistencies.
       operationId: DataAndJobHandling_LatestEnabledDV
       parameters:
         - name: tenantCode
           in: query
-          description: "The tenant code of a specific analytic tenant that you want to retrieve data versions for.\n Use this if you are only interested in the results for one analytic tenant."
+          description: The tenant code of a specific analytic tenant to retrieve data versions for. Use this if you're only interested in the results for one analytic tenant.
           schema:
             type: string
         - name: limit
           in: query
-          description: "The limit of analytic tenants to retrieve data versions for.\n This parameter is not used if the tenantCode parameter is specified."
+          description: The maximum number of analytic tenants to return. Default is 100.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           schema:
             type: integer
             format: int32
         - name: numberOfVersions
           in: query
-          description: The number of latest enabled data versions to retrieve. The maximum value is 5.
+          description: The number of latest enabled data versions to retrieve. Maximum is 5.
           schema:
             type: integer
             format: int32
@@ -856,8 +860,8 @@ paths:
     put:
       tags:
         - DataAndJobHandling
-      summary: Disable data versions for a list of analytic tenants
-      description: "If you discover that a data version is not what is expected after running metric value validation on a data load,\n you may want to disable the data version for that processing job.\n\n Disable the latest enabled data versions for affected analytic tenants or to disable a particular\n data version for each analytic tenant.\n\n **Note:** Disabling an older data version may not have an effect on the state of the solution."
+      summary: Disable data versions
+      description: "Disable the latest enabled data versions for specific analytic tenants or disable a specific data version per tenant.\n\n **Note**: Disabling an older data version might not affect solution state."
       operationId: DataAndJobHandling_DisableDV
       parameters:
         - name: TargetTenantID
@@ -888,8 +892,8 @@ paths:
     get:
       tags:
         - DataAndJobHandling
-      summary: Retrieve a list of all data categories
-      description: Retrieve a list of all available data categories.
+      summary: Retrieve data categories
+      description: Retrieve all available data categories.
       operationId: DataAndJobHandling_RetrieveDataCategories
       parameters:
         - name: TargetTenantID
@@ -915,7 +919,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Trigger data connector extraction jobs
-      description: "Run data connector extraction jobs for the administrating tenant or a list of analytic tenants.\n \n This API creates a dispatching job that generates one extraction job per tenant. The dispatching job is the \"parent\" of the extraction jobs and the dispatching job ID is returned in the response. Use that ID to monitor the extraction job statuses by calling `GET /v1/op/jobs/dispatching-jobs/{jobId}/extraction-jobs`.\n\n The extraction job generates receiving jobs to validate the data and processing jobs to populate data in the analytic tenants. Use the dispatching job ID to monitor the receiving and processing job statuses by calling `GET /v1/op/jobs/dispatching-jobs/{jobId}/receiving-jobs` or `GET /v1/op/jobs/dispatching-jobs/{jobId}/processing-jobs`."
+      description: "Start data connector extraction jobs for the administrating tenant or selected analytic tenants.\n \n This endpoint creates a dispatching job that generates one extraction job per tenant. Use the returned dispatching job ID to track extraction job statuses using `GET /v1/op/jobs/dispatching-jobs/{jobId}/extraction-jobs`.\n\n Extraction jobs generate receiving jobs to validate data and processing jobs to load data. Monitor job statuses using `GET /v1/op/jobs/dispatching-jobs/{jobId}/receiving-jobs` or `GET /v1/op/jobs/dispatching-jobs/{jobId}/processing-jobs`."
       operationId: DataAndJobHandling_StartExtraction
       parameters:
         - name: TargetTenantID
@@ -947,7 +951,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Start the data load for analytic tenants
-      description: "This API starts the data load process for all analytic tenants included in the specified data files uploaded\n to the Visier SFTP server. On success, you receive a job ID that can be filtered and searched for within the\n Jobs room in Visier. This job ID is associated with the receiving job, and related to all processing jobs that\n spawn for each analytic tenant.\n\n With the job ID, you can also call the next two APIs to retrieve the status of the receiving job and the status\n list of all related processing jobs.\n\n **Prerequisite:** You must first obtain a PGP public encryption key and upload the source data files to Visier's\n SFTP server. Files must have a .zip.gpg extension, meaning the files are encrypted using the PGP protocol and compressed.\n\n Visier provides ways to generate PGP key pairs and download the public key to encrypt your data files. You can either use\n the PGP Keys API or, in Visier, navigate to **Settings > Manage PGP Keys**.\n\n **Note:**\n  - To see the full status of all analytic tenant data loads, navigate to the Jobs room in a project.\n  - For performance and efficiency, Visier requires that the uncompressed batch file size is below 5 GB and that no\n    more than 5000 tenants are included in a batch."
+      description: "Start the data load process for analytic tenants included in uploaded SFTP files. Returns a receiving job ID.\n\n Use the job ID to track the receiving job and spawned processing job statuses.\n\n **Prerequisite**: Use a PGP public key to upload encrypted, compressed data files (`.zip.gpg`) to the Visier SFTP server.\n\n Generate PGP keys using the PGP Keys API or in Visier under **Settings > Manage PGP Keys**.\n\n **Note**:\n - View data load status details in the Jobs room in a project.\n - Limit uncompressed batch file sizes to 5 GB and 5000 tenants per batch."
       operationId: DataAndJobHandling_StartLoad
       parameters:
         - name: TargetTenantID
@@ -979,35 +983,35 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve data uploads
-      description: "Retrieve the data uploads and whether they're included in one of:\n - A list of analytic tenants managed by you.\n - A single specified analytic tenant.\n - A receiving job."
+      description: Retrieve data uploads and their inclusion status for managed tenants, a single tenant, or a receiving job.
       operationId: DataAndJobHandling_RetrieveDataUploads
       parameters:
         - name: uploadJobId
           in: query
-          description: The job ID of an upload job. Use this if you are interested in the data uploads for a specific upload job.
+          description: The unique identifier of the upload job. Use this if you are interested in the data uploads for a specific upload job.
           schema:
             type: string
         - name: tenantCode
           in: query
-          description: The tenant code of a specific analytic tenant that you want to retrieve the data uploads for.
+          description: The tenant code of a specific analytic tenant to retrieve the data uploads for.
           schema:
             type: integer
             format: int32
         - name: limit
           in: query
-          description: The limit of analytic tenants to retrieve data uploads for. This parameter is not used if the tenantCode parameter is specified. Default is 1000.
+          description: The maximum number of analytic tenants to retrieve data uploads for. Not used if `tenantCode` is specified. Default is 1000.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           schema:
             type: integer
             format: int32
         - name: numberOfDataUploads
           in: query
-          description: The maximum number of latest enabled data uploads to retrieve for each analytic tenant. The maximum value is 5. Default is 1.
+          description: The maximum number of latest enabled data uploads to retrieve for each analytic tenant. Default is 1. Maximum is 5.
           schema:
             type: integer
             format: int32
@@ -1034,7 +1038,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Exclude data uploads
-      description: Exclude either a specified list of data uploads or all data uploads for each analytic tenant.
+      description: Exclude specified data uploads or all data uploads for analytic tenants.
       operationId: DataAndJobHandling_ExcludeDataUplaods
       parameters:
         - name: TargetTenantID
@@ -1066,7 +1070,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Include data uploads
-      description: Include either the specified list of data uploads or all data uploads for each analytic tenant.
+      description: Include specified data uploads or all data uploads for analytic tenants.
       operationId: DataAndJobHandling_IncludeDataUploads
       parameters:
         - name: TargetTenantID
@@ -1097,8 +1101,8 @@ paths:
     get:
       tags:
         - DataAndJobHandling
-      summary: Retrieve the statuses of all jobs
-      description: Retrieve the list of statuses for all jobs.
+      summary: Retrieve all job statuses
+      description: Retrieve the statuses for all jobs.
       operationId: DataAndJobHandling_JobStatus
       parameters:
         - name: startTime
@@ -1138,8 +1142,8 @@ paths:
     post:
       tags:
         - DataAndJobHandling
-      summary: Cancel a list of jobs
-      description: "Cancel a list of processing jobs, receiving jobs, and extraction jobs.\n\n **Note:** Receiving jobs with the Running status cannot be cancelled."
+      summary: Cancel jobs
+      description: "Cancel processing, receiving, and extraction jobs.\n\n **Note**: You can't cancel receiving jobs with Running status."
       operationId: DataAndJobHandling_CancelJobs
       parameters:
         - name: TargetTenantID
@@ -1171,12 +1175,12 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a dispatching job's status
-      description: Retrieve the status of a dispatching job, including its job ID and the number of jobs it generated.
+      description: Retrieve a dispatching job's status, including the job ID and generated jobs count.
       operationId: DataAndJobHandling_DispatchingJobStatus
       parameters:
         - name: jobId
           in: path
-          description: The ID of the job you want to retrieve.
+          description: The unique identifier of the job to retrieve.
           required: true
           schema:
             type: string
@@ -1202,35 +1206,35 @@ paths:
     get:
       tags:
         - DataAndJobHandling
-      summary: Retrieve a dispatching job's extraction jobs with their statuses
-      description: "Retrieve the statuses of extraction jobs associated with a dispatching job. The dispatching job\n is a \"parent\" to extraction jobs, which retrieve data from your source systems through data connectors."
+      summary: Retrieve extraction job statuses by dispatching job ID
+      description: Retrieve extraction job statuses associated with a parent dispatching job.
       operationId: DataAndJobHandling_ExtractionJobAndStatus
       parameters:
         - name: jobId
           in: path
-          description: The ID of the dispatching job you want to retrieve.
+          description: The unique identifier of the dispatching job to retrieve.
           required: true
           schema:
             type: string
         - name: dispatchingJobId
           in: query
-          description: The ID of the dispatching job that generated the extraction jobs.
+          description: The unique identifier of the dispatching job that generated the extraction jobs.
           schema:
             type: string
         - name: tenantCode
           in: query
-          description: "The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.\n Use this if you are only interested in the results for one analytic tenant."
+          description: The tenant code of a specific analytic tenant to retrieve the extraction job status for. Use this if you're only interested in the results for one analytic tenant.
           schema:
             type: string
         - name: limit
           in: query
-          description: The limit of extraction job statuses to retrieve.
+          description: The maximum number of extraction job statuses to return. Default is 100.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           schema:
             type: integer
             format: int32
@@ -1256,35 +1260,35 @@ paths:
     get:
       tags:
         - DataAndJobHandling
-      summary: Retrieve a dispatching job's processing jobs with their statuses
-      description: "Retrieve the statuses of processing jobs associated with a dispatching job. The dispatching job\n is a \"parent\" to extraction jobs, which in turn generate processing jobs and receiving jobs."
+      summary: Retrieve processing job statuses by dispatching job ID
+      description: Retrieve processing job statuses associated with a parent dispatching job.
       operationId: DataAndJobHandling_ProcessingJobAndStatus
       parameters:
         - name: jobId
           in: path
-          description: The ID of the dispatching job you want to retrieve.
+          description: The unique identifier of the dispatching job to retrieve.
           required: true
           schema:
             type: string
         - name: dispatchingJobId
           in: query
-          description: The ID of the dispatching job that generated the extraction jobs.
+          description: The unique identifier of the dispatching job that generated the extraction jobs.
           schema:
             type: string
         - name: tenantCode
           in: query
-          description: "The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.\n Use this if you are only interested in the results for one analytic tenant."
+          description: The tenant code of a specific analytic tenant to retrieve the extraction job status for. Use this if you're only interested in the results for one analytic tenant.
           schema:
             type: string
         - name: limit
           in: query
-          description: The limit of extraction job statuses to retrieve.
+          description: The maximum number of extraction job statuses to return. Default is 100.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           schema:
             type: integer
             format: int32
@@ -1310,35 +1314,35 @@ paths:
     get:
       tags:
         - DataAndJobHandling
-      summary: Retrieve a dispatching job's receiving jobs with their statuses
-      description: "Retrieve the statuses of receiving jobs associated with a dispatching job. The dispatching job\n is a \"parent\" to extraction jobs, which in turn generate processing jobs and receiving jobs."
+      summary: Retrieve receiving job statuses by dispatching job ID
+      description: Retrieve receiving job statuses associated with a parent dispatching job.
       operationId: DataAndJobHandling_ReceivingJobAndStatus
       parameters:
         - name: jobId
           in: path
-          description: The ID of the dispatching job you want to retrieve.
+          description: The unique identifier of the dispatching job to retrieve.
           required: true
           schema:
             type: string
         - name: dispatchingJobId
           in: query
-          description: The ID of the dispatching job that generated the extraction jobs.
+          description: The unique identifier of the dispatching job that generated the extraction jobs.
           schema:
             type: string
         - name: tenantCode
           in: query
-          description: "The tenant code of a specific analytic tenant that you want to retrieve the extraction job status for.\n Use this if you are only interested in the results for one analytic tenant."
+          description: The tenant code of a specific analytic tenant to retrieve the extraction job status for. Use this if you're only interested in the results for one analytic tenant.
           schema:
             type: string
         - name: limit
           in: query
-          description: The limit of extraction job statuses to retrieve.
+          description: The maximum number of extraction job statuses to return. Default is 100.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           schema:
             type: integer
             format: int32
@@ -1365,29 +1369,29 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve processing job statuses by receiving job ID
-      description: "Retrieve a list of statuses for all processing jobs associated with the given receiving job ID.\n Processing jobs deal with an individual analytic tenant's data load. A processing job is either triggered through\n the UI or is one of many processing jobs spawned from a receiving job. When a processing job is triggered as part\n of a set from an receiving job, it is associated to the receiving job through a Parent ID."
+      description: "Retrieve processing job statuses associated with a receiving job ID.\n\n Processing jobs run data loads for individual analytic tenants. They are triggered manually or spawned from receiving jobs. When spawned from a receiving job, a parent ID associates the receiving job with the processing job."
       operationId: DataAndJobHandling_ProcessingJobStatus
       parameters:
         - name: receivingJobId
           in: path
-          description: The receiving job ID
+          description: The unique identifier of the receiving job.
           required: true
           schema:
             type: string
         - name: tenantCode
           in: query
-          description: "The tenant code of the tenant you want to retrieve the processing jobs for.\n Use this if you are only interested in the results for one analytic tenant."
+          description: The tenant code of the tenant to retrieve the processing jobs for. Use this if you're only interested in the results for one analytic tenant.
           schema:
             type: string
         - name: limit
           in: query
-          description: The limit of processing jobs to retrieve per page.
+          description: The maximum number of processing jobs to return per page. Default is 100.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           schema:
             type: integer
             format: int32
@@ -1414,7 +1418,7 @@ paths:
       tags:
         - DataIntake
       summary: Complete a transfer session
-      description: "Complete the specified transfer session by triggering a receiving job. A receiving job\n validates the transferred data and adds the transferred data to Visier's data store.\n\n You can set an optional parameter to generate a data version through a processing job immediately after the receiving job completes."
+      description: "Complete a transfer session and start a receiving job. The receiving job validates data and adds it to the Visier data store.\n\n Optionally trigger a processing job immediately after completion to generate a data version."
       operationId: DataIntake_PushDataComplete
       parameters:
         - name: TargetTenantID
@@ -1446,12 +1450,12 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a receiving job's status
-      description: "After sending data to Visier, you may want to know the status of the receiving job and the associated tenant\n receiving jobs. A receiving job validates the transferred data and adds the transferred data to Visier's data\n store. \n\n A successful response indicates that the receiving job was successful. To get the status of the jobs spawned by the receiving job, set the `jobs` parameter to `true`."
+      description: "Retrieve a receiving job's status after sending data to Visier. Receiving jobs validate and store transferred data. A successful response indicates that the receiving job was successful.\n\n Set `jobs` to `true` to return status details for spawned processing jobs."
       operationId: DataAndJobHandling_ReceivingJobStatus
       parameters:
         - name: receivingJobId
           in: path
-          description: The jobId provided after sending data to Visier.
+          description: The job ID provided after sending data to Visier.
           required: true
           schema:
             type: string
@@ -1462,18 +1466,18 @@ paths:
             type: boolean
         - name: tenantCode
           in: query
-          description: "The tenant code of the tenant you want to retrieve the receiving jobs for. Use this if you are only interested\n in the results for one analytic tenant."
+          description: The tenant code of the tenant to retrieve the receiving jobs for. Use this if you're only interested in the results for one analytic tenant.
           schema:
             type: string
         - name: start
           in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           schema:
             type: integer
             format: int32
         - name: limit
           in: query
-          description: The number of job statuses to return per page.
+          description: The maximum number of job statuses to return per page. Default is 100.
           schema:
             type: integer
             format: int32
@@ -1500,7 +1504,7 @@ paths:
       tags:
         - TableSource
       summary: Retrieve table sources
-      description: "Retrieve a list of table source configurations. Table sources are SQL-accessible tables that can store and manage data directly within Visier.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Retrieve table source configurations. Table sources are SQL-accessible tables that store data in Visier.\n \n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_GetTableSources
       parameters:
         - name: limit
@@ -1511,7 +1515,7 @@ paths:
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           schema:
             type: integer
             format: int32
@@ -1537,7 +1541,7 @@ paths:
       tags:
         - TableSource
       summary: Create a table source
-      description: "Create a table source configuration. Table sources define the structure and metadata for SQL-accessible tables in Visier.\n\n When creating objects, assign a unique object name but don't set a UUID. Visier generates UUIDs for new objects.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Create a table source configuration to define table structure and metadata.\n\n Assign a unique object name. Don't set a UUID because Visier generates UUIDs for new objects.\n \n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_CreateTableSource
       parameters:
         - name: TargetTenantID
@@ -1569,7 +1573,7 @@ paths:
       tags:
         - TableSource
       summary: Retrieve a table source
-      description: "Retrieve a specific table source configuration by its unique identifier.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Retrieve a table source configuration by unique identifier. To retrieve table source UUIDs, see `GET /v1alpha/data/table-sources/tables`.\n \n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_GetTableSource
       parameters:
         - name: tableId
@@ -1600,7 +1604,7 @@ paths:
       tags:
         - TableSource
       summary: Update a table source
-      description: "Update an existing table source configuration. Use this to modify the structure, columns, or metadata of a table source.\n \n In `PUT` requests, the definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the table source. \n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Update a table source configuration to modify its structure, columns, or metadata.\n \n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the table source.\n \n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_UpdateTableSource
       parameters:
         - name: tableId
@@ -1637,7 +1641,7 @@ paths:
       tags:
         - TableSource
       summary: Delete a table source
-      description: "Delete a table source configuration. This removes the table source definition but does not delete the associated data.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Delete a table source configuration. This deletes table definitions but preserves stored data.\n \n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_DeleteTableSource
       parameters:
         - name: tableId
@@ -1665,8 +1669,8 @@ paths:
     get:
       tags:
         - TableSource
-      summary: Retrieve a table source's metadata
-      description: "Retrieve previously-stored metadata for a table source, such as the key-value pairs to apply to the table if you commit the transaction. To store metadata for a table source, use the `setMetadata` action in `POST /v1alpha/data/table-sources/transactions/{transactionId}/jobs`.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      summary: Retrieve table source metadata
+      description: "Retrieve stored metadata for a table source, such as the key-value pairs to apply to the table if you commit the transaction. Store metadata using `setMetadata` in `POST /v1alpha/data/table-sources/transactions/{transactionId}/jobs`.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_GetTableSourceMetadata
       parameters:
         - name: tableId
@@ -1698,7 +1702,7 @@ paths:
       tags:
         - TableSource
       summary: Regenerate a materialized view
-      description: "Run a SQL job to manually refresh the dataset during troubleshooting, query updates, or when manual data fetching is required.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Run a SQL job to manually refresh the dataset during troubleshooting, query updates, or when manual data fetching is required.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_RegenerateMaterializedView
       parameters:
         - name: tableId
@@ -1736,7 +1740,7 @@ paths:
       tags:
         - TableSource
       summary: Start a transaction
-      description: "Start a transaction for SQL operations on table sources. Transactions provide isolation for multiple operations and allow for rollback if needed.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Start a transaction for SQL operations. Transactions isolate operations and support rollback capabilities.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_BeginTransaction
       parameters:
         - name: TargetTenantID
@@ -1767,8 +1771,8 @@ paths:
     get:
       tags:
         - TableSource
-      summary: Retrieve a transaction's status
-      description: "Retrieve the current status and details of a specific transaction. If the transaction was dispatched to analytic tenants, the response includes the status of each analytic tenant's transaction in the `children` field.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      summary: Retrieve transaction status
+      description: "Retrieve a transaction's status and details. Dispatched transactions return each analytic tenant's transaction status details in `children`.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_GetTransaction
       parameters:
         - name: transactionId
@@ -1804,8 +1808,8 @@ paths:
     post:
       tags:
         - TableSource
-      summary: Extend a transaction's expiry
-      description: "Extend the expiry time of an open transaction.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      summary: Extend transaction expiry
+      description: "Extend an open transaction's expiry time.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_ExtendTransaction
       parameters:
         - name: transactionId
@@ -1843,7 +1847,7 @@ paths:
       tags:
         - TableSource
       summary: Upload an input file to a transaction
-      description: "Send input files to a transaction. SQL operations can reference an input file within a job as if it were a local, temporary view. For example, the input file can contain data to insert into your sources, IDs to match against to change or delete rows, or any other input for your SQL query.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Upload input files to a transaction. SQL jobs query input files as temporary local views. For example, the input file can contain data to insert into your sources, IDs to match against to change or delete rows, or any other input for your SQL query.\n \n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_UploadInputFile
       parameters:
         - name: transactionId
@@ -1888,7 +1892,7 @@ paths:
       tags:
         - TableSource
       summary: Run a SQL job within a transaction
-      description: "Execute a SQL job within a transaction. Jobs can contain multiple SQL operations including queries, inserts, updates, deletes, and merge operations.\n \n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Execute a SQL job within a transaction. Jobs execute SQL operations including queries, inserts, updates, deletes, and merge operations.\n \n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_ExecuteJob
       parameters:
         - name: transactionId
@@ -1926,7 +1930,7 @@ paths:
       tags:
         - TableSource
       summary: Retrieve a job's status
-      description: "Retrieve the status of a SQL job and any child jobs spawned from it. Use the job ID returned by `POST /v1alpha/data/table-sources/transactions/{transactionId}/jobs` to retrieve the job's status.\n\n If the job was dispatched across multiple tenants, the response includes per-tenant status details along with aggregated summary counts.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Retrieve the status for a SQL job and child jobs. Use the job ID returned by `POST /v1alpha/data/table-sources/transactions/{transactionId}/jobs`.\n\n Dispatched jobs include status details and aggregated summary counts per tenant.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_GetJobStatus
       parameters:
         - name: transactionId
@@ -1968,8 +1972,8 @@ paths:
     get:
       tags:
         - TableSource
-      summary: Download an output file from a transaction
-      description: "Download an output file generated by a SQL operation within a transaction. To generate output files, use the `QUERY` action and `output` parameter in `POST /v1alpha/data/table-sources/transactions/{transactionId}/jobs`.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      summary: Download a transaction's output file
+      description: "Download an output file generated by a transaction SQL operation. Generate output files using the `QUERY` action and `output` parameter in `POST /v1alpha/data/table-sources/transactions/{transactionId}/jobs`.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_DownloadOutputFile
       parameters:
         - name: transactionId
@@ -2008,7 +2012,7 @@ paths:
       tags:
         - TableSource
       summary: List output file parts
-      description: "List the parts of a multi-part output file. SQL operations generate output files within a transaction. Each part is a complete, self-contained file in the output format. Parts are 0-indexed. For an output with `numberOfParts: 3`, the part numbers are 0, 1, and 2.  For large output files, download by file part for better performance.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "List parts of a multi-part output file. SQL operations generate output files inside transactions. Each part is a complete file indexed from 0. For an output with `numberOfParts: 3`, the part numbers are 0, 1, and 2. Download large files by part to optimize performance.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_ListOutputFileParts
       parameters:
         - name: transactionId
@@ -2046,7 +2050,7 @@ paths:
       tags:
         - TableSource
       summary: Download an output file part
-      description: "Download a single part of a multi-part output file. SQL operations generate output files within a transaction. Each part is a complete, self-contained file in the output format. Parts are 0-indexed. For an output with `numberOfParts: 3`, the part numbers are 0, 1, and 2.  For large output files, download by file part for better performance.\n\n <br>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Download a single part of a multi-part output file. Output parts are 0-indexed complete files generated by transaction SQL operations. For an output with `numberOfParts: 3`, the part numbers are 0, 1, and 2. Download large files by part to optimize performance.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: TableSource_DownloadOutputFilePart
       parameters:
         - name: transactionId
@@ -2092,12 +2096,12 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Retrieve a receiving job's files
-      description: Retrieve all the files transferred to Visier by a specific receiving job. To retrieve receiving job files, you must know the receiving job ID. To get receiving job IDs, see `GET /v1/op/job-status/jobs`. The response returns the details of uploaded files by tenant.
+      description: Retrieve the files sent to Visier by a receiving job. You must know the ID of the receiving job to retrieve its files. To retrieve receiving job IDs, see `GET /v1/op/job-status/jobs`.
       operationId: DataAndJobHandling_RetrieveReceivingJobExtractedFiles
       parameters:
         - name: jobId
           in: path
-          description: The job ID of the receiving job.
+          description: The unique identifier of the receiving job.
           required: true
           schema:
             type: string
@@ -2108,13 +2112,13 @@ paths:
             type: string
         - name: limit
           in: query
-          description: The limit of file to retrieve across tenants. Default is 500. Maximum is 1000.
+          description: The maximum number of files to return across tenants. Default is 500. Maximum is 1000.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving files from, also known as offset. The index begins at 0.
+          description: The starting index of the first file to return. Default is 0.
           schema:
             type: integer
             format: int32
@@ -2140,8 +2144,8 @@ paths:
     get:
       tags:
         - DataAndJobHandling
-      summary: Retrieve a list of analytic tenant source files
-      description: "Retrieve the list of all uploaded files for your analytic tenant's sources. Default is to return all analytic tenants' sources. To retrieve a specific analytic tenant’s uploaded files, use the `TargetTenantID` header. Optionally, specify a filename regex to a retrieve a particular set of uploaded files. The response returns details of each source's files, including upload time, filename, and whether the file is included during data version generation."
+      summary: Retrieve analytic tenant source files
+      description: Retrieve uploaded files for your tenants' sources. The default is to return files for all analytic tenants. Use `TargetTenantID` to retrieve files for one tenant. Optionally filter files using a filename regex. The response returns details of each source's files, including upload time, filename, and whether the file is included during data version generation.
       operationId: DataAndJobHandling_RetrieveTenantSourceFiles
       parameters:
         - name: fileNameRegex
@@ -2151,13 +2155,13 @@ paths:
             type: string
         - name: limit
           in: query
-          description: The limit of source files to retrieve. Default is 500. Maximum is 1000.
+          description: The maximum number of source files to return. Default is 500. Maximum is 1000.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving source files from, also known as offset. The index begins at 0.
+          description: The starting index of the first source file to return. Default is 0.
           schema:
             type: integer
             format: int32
@@ -2184,7 +2188,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Run a consolidated analytics job
-      description: 'Run a job for a consolidated analytics tenant. This request retrieves data for all source tenants in a consolidated analytics tenant. Optionally, set `runProcessingJob: true` in the request body to generate a data version for the consolidated analytics tenant.'
+      description: "Run a job for a consolidated analytics tenant to retrieve source tenant data.\n\n Set `runProcessingJob` to `true` in the request body to generate a data version for the consolidated analytics tenant."
       operationId: DataAndJobHandling_AdhocConsolidatedAnalyticsJob
       parameters:
         - name: TargetTenantID
@@ -2216,7 +2220,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Run a data connector extraction job
-      description: "Run an extraction job to retrieve data through a Visier data connector and generate a new data version. Administrating tenants can run extraction jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.\n If running extraction jobs for an administrating tenant or their analytic tenants, this request starts a dispatching job that generates one extraction job per tenant. The response returns the job ID of the extraction job or dispatching job."
+      description: "Run an extraction job using a Visier data connector to generate a new data version. Administrating tenants can run extraction jobs for all analytic tenants, selected tenants, or the administrating tenant.\n\n Running extraction jobs for multiple tenants starts a dispatching job that generates one extraction job per tenant. Returns the extraction job ID or dispatching job ID."
       operationId: DataAndJobHandling_AdhocExtractionJob
       parameters:
         - name: TargetTenantID
@@ -2248,7 +2252,7 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Run a processing job
-      description: "Run a processing job to generate a new data version. Administrating tenants can run processing jobs for all analytic tenants, a list of analytic tenants, or the administrating tenant.\n If running processing jobs for an administrating tenant or their analytic tenants, this request starts a dispatching job that generates one processing job per tenant. The response returns the job ID of the processing job or dispatching job."
+      description: "Run a processing job to generate a new data version. Administrating tenants can run jobs for all analytic tenants, selected tenants, or the administrating tenant.\n\n Running jobs for multiple tenants starts a dispatching job that generates one processing job per tenant. Returns the processing job ID or dispatching job ID."
       operationId: DataAndJobHandling_AdhocProcessingJobs
       parameters:
         - name: TargetTenantID
@@ -2318,7 +2322,7 @@ paths:
                 file:
                   type: string
                   format: binary
-                  description: The file to upload
+                  description: The file to upload.
       responses:
         '200':
           description: OK
@@ -2337,7 +2341,7 @@ paths:
       tags:
         - DataIntake
       summary: Transfer data to sources via file upload
-      description: "Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the\n data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make\n multiple requests within the same transfer session.\n\n File size limit: 3 GB\n\n Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.\n\n If you define a specific source in the request, all files within the request will target the declared source. If\n a source is not defined, the filenames are matched against the source regex to correctly assign each file to a\n source. To find out the source regex, please contact Visier Customer Success.\n\n **Note:** If you include files that should target multiple sources in one ZIP file, do not define a source in the request.\n\n Analytic tenants: For optimal transfer speed, provide one ZIP file per source.\n Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.\n In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:\n\n File1.zip\n - Folder1: WFF_tenantCode1\n    - Filename1.csv\n    - Filename2.csv\n - Folder2: WFF_tenantCode2\n    - Filename3.csv\n    - Filename4.csv"
+      description: "Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the\n data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make\n multiple requests within the same transfer session.\n\n File size limit: 3 GB\n\n Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.\n\n If you define a specific source in the request, all files within the request will target the declared source. If\n a source is not defined, the filenames are matched against the source regex to correctly assign each file to a\n source. To find out the source regex, please contact Visier Customer Success.\n\n **Note**: If you include files that should target multiple sources in one ZIP file, do not define a source in the request.\n\n Analytic tenants: For optimal transfer speed, provide one ZIP file per source.\n Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.\n In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:\n\n File1.zip\n - Folder1: WFF_tenantCode1\n    - Filename1.csv\n    - Filename2.csv\n - Folder2: WFF_tenantCode2\n    - Filename3.csv\n    - Filename4.csv"
       operationId: DataIntake_UploadData
       parameters:
         - name: transferSessionId
@@ -2358,7 +2362,7 @@ paths:
             type: string
         - name: tenantCode
           in: query
-          description: The code of the tenant you want to transfer data to. For example, WFF_j1r or WFF_j1r~c7o.
+          description: The code of the tenant you want to transfer data to. For example, `WFF_j1r` or `WFF_j1r~c7o`.
           schema:
             type: string
         - name: TargetTenantID
@@ -2395,12 +2399,12 @@ paths:
       tags:
         - DataAndJobHandling
       summary: Delete a connector credential
-      description: "Use this API to delete connector credentials from your tenants. Credentials that are no longer valid\n should be deleted."
+      description: "Use this endpoint to delete connector credentials from your tenants. Credentials that are no longer valid\n should be deleted."
       operationId: DataAndJobHandling_DeleteConnectorCredential
       parameters:
         - name: id
           in: path
-          description: The credentialId of the credential you want to delete.
+          description: The `credentialId` of the credential you want to delete.
           required: true
           schema:
             type: string
@@ -2431,13 +2435,13 @@ paths:
     get:
       tags:
         - DataAndJobHandling
-      summary: Retrieve a specific job's status
-      description: Use this API to retrieve the list of statuses for a specific job with id `jobId`.
+      summary: Retrieve a job's status
+      description: Use this endpoint to retrieve the list of statuses for a specific job with ID `jobId`.
       operationId: DataAndJobHandling_JobIdStatus
       parameters:
         - name: jobId
           in: path
-          description: The unique ID of the job to retrieve the status for.
+          description: The unique identifier of the job to retrieve the status for.
           required: true
           schema:
             type: string
@@ -2466,12 +2470,12 @@ paths:
       tags:
         - DataUpload
       summary: Upload a data file to Visier
-      description: "Use this API to upload data files to Visier. You can upload ZIP, CSV, XLS, and XLSX filetypes in plaintext or encrypted with Visier's PGP key.\n\n Use of this API requires client redirect. This API redirects requests directly to Visier's upload infrastructure to support long-running uploads. \n To ensure efficient uploading, we recommend that you use an HTTP client that supports the 100 Continue status code.\n\n The maximum file upload size is 500 MB. We recommend using SFTP for larger file sizes."
+      description: "Use this endpoint to upload data files to Visier. You can upload ZIP, CSV, XLS, and XLSX filetypes in plaintext or encrypted with Visier's PGP key.\n\n Use of this endpoint requires client redirect. This endpoint redirects requests directly to Visier's upload infrastructure to support long-running uploads. \n To ensure efficient uploading, we recommend that you use an HTTP client that supports the 100 Continue status code.\n\n The maximum file upload size is 500 MB. We recommend using SFTP for larger file sizes."
       operationId: DataUpload_FileUpload
       parameters:
         - name: filename
           in: path
-          description: The filename of the data file to upload, including the file extension (such as .zip or .csv).
+          description: The filename of the data file to upload, including the file extension such as .zip or .csv.
           required: true
           schema:
             type: string
@@ -2502,13 +2506,13 @@ components:
       properties:
         connectorId:
           type: string
-          description: The ID associated with the data connector.
+          description: The unique identifier of the data connector.
         displayName:
           type: string
           description: An identifiable data connector name that is displayed within Visier.
         credentialId:
           type: string
-          description: The ID associated with the connector credentials currently assigned to this data connector.
+          description: The unique identifier of the connector credentials currently assigned to this data connector.
     admin.data.ImportDefinitionsAPIDTO:
       type: object
       properties:
@@ -2516,7 +2520,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/admin.data.ImportDefinitionAPIDTO'
-          description: A list of objects representing all the available data connectors in Production.
+          description: The available data connectors in production.
         limit:
           type: integer
           description: The number of data connectors to return. The maximum number of data connectors to return is 1000.
@@ -2530,10 +2534,10 @@ components:
       properties:
         tenantCode:
           type: string
-          description: The tenant code of the consolidated analytics tenant; for example, "WFF_j1r~CAa7s".
+          description: The tenant code of the consolidated analytics tenant; for example, `WFF_j1r~CAa7s`.
         runProcessingJob:
           type: boolean
-          description: If `true`, runs a processing job after the consolidated analytics job completes. If unspecified, the default is `false`.
+          description: If `true`, runs a processing job after the consolidated analytics job completes. Default is `false`.
     admin.jobs.ExtractDataAndLoadDTO:
       type: object
       properties:
@@ -2559,7 +2563,7 @@ components:
           description: The unique identifier of the data category on which to trigger the extraction job. Default is the tenant's primary data category.
         disableArtifactGeneration:
           type: boolean
-          description: If `true`, the job does not generate data load artifacts. If unspecified, the default is `false`.
+          description: If `true`, the job does not generate data load artifacts. Default is `false`.
         connectorIds:
           type: array
           items:
@@ -2598,14 +2602,14 @@ components:
             - spillStagesAndRecords
             - spillAll
           type: string
-          description: "The partitioning of debugging info to be generated, if any. Valid values are:\n - `spillNone`: No debugging info is generated.\n - `spillStagesAndRecords`: Debugging info is generated for stages and records.\n - `spillAll`: Debugging info is generated for all partitions."
+          description: "The partitioning of debugging info to be generated, if any. Valid values:\n - `spillNone`: No debugging info is generated.\n - `spillStagesAndRecords`: Debugging info is generated for stages and records.\n - `spillAll`: Debugging info is generated for all partitions."
           format: enum
         spillDebugInfoDetailLevelDTO:
           enum:
             - fileAndLine
             - mappingName
           type: string
-          description: "The detail level of the debugging info to be generated. Valid values are:\n - `fileAndLine`: Debugging info is generated for file and line.\n - `mappingName`: Debugging info is generated for mapping name."
+          description: "The detail level of the debugging info to be generated. Valid values:\n - `fileAndLine`: Debugging info is generated for file and line.\n - `mappingName`: Debugging info is generated for mapping name."
           format: enum
         lastExtractionTimeOffsetMonths:
           type: integer
@@ -2625,7 +2629,7 @@ components:
           description: If running a job for the Databricks connector, specify the unique identifier of the connector credentials to use.
         outputTarget:
           type: string
-          description: "The output of the extraction. Valid values:\n - `Receiving`: A receiving job. This is the default. \n - `SQL`: A SQL job for table sources."
+          description: "The output of the extraction. Default is `Receiving`. Valid values:\n - `Receiving`: A receiving job.\n - `SQL`: A SQL job for table sources."
     admin.jobs.ProcessingJobRequestDTO:
       type: object
       properties:
@@ -2653,19 +2657,19 @@ components:
       properties:
         tenantCode:
           type: string
-          description: The unique identifier associated with the tenant.
+          description: The unique identifier of the tenant.
         connectors:
           type: array
           items:
             $ref: '#/components/schemas/admin.AssignConnectorWithCredentialsResponseDTO'
-          description: A list of objects representing the assigned credentials and connectors.
+          description: The assigned credentials and connectors.
         status:
           enum:
             - Unknown
             - Succeed
             - Failed
           type: string
-          description: The state of the credential assignment. Valid values are Succeed or Failed.
+          description: 'The state of the credential assignment. Valid values: `Succeed` or `Failed`.'
           format: enum
         message:
           type: string
@@ -2676,7 +2680,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/admin.AssignConnectorCredentialsByTenantResponseDTO'
-          description: A list of objects representing the tenants and data connectors that were assigned connector credentials.
+          description: The tenants and data connectors that were assigned connector credentials.
     admin.AssignConnectorWithCredentialsResponseDTO:
       type: object
       properties:
@@ -2693,7 +2697,7 @@ components:
       properties:
         credentialId:
           type: string
-          description: The unique identifier associated with the user.
+          description: The unique identifier of the user.
         displayName:
           type: string
           description: The user's username. This is typically the user's email, such as john@visier.com.
@@ -2704,7 +2708,7 @@ components:
       properties:
         connectorId:
           type: string
-          description: The unique identifier associated with the data connector.
+          description: The unique identifier of the data connector.
         displayName:
           type: string
           description: An identifiable data connector name that is displayed within Visier.
@@ -2715,7 +2719,7 @@ components:
       properties:
         settingKey:
           type: string
-          description: The unique identifier associated with the setting.
+          description: The unique identifier of the setting.
         value:
           type: string
           description: The setting's value.
@@ -2756,7 +2760,7 @@ components:
       properties:
         connectorId:
           type: string
-          description: The unique identifier associated with the data connector.
+          description: The unique identifier of the data connector.
         displayName:
           type: string
           description: An identifiable data connector name that is displayed within Visier.
@@ -2764,13 +2768,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/admin.ExtractorSettingKeyValueAPIDTO'
-          description: A list of objects representing the settings that are available for the data connector.
+          description: The settings that are available for the data connector.
     admin.ExtractorSettingKeyValueAPIDTO:
       type: object
       properties:
         settingKey:
           type: string
-          description: The unique identifier associated with the setting.
+          description: The unique identifier of the setting.
         value:
           type: string
           description: The current value of the setting.
@@ -2814,7 +2818,7 @@ components:
       properties:
         connectorId:
           type: string
-          description: The unique identifier associated with the data connector.
+          description: The unique identifier of the data connector.
         tenants:
           type: array
           items:
@@ -2825,19 +2829,19 @@ components:
       properties:
         tenantCode:
           type: string
-          description: The unique identifier associated with the tenant.
+          description: The unique identifier of the tenant.
         connectors:
           type: array
           items:
             $ref: '#/components/schemas/admin.ConnectorSettingsResponseDTO'
-          description: A list of objects representing the assigned settings and connectors.
+          description: The assigned settings and connectors.
         status:
           enum:
             - Unknown
             - Succeed
             - Failed
           type: string
-          description: The state of the setting assignment. Valid values are Succeed or Failed.
+          description: 'The state of the setting assignment. Valid values: `Succeed` or `Failed`.'
           format: enum
         message:
           type: string
@@ -2862,7 +2866,7 @@ components:
       properties:
         tenantCode:
           type: string
-          description: The unique identifier associated with the tenant.
+          description: The unique identifier of the tenant.
         connectorSettings:
           type: array
           items:
@@ -2875,18 +2879,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/data_in.Connector'
-          description: A list of objects representing the data connectors to be assigned with credentials.
+          description: The data connectors to be assigned with credentials.
     data_in.Connector:
       type: object
       properties:
         connectorId:
           type: string
-          description: The unique identifier associated with the data connector.
+          description: The unique identifier of the data connector.
         tenants:
           type: array
           items:
             $ref: '#/components/schemas/data_in.TenantAndCredential'
-          description: A list of analytic tenants and credentials to be assigned to the connector.
+          description: The analytic tenants and credentials to assign to the connector.
     data_in.DataLoadRequest:
       type: object
       properties:
@@ -2901,27 +2905,27 @@ components:
           type: array
           items:
             type: string
-          description: "A comma-separated list of file names.\n Example:\n `\"files\": \"/path/to/file1.zip.gpg,/path/to/another/file.zip.gpg\"`"
+          description: 'A comma-separated list of file names. Example: `"files": "/path/to/file1.zip.gpg,/path/to/another/file.zip.gpg"`.'
         skipDataLoad:
           type: boolean
-          description: If `true`, receives the files and skips data loading. Does not generate a data version.
+          description: If `true`, receives the files and skips data loading without generating a data version.
     data_in.DataLoadResponse:
       type: object
       properties:
         jobId:
           type: string
-          description: The unique identifier associated with the receiving job.
+          description: The unique identifier of the receiving job.
     data_in.DataTransferResultDetail:
       type: object
       properties:
         tenantCode:
           type: string
-          description: The code of the tenant that data was transferred to. For example, WFF_j1r or WFF_j1r~c7o.
+          description: The code of the tenant that data was transferred to. For example, `WFF_j1r` or `WFF_j1r~c7o`.
         sourceNames:
           type: array
           items:
             type: string
-          description: A list of strings representing the sources that received a data transfer.
+          description: The sources that received a data transfer.
         dataSize:
           type: string
           description: The total size of the transfer session in bytes.
@@ -2947,7 +2951,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/data_in.DataVersionObject'
-          description: "A list of objects representing the data version to disable for a particular analytic tenant.\n The limit of objects to include per request is 1000."
+          description: The data version to disable for a particular analytic tenant. Maximum is 1000.
     data_in.DisableDVRequest:
       type: object
       properties:
@@ -2970,13 +2974,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/data_in.Result'
-          description: A list of objects representing the disabling process.
+          description: The disabling process results.
     data_in.DispatchingJobStatusResponse:
       type: object
       properties:
         jobId:
           type: string
-          description: The ID of the dispatching job that generated the extraction jobs.
+          description: The unique identifier of the dispatching job that generated the extraction jobs.
         tenantCode:
           type: string
           description: The tenant that owns the dispatching job. This is usually the administrating tenant.
@@ -2994,44 +2998,44 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/data_in.UploadToExclude'
-          description: A list of objects representing the data uploads to exclude for a particular analytic tenant.
+          description: The data uploads to exclude for a particular analytic tenant.
     data_in.ExtractionJob:
       type: object
       properties:
         extractionJobId:
           type: string
-          description: The ID of the extraction job.
+          description: The unique identifier of the extraction job.
         tenantCode:
           type: string
           description: The tenant code of the analytic tenant for the extraction job.
         status:
           type: string
-          description: "The current state of the job.\n - Valid values: Pending, Running, Succeeded, Failed, Error, Cancelling, Cancelled, RolledBack, Rescheduling, Rescheduled."
+          description: "The current state of the job.\n Valid values: `Pending`, `Running`, `Succeeded`, `Failed`, `Error`, `Cancelling`, `Cancelled`, `RolledBack`, `Rescheduling`, `Rescheduled`."
         currentStage:
           type: string
-          description: "The current stage of the job. This is not returned if the stage is \"Completed\".\n - Valid values: Initialize, Retrieve Main Subject, Retrieve Secondary Subjects, Retrieve Custom Subjects, Process Records, Publish Artifacts, Publish Records, Completed."
+          description: "The current stage of the job. This is not returned if the stage is `Completed`.\n Valid values: `Initialize`, `Retrieve Main Subject`, `Retrieve Secondary Subjects`, `Retrieve Custom Subjects`, `Process Records`, `Publish Artifacts`, `Publish Records`, `Completed`."
     data_in.ExtractionJobAndStatusResponse:
       type: object
       properties:
         parentJobId:
           type: string
-          description: The ID of the dispatching job that generated the extraction jobs.
+          description: The unique identifier of the dispatching job that generated the extraction jobs.
         parentTenantCode:
           type: string
           description: The tenant that owns the dispatching job. This is usually the administrating tenant.
         limit:
           type: integer
-          description: The number of extraction jobs to return. The maximum number of jobs to return is 1000.
+          description: The number of extraction jobs to return. Maximum is 1000.
           format: int32
         start:
           type: integer
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           format: int32
         extractionJobs:
           type: array
           items:
             $ref: '#/components/schemas/data_in.ExtractionJob'
-          description: A list of extraction job information.
+          description: Extraction job information.
     data_in.IncludeDataUploadsRequest:
       type: object
       properties:
@@ -3039,7 +3043,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/data_in.UploadToInclude'
-          description: A list of objects representing the data uploads to include for a particular analytic tenant.
+          description: The data uploads to include for a particular analytic tenant.
     data_in.JobStatusListResponse:
       type: object
       properties:
@@ -3059,13 +3063,13 @@ components:
       properties:
         jobId:
           type: string
-          description: The unique ID of the job.
+          description: The unique identifier of the job.
         tenant:
           type: string
           description: The tenant code.
         status:
           type: string
-          description: The status of the job, such as Running or Completed.
+          description: The status of the job, such as `Running` or `Completed`.
         jobType:
           type: string
           description: The type of the job, such as a processing job or receiving job.
@@ -3074,19 +3078,19 @@ components:
           description: The time that the job started.
         parentJobId:
           type: string
-          description: The unique ID of the parent job, if applicable.
+          description: The unique identifier of the parent job, if applicable.
     data_in.ProcessingJob:
       type: object
       properties:
         jobId:
           type: string
-          description: The job ID of the processing job for the analytic tenant.
+          description: The unique identifier of the processing job for the analytic tenant.
         tenantCode:
           type: string
           description: The analytic tenant code.
         dataVersion:
           type: string
-          description: The data version associated with the processing job.
+          description: The data version of the processing job.
         status:
           type: string
           description: The status of the receiving job for the analytic tenant.
@@ -3098,45 +3102,45 @@ components:
       properties:
         parentJobId:
           type: string
-          description: The ID of the dispatching job that generated the extraction jobs.
+          description: The unique identifier of the dispatching job that generated the extraction jobs.
         parentTenantCode:
           type: string
           description: The tenant that owns the dispatching job. This is usually the administrating tenant.
         limit:
           type: integer
-          description: The number of processing jobs to return. The maximum number of jobs to return is 1000.
+          description: The number of processing jobs to return. Maximum is 1000.
           format: int32
         start:
           type: integer
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           format: int32
         processingJobs:
           type: array
           items:
             $ref: '#/components/schemas/data_in.ProcessingJob'
-          description: A list of processing job information.
+          description: Processing job information.
     data_in.ProcessingJobStatusResponse:
       type: object
       properties:
         parentJobId:
           type: string
-          description: The job ID of the receiving job that spawned this job.
+          description: The unique identifier of the receiving job that spawned this job.
         parentTenantCode:
           type: string
           description: The tenant code of the receiving job that spawned this job.
         limit:
           type: integer
-          description: The limit of processing jobs to retrieve per page.
+          description: The maximum number of processing jobs to return per page. Default is 100.
           format: int32
         start:
           type: integer
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           format: int32
         processingJobs:
           type: array
           items:
             $ref: '#/components/schemas/data_in.ProcessingJob'
-          description: A list of objects representing the processing jobs to retrieve.
+          description: The processing jobs to retrieve.
     data_in.PushDataCancelResponse:
       type: object
       properties:
@@ -3145,50 +3149,50 @@ components:
           description: A meaningful message about the transfer session.
         transferSessionId:
           type: string
-          description: The unique identifier associated with the transfer session.
+          description: The unique identifier of the transfer session.
         dataTransferResultDetails:
           type: array
           items:
             $ref: '#/components/schemas/data_in.DataTransferResultDetail'
-          description: A list of objects representing the results of the transfer session.
+          description: The results of the transfer session.
         status:
           type: string
-          description: The status of the transfer session. A cancelled session returns the status CANCELLED.
+          description: The status of the transfer session. A cancelled session returns the status `CANCELLED`.
     data_in.PushDataCompleteRequest:
       type: object
       properties:
         transferSessionId:
           type: string
-          description: The unique identifier associated with the transfer session.
+          description: The unique identifier of the transfer session.
         processingData:
           type: boolean
-          description: If `true`, a processing job will be triggered after the receiving job successfully completes. This generates a new data version.
+          description: If `true`, a processing job triggers after the receiving job successfully completes to generate a new data version. Default is `false`.
     data_in.PushDataCompleteResponse:
       type: object
       properties:
         dataReceivingJobId:
           type: string
-          description: The unique identifier associated with the receiving job.
+          description: The unique identifier of the receiving job.
         message:
           type: string
           description: A meaningful message about the transfer session.
         transferSessionId:
           type: string
-          description: The unique identifier associated with the transfer session.
+          description: The unique identifier of the transfer session.
         dataTransferResultDetails:
           type: array
           items:
             $ref: '#/components/schemas/data_in.DataTransferResultDetail'
-          description: A list of objects representing the results of the transfer session.
+          description: The results of the transfer session.
         status:
           type: string
-          description: The status of the transfer session. A completed session returns the status SUCCEED.
+          description: The status of the transfer session. A completed session returns the status `SUCCEED`.
     data_in.PushDataResponse:
       type: object
       properties:
         transferSessionId:
           type: string
-          description: The unique identifier associated with the transfer session.
+          description: The unique identifier of the transfer session.
         sequence:
           type: integer
           description: The unique sequence number associated with a batch of records.
@@ -3203,13 +3207,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/data_in.Tenant'
-          description: A list of strings representing the tenants that data was pushed to and their data transfer results.
+          description: The tenants that data was pushed to and their data transfer results.
     data_in.ReceivingJob:
       type: object
       properties:
         receivingJobId:
           type: string
-          description: The job ID of the receiving job for the analytic tenant.
+          description: The unique identifier of the receiving job for the analytic tenant.
         tenantCode:
           type: string
           description: The analytic tenant code.
@@ -3221,35 +3225,35 @@ components:
       properties:
         parentJobId:
           type: string
-          description: The ID of the dispatching job that generated the extraction jobs.
+          description: The unique identifier of the dispatching job that generated the extraction jobs.
         parentTenantCode:
           type: string
           description: The tenant that owns the dispatching job. This is usually the administrating tenant.
         limit:
           type: integer
-          description: The number of receiving jobs to return. The maximum number of jobs to return is 1000.
+          description: The number of receiving jobs to return. Maximum is 1000.
           format: int32
         start:
           type: integer
-          description: The index to start retrieving results from, also known as offset. The index begins at 0.
+          description: The starting index of the first result to return. Default is 0.
           format: int32
         receivingJobs:
           type: array
           items:
             $ref: '#/components/schemas/data_in.ReceivingJob'
-          description: A list of receiving job information.
+          description: Receiving job information.
     data_in.ReceivingJobStatusResponse:
       type: object
       properties:
         jobId:
           type: string
-          description: The unique identifier associated with the receiving job.
+          description: The unique identifier of the receiving job.
         status:
           type: string
           description: The status of the receiving job.
         parentJobId:
           type: string
-          description: The job ID of the receiving job that spawned this job.
+          description: The unique identifier of the receiving job that spawned this job.
         parentTenantCode:
           type: string
           description: The tenant code of the receiving job that spawned this job.
@@ -3257,13 +3261,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/data_in.ReceivingJob'
-          description: A list of objects representing the receiving jobs to retrieve.
+          description: The receiving jobs to retrieve.
     data_in.Result:
       type: object
       properties:
         jobId:
           type: string
-          description: If applicable, the job ID associated with the data version.
+          description: If applicable, the unique identifier of the job associated with the data version.
         dataVersion:
           type: string
           description: If applicable, the data version that was disabled.
@@ -3281,7 +3285,7 @@ components:
       properties:
         sourceId:
           type: string
-          description: The unique identifier associated with the source that data was transferred to.
+          description: The unique identifier of the source that data was transferred to.
         sourceName:
           type: string
           description: The object name of the source.
@@ -3302,13 +3306,13 @@ components:
       properties:
         JobId:
           type: string
-          description: The ID of the dispatching job that generated the extraction jobs.
+          description: The unique identifier of the dispatching job that generated the extraction jobs.
     data_in.StartTransferResponse:
       type: object
       properties:
         transferSessionId:
           type: string
-          description: The unique identifier associated with the transfer session.
+          description: The unique identifier of the transfer session.
     data_in.TableSourceRequest:
       type: object
       properties:
@@ -3320,7 +3324,7 @@ components:
       properties:
         tenantCode:
           type: string
-          description: The code of the tenant that data was transferred to. For example, WFF_j1r or WFF_j1r~c7o.
+          description: The code of the tenant that data was transferred to. For example, `WFF_j1r` or `WFF_j1r~c7o`.
         status:
           type: string
           description: The status of the data transfer for this tenant.
@@ -3328,16 +3332,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/data_in.Source'
-          description: A list of objects representing the sources that data was pushed to and their data transfer results.
+          description: The sources that data was pushed to and their data transfer results.
     data_in.TenantAndCredential:
       type: object
       properties:
         tenantCode:
           type: string
-          description: The unique identifier associated with the tenant.
+          description: The unique identifier of the tenant.
         credentialId:
           type: string
-          description: The unique identifier associated with the credential.
+          description: The unique identifier of the credential.
     data_in.UploadToExclude:
       type: object
       properties:
@@ -3354,7 +3358,7 @@ components:
           description: A comma-separated list of ISO 8601 time strings such as `"2001-10-25T13:45:35.999"` representing the upload time of each data upload to exclude.
         minUploadTime:
           type: string
-          description: An ISO 8601 time  for the earliest upload time. If defined, omit `uploadTimes`. If omitted and `maxUploadTime` is defined, excludes files up to earliest time available.
+          description: An ISO 8601 time for the earliest upload time. If defined, omit `uploadTimes`. If omitted and `maxUploadTime` is defined, excludes files up to earliest time available.
         maxUploadTime:
           type: string
           description: An ISO 8601 time for the latest upload time. If defined, omit `uploadTimes`. If omitted and `minUploadTime` is defined, excludes files up to latest time available.
@@ -3370,7 +3374,7 @@ components:
           type: array
           items:
             type: string
-          description: A comma-separated list of strings representing the file identifiers of the data uploads to exclude. To get a data upload's file identifier, see `GET /v1/op/data/uploads`.
+          description: A comma-separated list of strings representing the file identifiers of the data uploads to exclude. To retrieve a data upload's file identifier, see `GET /v1/op/data/uploads`.
     data_in.UploadToInclude:
       type: object
       properties:
@@ -3403,7 +3407,7 @@ components:
           type: array
           items:
             type: string
-          description: A comma-separated list of strings representing the file identifiers of the data uploads to include. To get a data upload's file identifier, see `GET /v1/op/data/uploads`.
+          description: A comma-separated list of strings representing the file identifiers of the data uploads to include. To retrieve a data upload's file identifier, see `GET /v1/op/data/uploads`.
     designer.crypto.KeyPairDeleteResponseDTO:
       type: object
       properties:
@@ -3415,7 +3419,7 @@ components:
       properties:
         expirationDate:
           type: string
-          description: The UTC expiration date of the key in ISO-8601 format. Must be between 2 and 10 years. Default is 2 years.
+          description: The UTC expiration date of the key in ISO 8601 format. Must be between 2 and 10 years. Default is 2 years.
     designer.crypto.PublicKeyDTO:
       type: object
       properties:
@@ -3430,7 +3434,7 @@ components:
           description: The UTC expiration date of the key in milliseconds since the Unix epoch.
         recipient:
           type: string
-          description: The tenant code and creation date in milliseconds of the PGP key; for example, WFF_j1r_13490234234.
+          description: The tenant code and creation date in milliseconds of the PGP key; for example, `WFF_j1r_13490234234`.
         publicKey:
           type: string
           description: The public key of the generated key pair.
@@ -3814,7 +3818,7 @@ components:
       properties:
         credentialId:
           type: string
-          description: The ID associated with the connector credential.
+          description: The unique identifier of the connector credential.
         displayName:
           type: string
           description: An identifiable connector credential name that is displayed within Visier.
@@ -3823,7 +3827,7 @@ components:
           description: The data provider associated with the credential.
         isInherited:
           type: boolean
-          description: Whether this credential is inherited from another tenant.
+          description: If `true`, this credential is inherited from another tenant.
         authContext:
           type: string
     designer.ExtractorCredentialsAPIDTO:
@@ -3833,7 +3837,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.ExtractorCredentialAPIDTO'
-          description: A list of objects representing all the available connector credentials in Production.
+          description: The available connector credentials in production.
         limit:
           type: integer
           description: The number of connector credentials to return. The maximum number of data connector credentials to return is 1000.
@@ -4029,10 +4033,10 @@ components:
           description: The expected format for datetime data types.
         isMandatory:
           type: boolean
-          description: If true, the column value is required. If a column is mandatory, and the file is missing this column, the request will fail.
+          description: If `true`, the column value is required. If a column is mandatory, and the file is missing this column, the request will fail.
         allowEmpty:
           type: boolean
-          description: If true, the column allows an empty value for the record.
+          description: If `true`, the column allows an empty value for the record.
         defaultValue:
           type: string
           description: The default value of the column.
@@ -4042,7 +4046,7 @@ components:
       properties:
         sourceId:
           type: string
-          description: The unique identifier associated with the source.
+          description: The unique identifier of the source.
         name:
           type: string
           description: The object name of the source.
@@ -4050,13 +4054,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.PushDataColumnDefinitionDTO'
-          description: A list of objects representing the source columns.
+          description: The source columns.
         isInherited:
           type: boolean
-          description: If true, the source is inherited by all analytic tenants.
+          description: If `true`, the source is inherited by all analytic tenants.
         objectName:
           type: string
-          description: The unique object name associated with the source.
+          description: The unique object name of the source.
         fileNameRegex:
           type: string
           description: A regular expression to match the file names for the source.
@@ -4068,7 +4072,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/designer.PushDataSourceDefinitionDTO'
-          description: A list of objects representing the target sources for the request.
+          description: The target sources for the request.
       description: The existing sources.
     designer.QualtricsAuthParamsDTO:
       type: object
@@ -4360,7 +4364,7 @@ components:
           type: array
           items:
             type: string
-          description: A list of jobs to cancel. The maximum number of jobs that can be cancelled is 500.
+          description: A list of jobs to cancel. Maximum is 500.
     dp.JobCancellationResultDTO:
       type: object
       properties:
@@ -4396,7 +4400,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/dp.JobCancellationResultDTO'
-          description: A list of objects representing the job cancellation results.
+          description: The job cancellation results.
     servicing.sqlsource.SqlJobTableAccessDTO:
       type: object
       properties:
@@ -4441,7 +4445,7 @@ components:
           type: array
           items:
             type: string
-          description: "The tables to modify in the transaction. If undefined, the transaction is read-only. You cannot add tables to modify after creating the transaction.\n\n After a job starts running, the tables are locked for the duration of the transaction to prevent concurrent writes. Each tenant has independent locks; there is no cross-tenant locking."
+          description: "The tables to modify in the transaction. If unspecified, the transaction is read-only. You cannot add tables to modify after creating the transaction.\n\n After a job starts running, the tables are locked for the duration of the transaction to prevent concurrent writes. Each tenant has independent locks; there is no cross-tenant locking."
     servicing.sqlsource.SqlSourceChildTransactionStateDTO:
       type: object
       properties:
@@ -4569,7 +4573,7 @@ components:
           description: Status information for each tenant.
         jobId:
           type: string
-          description: The ID of the requested job.
+          description: The unique identifier of the requested job.
     servicing.sqlsource.SqlSourceGetTableMetadataResponseDTO:
       type: object
       properties:
@@ -4829,7 +4833,7 @@ components:
           description: If `true`, Visier ignores this source when checking which data categories require a processing job during a `process` action with no specified `dataCategoryIds`. Default is `false`.
         snapshotRetentionDays:
           type: integer
-          description: "The number of days to keep snapshots for this table before permanently deleting them. Must be between 1 and 180 days.\n If undefined, the default is 7 days. You cannot reset the table to a timestamp older than the retention period because older snapshots are permanently deleted."
+          description: "The number of days to keep snapshots for this table before permanently deleting them. Must be between 1 and 180 days.\n Default is 7 days. You cannot reset the table to a timestamp older than the retention period because older snapshots are permanently deleted."
           format: int32
         materializedView:
           allOf:
@@ -4873,7 +4877,7 @@ components:
           description: Processing job IDs created by `process` actions within the job, if any.
         jobId:
           type: string
-          description: The ID of the job.
+          description: The unique identifier of the job.
     servicing.sqlsource.SqlSourceTransactionStateDTO:
       type: object
       properties:
@@ -5006,7 +5010,7 @@ components:
             - IS_PRIMARY
             - IS_SUPPLEMENTAL
           type: string
-          description: "The configuration for the processing job as a primary job (default) or a supplemental job. If a primary job is already defined, the direct data \n intake job must be supplemental. The valid values are `IS_PRIMARY`, `IS_SUPPLEMENTAL`, and `UNCHANGED`."
+          description: "The configuration for the processing job as a primary job (default) or a supplemental job. If a primary job is already defined, the direct data \n intake job must be supplemental. Valid values: `IS_PRIMARY`, `IS_SUPPLEMENTAL`, and `UNCHANGED`."
           format: enum
         extendObjects:
           type: array
@@ -5050,6 +5054,13 @@ components:
             - $ref: '#/components/schemas/servicing.DirectDataJobConfigDTO'
           description: The direct data intake job configuration.
       description: The configuration for the direct data intake, such as the  direct data intake job type.
+    servicing.DirectDataSampleDataDTO:
+      type: object
+      properties:
+        sampleName:
+          type: string
+          description: "The name of the target object to load sample data. Sample data is available for:\n * `employee`: The Employee subject.\n * `employee_exit`: The Employee Exit event.\n * `employment_start`: The Employment Start event.\n * `organization_hierarchy`: The Organization Hierarchy dimension."
+      description: The sample data to load.
     servicing.DirectDataSchemaDTO:
       type: object
       properties:
@@ -5075,10 +5086,10 @@ components:
           description: The column's accepted formats, such as date formats like "yyyy-MM-dd".
         isMandatory:
           type: boolean
-          description: If true, the field must contain a value to successfully load data into the object.
+          description: If `true`, the field must contain a value to successfully load data into the object.
         emptyValuesAllowed:
           type: boolean
-          description: If true, the value may be empty.
+          description: If `true`, the value may be empty.
       description: The definition of each field in an object's schema.
     servicing.DirectDataTransactionDTO:
       type: object
@@ -5210,7 +5221,7 @@ components:
           description: The upload time of the data upload.
         included:
           type: boolean
-          description: If "true", the data upload is included.
+          description: If `true`, the data upload is included.
     servicing.TenantDataUploadUpdateStatusResponseDTO:
       type: object
       properties:
@@ -5233,7 +5244,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.TenantDataUploadsResponseDTO'
-          description: A list of objects representing analytic tenants and their data uploads.
+          description: The analytic tenants and their data uploads.
         limit:
           type: integer
           description: The number of analytic tenants to retrieve. The maximum number of analytic tenants to retrieve is 1000.
@@ -5268,7 +5279,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.TenantDataUploadUpdateStatusResponseDTO'
-          description: A list of objects representing the results of the data upload exclusion.
+          description: The results of the data upload exclusion.
     servicing.TenantSourceFilesListResponseDTO:
       type: object
       properties:
@@ -5360,7 +5371,9 @@ tags:
     x-displayName: Data Intake
     description: 'Send raw or untransformed data to Visier. After we receive the data, Visier runs business rules to transform your data into the expected format for the existing mappings.
 
-      <br>**Note:** <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>'
+      <br/>
+
+      <br/>**Note**: <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>'
   - name: DataAndJobHandling
     x-displayName: Data and Job Handling
     description: Initiate and manage jobs, included or excluded data, and data connector credentials. Administrating tenant users can manage jobs and data for their analytic tenants.
@@ -5368,7 +5381,9 @@ tags:
     x-displayName: PGP Keys
     description: 'The Pretty Good Privacy (PGP) Keys API generates key pairs and provides a public key to encrypt data that you send to Visier. PGP encryption adds an additional layer of security against data disclosure.
 
-      <br><br>After you generate a key pair and retrieve the public encryption key, you can encrypt your data files before sending them to Visier. When Visier receives files encrypted with the public key, we retrieve the associated private key to decrypt and process the file.'
+      <br/>
+
+      <br/>After you generate a key pair and retrieve the public encryption key, you can encrypt your data files before sending them to Visier. When Visier receives files encrypted with the public key, we retrieve the associated private key to decrypt and process the file.'
   - name: DataUpload
     x-displayName: Data Upload
     description: Send data files to Visier. After we receive the data, Visier starts a receiving job and a processing job to process the data.
@@ -5376,9 +5391,9 @@ tags:
     x-displayName: Table Source
     description: 'Use row-based management for your source data in Visier. The Table Source API supports direct SQL-based data modifications, eliminating concerns about file management or override behavior. Use the API to create, modify, and delete tables. Use SQL statements to query, insert, update, delete, and merge data into tables with transactions. You can reference the tables by mappings, just like other sources, to load data into an analytic object in a data version.
 
-      <br><br>
+      <br/>
 
-      **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.</em>'
+      <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.</em>'
 security:
   - ApiKeyAuth: []
     BearerAuth: []

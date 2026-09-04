@@ -5,19 +5,19 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3135
+  version: 22222222.99201.3152
 paths:
   /v1/planning/data/events:
     get:
       tags:
         - PlanEvents
       summary: Retrieve planning events
-      description: "Retrieve planning events in bulk. Specify one of `planId` or `mainPlanId`. Use `planId` to retrieve events for a single plan, or `mainPlanId` to retrieve events for a main plan and all its subplans. If both are provided, `planId` takes precedence. If neither are provided, the response includes events for all plans you have access to. Results are sorted oldest first for stable forward pagination.\n\n To retrieve the full details of a single event, including promoted member paths, see `GET /v1/planning/data/events/{eventId}`."
+      description: "Retrieve planning events in bulk. Specify one of: \n - `planId`: Retrieve events for one plan.\n - `mainPlanId`: Retrieve events for a main plan and its subplans. \n\n If both are specified, `planId` takes precedence. If neither are specified, returns events for accessible plans. Results sort oldest first for forward pagination.\n\n To retrieve single event details, including promoted member paths, see `GET /v1/planning/data/events/{eventId}`."
       operationId: PlanEvents_GetEvents
       parameters:
         - name: planId
           in: query
-          description: "Optionally, specify the unique identifier of the plan to retrieve events for. Specify one of `planId` or `mainPlanId`. If both are provided, `planId` takes precedence and `mainPlanId` is ignored. If both are omitted, the response includes events for all plans you have access to."
+          description: Optionally, specify the unique identifier of the plan to retrieve events for. Specify one of `planId` or `mainPlanId`. If both are provided, `planId` takes precedence and `mainPlanId` is ignored. If both are omitted, the response includes events for all plans you have access to.
           schema:
             type: string
         - name: mainPlanId
@@ -27,12 +27,12 @@ paths:
             type: string
         - name: fromDate
           in: query
-          description: Optionally, specify a start date to filter by and return only the events created after it. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+          description: Optionally, specify a start date to filter by and return only the events created after it. The format is the number of milliseconds since midnight 01 January 1970 UTC as a string.
           schema:
             type: string
         - name: toDate
           in: query
-          description: Optionally, specify an end date to filter by and return only the events created before it. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+          description: Optionally, specify an end date to filter by and return only the events created before it. The format is the number of milliseconds since midnight 01 January 1970 UTC as a string.
           schema:
             type: string
         - name: eventTypes
@@ -49,13 +49,13 @@ paths:
             type: string
         - name: limit
           in: query
-          description: The maximum number of events to return. Default and maximum is 50.
+          description: The maximum number of events to return. Default is 50. Maximum is 50.
           schema:
             type: integer
             format: int32
         - name: start
           in: query
-          description: The index to start retrieving events from, also known as offset. The index begins at 0.
+          description: The starting index of the first event to return. Default is 0.
           schema:
             type: integer
             format: int32
@@ -83,7 +83,7 @@ paths:
       tags:
         - PlanEvents
       summary: Retrieve a planning event
-      description: Retrieve a single planning event by its unique identifier. The response includes event metadata and, for promotion events, the full member path for every promoted row. One entry per plan segment. To retrieve event IDs, create a webhook for the `planRowPromotionNotification` event. When the webhook triggers, its payload returns the `eventID`. For more information, see `POST /v1/op/webhooks`.
+      description: Retrieve a planning event by ID. Returns event metadata and full member paths for promoted rows per plan segment. To retrieve event IDs, create a webhook for `planRowPromotionNotification`. The webhook payload returns `eventID`. To create webhooks, see `POST /v1/op/webhooks`.
       operationId: PlanEvents_GetEvent
       parameters:
         - name: eventId
@@ -116,7 +116,7 @@ paths:
       tags:
         - PlanAdministration
       summary: Partially update a plan
-      description: Make partial changes to existing plans. The response returns whether each plan was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition. To retrieve main plan or subplan IDs, see `GET /v1/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan. Use `PATCH` to change specific fields in the plan without affecting omitted fields.
+      description: "Make partial changes to existing plans. Returns plan update results.\n\n Retrieve the object definition using `GET` before patching. Use the `GET` response in your `PATCH` request. To retrieve main plan or subplan IDs, see `GET /v1/planning/model/plans`. Plans containing `parentPlanUuid` are subplans.\n\n Use `PATCH` to update specific plan fields without changing omitted fields."
       operationId: PlanAdministration_PlanAction
       parameters:
         - name: planId
@@ -167,7 +167,7 @@ paths:
       tags:
         - PlanAdministration
       summary: Partially update a plan scenario
-      description: "Make partial changes to a scenario in an existing plan. The response returns whether the scenario was successfully patched or not. When patching objects, we recommend that you first retrieve the object definition using `GET`. You can use the `GET` response in your `PATCH` request definition. To retrieve plan IDs and scenario IDs, see `GET /v1/planning/model/plans`. If the response includes a `parentPlanUuid`, then the plan is a subplan.\n\n Use `PATCH` to change specific fields in the scenario without affecting omitted fields."
+      description: "Make partial changes to a scenario in an existing plan. Returns scenario update results.\n\n Retrieve the object definition using `GET` before patching. Use the `GET` response in your `PATCH` request. To retrieve plan IDs and scenario IDs, see `GET /v1/planning/model/plans`. Plans containing `parentPlanUuid` are subplans.\n\n Use `PATCH` to update specific scenario fields without changing omitted fields."
       operationId: PlanAdministration_PatchPlan
       parameters:
         - name: planId
@@ -218,7 +218,7 @@ paths:
       tags:
         - PlanDataLoad
       summary: Upload plan data
-      description: "Send a file to Visier to modify a plan's data. The file must be in CSV format and match the plan's schema. To get the plan's schema, call `GET /v1/planning/model/plans/{id}?withSchema=true`.\nThe data file must contain the following columns:\n  - `periodId`: From the GET response, use the `date` values in the `timePeriods` array as values in this column.\n  - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.\n  - A column for each  `id` value in the `planItems` object that you want to modify data for, where the row value is the data value."
+      description: "Send a CSV file to Visier to modify plan data. The file must match the plan schema. To retrieve the plan schema, see `GET /v1/planning/model/plans/{id}?withSchema=true`.\nThe data file must contain the following columns:\n  - `periodId`: Use the `date` values in the `timePeriods` array from the `GET` response as values in this column.\n  - A column for each `id` value in the `planSegmentLevels` object, where the row value is the `id` of the `members` in the `planSegmentLevelMembers` object.\n  - A column for each `id` value in the `planItems` object that you want to modify data for, where the row value is the data value."
       operationId: PlanDataLoad_PlanDataUpload
       parameters:
         - name: planId
@@ -235,7 +235,7 @@ paths:
             type: string
         - name: calculation
           in: query
-          description: "Sets the plan values to rollup, distribute, or neither. Valid values:\n  - **ROLLUP**: Roll up loaded data values to parent and ancestor rows. If the data provides a parent value and its child value, this method prioritizes the loaded value for the child and overwrites the parent.\n  - **DISTRIBUTE**: Distribute loaded data values to their children and descendent rows. If the data provides a parent value and its child value, this method prioritizes the parent values and overrides the loaded child value.\n  - **NONE**: The loaded values are not rolled up or distributed. This is the default."
+          description: "Sets the plan values to rollup, distribute, or neither. Default is `NONE`. Valid values:\n  - `ROLLUP`: Roll up loaded data values to parent and ancestor rows. If the data provides a parent value and its child value, this method prioritizes the loaded value for the child and overwrites the parent.\n  - `DISTRIBUTE`: Distribute loaded data values to their children and descendent rows. If the data provides a parent value and its child value, this method prioritizes the parent values and overrides the loaded child value.\n  - `NONE`: Loaded values aren't rolled up or distributed."
           required: false
           schema:
             type: string
@@ -243,13 +243,13 @@ paths:
           in: query
           description: 'The 3-digit ISO 4217 currency code of the data.
 
-            If undefined, default is the plan''s consolidation currency. If the currency is different from the plan''s consolidation currency, the values are converted to the consolidation currency using the conversion rates loaded for the plan''s baseline period.'
+            If unspecified, default is the plan''s consolidation currency. If the currency differs from the plan''s consolidation currency, values convert to the consolidation currency using conversion rates loaded for the plan''s baseline period.'
           required: false
           schema:
             type: string
         - name: method
           in: query
-          description: "Sets how to validate the data being loaded into Visier. Valid values:\n  - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.\n  - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.\n  - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default."
+          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan if there are no errors in any row. If errors exist, the load fails."
           required: false
           schema:
             type: string
@@ -280,7 +280,7 @@ paths:
       tags:
         - PlanDataLoad
       summary: Add or remove plan rows
-      description: "Send a file to Visier to modify a plan's rows. The file must be in CSV format and contain the following columns:\n- `Add/Remove`: In the column, use the value \"Add\" to add the specified row to the plan or \"Remove\" to remove the specified row from the plan.\n- A column for each plan segment level using the IDs from `planSegmentLevels`.\n  - To add a row, use the corresponding segment member ID from `planSegmentLevelMembers`. If the member doesn't exist in the schema, provide a display name. The response returns its assigned segment member ID.\n  - To remove a row, use the corresponding segmentId as the column name and the segment member ID from `planSegmentLevelMembers` as the row value.\n\n<br>**Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Send a CSV file to Visier to modify plan rows. The file must contain the following columns:\n- `Add/Remove`: Use `Add` to add a row to the plan or `Remove` to remove a row from the plan.\n- A column for each plan segment level using the IDs from `planSegmentLevels`.\n  - To add a row, use the corresponding segment member ID from `planSegmentLevelMembers`. If the member doesn't exist in the schema, provide a display name. The response returns its assigned segment member ID.\n  - To remove a row, use the corresponding segmentId as the column name and the segment member ID from `planSegmentLevelMembers` as the row value.\n\n<br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued. If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: PlanDataLoad_PlanRowDataLoad
       parameters:
         - name: planId
@@ -291,7 +291,7 @@ paths:
             type: string
         - name: method
           in: query
-          description: "Sets how to validate the data being loaded into Visier. Valid values:\n  - **VALIDATE**: Runs a test load through all the validation steps without putting the data into the plan. Use `VALIDATE` to find any errors before using `STRICT_UPLOAD` to load the data.\n  - **SKIP_ERRORS**: Loads all data without errors into the plan. Any rows with errors are excluded from the update to the plan.\n  - **STRICT_UPLOAD**: Loads data into the plan if there are no errors in any row. If there are errors, the load fails. This is the default."
+          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan if there are no errors in any row. If errors exist, the load fails."
           required: false
           schema:
             type: string
@@ -327,7 +327,7 @@ components:
           description: The username of the subplan owner.
         dueDate:
           type: integer
-          description: The due date of the subplan. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.
+          description: The due date of the subplan. The format is the number of milliseconds since midnight 01 January 1970 UTC as a string.
           format: int64
         comment:
           type: string
@@ -377,7 +377,7 @@ components:
           type: array
           items:
             type: string
-          description: "The UUIDs of the subplans to include. If not defined, all submitted subplans will be consolidated."
+          description: "The UUIDs of the subplans to include. If unspecified, all submitted subplans will be consolidated."
       description: The details of consolidating a subplan.
     planning.DimensionMember:
       type: object
@@ -875,10 +875,10 @@ components:
       properties:
         assignee:
           type: string
-          description: The user that the subplan will be assigned to once reopened. If not defined, it will keep the user that was previously assigned.
+          description: The user that the subplan will be assigned to once reopened. If unspecified, it will keep the user that was previously assigned.
         dueDate:
           type: string
-          description: "The due date of the subplan in UTC format. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.\n The due date cannot be earlier than today.\n If not defined, the default is based on the length of the collaboration window:\n - Collaboration window between 2 and 14 days: The due date is set to one day before the collaboration window ends.\n - Collaboration window longer than 14 days: The due date is automatically set to 14 days from the start of the collaboration.\n - Collaboration window shorter than 2 days: The due date is automatically set to today."
+          description: "The due date of the subplan in UTC format. The format is the number of milliseconds since midnight 01 January, 1970 UTC as a string.\n The due date cannot be earlier than today.\n If unspecified, the default is based on the length of the collaboration window:\n - Collaboration window between 2 and 14 days: The due date is set to one day before the collaboration window ends.\n - Collaboration window longer than 14 days: The due date is automatically set to 14 days from the start of the collaboration.\n - Collaboration window shorter than 2 days: The due date is automatically set to today."
       description: The details of reopening a subplan.
     planning.ShareActionPayload:
       type: object
@@ -893,7 +893,7 @@ components:
           description: Optional message included in the notification email.
         notifyRecipients:
           type: boolean
-          description: If true, notification emails will be sent to newly shared users. Default is false.
+          description: If `true`, notification emails will be sent to newly shared users. Default is `false`.
       description: "The desired sharing state for a plan. `shares` is the complete set of individual user shares\n (full-replace): users not listed lose their individual access."
     planning.ShareActionResult:
       type: object
@@ -939,7 +939,7 @@ components:
 
             - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
 
-            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+            - `EndCollaboration`: Regain control of the plan, so you can finalize it and put it into operation.
 
             - `AssignSubplan`: Create a new subplan anchored at a specific row in the parent plan.
 
@@ -967,7 +967,7 @@ components:
 
             - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
 
-            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+            - `EndCollaboration`: Regain control of the plan, so you can finalize it and put it into operation.
 
             - `AssignSubplan`: Create a new subplan anchored at a specific row in the parent plan.
 
@@ -995,7 +995,7 @@ components:
 
             - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
 
-            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+            - `EndCollaboration`: Regain control of the plan, so you can finalize it and put it into operation.
 
             - `AssignSubplan`: Create a new subplan anchored at a specific row in the parent plan.
 
@@ -1023,7 +1023,7 @@ components:
 
             - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
 
-            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+            - `EndCollaboration`: Regain control of the plan, so you can finalize it and put it into operation.
 
             - `AssignSubplan`: Create a new subplan anchored at a specific row in the parent plan.
 
@@ -1051,7 +1051,7 @@ components:
 
             - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
 
-            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+            - `EndCollaboration`: Regain control of the plan, so you can finalize it and put it into operation.
 
             - `AssignSubplan`: Create a new subplan anchored at a specific row in the parent plan.
 
@@ -1079,7 +1079,7 @@ components:
 
             - `StartCollaboration`: Enter collaboration mode, so you can assign subplans to subplanners.
 
-            - `EndCollaboration`:  Regain control of the plan, so you can finalize it and put it into operation.
+            - `EndCollaboration`: Regain control of the plan, so you can finalize it and put it into operation.
 
             - `AssignSubplan`: Create a new subplan anchored at a specific row in the parent plan.
 
@@ -1094,7 +1094,7 @@ components:
       properties:
         updatedCellsCount:
           type: integer
-          description: The number of cells that were updated from the data load process.
+          description: The number of cells updated from the data load process.
         potentialUpdatedCellsCount:
           type: integer
           description: The number of cells that would have been updated if all changes were saved.
@@ -1111,7 +1111,7 @@ components:
 
             If you indicated in the request that the changes are to be rolled up or distributed,
 
-            the values modified as a result of the calculations are not listed here.'
+            the values modified as a result of the calculations aren''t listed here.'
           items:
             $ref: '#/components/schemas/PlanDataLoadChangeListDTO'
     PlanDataLoadChangeListDTO:
@@ -1119,7 +1119,7 @@ components:
       properties:
         planItem:
           type: string
-          description: The ID of the plan item.
+          description: The unique identifier of the plan item.
         changes:
           type: array
           description: The collection of changes made for the plan item.
@@ -1130,7 +1130,7 @@ components:
       properties:
         rowMembers:
           type: array
-          description: The collection of member ids that describe the row in the plan.
+          description: The collection of member IDs that describe the row in the plan.
           items:
             type: string
         period:
@@ -1223,7 +1223,7 @@ tags:
     description: Send data directly to your plan's scenario and optionally add or remove rows from your plan.
   - name: PlanEvents
     x-displayName: Plan Events
-    description: Retrieve details about planning events such as member promotions and row changes.
+    description: Retrieve details about planning events, such as member promotions and row changes.
 security:
   - ApiKeyAuth: []
     BearerAuth: []

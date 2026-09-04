@@ -5,14 +5,14 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3135
+  version: 22222222.99201.3152
 paths:
   /v1/auth/oauth2/userinfo:
     get:
       tags:
         - OAuth2
-      summary: Retrieve user-specific metadata
-      description: Retrieve user-specific metadata, such as a user's ID, username, and profile capabilities.
+      summary: Retrieve user metadata
+      description: Retrieve user-specific metadata, such as user ID, username, and profile capabilities.
       operationId: OAuth2_UserInfo
       parameters:
         - name: includeTenantDetails
@@ -69,12 +69,12 @@ paths:
       tags:
         - BasicAuthentication
       summary: Request an impersonation token
-      description: Generate an impersonation token for the given username. The requesting user must have the Impersonator profile. The impersonated user must have the Read Impersonated or Write Impersonated profile. Supports impersonating users within the same tenant or in an analytic tenant by specifying a`TargetTenantID`. After receiving the token, use the header `Cookie:VisierImpersonationToken` to make API requests as the impersonated user.
+      description: Generate an impersonation token for the given username. The requesting user must have the Impersonator profile. The impersonated user must have the Read Impersonated or Write Impersonated profile. Supports impersonating users within the same tenant or in an analytic tenant by specifying `TargetTenantID`. After receiving the token, use the `Cookie:VisierImpersonationToken` header to make API requests as the impersonated user.
       operationId: BasicAuthentication_GenerateImpersonationToken
       parameters:
         - name: TargetTenantID
           in: header
-          description: The tenant ID to execute the call on.
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
         - name: TargetUsername
@@ -116,7 +116,7 @@ paths:
       tags:
         - OAuth2
       summary: Request an authorization code
-      description: Request an authorization code for the authorization_code grant type. Not required in other OAuth 2.0 grant types.
+      description: Request an authorization code for the `authorization_code` grant type. Not required in other OAuth 2.0 grant types.
       operationId: OAuth2_OAuth2Authorize
       parameters:
         - name: redirect_uri
@@ -133,13 +133,15 @@ paths:
             type: string
         - name: client_id
           in: query
-          description: The ID of the pre-registered client application.
+          description: The unique identifier of the pre-registered client application.
           required: true
           schema:
             type: string
         - name: scope
           in: query
-          description: The OAuth 2.0 scope of the authorization request. Default is `read`. If the scope includes `visier:login:bypass_users`, then the redirect login URL ends in "/auth/admin" instead of "/auth". This allows single sign-on (SSO) Bypass Users to login through Visier instead of being redirected to the SSO login page.
+          description: 'The OAuth 2.0 scope of the authorization request. Default is `read`.
+
+            If the scope includes `visier:login:bypass_users`, the redirect login URL ends in `/auth/admin` instead of `/auth`. This allows single sign-on (SSO) Bypass Users to sign in through Visier instead of being redirected to the SSO login page.'
           required: false
           schema:
             type: string
@@ -198,7 +200,7 @@ components:
           description: The user's email address.
         visier:user_id:
           type: string
-          description: The user's unique ID.
+          description: The unique identifier of the user.
         visier:capabilities:
           allOf:
             - $ref: '#/components/schemas/servicing.ServicingCapabilityProtoEnumAccessLookupDTO'
@@ -217,7 +219,7 @@ components:
           description: Detailed information about the analytic tenant. Included in the response if `includeTenantDetails` is `true`.
         visier:tenant_id:
           type: string
-          description: The unique ID of the user's tenant.
+          description: The unique identifier of the user's tenant.
       description: Response from OAuth 2 `userinfo` endpoint.
     authentication.OAuth2UserSubnetInfoDTO:
       type: object
@@ -229,20 +231,20 @@ components:
             - Restricted
             - None
           type: string
-          description: "The type of subnet access granted to the user. Possible values are:\n * `Unknown`: Could not determine subnet access details.\n * `All`: No subnet restrictions.\n * `Restricted`: Access is only granted to requests originating from the specified `subnets`.\n * `None`: Access is denied. Only applicable to the Data Export API."
+          description: "The type of subnet access granted to the user. Valid values:\n * `Unknown`: Couldn't determine subnet access details.\n * `All`: No subnet restrictions.\n * `Restricted`: Access is only granted to requests originating from the specified `subnets`.\n * `None`: Access is denied. Only applicable to the Data Export API."
           format: enum
         subnets:
           type: array
           items:
             type: string
-          description: 'The list of trusted IP addresses from which access is granted if accessType is `Restricted`. Must be in Classless Inter-Domain Routing (CIDR) format: `xxx.xxx.xxx.xxx/xx`.'
+          description: 'The list of trusted IP addresses from which access is granted if `accessType` is `Restricted`. Must be in Classless Inter-Domain Routing (CIDR) format: `xxx.xxx.xxx.xxx/xx`.'
       description: Subnet access details.
     authentication.OAuth2UserTenantDetailDTO:
       type: object
       properties:
         tenantCode:
           type: string
-          description: The tenant's unique ID.
+          description: The unique identifier of the tenant.
         displayName:
           type: string
           description: The tenant's display name.
@@ -259,7 +261,7 @@ components:
           items:
             $ref: '#/components/schemas/authentication.OAuth2UserTenantDetailDTO'
           description: The details of all accessible analytic tenants.
-      description: The details of all accessible analytic tenants
+      description: The details of all accessible analytic tenants.
     authentication.OAuth2UserTenantPropertiesDTO:
       type: object
       properties:
@@ -446,7 +448,7 @@ components:
             - `urn:visier:params:oauth:grant-type:asid-token`: The ASID token grant type.'
           type: string
         client_id:
-          description: The ID of the pre-registered client application.
+          description: The unique identifier of the pre-registered client application.
           type: string
         client_secret:
           description: The secret of the pre-registered client application.

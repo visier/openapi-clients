@@ -641,7 +641,7 @@ paths:
       summary: Send feedback to help improve the quality of the job match results
       tags: [Dimensions]
       operationId: "SubmitJobsFeedback"
-      description: "This API allows you to submit feedback on the quality of the job match results returned by the Get jobs endpoint. \n\nYou must include the search term (job title you entered) in the request body. You can include the optional `naicsCode` if it was used as part of the search in the Get jobs endpoint.\n\nYou can also submit additional comments by providing values for `additionalComments`, along with `term` and `naicsCode`.\n\n**Note:**\n\nFor `term`, the minimum is 2 characters and the maximum is 100 characters.\n\nFor `additionalComments`, the maximum is 750 characters.\n"
+      description: "This API allows you to submit feedback on the quality of the job match results returned by the Get jobs endpoint. \n\nYou must include the search term (job title you entered) in the request body. You can include the optional `naicsCode` if it was used as part of the search in the Get jobs endpoint.\n\nYou can also submit additional comments by providing values for `additionalComments`, along with `term` and `naicsCode`.\n\n**Note**:\n\nFor `term`, the minimum is 2 characters and the maximum is 100 characters.\n\nFor `additionalComments`, the maximum is 750 characters.\n"
       requestBody:
         description: |
           The feedback you want to submit for.
