@@ -5,14 +5,14 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3135
+  version: 22222222.99201.3152
 paths:
   /v1/op/webhooks:
     get:
       tags:
         - Webhooks
-      summary: Retrieve a list of webhooks
-      description: Retrieve a list of all webhooks. The response returns each webhook's definition, such as its endpoint URL, active status, and event types.
+      summary: Retrieve webhooks
+      description: Retrieve all webhooks. Returns each webhook definition, such as endpoint URL, active status, and event types.
       operationId: Webhooks_GetAllWebhooks
       parameters:
         - name: event
@@ -42,7 +42,7 @@ paths:
       tags:
         - Webhooks
       summary: Create a webhook
-      description: Create a new webhook with Visier. You must specify the webhook's endpoint URL, its active status, the event types to listen for, and the credentials to authenticate calls to the webhook endpoint.
+      description: Create a webhook with Visier. Specify the webhook endpoint URL, active status, event types to listen for, and authentication credentials.
       operationId: Webhooks_CreateWebhook
       requestBody:
         content:
@@ -68,7 +68,7 @@ paths:
       tags:
         - Webhooks
       summary: Retrieve webhook statuses
-      description: Retrieve the statuses of all webhooks, such as their active status and the event types they're listening for. API users can call this endpoint without any special capabilities.
+      description: Retrieve webhook statuses, such as active status and event types.API users can call this endpoint without any special capabilities.
       operationId: Webhooks_GetWebhooksStatus
       parameters:
         - name: event
@@ -98,8 +98,8 @@ paths:
     get:
       tags:
         - Webhooks
-      summary: Retrieve a webhook's details
-      description: Retrieve the details of a specific webhook. You must know the ID of the webhook to retrieve its details. To retrieve webhook IDs, see `GET /v1/op/webhooks`.
+      summary: Retrieve a webhook
+      description: Retrieve a specific webhook. You must know the ID of the webhook to retrieve its details. To retrieve webhook IDs, see `GET /v1/op/webhooks`.
       operationId: Webhooks_GetWebhook
       parameters:
         - name: webhookId
@@ -124,8 +124,8 @@ paths:
     put:
       tags:
         - Webhooks
-      summary: Update a webhook's details
-      description: "Update the details of an existing webhook, such as its URL and active status. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1/op/webhooks`. To update a webhook's credentials, see `PUT /v1/op/webhooks/{webhookId}/credentials`.\n\n When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values."
+      summary: Update a webhook
+      description: "Update an existing webhook. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1/op/webhooks`. To update a webhook's credentials, see `PUT /v1/op/webhooks/{webhookId}/credentials`.\n\n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted values are removed from the webhook."
       operationId: Webhooks_UpdateWebhook
       parameters:
         - name: webhookId
@@ -183,8 +183,8 @@ paths:
     put:
       tags:
         - Webhooks
-      summary: Update a webhook's credentials
-      description: "Update the credentials to authenticate calls to the webhook endpoint. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1/op/webhooks`. To update a webhook's details, see `PUT /v1/op/webhooks/{webhookId}`.\n\n When updating a webhook, the webhook definition in your API call replaces the prior definition. You must provide the entire definition in the `PUT` call. If you omit values from the update request, those values are removed from the webhook. We recommend that you retrieve a webhook's details before you update the webhook with new values."
+      summary: Update webhook credentials
+      description: "Update a webhook's credentials. You must know the ID of the webhook to update it. To retrieve webhook IDs, see `GET /v1/op/webhooks`. To update webhook details, see `PUT /v1/op/webhooks/{webhookId}`.\n\n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted values are removed from the webhook."
       operationId: Webhooks_UpdateWebhookCredentials
       parameters:
         - name: webhookId
@@ -215,8 +215,8 @@ paths:
     delete:
       tags:
         - Webhooks
-      summary: Delete a webhook's credentials
-      description: Delete the credentials for a webhook. You must know the ID of the webhook to delete its credentials. To retrieve webhook IDs, see `GET /v1/op/webhooks`.
+      summary: Delete webhook credentials
+      description: Delete a webhook's credentials. You must know the ID of the webhook to delete its credentials. To retrieve webhook IDs, see `GET /v1/op/webhooks`.
       operationId: Webhooks_DeleteWebhookCredentials
       parameters:
         - name: webhookId
@@ -243,7 +243,7 @@ paths:
       tags:
         - Webhooks
       summary: Test a webhook
-      description: Send a test event to an existing webhook. This validates whether the webhook works. You must specify the webhook ID and an event type.
+      description: Send a test event to validate a webhook. Specify the webhook ID and event type in the request.
       operationId: Webhooks_SendTestEvent
       parameters:
         - name: webhookId
@@ -454,7 +454,7 @@ components:
 tags:
   - name: Webhooks
     x-displayName: Webhooks
-    description: Create, manage, and retrieve webhook definitions. Use webhooks to register your own HTTPS endpoints with Visier and listen for specific events. When these events occur, Visier sends an API request to your registered endpoint. For example, you can create a webhook to monitor job status events with Visier. Visier sends you a success or failure notification to your registered endpoint after the job completes.
+    description: Create, manage, and retrieve webhook definitions. Use webhooks to register your HTTPS endpoints with Visier and listen for specific events. When these events occur, Visier sends an API request to your registered endpoint. For example, create a webhook to monitor job status events. Visier sends success or failure notifications to your endpoint after the job completes.
 security:
   - ApiKeyAuth: []
     BearerAuth: []
