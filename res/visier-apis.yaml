@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3152
+  version: 22222222.99201.3168
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -873,7 +873,7 @@ paths:
             type: boolean
         - name: SessionBasedPermissions
           in: header
-          description: 'If `true`, the API call assigns user permissions that are only valid for the specified `SessionRepoId` without creating a new production version. When a user signs in to your application with the `SessionRepoId`, their session-based permissions are valid until the user session ends. Cannot be `true` if `NonVersioned` is `true`. Default is `false`.<br/>**Note**: <em>This header is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>'
+          description: If `true`, the API call assigns user permissions that are only valid for the specified `SessionRepoId` without creating a new production version. When a user signs in to your application with the `SessionRepoId`, their session-based permissions are valid until the user session ends. Cannot be `true` if `NonVersioned` is `true`. Default is `false`.
           schema:
             type: boolean
         - name: SessionRepoId
@@ -13019,7 +13019,7 @@ paths:
             type: string
         - name: method
           in: query
-          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan if there are no errors in any row. If errors exist, the load fails."
+          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan only if every row passes validation. If any row fails, the load fails with a `422` response and the plan is unchanged.\n`method` applies to row-level validation errors only. A request that can't be accepted at all, such as one with an invalid ID or an unusable file, fails with a `400` response whichever `method` you use, and no rows are inspected."
           required: false
           schema:
             type: string
@@ -13045,6 +13045,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PlanDataUploadResponseDTO'
+        "400":
+          description: 'The request could not be accepted; for example, the plan ID or scenario ID is not a valid UUID, a query parameter has an unsupported value, the uploaded file is missing or unusable, or the plan is locked.
+
+            The load did not start, so no rows were inspected.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        "403":
+          description: You do not have permission to load data into this plan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        "404":
+          description: The plan or scenario does not exist, or is not visible to you.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        "422":
+          description: 'The request was accepted but the contents of the file could not be applied to the plan, so the plan is unchanged. This is the response to a `STRICT_UPLOAD` in which at least one row failed validation.
+
+            Inspect the `errors` array for the row-level reasons. A `VALIDATE` request reports the same errors with a `200` response, because reporting them is the purpose of that method.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanDataUploadResponseDTO'
   /v1alpha/planning/data/plans/{planId}/rows:
     patch:
       tags:
@@ -13061,7 +13089,7 @@ paths:
             type: string
         - name: method
           in: query
-          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan if there are no errors in any row. If errors exist, the load fails."
+          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan only if every row passes validation. If any row fails, the load fails with a `422` response and the plan is unchanged.\n`method` applies to row-level validation errors only. A request that can't be accepted at all, such as one with an invalid ID or an unusable file, fails with a `400` response whichever `method` you use, and no rows are inspected."
           required: false
           schema:
             type: string
@@ -13083,6 +13111,34 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanRowDataLoadResponseDTO'
+        "400":
+          description: 'The request could not be accepted; for example, the plan ID is not a valid UUID, the `method` query parameter has an unsupported value, the uploaded file is missing or unusable, or the plan is locked.
+
+            The load did not start, so no rows were inspected.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        "403":
+          description: You do not have permission to change the rows of this plan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        "404":
+          description: The plan does not exist, or is not visible to you.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
+        "422":
+          description: 'The request was accepted but the contents of the file could not be applied to the plan, so the plan''s rows are unchanged. This is the response to a `STRICT_UPLOAD` in which at least one row failed validation.
+
+            Inspect the `errors` array for the row-level reasons. A `VALIDATE` request reports the same errors with a `200` response, because reporting them is the purpose of that method.'
           content:
             application/json:
               schema:
@@ -14385,7 +14441,7 @@ components:
           type: array
           items:
             type: string
-          description: A list of analytic tenants to dispatch extraction jobs for. One extraction job is dispatched per tenant. Only valid for requests from an administrating tenant.
+          description: The analytic tenants to dispatch extraction jobs for. Dispatches one extraction job per tenant. If omitted, the request uses the tenant of the requesting user.
         allTenants:
           type: boolean
           description: If `true`, one extraction job is dispatched for each accessible analytic tenant. Only valid for requests from an administrating tenant.
@@ -14477,7 +14533,7 @@ components:
           type: array
           items:
             type: string
-          description: The tenant codes of the tenants to run processing jobs for. If omitted, runs a processing job for the tenant associated with the user who made the API request. Only valid for requests from an administrating tenant.
+          description: The analytic tenants to run processing jobs for. If omitted, the request uses the tenant of the requesting user.
         allTenants:
           type: boolean
           description: If `true`, runs processing jobs for all accessible analytic tenants. Default is `false`. Only valid for requests from an administrating tenant.
@@ -14491,7 +14547,7 @@ components:
           type: array
           items:
             type: string
-          description: The unique IDs of the tenants to exclude from the extraction job. Only valid if `allTenants` is "true". Only valid for requests from an administrating tenant.
+          description: The unique identifiers of the tenants to exclude from the extraction job. Only valid if `allTenants` is `true`.
     admin.AllTenantsStatusAPIDTO:
       type: object
       properties:
@@ -14837,7 +14893,7 @@ components:
           description: The tenant's traits, including aggregation rights, tenant type, and data profile type. To set an analytic tenant's traits, contact Visier Technical Support.
         forceLoginsWithSessionBasedPermissions:
           type: boolean
-          description: If `true`, user sign in must also provide a `SessionRepoId`. Only valid if `SessionBasedPermissions` feature is enabled. Default is `false`.
+          description: If `true`, user sign in must also provide a `SessionRepoId`. Default is `false`.
         industryInfo:
           allOf:
             - $ref: '#/components/schemas/admin.TenantIndustryInfoDTO'
@@ -14906,7 +14962,7 @@ components:
           description: A comma-separated list of strings that represent the URLs, or domains, that are allowed in the `idp_url` OAuth parameter. This is optional.
         forceLoginsWithSessionBasedPermissions:
           type: boolean
-          description: If `true`, user sign in must also provide a `SessionRepoId`. Only set if `SessionBasedPermissions` feature is enabled. Default is `false`.
+          description: If `true`, user sign in must also provide a `SessionRepoId`. Default is `false`.
     admin.TenantNamesFilterDTO:
       type: object
       properties:
