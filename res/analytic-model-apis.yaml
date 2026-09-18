@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3168
+  version: 22222222.99201.3173
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -681,12 +681,8 @@ paths:
             type: string
         - name: id
           in: path
-          required: true
-          schema:
-            type: string
-        - name: Id
-          in: query
           description: The unique identifier of the member to retrieve.
+          required: true
           schema:
             type: string
         - name: TargetTenantID
