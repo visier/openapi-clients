@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3168
+  version: 22222222.99201.3173
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -466,7 +466,7 @@ paths:
       tags:
         - Permissions
       summary: Revert data access sets
-      description: "Revert a shareable data access set to its parent version.\n \n Reverting behavior by object type:\n - Blueprint object: No changes. Objects are inherited from the parent.\n - Tenant override object: Reverts to the Blueprint version or administrating tenant version.\n - Tenant object: Request fails. Tenant-unique objects do not have Blueprint versions."
+      description: "Revert a shareable data access set to its parent version.\n\n Reverting behavior by object type:\n - Blueprint object: No changes. Objects are inherited from the parent.\n - Tenant override object: Reverts to the Blueprint version or administrating tenant version.\n - Tenant object: Request fails. Tenant-unique objects do not have Blueprint versions."
       operationId: Permissions_RevertDataAccessSetsToParent
       parameters:
         - name: TargetTenantID
@@ -809,7 +809,7 @@ paths:
       tags:
         - Permissions
       summary: Revert permissions
-      description: "Revert a permission to its parent version.\n \n Reverting behavior by object type:\n - Blueprint object: No changes. Objects are inherited from the parent.\n - Tenant override object: Reverts to the Blueprint version or administrating tenant version.\n - Tenant object: Request fails. Tenant-unique objects do not have Blueprint versions."
+      description: "Revert a permission to its parent version.\n\n Reverting behavior by object type:\n - Blueprint object: No changes. Objects are inherited from the parent.\n - Tenant override object: Reverts to the Blueprint version or administrating tenant version.\n - Tenant object: Request fails. Tenant-unique objects do not have Blueprint versions."
       operationId: Permissions_RevertPermissionsToParent
       parameters:
         - name: TargetTenantID
@@ -1530,6 +1530,7 @@ paths:
       parameters:
         - name: projectId
           in: path
+          description: The unique identifier of the draft project.
           required: true
           schema:
             type: string
@@ -1677,7 +1678,7 @@ paths:
       tags:
         - Permissions
       summary: Synchronize versioned security artifacts
-      description: "Copy permissions, data access sets, user groups, and direct user assignments from the versioned environment to the non-versioned environment. This operation immediately applies security configurations, independent of data versioning.\n\n The versioned environment uses projects and data versions, while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions and data access sets. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Use this operation to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants."
+      description: "Copy permissions, data access sets, security filters, user groups, and direct user assignments from the versioned environment to the non-versioned environment. This operation immediately applies security configurations, independent of data versioning.\n\n The versioned environment uses projects and data versions, while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions, data access sets, and security filters. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Use this operation to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants."
       operationId: Permissions_SyncToNonVersioned
       parameters:
         - name: TargetTenantID
@@ -1910,7 +1911,7 @@ paths:
       tags:
         - Permissions
       summary: Revert security filters
-      description: "Revert a shareable security filter to its parent version.\n \n Reverting behavior by object type:\n - Blueprint object: No changes. Objects are inherited from the parent.\n - Tenant override object: Reverts to the Blueprint version or administrating tenant version.\n - Tenant object: Request fails. Tenant-unique objects do not have Blueprint versions."
+      description: "Revert a shareable security filter to its parent version.\n\n Reverting behavior by object type:\n - Blueprint object: No changes. Objects are inherited from the parent.\n - Tenant override object: Reverts to the Blueprint version or administrating tenant version.\n - Tenant object: Request fails. Tenant-unique objects do not have Blueprint versions."
       operationId: Permissions_RevertSecurityFiltersToParent
       parameters:
         - name: TargetTenantID
@@ -2407,6 +2408,11 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
+          schema:
+            type: boolean
       responses:
         default:
           description: Default error response
@@ -2439,6 +2445,11 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -2476,6 +2487,11 @@ paths:
           description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
           schema:
             type: string
+        - name: NonVersioned
+          in: header
+          description: If `true`, the API call executes on non-versioned artifacts and create/update actions take effect without a new production version. If `false`, the API call executes on versioned artifacts and create/update actions release a new production version. Default is `false`.
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -3927,12 +3943,8 @@ paths:
             type: string
         - name: id
           in: path
-          required: true
-          schema:
-            type: string
-        - name: Id
-          in: query
           description: The unique identifier of the member to retrieve.
+          required: true
           schema:
             type: string
         - name: TargetTenantID
@@ -10426,7 +10438,7 @@ paths:
       tags:
         - UserGroupsV2
       summary: Update user groups
-      description: "Update existing user groups. To specify the tenant in which to update a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each user group in the request body.\n\n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the user group. We recommend retrieving details before updating. \n\n To specify the project in which to update user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body."
+      description: "Update existing user groups. To specify the tenant in which to update a user group, administrating tenants can provide an analytic tenant code in the `TargetTenantID` request header or `tenantCode` for each user group in the request body.\n\n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the user group. We recommend retrieving details before updating.\n\n To specify the project in which to update user groups, provide a project UUID in the `ProjectID` request header or `projectId` for each user group in the request body."
       operationId: UserGroupsV2_PutUserGroups
       parameters:
         - name: TargetTenantID
@@ -10608,7 +10620,7 @@ paths:
       tags:
         - UserGroupsV2
       summary: Revert user groups
-      description: "Revert a user group to its parent version.\n \n Reverting behavior by object type:\n - Blueprint object: No changes. Objects are inherited from the parent.\n - Tenant override object: Reverts to the Blueprint version or administrating tenant version.\n - Tenant object: Request fails. Tenant-unique objects do not have Blueprint versions."
+      description: "Revert a user group to its parent version.\n\n Reverting behavior by object type:\n - Blueprint object: No changes. Objects are inherited from the parent.\n - Tenant override object: Reverts to the Blueprint version or administrating tenant version.\n - Tenant object: Request fails. Tenant-unique objects do not have Blueprint versions."
       operationId: UserGroupsV2_RevertUserGroupsToParent
       parameters:
         - name: TargetTenantID
@@ -17944,7 +17956,7 @@ components:
             - HIDE
             - ELIMINATE
           type: string
-          description: Show or hide zeros in the result. Default is `SHOW`.
+          description: "Show or hide zeros in the result. Default is `SHOW`. Valid values:\n * `SHOW`: Returns cells with zero values.\n * `HIDE`: Removes cells with zero values if all other cells on the same axis position are also hidden because of zeros, nulls, or no records.\n * `ELIMINATE`: Drops cells with zero values regardless of neighboring cells."
           format: enum
         nullVisibility:
           enum:
@@ -17952,7 +17964,15 @@ components:
             - HIDE
             - ELIMINATE
           type: string
-          description: Show or hide null or N/A values in the result. Default is `SHOW`.
+          description: "Show or hide null or N/A values in the result. Default is `SHOW`. Valid values:\n * `SHOW`: Returns cells with null values.\n * `HIDE`: Removes cells with null values if all other cells on the same axis position are also hidden because of zeros, nulls, or no records.\n * `ELIMINATE`: Drops cells with null values regardless of neighboring cells."
+          format: enum
+        noRecordVisibility:
+          enum:
+            - SHOW
+            - HIDE
+            - ELIMINATE
+          type: string
+          description: "Show or hide cells that don't have records in the result. Default is `SHOW`. Valid values: \n * `SHOW`: Returns cells that don't have records.\n * `HIDE`: Removes cells that don't have records if all other cells on the same axis position are hidden because of zeros, nulls, or no records.\n * `ELIMINATE`: Drops cells that don't have records regardless of neighboring cells."
           format: enum
         cellDistributionOptions:
           $ref: '#/components/schemas/dataservices.query.CellDistributionOptionsDTO'
@@ -24932,6 +24952,7 @@ components:
             - DataAccessSets
             - Permissions
             - Unknown
+            - SecurityFilters
           type: string
           description: The type of artifact that failed to synchronize.
           format: enum
@@ -24956,8 +24977,8 @@ components:
               - UserDirectAssignments
             type: string
             format: enum
-          description: "Optional types to synchronize. Specify which artifact types to include in the sync operation. Valid values:\n - `UserGroups`: Synchronizes user group assignments.\n - `UserDirectAssignments`: Synchronizes direct permission assignments to users.\n\n Data access sets and permissions are always synchronized regardless of this setting."
-      description: "Request to copy permissions, data access sets, user groups, and user direct assignments from the versioned environment to the non-versioned environment. This operation immediately applies the security configurations, independent of data versioning.\n This endpoint always synchronizes permissions and data access sets. You can optionally synchronize user group assignments and direct permissions assignments to users."
+          description: "Optional types to synchronize. Specify which artifact types to include in the sync operation. Valid values:\n - `UserGroups`: Synchronizes user group assignments.\n - `UserDirectAssignments`: Synchronizes direct permission assignments to users.\n\n Data access sets, security filters, and permissions are always synchronized regardless of this setting."
+      description: "Request to copy permissions, data access sets, shareable security filters, user groups, and user direct assignments from the versioned environment to the non-versioned environment. This operation immediately applies the security configurations, independent of data versioning.\n This endpoint always synchronizes permissions, data access sets, and shareable security filters. You can optionally synchronize user group assignments and direct permissions assignments to users."
     servicing.NonVersionedSyncResponseDTO:
       type: object
       properties:

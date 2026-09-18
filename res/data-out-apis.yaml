@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3168
+  version: 22222222.99201.3173
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1788,7 +1788,7 @@ components:
             - HIDE
             - ELIMINATE
           type: string
-          description: Show or hide zeros in the result. Default is `SHOW`.
+          description: "Show or hide zeros in the result. Default is `SHOW`. Valid values:\n * `SHOW`: Returns cells with zero values.\n * `HIDE`: Removes cells with zero values if all other cells on the same axis position are also hidden because of zeros, nulls, or no records.\n * `ELIMINATE`: Drops cells with zero values regardless of neighboring cells."
           format: enum
         nullVisibility:
           enum:
@@ -1796,7 +1796,15 @@ components:
             - HIDE
             - ELIMINATE
           type: string
-          description: Show or hide null or N/A values in the result. Default is `SHOW`.
+          description: "Show or hide null or N/A values in the result. Default is `SHOW`. Valid values:\n * `SHOW`: Returns cells with null values.\n * `HIDE`: Removes cells with null values if all other cells on the same axis position are also hidden because of zeros, nulls, or no records.\n * `ELIMINATE`: Drops cells with null values regardless of neighboring cells."
+          format: enum
+        noRecordVisibility:
+          enum:
+            - SHOW
+            - HIDE
+            - ELIMINATE
+          type: string
+          description: "Show or hide cells that don't have records in the result. Default is `SHOW`. Valid values: \n * `SHOW`: Returns cells that don't have records.\n * `HIDE`: Removes cells that don't have records if all other cells on the same axis position are hidden because of zeros, nulls, or no records.\n * `ELIMINATE`: Drops cells that don't have records regardless of neighboring cells."
           format: enum
         cellDistributionOptions:
           $ref: '#/components/schemas/dataservices.query.CellDistributionOptionsDTO'
