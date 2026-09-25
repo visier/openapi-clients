@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3173
+  version: 22222222.99201.3190
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1489,6 +1489,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.ProjectDTO'
+    delete:
+      tags:
+        - Projects
+      summary: Delete draft projects
+      description: "Delete draft projects in bulk. Projects are archived first if applicable.\n\n Projects are processed independently. The response lists successfully deleted projects and projects that failed to delete."
+      operationId: Projects_DeleteProjects
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.BulkProjectDeleteRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.BulkProjectDeleteResponseDTO'
   /v1/admin/projects/{projectId}:
     get:
       tags:
@@ -1678,7 +1709,7 @@ paths:
       tags:
         - Permissions
       summary: Synchronize versioned security artifacts
-      description: "Copy permissions, data access sets, security filters, user groups, and direct user assignments from the versioned environment to the non-versioned environment. This operation immediately applies security configurations, independent of data versioning.\n\n The versioned environment uses projects and data versions, while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions, data access sets, and security filters. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Use this operation to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants."
+      description: "Copy permissions, data access sets, security filters, user groups, and direct user assignments from the versioned environment to the non-versioned environment. This operation immediately applies security configurations, independent of data versioning.\n\n The versioned environment uses projects and data versions, while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions, data access sets, and security filters. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Set `excludeSuffix` to `true` to use the versioned display names without the `<<NonVersioned>>` suffix. This also removes the suffix from existing synchronized artifacts even if the versioned names haven't changed. The default is `false`.\n\n Use this operation to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants."
       operationId: Permissions_SyncToNonVersioned
       parameters:
         - name: TargetTenantID
@@ -5047,7 +5078,7 @@ paths:
       tags:
         - DataModel
       summary: Update Vee question categories
-      description: "Replace existing Vee sample question category definitions, such as the display name or icon.\n \n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the question category."
+      description: "Replace existing Vee sample question category definitions, such as the display name or icon.\n\n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the question category."
       operationId: DataModel_PutVeeSampleQuestionCategories
       parameters:
         - name: TargetTenantID
@@ -5259,7 +5290,7 @@ paths:
       tags:
         - DataModel
       summary: Update Vee sample questions
-      description: "Replace existing sample question definitions.\n \n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the sample question."
+      description: "Replace existing sample question definitions.\n\n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the sample question."
       operationId: DataModel_PutVeeSampleQuestions
       parameters:
         - name: TargetTenantID
@@ -13031,7 +13062,7 @@ paths:
             type: string
         - name: method
           in: query
-          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan only if every row passes validation. If any row fails, the load fails with a `422` response and the plan is unchanged.\n`method` applies to row-level validation errors only. A request that can't be accepted at all, such as one with an invalid ID or an unusable file, fails with a `400` response whichever `method` you use, and no rows are inspected."
+          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan only if every row passes validation. If any row fails, the load fails with a 422 response and the plan is unchanged.\n`method` applies to row-level validation errors only. A request that can't be accepted at all, such as one with an invalid ID or an unusable file, fails with a 400 response whichever `method` you use, and no rows are inspected."
           required: false
           schema:
             type: string
@@ -13080,7 +13111,7 @@ paths:
         "422":
           description: 'The request was accepted but the contents of the file could not be applied to the plan, so the plan is unchanged. This is the response to a `STRICT_UPLOAD` in which at least one row failed validation.
 
-            Inspect the `errors` array for the row-level reasons. A `VALIDATE` request reports the same errors with a `200` response, because reporting them is the purpose of that method.'
+            Inspect the `errors` array for the row-level reasons. A `VALIDATE` request reports the same errors with a 200 response, because reporting them is the purpose of that method.'
           content:
             application/json:
               schema:
@@ -13101,7 +13132,7 @@ paths:
             type: string
         - name: method
           in: query
-          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan only if every row passes validation. If any row fails, the load fails with a `422` response and the plan is unchanged.\n`method` applies to row-level validation errors only. A request that can't be accepted at all, such as one with an invalid ID or an unusable file, fails with a `400` response whichever `method` you use, and no rows are inspected."
+          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan only if every row passes validation. If any row fails, the load fails with a 422 response and the plan is unchanged.\n`method` applies to row-level validation errors only. A request that can't be accepted at all, such as one with an invalid ID or an unusable file, fails with a 400 response whichever `method` you use, and no rows are inspected."
           required: false
           schema:
             type: string
@@ -13150,7 +13181,7 @@ paths:
         "422":
           description: 'The request was accepted but the contents of the file could not be applied to the plan, so the plan''s rows are unchanged. This is the response to a `STRICT_UPLOAD` in which at least one row failed validation.
 
-            Inspect the `errors` array for the row-level reasons. A `VALIDATE` request reports the same errors with a `200` response, because reporting them is the purpose of that method.'
+            Inspect the `errors` array for the row-level reasons. A `VALIDATE` request reports the same errors with a 200 response, because reporting them is the purpose of that method.'
           content:
             application/json:
               schema:
@@ -19660,12 +19691,15 @@ components:
             - $ref: '#/components/schemas/designer.DataProviderBasicInformationDTO'
           description: The display name and description for the credential.
         dataProviderMetadata:
-          $ref: '#/components/schemas/designer.DataProviderBasicMetadataDTO'
+          allOf:
+            - $ref: '#/components/schemas/designer.DataProviderBasicMetadataDTO'
+          description: Additional metadata for the data provider.
     designer.DataProviderAuthParamsDTO:
       type: object
       properties:
         tenantDomainName:
           type: string
+          description: The tenant-specific domain name used to connect to the data provider.
         provider:
           enum:
             - Bamboo
@@ -19834,13 +19868,16 @@ components:
       properties:
         displayName:
           type: string
+          description: A display name for the credential.
         description:
           type: string
+          description: A description of the credential.
     designer.DataProviderBasicMetadataDTO:
       type: object
       properties:
         canChildrenInherit:
           type: boolean
+          description: If `true`, analytic tenants can inherit this credential.
     designer.DataVersionExportColumnDTO:
       type: object
       properties:
@@ -24086,6 +24123,27 @@ components:
           items:
             $ref: '#/components/schemas/servicing.DataAccessSetIdDTO'
           description: The data access sets to revert.
+    servicing.BulkProjectDeleteRequestDTO:
+      type: object
+      properties:
+        projectIds:
+          type: array
+          items:
+            type: string
+          description: A list of draft projects to delete.
+    servicing.BulkProjectDeleteResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ProjectDTO'
+          description: The draft projects that were deleted.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ProjectDeleteFailureDTO'
+          description: The draft projects that were not deleted.
     servicing.BulkSecurityFilterDeleteRequestDTO:
       type: object
       properties:
@@ -24978,6 +25036,9 @@ components:
             type: string
             format: enum
           description: "Optional types to synchronize. Specify which artifact types to include in the sync operation. Valid values:\n - `UserGroups`: Synchronizes user group assignments.\n - `UserDirectAssignments`: Synchronizes direct permission assignments to users.\n\n Data access sets, security filters, and permissions are always synchronized regardless of this setting."
+        excludeSuffix:
+          type: boolean
+          description: "If `true`, exclude the `<<NonVersioned>>` suffix from synchronized artifact display names.\n This also removes the suffix from existing synchronized artifacts even if the versioned names haven't changed. Default is `false`."
       description: "Request to copy permissions, data access sets, shareable security filters, user groups, and user direct assignments from the versioned environment to the non-versioned environment. This operation immediately applies the security configurations, independent of data versioning.\n This endpoint always synchronizes permissions, data access sets, and shareable security filters. You can optionally synchronize user group assignments and direct permissions assignments to users."
     servicing.NonVersionedSyncResponseDTO:
       type: object
@@ -25318,6 +25379,15 @@ components:
           type: string
           description: The type of the project. Omit when creating a new project.
           format: enum
+    servicing.ProjectDeleteFailureDTO:
+      type: object
+      properties:
+        projectId:
+          type: string
+          description: The unique identifier of the project.
+        message:
+          type: string
+          description: A description of why the project failed to delete.
     servicing.ProjectOperationRequestDTO:
       type: object
       properties:

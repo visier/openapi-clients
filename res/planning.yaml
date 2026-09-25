@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3173
+  version: 22222222.99201.3190
 paths:
   /v1/planning/data/events:
     get:
@@ -249,7 +249,7 @@ paths:
             type: string
         - name: method
           in: query
-          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan only if every row passes validation. If any row fails, the load fails with a `422` response and the plan is unchanged.\n`method` applies to row-level validation errors only. A request that can't be accepted at all, such as one with an invalid ID or an unusable file, fails with a `400` response whichever `method` you use, and no rows are inspected."
+          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan only if every row passes validation. If any row fails, the load fails with a 422 response and the plan is unchanged.\n`method` applies to row-level validation errors only. A request that can't be accepted at all, such as one with an invalid ID or an unusable file, fails with a 400 response whichever `method` you use, and no rows are inspected."
           required: false
           schema:
             type: string
@@ -298,7 +298,7 @@ paths:
         '422':
           description: 'The request was accepted but the contents of the file could not be applied to the plan, so the plan is unchanged. This is the response to a `STRICT_UPLOAD` in which at least one row failed validation.
 
-            Inspect the `errors` array for the row-level reasons. A `VALIDATE` request reports the same errors with a `200` response, because reporting them is the purpose of that method.'
+            Inspect the `errors` array for the row-level reasons. A `VALIDATE` request reports the same errors with a 200 response, because reporting them is the purpose of that method.'
           content:
             application/json:
               schema:
@@ -319,7 +319,7 @@ paths:
             type: string
         - name: method
           in: query
-          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan only if every row passes validation. If any row fails, the load fails with a `422` response and the plan is unchanged.\n`method` applies to row-level validation errors only. A request that can't be accepted at all, such as one with an invalid ID or an unusable file, fails with a `400` response whichever `method` you use, and no rows are inspected."
+          description: "Sets how to validate the data being loaded into Visier. Default is `STRICT_UPLOAD`. Valid values:\n  - `VALIDATE`: Runs a test load through all validation steps without putting data into the plan. Use `VALIDATE` to find errors before using `STRICT_UPLOAD` to load data.\n  - `SKIP_ERRORS`: Loads all data without errors into the plan. Rows with errors are excluded from the plan update.\n  - `STRICT_UPLOAD`: Loads data into the plan only if every row passes validation. If any row fails, the load fails with a 422 response and the plan is unchanged.\n`method` applies to row-level validation errors only. A request that can't be accepted at all, such as one with an invalid ID or an unusable file, fails with a 400 response whichever `method` you use, and no rows are inspected."
           required: false
           schema:
             type: string
@@ -368,7 +368,7 @@ paths:
         '422':
           description: 'The request was accepted but the contents of the file could not be applied to the plan, so the plan''s rows are unchanged. This is the response to a `STRICT_UPLOAD` in which at least one row failed validation.
 
-            Inspect the `errors` array for the row-level reasons. A `VALIDATE` request reports the same errors with a `200` response, because reporting them is the purpose of that method.'
+            Inspect the `errors` array for the row-level reasons. A `VALIDATE` request reports the same errors with a 200 response, because reporting them is the purpose of that method.'
           content:
             application/json:
               schema:

@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3173
+  version: 22222222.99201.3190
 paths:
   /v1/api/pgp-keys:
     get:
@@ -3536,12 +3536,15 @@ components:
             - $ref: '#/components/schemas/designer.DataProviderBasicInformationDTO'
           description: The display name and description for the credential.
         dataProviderMetadata:
-          $ref: '#/components/schemas/designer.DataProviderBasicMetadataDTO'
+          allOf:
+            - $ref: '#/components/schemas/designer.DataProviderBasicMetadataDTO'
+          description: Additional metadata for the data provider.
     designer.DataProviderAuthParamsDTO:
       type: object
       properties:
         tenantDomainName:
           type: string
+          description: The tenant-specific domain name used to connect to the data provider.
         provider:
           enum:
             - Bamboo
@@ -3710,13 +3713,16 @@ components:
       properties:
         displayName:
           type: string
+          description: A display name for the credential.
         description:
           type: string
+          description: A description of the credential.
     designer.DataProviderBasicMetadataDTO:
       type: object
       properties:
         canChildrenInherit:
           type: boolean
+          description: If `true`, analytic tenants can inherit this credential.
     designer.DatabricksAuthParamsDTO:
       type: object
       properties:
