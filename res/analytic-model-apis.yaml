@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3173
+  version: 22222222.99201.3190
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -1785,7 +1785,7 @@ paths:
       tags:
         - DataModel
       summary: Update Vee question categories
-      description: "Replace existing Vee sample question category definitions, such as the display name or icon.\n \n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the question category."
+      description: "Replace existing Vee sample question category definitions, such as the display name or icon.\n\n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the question category."
       operationId: DataModel_PutVeeSampleQuestionCategories
       parameters:
         - name: TargetTenantID
@@ -1997,7 +1997,7 @@ paths:
       tags:
         - DataModel
       summary: Update Vee sample questions
-      description: "Replace existing sample question definitions.\n \n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the sample question."
+      description: "Replace existing sample question definitions.\n\n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the sample question."
       operationId: DataModel_PutVeeSampleQuestions
       parameters:
         - name: TargetTenantID

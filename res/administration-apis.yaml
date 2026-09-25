@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3173
+  version: 22222222.99201.3190
 paths:
   /v1/admin/capabilities:
     get:
@@ -1393,6 +1393,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/servicing.ProjectDTO'
+    delete:
+      tags:
+        - Projects
+      summary: Delete draft projects
+      description: "Delete draft projects in bulk. Projects are archived first if applicable.\n\n Projects are processed independently. The response lists successfully deleted projects and projects that failed to delete."
+      operationId: Projects_DeleteProjects
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.BulkProjectDeleteRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.BulkProjectDeleteResponseDTO'
   /v1/admin/projects/{projectId}:
     get:
       tags:
@@ -1582,7 +1613,7 @@ paths:
       tags:
         - Permissions
       summary: Synchronize versioned security artifacts
-      description: "Copy permissions, data access sets, security filters, user groups, and direct user assignments from the versioned environment to the non-versioned environment. This operation immediately applies security configurations, independent of data versioning.\n\n The versioned environment uses projects and data versions, while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions, data access sets, and security filters. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Use this operation to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants."
+      description: "Copy permissions, data access sets, security filters, user groups, and direct user assignments from the versioned environment to the non-versioned environment. This operation immediately applies security configurations, independent of data versioning.\n\n The versioned environment uses projects and data versions, while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions, data access sets, and security filters. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Set `excludeSuffix` to `true` to use the versioned display names without the `<<NonVersioned>>` suffix. This also removes the suffix from existing synchronized artifacts even if the versioned names haven't changed. The default is `false`.\n\n Use this operation to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants."
       operationId: Permissions_SyncToNonVersioned
       parameters:
         - name: TargetTenantID
@@ -6564,6 +6595,27 @@ components:
           items:
             $ref: '#/components/schemas/servicing.DataAccessSetIdDTO'
           description: The data access sets to revert.
+    servicing.BulkProjectDeleteRequestDTO:
+      type: object
+      properties:
+        projectIds:
+          type: array
+          items:
+            type: string
+          description: A list of draft projects to delete.
+    servicing.BulkProjectDeleteResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ProjectDTO'
+          description: The draft projects that were deleted.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.ProjectDeleteFailureDTO'
+          description: The draft projects that were not deleted.
     servicing.BulkSecurityFilterDeleteRequestDTO:
       type: object
       properties:
@@ -7217,6 +7269,9 @@ components:
             type: string
             format: enum
           description: "Optional types to synchronize. Specify which artifact types to include in the sync operation. Valid values:\n - `UserGroups`: Synchronizes user group assignments.\n - `UserDirectAssignments`: Synchronizes direct permission assignments to users.\n\n Data access sets, security filters, and permissions are always synchronized regardless of this setting."
+        excludeSuffix:
+          type: boolean
+          description: "If `true`, exclude the `<<NonVersioned>>` suffix from synchronized artifact display names.\n This also removes the suffix from existing synchronized artifacts even if the versioned names haven't changed. Default is `false`."
       description: "Request to copy permissions, data access sets, shareable security filters, user groups, and user direct assignments from the versioned environment to the non-versioned environment. This operation immediately applies the security configurations, independent of data versioning.\n This endpoint always synchronizes permissions, data access sets, and shareable security filters. You can optionally synchronize user group assignments and direct permissions assignments to users."
     servicing.NonVersionedSyncResponseDTO:
       type: object
@@ -7547,6 +7602,15 @@ components:
           type: string
           description: The type of the project. Omit when creating a new project.
           format: enum
+    servicing.ProjectDeleteFailureDTO:
+      type: object
+      properties:
+        projectId:
+          type: string
+          description: The unique identifier of the project.
+        message:
+          type: string
+          description: A description of why the project failed to delete.
     servicing.ProjectOperationRequestDTO:
       type: object
       properties:
