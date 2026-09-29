@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3190
+  version: 22222222.99201.3198
 paths:
   /v1/auth/oauth2/userinfo:
     get:
@@ -121,7 +121,7 @@ paths:
       parameters:
         - name: redirect_uri
           in: query
-          description: The optional URI to redirect to after authorization.
+          description: The optional URI to redirect to after authorization. Defaults to the first redirect URI in the pre-registered client application.
           required: false
           schema:
             type: string
@@ -142,6 +142,12 @@ paths:
           description: 'The OAuth 2.0 scope of the authorization request. Default is `read`.
 
             If the scope includes `visier:login:bypass_users`, the redirect login URL ends in `/auth/admin` instead of `/auth`. This allows single sign-on (SSO) Bypass Users to sign in through Visier instead of being redirected to the SSO login page.'
+          required: false
+          schema:
+            type: string
+        - name: resource
+          in: query
+          description: The target resource URI(s) for the requested token (RFC 8707). Defaults to `client_id`. Must be an absolute URI without a fragment. Repeat this parameter to specify multiple resources.
           required: false
           schema:
             type: string
@@ -439,40 +445,45 @@ components:
         grant_type:
           description: 'The grant type. Supported values:
 
-            - `authorization_code`: The authorization code grant type.
+            - `authorization_code`: The standard authorization code grant type.
 
-            - `password`: The password grant type.
+            - `refresh_token`: The standard refresh token grant type, used to obtain a new access token (and a new refresh token if client enabled refresh token rotation).
 
-            - `urn:ietf:params:oauth:grant-type:saml2-bearer`: The saml2-bearer grant type.
+            - `password`: The password grant type, used to obtain tokens by providing username and password; available only for confidential clients.
 
-            - `urn:visier:params:oauth:grant-type:asid-token`: The ASID token grant type.'
+            - `urn:ietf:params:oauth:grant-type:saml2-bearer`: The standard SAML 2.0 bearer grant type.
+
+            - `urn:visier:params:oauth:grant-type:asid-token`: The ASID token grant type, used to exchange ASID token for access token; available only when client enabled ASID token grant.'
           type: string
         client_id:
           description: The unique identifier of the pre-registered client application.
           type: string
         client_secret:
-          description: The secret of the pre-registered client application.
+          description: The secret of the pre-registered client application. Applicable only for confidential clients.
           type: string
         redirect_uri:
           description: The optional URI to redirect to after authorization.
           type: string
+        resource:
+          description: "The target Resource Server URI where the requested token will be spent (RFC 8707). Defaults to `client_id`. Must be an absolute URI without a fragment. Only one resource target is supported per request.\n  - For `authorization_code` and `refresh_token` grants, this must match one of the resources registered during the initial authorization request.\n  - For all other grants, this can be any valid absolute URI without a fragment."
+          type: string
         code:
-          description: The authorization code. Applicable only for authorization code grant type.
+          description: The authorization code. Applicable only for `authorization_code` grant type.
           type: string
         username:
-          description: The username of the user to authenticate. Applicable only for password grant type.
+          description: The username of the user to authenticate. Applicable only for `password` grant type.
           type: string
         password:
-          description: The password of the user to authenticate. Applicable only for password grant type.
+          description: The password of the user to authenticate. Applicable only for `password` grant type.
           type: string
         asid_token:
-          description: The ASID token. Applicable only for ASID token grant type.
+          description: The ASID token. Applicable only for `urn:visier:params:oauth:grant-type:asid-token` grant type.
           type: string
         assertion:
-          description: The SAML assertion. Applicable only for saml2-bearer grant type.
+          description: The SAML assertion. Applicable only for `urn:ietf:params:oauth:grant-type:saml2-bearer` grant type.
           type: string
         refresh_token:
-          description: The refresh token. Applicable only for refresh_token grant type.
+          description: The refresh token. Applicable only for `refresh_token` grant type.
           type: string
       description: Token request body definition.
     Status:
