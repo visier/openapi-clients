@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3198
+  version: 22222222.99201.3207
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1854,7 +1854,7 @@ components:
         source:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregationQuerySourceDTO'
-          description: The source data, such as a metric or formula, to query.
+          description: The source data, such as a metric or formula, to query. This field is required.
         filters:
           type: array
           items:
@@ -1868,12 +1868,12 @@ components:
         timeIntervals:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryTimeIntervalsDTO'
-          description: The time intervals to query.
+          description: The time intervals to query. This field is required.
         parameterValues:
           type: array
           items:
             $ref: '#/components/schemas/dataservices.query.QueryParameterValueDTO'
-          description: The values associated with parameters, if defined.
+          description: The values associated with parameters, if defined. Omit `parameterValues` if no parameters are required.
       description: "An AggregationQuery defines the data to query in an aggregation query and returns a `cell set` calculated from\n the selected data points."
     dataservices.query.AggregationQueryExecutionDTO:
       type: object
@@ -1881,7 +1881,7 @@ components:
         query:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregationQueryDTO'
-          description: "The data to perform an aggregation on, such as a metric or formula. The query must include a time interval,\n and may optionally include filters and axes."
+          description: The data to perform an aggregation on, such as a metric or formula. The query must include `source` and `timeIntervals` and may optionally include `filters`, `axes`, and `parameterValues`.
         options:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
@@ -3638,6 +3638,9 @@ components:
         leafMembersOnly:
           type: boolean
           description: If `true`, the response only includes leaf dimension members. Default is `false`.
+        excludeDataMembers:
+          type: boolean
+          description: If `true`, the response contains no data members. Default is `false`.
     servicing.DimensionSearchContextDTO:
       type: object
       properties:

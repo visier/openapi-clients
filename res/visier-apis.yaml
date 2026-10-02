@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3198
+  version: 22222222.99201.3207
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -12692,7 +12692,7 @@ paths:
             type: string
         - name: resource
           in: query
-          description: The target resource URI(s) for the requested token (RFC 8707). Defaults to `client_id`. Must be an absolute URI without a fragment. Repeat this parameter to specify multiple resources.
+          description: The target resource URIs for the requested token, as defined in RFC 8707. Default is `client_id`. Use an absolute URI without a fragment. To specify multiple resources, repeat this parameter.
           required: false
           schema:
             type: string
@@ -16551,6 +16551,9 @@ components:
         visier:tenant_id:
           type: string
           description: The unique identifier of the user's tenant.
+        locale:
+          type: string
+          description: The language the user's Visier profile is set to.
       description: Response from OAuth 2 `userinfo` endpoint.
     authentication.OAuth2UserSubnetInfoDTO:
       type: object
@@ -18059,7 +18062,7 @@ components:
         source:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregationQuerySourceDTO'
-          description: The source data, such as a metric or formula, to query.
+          description: The source data, such as a metric or formula, to query. This field is required.
         filters:
           type: array
           items:
@@ -18073,12 +18076,12 @@ components:
         timeIntervals:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.QueryTimeIntervalsDTO'
-          description: The time intervals to query.
+          description: The time intervals to query. This field is required.
         parameterValues:
           type: array
           items:
             $ref: '#/components/schemas/dataservices.query.QueryParameterValueDTO'
-          description: The values associated with parameters, if defined.
+          description: The values associated with parameters, if defined. Omit `parameterValues` if no parameters are required.
       description: "An AggregationQuery defines the data to query in an aggregation query and returns a `cell set` calculated from\n the selected data points."
     dataservices.query.AggregationQueryExecutionDTO:
       type: object
@@ -18086,7 +18089,7 @@ components:
         query:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregationQueryDTO'
-          description: "The data to perform an aggregation on, such as a metric or formula. The query must include a time interval,\n and may optionally include filters and axes."
+          description: The data to perform an aggregation on, such as a metric or formula. The query must include `source` and `timeIntervals` and may optionally include `filters`, `axes`, and `parameterValues`.
         options:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AggregateQueryExecutionOptionsDTO'
@@ -24476,6 +24479,9 @@ components:
         leafMembersOnly:
           type: boolean
           description: If `true`, the response only includes leaf dimension members. Default is `false`.
+        excludeDataMembers:
+          type: boolean
+          description: If `true`, the response contains no data members. Default is `false`.
     servicing.DimensionSearchContextDTO:
       type: object
       properties:
@@ -28140,13 +28146,13 @@ components:
 
             - `authorization_code`: The standard authorization code grant type.
 
-            - `refresh_token`: The standard refresh token grant type, used to obtain a new access token (and a new refresh token if client enabled refresh token rotation).
+            - `refresh_token`: The standard refresh token grant type. Use it to obtain a new access token. If refresh token rotation is enabled, you also obtain a new refresh token.
 
-            - `password`: The password grant type, used to obtain tokens by providing username and password; available only for confidential clients.
+            - `password`: The password grant type. Use it to obtain tokens by providing a username and password. Only confidential clients can use this grant type.
 
             - `urn:ietf:params:oauth:grant-type:saml2-bearer`: The standard SAML 2.0 bearer grant type.
 
-            - `urn:visier:params:oauth:grant-type:asid-token`: The ASID token grant type, used to exchange ASID token for access token; available only when client enabled ASID token grant.'
+            - `urn:visier:params:oauth:grant-type:asid-token`: The ASID token grant type. Use it to exchange an ASID token for an access token. Must enable the ASID token grant to use this grant type.'
           type: string
         client_id:
           description: The unique identifier of the pre-registered client application.
@@ -28158,7 +28164,7 @@ components:
           description: The optional URI to redirect to after authorization.
           type: string
         resource:
-          description: "The target Resource Server URI where the requested token will be spent (RFC 8707). Defaults to `client_id`. Must be an absolute URI without a fragment. Only one resource target is supported per request.\n  - For `authorization_code` and `refresh_token` grants, this must match one of the resources registered during the initial authorization request.\n  - For all other grants, this can be any valid absolute URI without a fragment."
+          description: "The target resource server URI where you use the requested token, as defined in RFC 8707. Default is `client_id`. Use an absolute URI without a fragment. You can specify only one resource target per request.\n  - For `authorization_code` and `refresh_token` grants, specify one of the resources registered during the initial authorization request.\n  - For all other grants, use any valid absolute URI without a fragment."
           type: string
         code:
           description: The authorization code. Applicable only for `authorization_code` grant type.
