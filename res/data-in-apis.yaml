@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3207
+  version: 22222222.99201.3209
 paths:
   /v1/api/pgp-keys:
     get:
@@ -3723,6 +3723,14 @@ components:
         canChildrenInherit:
           type: boolean
           description: If `true`, analytic tenants can inherit this credential.
+        sqlTableInheritanceMode:
+          enum:
+            - SQL_TABLE_INHERITANCE_MODE_NONE
+            - SQL_TABLE_INHERITANCE_MODE_DESIGN_ONLY
+            - SQL_TABLE_INHERITANCE_MODE_FULL_DATA
+            - SQL_TABLE_INHERITANCE_MODE_FILTERED_DATA
+          type: string
+          format: enum
     designer.DatabricksAuthParamsDTO:
       type: object
       properties:
