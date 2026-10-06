@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3209
+  version: 22222222.99201.3216
 paths:
   /v1/api/pgp-keys:
     get:
@@ -4723,6 +4723,9 @@ components:
           items:
             $ref: '#/components/schemas/servicing.sqlsource.SqlSourceMaterializedViewDependencyDTO'
           description: The list of upstream data tables whose changes trigger incremental updates to the materialized view.
+        forceFullRegeneration:
+          type: boolean
+          description: If `true`, automatically refresh this materialized view with full regeneration instead of an incremental MERGE. Default is `false`.
     servicing.sqlsource.SqlSourceMaterializedViewDependencyDTO:
       type: object
       properties:
