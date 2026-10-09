@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3216
+  version: 22222222.99201.3221
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -8284,6 +8284,146 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/admin.KeyName'
+  /v1alpha/admin/pilot-features/features:
+    get:
+      tags:
+        - PilotFeatures
+      summary: Retrieve pilot features
+      description: "Retrieve the pilot features available for the tenant, along with their configurations. For analytic tenants, this list includes only the features the administrating tenant makes available.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PilotFeatures_GetPilotFeatures
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.GetPilotFeaturesResponseDTO'
+  /v1alpha/admin/pilot-features/tenant-config:
+    get:
+      tags:
+        - PilotFeatures
+      summary: Retrieve tenant-level pilot feature configurations
+      description: "Retrieve the configurations of each pilot feature available to your tenant.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PilotFeatures_GetTenantPilotFeatureConfigs
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.GetTenantPilotFeatureConfigsResponseDTO'
+    patch:
+      tags:
+        - PilotFeatures
+      summary: Partially update tenant-level pilot feature configurations
+      description: "Partially update configurations to enable or disable pilot features across your tenant.\n Administrating tenants can set whether the feature is available to analytic tenants and its default state.\n Only pilot features specified are updated. A `featureKey` may only appear once in the request body.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PilotFeatures_SetTenantPilotFeatureConfigs
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.SetTenantPilotFeatureConfigsRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SetPilotFeatureConfigsResponseDTO'
+  /v1alpha/admin/pilot-features/user-preferences:
+    get:
+      tags:
+        - PilotFeatures
+      summary: Retrieve user-level pilot feature configurations
+      description: "Retrieve your user-level pilot feature configurations.\n User-level configurations are set at the administrating tenant level and apply across all analytic tenants.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PilotFeatures_GetUserPilotFeatureConfigs
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.GetUserPilotFeatureConfigsResponseDTO'
+    patch:
+      tags:
+        - PilotFeatures
+      summary: Partially update user-level pilot feature configurations
+      description: "Partially update configurations to enable or disable pilot features for your user account. \n User-level configurations are set at the administrating tenant level and apply across all analytic tenants.\n Only pilot features specified are updated. A `featureKey` may only appear once in the request body.\n\n **Note:** <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      operationId: PilotFeatures_SetUserPilotFeatureConfigs
+      parameters:
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/servicing.SetUserPilotFeatureConfigsRequestDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servicing.SetPilotFeatureConfigsResponseDTO'
   /v1alpha/admin/product/releases:
     get:
       tags:
@@ -24838,6 +24978,15 @@ components:
             $ref: '#/components/schemas/servicing.PermissionDTO'
           description: The available permissions.
       description: The list of available permissions.
+    servicing.GetPilotFeaturesResponseDTO:
+      type: object
+      properties:
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.PilotFeatureDTO'
+          description: Pilot features available for the tenant.
+      description: Response containing the pilot features available for the tenant. For analytic tenants, this list includes only the features the administrating tenant makes available.
     servicing.GetProductionVersionsAPIResponseDTO:
       type: object
       properties:
@@ -24877,6 +25026,24 @@ components:
           items:
             $ref: '#/components/schemas/servicing.SecurityFilterDTO'
           description: A list of shareable security filters.
+    servicing.GetTenantPilotFeatureConfigsResponseDTO:
+      type: object
+      properties:
+        pilotFeatureConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.TenantPilotFeatureConfigDTO'
+          description: The tenant-level configurations of each pilot feature available to your tenant.
+      description: Response containing the tenant-level configuration of every available pilot feature.
+    servicing.GetUserPilotFeatureConfigsResponseDTO:
+      type: object
+      properties:
+        pilotFeatureConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.UserPilotFeatureConfigDTO'
+          description: The user-level configuration of each pilot feature available in the current environment.
+      description: "Response containing the user-level configuration of every available pilot feature.\n\n Not available on an analytic tenant. Personal pilot feature preferences are held by the administrating tenant and apply\n across all of its analytic tenants, so both reading and changing them are done against the administrating tenant."
     servicing.HierarchyPropertyDTO:
       type: object
       properties:
@@ -25230,6 +25397,69 @@ components:
         correlationId:
           type: string
           description: An identifier to associate the matching request field. Only returned if a `correlationId` was defined for the corresponding request field.
+    servicing.PilotFeatureDTO:
+      type: object
+      properties:
+        featureKey:
+          type: string
+          description: The unique identifier of the pilot feature.
+        displayName:
+          type: string
+          description: The display name of the pilot feature.
+        description:
+          type: string
+          description: The description of the pilot feature, including its functionality and limitations.
+        type:
+          enum:
+            - PILOT_FEATURE_TYPE_UNSPECIFIED
+            - BETA
+            - GENERAL_AVAILABILITY_SCHEDULED
+          type: string
+          description: "The pilot feature type. Valid values:\n - `BETA`: The feature is in beta with no scheduled General Availability date.\n - `GENERAL_AVAILABILITY_SCHEDULED`: The feature is scheduled for General Availability."
+          format: enum
+        releaseDate:
+          type: string
+          description: "The ISO 8601 date the pilot period ends and the feature moves to General Availability.\n Only applicable when the pilot feature type is `GENERAL_AVAILABILITY_SCHEDULED`."
+        learnMoreUrl:
+          type: string
+          description: The URL for documentation about the pilot feature.
+        userConfig:
+          allOf:
+            - $ref: '#/components/schemas/servicing.UserPilotFeatureConfigDTO'
+          description: "The pilot feature's user-level configuration.\n This configuration is set at the administrating tenant level and applies across all analytic tenants."
+        tenantConfig:
+          allOf:
+            - $ref: '#/components/schemas/servicing.TenantPilotFeatureConfigDTO'
+          description: The pilot feature's tenant-level configurations.
+      description: A pilot feature, its descriptive metadata, and its tenant-level and user-level configurations.
+    servicing.PilotFeatureUpdateErrorDTO:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The details of the error and actions you can take to update the pilot feature configurations correctly.
+        rci:
+          type: string
+          description: A root cause identifier that allows Visier to determine the source of the problem.
+      description: The error that prevented the pilot feature configurations update from succeeding.
+    servicing.PilotFeatureUpdateFailureDTO:
+      type: object
+      properties:
+        featureKey:
+          type: string
+          description: The unique identifier of the pilot feature.
+        error:
+          allOf:
+            - $ref: '#/components/schemas/servicing.PilotFeatureUpdateErrorDTO'
+          description: The error associated with the unsuccessful action.
+      description: A pilot feature update that was not applied, and the failure reason.
+    servicing.PilotFeatureUpdateSuccessDTO:
+      type: object
+      properties:
+        featureKey:
+          type: string
+          description: The unique identifier of the pilot feature.
+      description: A pilot feature update that was applied.
     servicing.ProductionVersionAPIOperationRequestDTO:
       type: object
       properties:
@@ -25751,6 +25981,38 @@ components:
         correlationId:
           type: string
           description: The correlation identifier for the matching request field. Only returned if you defined a `correlationId` in the request.
+    servicing.SetPilotFeatureConfigsResponseDTO:
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.PilotFeatureUpdateSuccessDTO'
+          description: The pilot features for which the request succeeded.
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.PilotFeatureUpdateFailureDTO'
+          description: The pilot features for which the request failed.
+      description: The outcome of a pilot feature configuration update.
+    servicing.SetTenantPilotFeatureConfigsRequestDTO:
+      type: object
+      properties:
+        pilotFeatureConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.TenantPilotFeatureConfigDTO'
+          description: The tenant-level configurations to update.
+      description: Request to change tenant-level pilot feature configuration.
+    servicing.SetUserPilotFeatureConfigsRequestDTO:
+      type: object
+      properties:
+        pilotFeatureConfigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.UserPilotFeatureConfigDTO'
+          description: The user-level configurations to update.
+      description: "Request containing the user-level pilot feature configurations to update.\n User-level configurations are set at the administrating tenant level and apply across all analytic tenants."
     servicing.SettingsDTO:
       type: object
       properties:
@@ -26092,6 +26354,28 @@ components:
           items:
             $ref: '#/components/schemas/servicing.TenantDataUploadUpdateStatusResponseDTO'
           description: The results of the data upload exclusion.
+    servicing.TenantPilotFeatureConfigDTO:
+      type: object
+      properties:
+        featureKey:
+          type: string
+          description: The unique identifier of the pilot feature.
+        tenantLevelEnabled:
+          type: boolean
+          description: "If `true`, the pilot feature is enabled for the tenant.\n For analytic tenants, this value reflects the tenant's own override when `tenantLevelOverridden` is `true`. Otherwise, it reflects the administrating tenant's default.\n When updating tenant-level configurations for analytic tenants, this field is optional if `tenantLevelOverridden` is `false`."
+        tenantLevelOverridden:
+          type: boolean
+          description: If `true`, the analytic tenant has its own setting that overrides the setting inherited from the administrating tenant.
+        analyticTenantAccess:
+          enum:
+            - ANALYTIC_TENANT_ACCESS_UNSPECIFIED
+            - UNAVAILABLE
+            - AVAILABLE_DEFAULT_ON
+            - AVAILABLE_DEFAULT_OFF
+          type: string
+          description: "Whether the pilot feature is available at the analytic tenant level. If available, whether it is enabled or disabled by default.\n Required when updating tenant-level configurations for administrating tenants. Omit it for other tenant types, where `UNAVAILABLE` is assumed by default. Valid values:\n - `UNAVAILABLE`: The feature is not available for analytic tenants.\n - `AVAILABLE_DEFAULT_ON`: The pilot feature is available for analytic tenants and enabled by default.\n - `AVAILABLE_DEFAULT_OFF`: The pilot feature is available for analytic tenants and disabled by default."
+          format: enum
+      description: The tenant-level configurations for a pilot feature.
     servicing.TenantSourceFilesListResponseDTO:
       type: object
       properties:
@@ -26187,6 +26471,16 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.ErrorDTO'
           description: The details about the error.
+    servicing.UserPilotFeatureConfigDTO:
+      type: object
+      properties:
+        featureKey:
+          type: string
+          description: The unique identifier of the pilot feature.
+        userLevelEnabled:
+          type: boolean
+          description: If `true`, the pilot feature is enabled for your user account.
+      description: The user-level configurations for a pilot feature.
     servicing.UserPropertyDTO:
       type: object
       properties:
@@ -29495,6 +29789,15 @@ tags:
       <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
 
       If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
+  - name: PilotFeatures
+    x-displayName: Pilot Features
+    description: 'Manage early access and beta features for your tenant. You can enable features for an entire tenant or for yourself. Administrating tenants can also manage access for their analytic tenants. Feature availability also depends on each user''s security profile and capabilities.
+
+      <br/>
+
+      <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.
+
+      If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>'
   - name: DataModel
     x-displayName: Data Model
     description: "Discover objects in your Visier solution and view schema details. Retrieve objects by listing all objects or by object ID. Object types available in data model APIs:\n  * Analytic objects\n  * Properties\n  * Dimensions\n  * Selection concepts\n  * Metrics\n  * Predictions\n  * Vee sample questions and categories"
@@ -29604,6 +29907,7 @@ x-tagGroups:
       - SidecarSolutions
       - ReleaseVersionConfiguration
       - DataVersionSnapshot
+      - PilotFeatures
   - name: analytic model
     tags:
       - DataModel
