@@ -13,25 +13,25 @@ theme:
           borderRadius: '16px'
       colors:
         http:
-          get: '#dbf1d1'
-          put: '#dcd1f0'
-          delete: '#ffdada'
-          post: '#cceefd'
-          patch: '#fff4d5'
+          get: '#0e861f'
+          put: '#0c4e99'
+          delete: '#992929'
+          post: '#ca7900'
+          patch: '#2f106c'
         text:
-          light: '#000000'
+          light: '#0f0f0e'
         primary:
-          main: '#45c2cc'
+          main: '#f1481d'
         responses:
           success: 
-            color: '#4CBB17'
+            color: '#63c670'
           error:
-            color: '#FF4444'
+            color: '#ff4444'
       layout:
         showDarkRightPanel: false
       sidebar:
-        backgroundColor: '#f5fcfd'
-        activeTextColor: '#1b7a7f'
+        backgroundColor: '#fbf8f4'
+        activeTextColor: '#f1481d'
         spacing:
           unit: 0
           paddingVertical: '0px'
@@ -41,16 +41,16 @@ theme:
           offsetLeft: '0px'
         width: '20%'
       rightPanel: 
-        backgroundColor: '#ffffff'
-        textColor: '#f1f5f9'
+        backgroundColor: '#fbf8f4'
+        textColor: '#0f0f0e'
       codeBlock: 
-        backgroundColor: '#334155'
+        backgroundColor: '#313130'
       typography:
         fontFamily: 'inherit'
         fontSize: 'inherit'
         headings:
           fontFamily: 'inherit'
         code: 
-          color: '#000000'
+          color: '#0f0f0e'
           fontSize: 'inherit'
           wrap: true
