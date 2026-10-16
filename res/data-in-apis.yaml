@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3221
+  version: 22222222.99201.3229
 paths:
   /v1/api/pgp-keys:
     get:
@@ -2538,6 +2538,9 @@ components:
         runProcessingJob:
           type: boolean
           description: If `true`, runs a processing job after the consolidated analytics job completes. Default is `false`.
+        pipelineName:
+          type: string
+          description: Optionally, specify a display name for the job pipeline. If unspecified, Visier generates a name based on the job type.
     admin.jobs.ExtractDataAndLoadDTO:
       type: object
       properties:
@@ -2630,6 +2633,9 @@ components:
         outputTarget:
           type: string
           description: "The output of the extraction. Default is `Receiving`. Valid values:\n - `Receiving`: A receiving job.\n - `SQL`: A SQL job for table sources."
+        pipelineName:
+          type: string
+          description: Optionally, specify a display name for the job pipeline. If unspecified, Visier generates a name based on the job type.
     admin.jobs.ProcessingJobRequestDTO:
       type: object
       properties:
@@ -2652,6 +2658,9 @@ components:
           items:
             type: string
           description: The unique identifiers of the tenants to exclude from the extraction job. Only valid if `allTenants` is `true`.
+        pipelineName:
+          type: string
+          description: Optionally, specify a display name for the job pipeline. If unspecified, Visier generates a name based on the job type.
     admin.AssignConnectorCredentialsByTenantResponseDTO:
       type: object
       properties:
