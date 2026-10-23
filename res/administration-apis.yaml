@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3229
+  version: 22222222.99201.3241
 paths:
   /v1/admin/capabilities:
     get:
@@ -5292,7 +5292,7 @@ components:
           description: The custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability, embedded visualizations, or email content.
         clickThroughLinkEnabled:
           type: string
-          description: Whether the click-through link is enabled or disabled.
+          description: Whether the click-through link is enabled or disabled. Enabled if `clickThroughLink` is a URL. Disabled if `clickThroughLink` is a blank string `""`.
         defaultCurrency:
           type: string
           description: The default currency to show in the application for the tenant.
@@ -5407,7 +5407,7 @@ components:
           description: If `true`, the tenant is enabled. Enabled tenants have access to Visier visualizations.
         clickThroughLink:
           type: string
-          description: A custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability, embedded visualizations, or email content. This is optional. Causes the API request to take longer because it must publish a project to production.
+          description: A custom URL to redirect users into your portal to see the relevant content. This URL is used for links that are shared by and with your users through the sharing capability, embedded visualizations, or email content. To disable the click-through link, specify a blank string `""`. Causes the API request to take longer because it must publish a project to production.
         defaultCurrency:
           type: string
           description: The default currency to show in the application for the tenant.
