@@ -106,7 +106,7 @@ paths:
         - api_key: []
   /v1/compensation-benchmarks/base-salary/feedback:
     post:
-      summary: Submit feedback to improve salary benchmark values
+      summary: Submit salary benchmark values feedback
       tags: [Benchmarks]
       operationId: "SubmitSalaryBenchmarkFeedback"
       description: |
@@ -156,11 +156,11 @@ paths:
         - api_key: []
   /v1/compensation-benchmarks/base-salaries:
     post:
-      summary: Get salary benchmark values in bulk
+      summary: Retrieve salary benchmark values
       tags: [Benchmarks]
       operationId: "GetSalaryBenchmarksInBulk"
       description: |
-        Retrieve multiple base salary benchmark values in a single request.
+        Retrieve salary benchmark values in bulk.
       requestBody:
         description: |
           A batch request takes a JSON object consisting of an array of your requests. You can batch up to 1000 individual requests in one API call.
@@ -202,6 +202,106 @@ paths:
         credentials: "${apigateway_role}"
         httpMethod: "POST"
         uri: "${lambda-get-batch-benchmarks-arn}"
+      security:
+        - api_key: []
+  /v1/compensation-benchmarks/compensation-ranges:
+    post:
+      summary: Retrieve compensation benchmark values
+      tags: [Benchmarks]
+      operationId: "GetCompensationBenchmarks"
+      description: |
+        Retrieve compensation benchmark values in bulk.
+      requestBody:
+        description: |
+          A batch request takes a JSON object consisting of an array of your requests. You can batch up to 1000 individual requests in one API call.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompensationBenchmarkInputs"
+        required: true
+      responses:
+        "200":
+          description: "The bulk request was completed. Review the responses individually to see which actions were successful. \nIf you receive a 400 status code for an individual response, it indicates missing parameters, invalid members, or no benchmark values were found.\n"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompensationBenchmarksBatchProcessingOutputs"
+        "400":
+          description: |
+            The API request failed due to invalid JSON input, empty input or it exceeded the bulk size limit of 1000 individual requests.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-get-batch-benchmarks-arn}"
+      security:
+        - api_key: []
+  /v1/compensation-benchmarks/compensation-ranges/feedback:
+    post:
+      summary: Submit compensation benchmark values feedback
+      tags: [Benchmarks]
+      operationId: "SubmitCompensationBenchmarkFeedback"
+      description: |
+        Give feedback for a compensation benchmark value returned by `POST /v1/compensation-benchmarks/compensation-ranges`. To submit feedback, include the benchmark value's:
+          * ID values you defined in `POST /v1/compensation-benchmarks/compensation-ranges`.
+          * `referenceDate` and `releaseDate` returned by `POST /v1/compensation-benchmarks/compensation-ranges`.
+          * Optional `additionalComments` up to 750 characters.
+      requestBody:
+        description: |
+          The feedback to submit.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompensationBenchmarkFeedbackInput"
+        required: true
+      responses:
+        "204":
+          description: |
+            Your feedback has been submitted successfully.
+        "400":
+          description: |
+            Your feedback could not be submitted. Ensure all mandatory fields are included in the request body.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: |
+            An unexpected exception occurred on the server.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "504":
+          description: |
+            The server is taking too long to respond and the request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+      x-amazon-apigateway-integration:
+        credentials: "${apigateway_role}"
+        httpMethod: "POST"
+        uri: "${lambda-submit-benchmark-feedback-arn}"
+        type: "aws_proxy"
       security:
         - api_key: []
   /v1/compensation-benchmarks/jobs:
@@ -474,7 +574,7 @@ paths:
         - api_key: []
   /v1/compensation-benchmarks/jobs/standardize:
     post:
-      summary: Standardize custom job titles in bulk
+      summary: Standardize custom job titles
       tags: [Dimensions]
       operationId: "StandardizeJobsInBulk"
       description: |
@@ -867,7 +967,7 @@ paths:
         - api_key: []
   /v1/compensation-benchmarks/locations/search:
     post:
-      summary: Get location members in bulk
+      summary: Get location members
       tags: [Dimensions]
       operationId: "SearchLocationsInBulk"
       description: |
@@ -1053,7 +1153,7 @@ paths:
         - api_key: []
   /v1/compensation-benchmarks/career-levels/search:
     post:
-      summary: Get career level members in bulk
+      summary: Get career level members
       tags: [Dimensions]
       operationId: "SearchCareerLevelsInBulk"
       description: |
@@ -1657,6 +1757,52 @@ components:
         required:
           - uuid
           - job
+    CompensationBenchmarkInputs:
+      description: |
+        A list of compensation query parameters for bulk operation. The maximum batch size is 1000.
+      type: "array"
+      items:
+        title: CompensationBenchmarkInput
+        type: object
+        properties:
+          uuid:
+            type: "string"
+            description: |
+              A unique identifier of the individual requests.
+          job:
+            type: "string"
+            description: |
+              The job member ID.
+          industry:
+            type: string
+            description: |
+              The industry member ID. If the ID is not provided, the response returns the benchmark value across all industries.
+          naicsCode:
+            type: string
+            description: |
+              The North American Industry Classification System (NAICS) code.
+
+              If the NAICS code is not provided, the response returns the benchmark value across all industries.
+              If both `naicsCode` and `industry` are provided, the response returns the benchmark value for the `industry` parameter. The entered `naicsCode` will not be applied.
+          location:
+            type: string
+            description: |
+              The location member ID. If the ID is not provided, the response returns the benchmark value across all locations.
+          companySize:
+            type: string
+            description: |
+              The company size member ID. If the ID is not provided, the response returns the benchmark value across all company sizes.
+          careerLevel:
+            type: string
+            description: |
+              The career level member ID. If the ID is not provided, the response returns the benchmark value across all career levels.
+          matchDate:
+            type: string
+            description: |
+              The date on which the career level was matched in `yyyy-MM-dd` format. A `matchDate` allows precise migration of career levels according to job architecture changes released since the match was made. If `matchDate` is not available, the migration assumes the most recent possible match date for the provided career level.
+        required:
+          - uuid
+          - job
     SalaryBenchmarksBatchProcessingOutputs:
       description: |
         All operations in the bulk request were completed.
@@ -1670,9 +1816,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SalaryBenchmarksBatchProcessingFailureOutput'
+    CompensationBenchmarksBatchProcessingOutputs:
+      description: |
+        All operations in the bulk request were completed.
+      type: object
+      properties:
+        successes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompensationBenchmarksBatchProcessingSuccessfulOutput'
+        failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalaryBenchmarksBatchProcessingFailureOutput'
     SalaryBenchmarksBatchProcessingSuccessfulOutput:
       description: |
-        The compensation benchmark values for individual requests within a bulk request.
+        The salary benchmark values for individual requests within a bulk request.
       type: object
       properties:
         uuid:
@@ -1732,6 +1891,104 @@ components:
         - percentile90
         - alignedRangeMin
         - alignedRangeMax
+        - referenceDate
+        - releaseDate
+        - industryId
+        - careerLevelId
+    CompensationBenchmarksBatchProcessingSuccessfulOutput:
+      description: |
+        The compensation benchmark values for individual requests within a bulk request.
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: |
+            A unique identifier of the individual requests.
+        salaryPercentile10:
+          type: integer
+          description: |
+            The 10th percentile base pay.
+        salaryPercentile25:
+          type: integer
+          description: |
+            The 25th percentile base pay.
+        salaryPercentile50:
+          type: integer
+          description: |
+            The 50th percentile base pay.
+        salaryPercentile75:
+          type: integer
+          description: |
+            The 75th percentile base pay.
+        salaryPercentile90:
+          type: integer
+          description: |
+            The 90th percentile base pay.
+        salaryAlignedRangeMin:
+          type: integer
+          description: |
+            The lower bound of salaries that are aligned with the market.
+        salaryAlignedRangeMax:
+          type: integer
+          description: |
+            The upper bound of salaries that are aligned with the market.
+        stiPercentile10:
+          type: number
+          description: |
+            The 10th percentile short term incentive.
+        stiPercentile25:
+          type: number
+          description: |
+            The 25th percentile short term incentive.
+        stiPercentile50:
+          type: number
+          description: |
+            The 50th percentile short term incentive.
+        stiPercentile75:
+          type: number
+          description: |
+            The 75th percentile short term incentive.
+        stiPercentile90:
+          type: number
+          description: |
+            The 90th percentile short term incentive.
+        stiEligible:
+          type: boolean
+          description: |
+            True if this member is eligible for short term incentive benchmark.
+            False if this member is ineligible for short term incentive benchmark.
+        stiExcludedJob:
+          type: boolean
+          description: |
+            True if this member's job is excluded for short term incentive benchmark.
+            False if this member's job is available for short term incentive benchmark.
+        referenceDate:
+          type: string
+          description: |
+            The date that benchmark values are calculated for.
+        releaseDate:
+          type: string
+          description: |
+            The date that benchmark values are released.
+        industryId:
+          type: string
+          description: |
+            The industry member ID for the returned benchmarks.
+        careerLevelId:
+          type: string
+          description: |
+            The career level member ID for the returned benchmarks.
+      required:
+        - uuid
+        - salaryPercentile10
+        - salaryPercentile25
+        - salaryPercentile50
+        - salaryPercentile75
+        - salaryPercentile90
+        - salaryAlignedRangeMin
+        - salaryAlignedRangeMax
+        - stiEligible
+        - stiExcludedJob
         - referenceDate
         - releaseDate
         - industryId
@@ -1830,6 +2087,66 @@ components:
           type: string
           description: |
             Optional written feedback about the salary benchmark values.
+            The maximum is 750 characters.
+      required:
+        - job
+        - location
+        - careerLevel
+        - industry
+        - companySize
+        - referenceDate
+        - releaseDate
+    CompensationBenchmarkFeedbackInput:
+      title: CompensationBenchmarkFeedbackInput
+      description: |
+        The compensation benchmark value for which to submit feedback.
+      type: object
+      properties:
+        job:
+          type: string
+          description: |
+            The job member ID for the compensation benchmark.
+        location:
+          type: string
+          description: |
+            The location member ID for the compensation benchmark.
+        careerLevel:
+          type: string
+          description: |
+            The career level member ID for the compensation benchmark.
+        industry:
+          type: string
+          description: |
+            The industry member ID for the compensation benchmark.
+        companySize:
+          type: string
+          description: |
+            The company size member ID for the compensation benchmark.
+        referenceDate:
+          type: string
+          description: |
+            The date that benchmark values are calculated for. The format is YYYY-MM-DD.
+        releaseDate:
+          type: string
+          description: |
+            The date that benchmark values are released. The format is YYYY-MM-DD.
+        naicsCode:
+          type: string
+          description: |
+            If provided, the `naicsCode` in `POST /v1/compensation-benchmarks/compensation-ranges`.
+        compensationTypes:
+          type: array
+          items:
+            type: string
+            enum:
+              - salary
+              - bonus
+          description: |
+            The compensation types the feedback applies to.
+        additionalComments:
+          type: string
+          description: |
+            Optional written feedback about the compensation benchmark values.
             The maximum is 750 characters.
       required:
         - job

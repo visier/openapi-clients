@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3229
+  version: 22222222.99201.3241
 paths:
   /v1/api/pgp-keys:
     get:
@@ -3739,6 +3739,7 @@ components:
             - SQL_TABLE_INHERITANCE_MODE_FULL_DATA
             - SQL_TABLE_INHERITANCE_MODE_FILTERED_DATA
           type: string
+          description: "The options to share read-only SQL table data with tenants. Default is `SQL_TABLE_INHERITANCE_MODE_NONE`. Valid values:\n - `SQL_TABLE_INHERITANCE_MODE_NONE`: Don't inherit SQL tables.\n - `SQL_TABLE_INHERITANCE_MODE_DESIGN_ONLY`: Inherit the table design but not the data.\n - `SQL_TABLE_INHERITANCE_MODE_FULL_DATA`: Inherit the table design and all of the data.\n - `SQL_TABLE_INHERITANCE_MODE_FILTERED_DATA`: Inherit the table design and a filtered view of the data for each analytic tenant."
           format: enum
     designer.DatabricksAuthParamsDTO:
       type: object
