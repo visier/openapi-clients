@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3241
+  version: 22222222.99201.3244
 paths:
   /v1/api/pgp-keys:
     get:
@@ -532,6 +532,85 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/designer.CredentialCreationAPIResponseDTO'
+  /v1/op/data-connector-credentials/{id}:
+    put:
+      tags:
+        - DataAndJobHandling
+      summary: Update a connector credential
+      description: "Update a data connector credential. Only settings present in the request body change. Use this endpoint to rotate secrets, such as a Snowflake private key, without reassigning the credential to its data connectors.\n\n To keep stored secrets, omit `dataProviderAuthParams`. To replace authentication parameters, provide the complete `dataProviderAuthParams` for the credential's provider, including secrets and private keys in plain text. Visier authenticates the new parameters before saving them. Masked values like `********` aren't accepted.\n\n Example Snowflake (Limited Availability) key rotation request body:\n ```json\n {\n   \"dataProviderAuthParams\": {\n     \"provider\": \"SnowflakeV2\",\n     \"snowflakeV2AuthParams\": {\n       \"accountIdentifier\": \"exampleAccount\",\n       \"database\": \"exampleDatabase\",\n       \"schema\": \"exampleSchema\",\n       \"username\": \"exampleUser\",\n       \"privateKey\": \"-----BEGIN PRIVATE KEY-----...\"\n     }\n   }\n }\n ```"
+      operationId: DataAndJobHandling_UpdateConnectorCredential
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the credential to update.
+          required: true
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: The tenant code of a specific analytic tenant in which to update the credential.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/designer.UpdateConnectorCredentialDTO'
+        required: true
+      responses:
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/designer.ExtractorCredentialAPIDTO'
+    delete:
+      tags:
+        - DataAndJobHandling
+      summary: Delete a connector credential
+      description: "Use this endpoint to delete connector credentials from your tenants. Credentials that are no longer valid\n should be deleted."
+      operationId: DataAndJobHandling_DeleteConnectorCredential
+      parameters:
+        - name: id
+          in: path
+          description: The `credentialId` of the credential you want to delete.
+          required: true
+          schema:
+            type: string
+        - name: tenantCode
+          in: query
+          description: The tenant code of the analytic tenant in which the credential you're deleting.
+          schema:
+            type: string
+        - name: TargetTenantID
+          in: header
+          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
   /v1/op/data-connectors:
     get:
       tags:
@@ -2388,43 +2467,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataResponse'
-        default:
-          description: Default error response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Status'
-  /v1/op/data-connector-credentials/{id}:
-    delete:
-      tags:
-        - DataAndJobHandling
-      summary: Delete a connector credential
-      description: "Use this endpoint to delete connector credentials from your tenants. Credentials that are no longer valid\n should be deleted."
-      operationId: DataAndJobHandling_DeleteConnectorCredential
-      parameters:
-        - name: id
-          in: path
-          description: The `credentialId` of the credential you want to delete.
-          required: true
-          schema:
-            type: string
-        - name: tenantCode
-          in: query
-          description: The tenant code of the analytic tenant in which the credential you're deleting.
-          schema:
-            type: string
-        - name: TargetTenantID
-          in: header
-          description: Optionally, specify the tenant that you want to execute the API call on. This defines the tenant that you're logged into. If omitted, the request uses the administrating tenant as the login tenant.
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: string
         default:
           description: Default error response
           content:
@@ -4302,6 +4344,31 @@ components:
           type: string
         userAccessKey:
           type: string
+    designer.UpdateConnectorCredentialDTO:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The display name of the connector credential. If unspecified, the display name doesn't change.
+        description:
+          type: string
+          description: The description of the connector credential. If unspecified, the description doesn't change.
+        dataProviderAuthParams:
+          allOf:
+            - $ref: '#/components/schemas/designer.DataProviderAuthParamsDTO'
+          description: "The authentication parameters for the credential. If unspecified, the stored authentication parameters, including secrets, don't change.\n If provided, the new parameters replace the stored authentication parameters in full and Visier authenticates them before saving. Provide every\n parameter the data provider requires, with secrets and private keys in plain text. Masked values like `********` aren't accepted.\n The `provider` value must match the data provider of the existing credential."
+        canChildrenInherit:
+          type: boolean
+          description: If `true`, analytic tenants can inherit this credential. If unspecified, the setting doesn't change.
+        sqlTableInheritanceMode:
+          enum:
+            - SQL_TABLE_INHERITANCE_MODE_NONE
+            - SQL_TABLE_INHERITANCE_MODE_DESIGN_ONLY
+            - SQL_TABLE_INHERITANCE_MODE_FULL_DATA
+            - SQL_TABLE_INHERITANCE_MODE_FILTERED_DATA
+          type: string
+          description: "The options to share read-only SQL table data with tenants. If unspecified, the setting doesn't change. Valid values:\n - `SQL_TABLE_INHERITANCE_MODE_NONE`: Don't inherit SQL tables.\n - `SQL_TABLE_INHERITANCE_MODE_DESIGN_ONLY`: Inherit the table design but not the data.\n - `SQL_TABLE_INHERITANCE_MODE_FULL_DATA`: Inherit the table design and all of the data.\n - `SQL_TABLE_INHERITANCE_MODE_FILTERED_DATA`: Inherit the table design and a filtered view of the data for each analytic tenant."
+          format: enum
     designer.VivaGlintAuthParamsDTO:
       type: object
       properties:
