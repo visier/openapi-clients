@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3244
+  version: 22222222.99201.3254
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -657,7 +657,7 @@ paths:
       tags:
         - Permissions
       summary: Update permissions
-      description: Update existing permissions.
+      description: "Update existing permissions. Updating permission definitions does not upload security data or change the provisioned source or mapping.\n\n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the security filter. For example, preserve `userSubjectMemberAccessMappingSubject` when updating a member filter to retain user to data file population access; omit it to remove the reference."
       operationId: Permissions_UpdatePermissions
       parameters:
         - name: tenantCode
@@ -709,7 +709,7 @@ paths:
       tags:
         - Permissions
       summary: Create permissions
-      description: Create new permissions.
+      description: "Create new permissions.\n Dynamic population access supports:\n - User to dimension population access. Use `dimensionFilters.dynamicDimensionFilter`. \n - User to data file population access. Use `userSubjectMemberAccessMappingSubject` on a member filter. Data file references use the provisioned `UserSubjectMemberAccess_<Subject>` mapping. \n Manage sources, mappings, file uploads, and data loads separately through data provisioning workflows."
       operationId: Permissions_CreatePermissions
       parameters:
         - name: tenantCode
@@ -1709,7 +1709,7 @@ paths:
       tags:
         - Permissions
       summary: Synchronize versioned security artifacts
-      description: "Copy permissions, data access sets, security filters, user groups, and direct user assignments from the versioned environment to the non-versioned environment. This operation immediately applies security configurations, independent of data versioning.\n\n The versioned environment uses projects and data versions, while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions, data access sets, and security filters. You can optionally synchronize user group assignments and direct permissions assignments to users.\n\n Set `excludeSuffix` to `true` to use the versioned display names without the `<<NonVersioned>>` suffix. This also removes the suffix from existing synchronized artifacts even if the versioned names haven't changed. The default is `false`.\n\n Use this operation to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants."
+      description: "Copy permissions, data access sets, security filters, user groups, and direct user assignments from the versioned environment to the non-versioned environment. This operation immediately applies security configurations, independent of data versioning.\n\n The versioned environment uses projects and data versions, while the non-versioned environment applies changes directly.\n\n This endpoint always synchronizes permissions, data access sets, and security filters. You can optionally synchronize user group assignments and direct permissions assignments to users. Synchronization preserves user to dimension and user to data file security filters during sync. User to population file is not supported.\n \n Sync does not create or modify sources, mappings, or loaded mapping records.\n\n Set `excludeSuffix` to `true` to use the versioned display names without the `<<NonVersioned>>` suffix. This also removes the suffix from existing synchronized artifacts even if the versioned names haven't changed. The default is `false`.\n\n Use this operation to apply security configurations immediately without waiting for data version changes. This is particularly useful for administrating tenants syncing security artifacts to analytic tenants."
       operationId: Permissions_SyncToNonVersioned
       parameters:
         - name: TargetTenantID
@@ -1800,7 +1800,7 @@ paths:
       tags:
         - Permissions
       summary: Update shareable security filters
-      description: Update shareable security filters. Shareable data access sets let you reuse common populations across multiple permissions.
+      description: "Update shareable security filters. Shareable security filters let you reuse common populations across multiple permissions. \n\n `PUT` requests replace existing definitions. Provide the complete object definition in the request body. Omitted fields are removed from the security filter. For example, preserve `userSubjectMemberAccessMappingSubject` in the request body to retain a data file reference; omitting it removes that reference."
       operationId: Permissions_UpdateSecurityFilters
       parameters:
         - name: TargetTenantID
@@ -1847,7 +1847,7 @@ paths:
       tags:
         - Permissions
       summary: Create shareable security filters
-      description: Create shareable security filters. Shareable data access sets let you reuse common populations across multiple permissions.
+      description: "Create shareable security filters to reuse common populations across multiple permissions.\n Specify one of the following parameters to set population access.\n - Member filter: `dimensionFilters.staticDimensionFilter`\n - User to dimension: `dimensionFilters.dynamicDimensionFilter`\n - User to data file: `userSubjectMemberAccessMappingSubject`\n Provision sources, mappings, uploads, and data separately through data provisioning workflows."
       operationId: Permissions_CreateSecurityFilters
       parameters:
         - name: TargetTenantID
@@ -10308,7 +10308,7 @@ paths:
       tags:
         - Search
       summary: Search Visier objects
-      description: "Search Visier objects, such as metrics, dimensions, dimension members, concepts, analytic objects, and properties.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Search Visier objects, such as metrics, dimensions (including concept dimensions), dimension members, analytic objects, and properties.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Search_ContextSearchDocumentHeaders
       parameters:
         - name: TargetTenantID
@@ -24132,7 +24132,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.UserIdErrorDTO'
-          description: The user IDs that may not be valid.
+          description: The unique identifiers of users that may not be valid.
         failedAssignments:
           type: array
           items:
@@ -24142,7 +24142,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.SuccessfulAccessibleTenantProfileAssignmentDTO'
-          description: The user IDs that were successfully assigned the profiles.
+          description: The unique identifiers of users that were successfully assigned the profiles.
     servicing.AccessibleTenantProfileRevokeRequestDTO:
       type: object
       properties:
@@ -24168,17 +24168,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.ReducedUserIdErrorDTO'
-          description: The user IDs that may not be valid.
+          description: The unique identifiers of users that may not be valid.
         unaffectedUsers:
           type: array
           items:
             $ref: '#/components/schemas/servicing.SuccessfulLocalTenantProfileAssignmentDTO'
-          description: The valid user IDs that were not affected.
+          description: The users whose request did not fully succeed. Processing stops at the first failure. Requests processed before the failure may have been applied, and remaining requests were not attempted.
         succeeded:
           type: array
           items:
             $ref: '#/components/schemas/servicing.SuccessfulLocalTenantProfileAssignmentDTO'
-          description: The valid user IDs that succeeded.
+          description: The unique identifiers of valid users that succeeded.
+        failedUnassignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/servicing.FailedAccessibleTenantProfileRevokeDTO'
+          description: The errors encountered during profile unassignment. Processing stops at the first failure. Profile unassignments processed before the failure may have been applied, and remaining unassignments were not attempted.
     servicing.AdditionalCapabilitiesDTO:
       type: object
       properties:
@@ -24585,15 +24590,6 @@ components:
         description:
           type: string
           description: A description of the committed change.
-    servicing.ConceptSearchContextDTO:
-      type: object
-      properties:
-        analyticObjectId:
-          type: string
-          description: The unique identifier of the analytic object to which the concept belongs.
-        metricId:
-          type: string
-          description: The unique identifier of the metric to which the concept applies.
     servicing.ContentPackageArtifactDTO:
       type: object
       properties:
@@ -25063,13 +25059,29 @@ components:
       properties:
         userId:
           type: string
-          description: The impacted user ID.
+          description: The unique identifier of the impacted user.
         tenantCode:
           type: string
           description: The tenant code.
         forAllChildren:
           type: boolean
           description: If `true`, the target assignment is for all analytic tenants.
+        error:
+          allOf:
+            - $ref: '#/components/schemas/servicing.ErrorDTO'
+          description: The details about the error.
+    servicing.FailedAccessibleTenantProfileRevokeDTO:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The unique identifier of the impacted user.
+        tenantCode:
+          type: string
+          description: The tenant code.
+        forAllChildren:
+          type: boolean
+          description: If `true`, the profile removal is for all analytic tenants of this tenant.
         error:
           allOf:
             - $ref: '#/components/schemas/servicing.ErrorDTO'
@@ -25100,7 +25112,7 @@ components:
       properties:
         userId:
           type: string
-          description: The impacted user ID.
+          description: The unique identifier of the impacted user.
         error:
           allOf:
             - $ref: '#/components/schemas/servicing.ErrorDTO'
@@ -25110,7 +25122,7 @@ components:
       properties:
         userId:
           type: string
-          description: The impacted user ID.
+          description: The unique identifier of the impacted user.
         message:
           type: string
           description: The details about the error.
@@ -25298,7 +25310,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.UserIdErrorDTO'
-          description: The user IDs that may not be valid.
+          description: The unique identifiers of users that may not be valid.
         failedAssignments:
           type: array
           items:
@@ -25308,7 +25320,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.SuccessfulLocalTenantProfileAssignmentDTO'
-          description: The user IDs that were successfully assigned the profile.
+          description: The unique identifiers of users that were successfully assigned the profile.
     servicing.LocalTenantProfileRevokeRequestDTO:
       type: object
       properties:
@@ -25324,12 +25336,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.FailedLocalTenantProfileRevokeDTO'
-          description: The errors that occurred during the assignment operation.
+          description: The errors that occurred during the unassignment operation.
         succeeded:
           type: array
           items:
             $ref: '#/components/schemas/servicing.SuccessfulLocalTenantProfileAssignmentDTO'
-          description: The user IDs that successfully had a profile removed.
+          description: The unique identifiers of users that successfully had a profile unassigned.
     servicing.MemberFilterConfigDTO:
       type: object
       properties:
@@ -25338,6 +25350,9 @@ components:
           items:
             $ref: '#/components/schemas/servicing.DimensionFilterDTO'
           description: "The custom filters that define population access for the item. \n A custom filter can be a member filter (`staticDimensionFilter`) or a dynamic filter (`dynamicDimensionFilter`)."
+        userSubjectMemberAccessMappingSubject:
+          type: string
+          description: "A user to data file dynamic filter. This grants population access based on the analytic object's `UserSubjectMemberAccess_` mapping. To set user to data file population access, create the source and mapping, upload data, and run a job.\n Setting this field only impacts the permission. \n Versioned and non-versioned permissions share records through this reference.\n Omit this field in read-modify-write updates to remove the reference from the filter.\n The subject must match the analytic object that the filter secures. This is the data security profile's `analyticObjectId`, or the inherited access config's `analyticObjectId` for inherited filters."
     servicing.MemberSelectionDTO:
       type: object
       properties:
@@ -25992,7 +26007,7 @@ components:
       properties:
         userId:
           type: string
-          description: The bad user ID.
+          description: The unique identifier of the user that had an error.
         error:
           allOf:
             - $ref: '#/components/schemas/servicing.ReducedErrorDTO'
@@ -26115,6 +26130,9 @@ components:
         correlationId:
           type: string
           description: "An optional identifier to associate bulk request fields with their corresponding response fields. Correlation IDs can be between 3 and 64 characters long and\n consist of alphanumeric characters, `-`, and `_`.\n\n **Note**:\n - Each request field must have a unique `correlationId`.\n - You can't reuse a `correlationId` in subsequent `POST` requests while the ID is active. A `correlationId` is active for 7 days after creation."
+        userSubjectMemberAccessMappingSubject:
+          type: string
+          description: "A user to data file dynamic filter. This grants population access based on the analytic object's `UserSubjectMemberAccess_` mapping. To set user to data file population access, create the source and mapping, upload data, and run a job.\n Setting this field only impacts the security filter.\n Versioned and non-versioned security filters share records through this reference.\n Omit this field in read-modify-write updates to remove the reference from the security filter.\n The subject must match the analytic object that the filter secures. This is the data security profile's `analyticObjectId`."
     servicing.SecurityFilterErrorDTO:
       type: object
       properties:
@@ -26351,7 +26369,7 @@ components:
       properties:
         userId:
           type: string
-          description: The user ID.
+          description: The unique identifier of the user.
         tenantCode:
           type: string
           description: The tenant code.
@@ -26379,7 +26397,7 @@ components:
       properties:
         userId:
           type: string
-          description: The user ID.
+          description: The unique identifier of the user.
     servicing.SynonymListDTO:
       type: object
       properties:
@@ -26643,7 +26661,7 @@ components:
       properties:
         userId:
           type: string
-          description: The bad user ID.
+          description: The unique identifier of the user that had an error.
         error:
           allOf:
             - $ref: '#/components/schemas/servicing.ErrorDTO'
@@ -27151,11 +27169,10 @@ components:
             - METRIC
             - DIMENSION
             - DIMENSION_MEMBER
-            - CONCEPT
             - ANALYTIC_OBJECT
             - PROPERTY
           type: string
-          description: "The type of Visier object to search. Valid values:\n - `METRIC`: Search for metrics that match the search strings.\n - `DIMENSION`: Search for dimensions that match the search strings.\n - `DIMENSION_MEMBER`: Search for dimension members that match the search strings.\n - `CONCEPT`: Search for concepts that match the search strings.\n - `ANALYTIC_OBJECT`: Search for analytic objects that match the search strings.\n - `PROPERTY`: Search for properties that match the search strings."
+          description: "The type of Visier object to search. Valid values:\n - `METRIC`: Search for metrics that match the search strings.\n - `DIMENSION`: Search for dimensions, including concept dimensions, that match the search strings.\n - `DIMENSION_MEMBER`: Search for dimension members that match the search strings.\n - `ANALYTIC_OBJECT`: Search for analytic objects that match the search strings.\n - `PROPERTY`: Search for properties that match the search strings."
           format: enum
         limit:
           type: integer
@@ -27175,10 +27192,6 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.DimensionSearchContextDTO'
           description: Additional context to refine a dimension search.
-        conceptSearchContext:
-          allOf:
-            - $ref: '#/components/schemas/servicing.ConceptSearchContextDTO'
-          description: Additional context to refine a concept search.
         dimensionMemberSearchContext:
           allOf:
             - $ref: '#/components/schemas/servicing.DimensionMemberSearchContextDTO'

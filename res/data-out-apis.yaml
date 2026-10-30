@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3244
+  version: 22222222.99201.3254
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1071,7 +1071,7 @@ paths:
       tags:
         - Search
       summary: Search Visier objects
-      description: "Search Visier objects, such as metrics, dimensions, dimension members, concepts, analytic objects, and properties.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
+      description: "Search Visier objects, such as metrics, dimensions (including concept dimensions), dimension members, analytic objects, and properties.\n\n <br/>**Note**: <em>This API is in **alpha**. While in alpha, APIs may change in a breaking way without notice; functionality may be removed, and no deprecation notices will be issued.\n If you are interested in using this API, please contact your Customer Success Manager (CSM).</em>"
       operationId: Search_ContextSearchDocumentHeaders
       parameters:
         - name: TargetTenantID
@@ -3615,15 +3615,6 @@ components:
             - $ref: '#/components/schemas/servicing.SynonymListDTO'
           description: Alternative words or phrases for the object.
       description: Fields that identify and describe the object, such as its display name, description, and explanation.
-    servicing.ConceptSearchContextDTO:
-      type: object
-      properties:
-        analyticObjectId:
-          type: string
-          description: The unique identifier of the analytic object to which the concept belongs.
-        metricId:
-          type: string
-          description: The unique identifier of the metric to which the concept applies.
     servicing.DimensionMemberSearchContextDTO:
       type: object
       properties:
@@ -3716,11 +3707,10 @@ components:
             - METRIC
             - DIMENSION
             - DIMENSION_MEMBER
-            - CONCEPT
             - ANALYTIC_OBJECT
             - PROPERTY
           type: string
-          description: "The type of Visier object to search. Valid values:\n - `METRIC`: Search for metrics that match the search strings.\n - `DIMENSION`: Search for dimensions that match the search strings.\n - `DIMENSION_MEMBER`: Search for dimension members that match the search strings.\n - `CONCEPT`: Search for concepts that match the search strings.\n - `ANALYTIC_OBJECT`: Search for analytic objects that match the search strings.\n - `PROPERTY`: Search for properties that match the search strings."
+          description: "The type of Visier object to search. Valid values:\n - `METRIC`: Search for metrics that match the search strings.\n - `DIMENSION`: Search for dimensions, including concept dimensions, that match the search strings.\n - `DIMENSION_MEMBER`: Search for dimension members that match the search strings.\n - `ANALYTIC_OBJECT`: Search for analytic objects that match the search strings.\n - `PROPERTY`: Search for properties that match the search strings."
           format: enum
         limit:
           type: integer
@@ -3740,10 +3730,6 @@ components:
           allOf:
             - $ref: '#/components/schemas/servicing.DimensionSearchContextDTO'
           description: Additional context to refine a dimension search.
-        conceptSearchContext:
-          allOf:
-            - $ref: '#/components/schemas/servicing.ConceptSearchContextDTO'
-          description: Additional context to refine a concept search.
         dimensionMemberSearchContext:
           allOf:
             - $ref: '#/components/schemas/servicing.DimensionMemberSearchContextDTO'
