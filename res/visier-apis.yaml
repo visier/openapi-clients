@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3254
+  version: 22222222.99201.3271
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -5975,10 +5975,10 @@ paths:
   /v1/op/data-sources:
     get:
       tags:
-        - DataIntake
+        - DataUpload
       summary: Retrieve sources
       description: "Retrieve target sources before transferring data. Sources store data and map it to the Visier data model.\n\n Contact Visier Customer Success to set up new sources. Query this endpoint to list available sources, schemas, and required fields."
-      operationId: DataIntake_GetSources
+      operationId: DataUpload_GetSources
       parameters:
         - name: TargetTenantID
           in: header
@@ -6024,6 +6024,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/data_in.StartTransferResponse'
+      deprecated: true
   /v1/op/data-transfer-sessions/{transferSessionId}/add:
     put:
       tags:
@@ -6078,6 +6079,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataResponse'
+      deprecated: true
   /v1/op/data-transfer-sessions/{transferSessionId}/cancel:
     put:
       tags:
@@ -6110,6 +6112,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataCancelResponse'
+      deprecated: true
   /v1/op/data-versions:
     get:
       tags:
@@ -6753,6 +6756,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataCompleteResponse'
+      deprecated: true
   /v1/op/jobs/receiving-jobs/{receivingJobId}:
     get:
       tags:
@@ -13018,6 +13022,7 @@ paths:
       summary: Transfer data to sources via file upload
       description: "Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the\n data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make\n multiple requests within the same transfer session.\n\n File size limit: 3 GB\n\n Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.\n\n If you define a specific source in the request, all files within the request will target the declared source. If\n a source is not defined, the filenames are matched against the source regex to correctly assign each file to a\n source. To find out the source regex, please contact Visier Customer Success.\n\n **Note**: If you include files that should target multiple sources in one ZIP file, do not define a source in the request.\n\n Analytic tenants: For optimal transfer speed, provide one ZIP file per source.\n Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.\n In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:\n\n File1.zip\n - Folder1: WFF_tenantCode1\n    - Filename1.csv\n    - Filename2.csv\n - Folder2: WFF_tenantCode2\n    - Filename3.csv\n    - Filename4.csv"
       operationId: DataIntake_UploadData
+      deprecated: true
       parameters:
         - name: transferSessionId
           in: path
@@ -13144,7 +13149,9 @@ paths:
       summary: Download a file from a data version export
       description: 'This endpoint allows you to download a file from a data version export.
 
-        Data version export files are in CSV format, compressed with gzip.'
+        Data version export files are in CSV format, compressed with gzip. The response body is the gzip-compressed file with content type `application/gzip`.
+
+        The file is streamed, so the response status is sent before the file contents. If the download is interrupted, the response can still have a 200 status with an incomplete file. To detect incomplete downloads, compare the size of the downloaded file with the file''s `contentLength` from `GET /v1alpha/data/data-version-exports/exports/{exportUuid}` or with the response''s `Content-Length` header.'
       operationId: DataVersionExportV1Alpha_DownloadFile
       parameters:
         - name: exportUuid
@@ -20290,6 +20297,9 @@ components:
         filename:
           type: string
           description: The file's name.
+        contentLength:
+          type: string
+          description: The size of the gzip-compressed file in bytes.
     designer.DataVersionExportScheduleJobRequestDTO:
       type: object
       properties:
@@ -24789,6 +24799,8 @@ components:
           $ref: '#/components/schemas/servicing.StaticDimensionFilterDTO'
         dynamicDimensionFilter:
           $ref: '#/components/schemas/servicing.DynamicDimensionFilterDTO'
+        dynamicDimensionValueFilter:
+          $ref: '#/components/schemas/servicing.DynamicDimensionValueFilterDTO'
     servicing.DimensionMemberSearchContextDTO:
       type: object
       properties:
@@ -24979,6 +24991,35 @@ components:
           type: string
           description: "The dimension's validity status. Valid values:\n * `Valid`: The object exists and has loaded data.\n * `NoData`: The object exists but doesn't have loaded data.\n * `NotFound`: The object doesn't exist."
           format: enum
+    servicing.DynamicDimensionValueFilterDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The unique identifier of the dimension associated with the filter.
+        subjectReferencePath:
+          type: array
+          items:
+            type: string
+          description: The subject reference path from the base analytic object to the object that holds the dimension.
+        sourceHierarchyId:
+          type: string
+          description: The sourcing dimension whose member values determine access to dimensionId.
+        sourceHierarchyPath:
+          type: array
+          items:
+            type: string
+          description: The reference path from the Employee subject to sourceHierarchyId. This reference path may contain forward or reverse references.
+        dimensionStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: "The dimension's validity status. Valid values:\n * `Valid`: The object exists and has loaded data.\n * `NoData`: The object exists but doesn't have loaded data.\n * `NotFound`: The object doesn't exist."
+          format: enum
+      description: "A dynamic filter that derives allowed members by following a dimension reference\n from the user's Employee record. The user's Employee ID is used for the lookup."
     servicing.DynamicPropertyMappingDTO:
       type: object
       properties:
@@ -25349,7 +25390,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.DimensionFilterDTO'
-          description: "The custom filters that define population access for the item. \n A custom filter can be a member filter (`staticDimensionFilter`) or a dynamic filter (`dynamicDimensionFilter`)."
+          description: "The custom filters that define population access for the item. \n A custom filter can be a member filter (`staticDimensionFilter`), a property-mapped dynamic filter\n (`dynamicDimensionFilter`), or a dimension-sourced dynamic filter (`dynamicDimensionValueFilter`)."
         userSubjectMemberAccessMappingSubject:
           type: string
           description: "A user to data file dynamic filter. This grants population access based on the analytic object's `UserSubjectMemberAccess_` mapping. To set user to data file population access, create the source and mapping, upload data, and run a job.\n Setting this field only impacts the permission. \n Versioned and non-versioned permissions share records through this reference.\n Omit this field in read-modify-write updates to remove the reference from the filter.\n The subject must match the analytic object that the filter secures. This is the data security profile's `analyticObjectId`, or the inherited access config's `analyticObjectId` for inherited filters."
@@ -30008,7 +30049,7 @@ tags:
 
       <br/>
 
-      <br/>**Note**: <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>'
+      <br/>**Note**: <em>This API will be removed as of Fall 2027. Use the Data Upload API instead.</em>'
   - name: DataAndJobHandling
     x-displayName: Data and Job Handling
     description: Initiate and manage jobs, included or excluded data, and data connector credentials. Administrating tenant users can manage jobs and data for their analytic tenants.
@@ -30036,7 +30077,7 @@ tags:
     x-displayName: Data Version Export
     description: 'Export Visier data version information, such as tables, columns, and file information, in CSV format.
 
-      Monitor export jobs using `GET /v1alpha/data/data-version-exports/jobs/{jobUuid}`. Use the returned `exportUuid` and `fileId` from `GET /v1alpha/data/data-version-exports/exports/{exportUuid}` to download CSV files.
+      Monitor export jobs using `GET /v1alpha/data/data-version-exports/jobs/{jobUuid}`. Use the returned `exportUuid` and `fileId` from `GET /v1alpha/data/data-version-exports/exports/{exportUuid}` to download gzip-compressed CSV files.
 
       <br/>
 

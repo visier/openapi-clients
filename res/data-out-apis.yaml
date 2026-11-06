@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3254
+  version: 22222222.99201.3271
 paths:
   /v1/data/query/aggregate:
     post:
@@ -1137,7 +1137,9 @@ paths:
       summary: Download a file from a data version export
       description: 'This endpoint allows you to download a file from a data version export.
 
-        Data version export files are in CSV format, compressed with gzip.'
+        Data version export files are in CSV format, compressed with gzip. The response body is the gzip-compressed file with content type `application/gzip`.
+
+        The file is streamed, so the response status is sent before the file contents. If the download is interrupted, the response can still have a 200 status with an incomplete file. To detect incomplete downloads, compare the size of the downloaded file with the file''s `contentLength` from `GET /v1alpha/data/data-version-exports/exports/{exportUuid}` or with the response''s `Content-Length` header.'
       operationId: DataVersionExportV1Alpha_DownloadFile
       parameters:
         - name: exportUuid
@@ -3264,6 +3266,9 @@ components:
         filename:
           type: string
           description: The file's name.
+        contentLength:
+          type: string
+          description: The size of the gzip-compressed file in bytes.
     designer.DataVersionExportScheduleJobRequestDTO:
       type: object
       properties:
@@ -3881,7 +3886,7 @@ tags:
     x-displayName: Data Version Export
     description: 'Export Visier data version information, such as tables, columns, and file information, in CSV format.
 
-      Monitor export jobs using `GET /v1alpha/data/data-version-exports/jobs/{jobUuid}`. Use the returned `exportUuid` and `fileId` from `GET /v1alpha/data/data-version-exports/exports/{exportUuid}` to download CSV files.
+      Monitor export jobs using `GET /v1alpha/data/data-version-exports/jobs/{jobUuid}`. Use the returned `exportUuid` and `fileId` from `GET /v1alpha/data/data-version-exports/exports/{exportUuid}` to download gzip-compressed CSV files.
 
       <br/>
 

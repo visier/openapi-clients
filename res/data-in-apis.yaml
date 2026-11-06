@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3254
+  version: 22222222.99201.3271
 paths:
   /v1/api/pgp-keys:
     get:
@@ -746,10 +746,10 @@ paths:
   /v1/op/data-sources:
     get:
       tags:
-        - DataIntake
+        - DataUpload
       summary: Retrieve sources
       description: "Retrieve target sources before transferring data. Sources store data and map it to the Visier data model.\n\n Contact Visier Customer Success to set up new sources. Query this endpoint to list available sources, schemas, and required fields."
-      operationId: DataIntake_GetSources
+      operationId: DataUpload_GetSources
       parameters:
         - name: TargetTenantID
           in: header
@@ -795,6 +795,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/data_in.StartTransferResponse'
+      deprecated: true
   /v1/op/data-transfer-sessions/{transferSessionId}/add:
     put:
       tags:
@@ -849,6 +850,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataResponse'
+      deprecated: true
   /v1/op/data-transfer-sessions/{transferSessionId}/cancel:
     put:
       tags:
@@ -881,6 +883,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataCancelResponse'
+      deprecated: true
   /v1/op/data-versions:
     get:
       tags:
@@ -1524,6 +1527,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataCompleteResponse'
+      deprecated: true
   /v1/op/jobs/receiving-jobs/{receivingJobId}:
     get:
       tags:
@@ -2422,6 +2426,7 @@ paths:
       summary: Transfer data to sources via file upload
       description: "Upload data to Visier as CSV or ZIP files. Each request transfers a single file. If the\n data intended for Visier is stored in multiple files, you may compress them into a single ZIP file or make\n multiple requests within the same transfer session.\n\n File size limit: 3 GB\n\n Each file is identified by a sequence number. Sequence numbers help identify any batches that were delivered incorrectly.\n\n If you define a specific source in the request, all files within the request will target the declared source. If\n a source is not defined, the filenames are matched against the source regex to correctly assign each file to a\n source. To find out the source regex, please contact Visier Customer Success.\n\n **Note**: If you include files that should target multiple sources in one ZIP file, do not define a source in the request.\n\n Analytic tenants: For optimal transfer speed, provide one ZIP file per source.\n Administrating tenants: For optimal transfer speed, provide one ZIP file containing all the required data files for your analytic tenants.\n In the ZIP file, use one folder per analytic tenant. The ZIP file must adhere to the following file structure:\n\n File1.zip\n - Folder1: WFF_tenantCode1\n    - Filename1.csv\n    - Filename2.csv\n - Folder2: WFF_tenantCode2\n    - Filename3.csv\n    - Filename4.csv"
       operationId: DataIntake_UploadData
+      deprecated: true
       parameters:
         - name: transferSessionId
           in: path
@@ -5467,7 +5472,7 @@ tags:
 
       <br/>
 
-      <br/>**Note**: <em>This API is in **limited availability**. If you are interested in using it, please contact your Customer Success Manager (CSM).</em>'
+      <br/>**Note**: <em>This API will be removed as of Fall 2027. Use the Data Upload API instead.</em>'
   - name: DataAndJobHandling
     x-displayName: Data and Job Handling
     description: Initiate and manage jobs, included or excluded data, and data connector credentials. Administrating tenant users can manage jobs and data for their analytic tenants.
