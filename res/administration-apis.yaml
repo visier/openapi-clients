@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3254
+  version: 22222222.99201.3271
 paths:
   /v1/admin/capabilities:
     get:
@@ -7033,6 +7033,8 @@ components:
           $ref: '#/components/schemas/servicing.StaticDimensionFilterDTO'
         dynamicDimensionFilter:
           $ref: '#/components/schemas/servicing.DynamicDimensionFilterDTO'
+        dynamicDimensionValueFilter:
+          $ref: '#/components/schemas/servicing.DynamicDimensionValueFilterDTO'
     servicing.DynamicDimensionFilterDTO:
       type: object
       properties:
@@ -7058,6 +7060,35 @@ components:
           type: string
           description: "The dimension's validity status. Valid values:\n * `Valid`: The object exists and has loaded data.\n * `NoData`: The object exists but doesn't have loaded data.\n * `NotFound`: The object doesn't exist."
           format: enum
+    servicing.DynamicDimensionValueFilterDTO:
+      type: object
+      properties:
+        dimensionId:
+          type: string
+          description: The unique identifier of the dimension associated with the filter.
+        subjectReferencePath:
+          type: array
+          items:
+            type: string
+          description: The subject reference path from the base analytic object to the object that holds the dimension.
+        sourceHierarchyId:
+          type: string
+          description: The sourcing dimension whose member values determine access to dimensionId.
+        sourceHierarchyPath:
+          type: array
+          items:
+            type: string
+          description: The reference path from the Employee subject to sourceHierarchyId. This reference path may contain forward or reverse references.
+        dimensionStatus:
+          enum:
+            - Unset
+            - Valid
+            - NoData
+            - NotFound
+          type: string
+          description: "The dimension's validity status. Valid values:\n * `Valid`: The object exists and has loaded data.\n * `NoData`: The object exists but doesn't have loaded data.\n * `NotFound`: The object doesn't exist."
+          format: enum
+      description: "A dynamic filter that derives allowed members by following a dimension reference\n from the user's Employee record. The user's Employee ID is used for the lookup."
     servicing.DynamicPropertyMappingDTO:
       type: object
       properties:
@@ -7391,7 +7422,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.DimensionFilterDTO'
-          description: "The custom filters that define population access for the item. \n A custom filter can be a member filter (`staticDimensionFilter`) or a dynamic filter (`dynamicDimensionFilter`)."
+          description: "The custom filters that define population access for the item. \n A custom filter can be a member filter (`staticDimensionFilter`), a property-mapped dynamic filter\n (`dynamicDimensionFilter`), or a dimension-sourced dynamic filter (`dynamicDimensionValueFilter`)."
         userSubjectMemberAccessMappingSubject:
           type: string
           description: "A user to data file dynamic filter. This grants population access based on the analytic object's `UserSubjectMemberAccess_` mapping. To set user to data file population access, create the source and mapping, upload data, and run a job.\n Setting this field only impacts the permission. \n Versioned and non-versioned permissions share records through this reference.\n Omit this field in read-modify-write updates to remove the reference from the filter.\n The subject must match the analytic object that the filter secures. This is the data security profile's `analyticObjectId`, or the inherited access config's `analyticObjectId` for inherited filters."
