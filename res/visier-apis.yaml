@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3275
+  version: 22222222.99201.3274
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -7282,8 +7282,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/planning.ErrorSummary'
+        "403":
+          description: caller is not permitted to share this plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/planning.ErrorSummary'
         "404":
-          description: plan not found or not visible to the caller
+          description: plan not found
           content:
             application/json:
               schema:
