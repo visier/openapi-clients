@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3277
+  version: 22222222.99201.3288
 paths:
   /v1/admin/capabilities:
     get:
@@ -1751,7 +1751,7 @@ paths:
       tags:
         - Permissions
       summary: Create shareable security filters
-      description: "Create shareable security filters to reuse common populations across multiple permissions.\n Specify one of the following parameters to set population access.\n - Member filter: `dimensionFilters.staticDimensionFilter`\n - User to dimension: `dimensionFilters.dynamicDimensionFilter`\n - User to data file: `userSubjectMemberAccessMappingSubject`\n Provision sources, mappings, uploads, and data separately through data provisioning workflows."
+      description: "Create shareable security filters to reuse common populations across multiple permissions.\n Specify one of the following parameters to set population access.\n - Member filter: `dimensionFilters.staticDimensionFilter`\n - User property value to dimension: `dimensionFilters.dynamicDimensionFilter`\n - User dimension value to dimension: `dimensionFilters.dynamicDimensionValueFilter`\n - User to data file: `userSubjectMemberAccessMappingSubject`\n\n Provision sources, mappings, uploads, and data separately through data provisioning workflows."
       operationId: Permissions_CreateSecurityFilters
       parameters:
         - name: TargetTenantID
@@ -7065,20 +7065,20 @@ components:
       properties:
         dimensionId:
           type: string
-          description: The unique identifier of the dimension associated with the filter.
+          description: The unique identifier of the filter dimension.
         subjectReferencePath:
           type: array
           items:
             type: string
-          description: The subject reference path from the base analytic object to the object that holds the dimension.
+          description: The path from the base analytic object to the object that holds the dimension.
         sourceHierarchyId:
           type: string
-          description: The sourcing dimension whose member values determine access to dimensionId.
+          description: The unique identifier of the source hierarchy whose member values determine access to `dimensionId`.
         sourceHierarchyPath:
           type: array
           items:
             type: string
-          description: The reference path from the Employee subject to sourceHierarchyId. This reference path may contain forward or reverse references.
+          description: The path from the Employee subject to `sourceHierarchyId`. Can contain forward or reverse references.
         dimensionStatus:
           enum:
             - Unset
@@ -7088,7 +7088,7 @@ components:
           type: string
           description: "The dimension's validity status. Valid values:\n * `Valid`: The object exists and has loaded data.\n * `NoData`: The object exists but doesn't have loaded data.\n * `NotFound`: The object doesn't exist."
           format: enum
-      description: "A dynamic filter that derives allowed members by following a dimension reference\n from the user's Employee record. The user's Employee ID is used for the lookup."
+      description: A dynamic filter for user dimension values to dimension that provides access from the user's Employee record through an attribute value.
     servicing.DynamicPropertyMappingDTO:
       type: object
       properties:
@@ -7422,7 +7422,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/servicing.DimensionFilterDTO'
-          description: "The custom filters that define population access for the item. \n A custom filter can be a member filter (`staticDimensionFilter`), a property-mapped dynamic filter\n (`dynamicDimensionFilter`), or a dimension-sourced dynamic filter (`dynamicDimensionValueFilter`)."
+          description: "The custom filters that define population access for the item. \n A custom filter can be a member filter (`staticDimensionFilter`), a property dynamic filter\n (`dynamicDimensionFilter`), or a dimension value dynamic filter (`dynamicDimensionValueFilter`)."
         userSubjectMemberAccessMappingSubject:
           type: string
           description: "A user to data file dynamic filter. This grants population access based on the analytic object's `UserSubjectMemberAccess_` mapping. To set user to data file population access, create the source and mapping, upload data, and run a job.\n Setting this field only impacts the permission. \n Versioned and non-versioned permissions share records through this reference.\n Omit this field in read-modify-write updates to remove the reference from the filter.\n The subject must match the analytic object that the filter secures. This is the data security profile's `analyticObjectId`, or the inherited access config's `analyticObjectId` for inherited filters."
