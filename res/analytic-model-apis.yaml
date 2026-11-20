@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3288
+  version: 22222222.99201.3304
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -2362,6 +2362,7 @@ paths:
       parameters:
         - name: alertId
           in: path
+          description: The unique identifier of the alert.
           required: true
           schema:
             type: string
@@ -4975,6 +4976,9 @@ components:
           type: string
           description: "The status of the plan. Valid values:\n - `ASSIGNED`: The plan was created but work on it has not started.\n - `IN_PROGRESS`: The subplan is being worked on.\n - `SUBMITTED`: The subplan was submitted to its parent plan for review.\n - `SENT_BACK`: The subplan was sent back to its owner by the reviewer.\n - `CONSOLIDATED`: The subplan is closed.\n - `AWAITS_USER_ACTION`: The subplan is open but blocked until its owner resolves something."
           format: enum
+        mainPlanId:
+          type: string
+          description: The UUID of the topmost plan in this plan's family. For a main plan, this is the plan's own UUID.
       description: Information about a plan and its scenarios.
     planning.PlanItemDTO:
       type: object
@@ -5369,7 +5373,7 @@ components:
         advanced:
           allOf:
             - $ref: '#/components/schemas/platform.AdvancedFilterDTO'
-          description: "A compound filter that combines a list of filters with `AND` or `OR`.\n \n **Note**: Advanced filters are not available until Fall 2026."
+          description: A compound filter that combines a list of filters with `AND` or `OR`.
       description: A filter selects specific data points within a population.
     platform.FixedTimeTypeDTO:
       type: object

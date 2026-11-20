@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3288
+  version: 22222222.99201.3304
 paths:
   /v1/data/query/aggregate:
     post:
@@ -2549,7 +2549,7 @@ components:
         advanced:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AdvancedFilterDTO'
-          description: "A compound filter that combines a list of filters with `AND` or `OR`.\n\n **Note**: Advanced filters are not available until Fall 2026."
+          description: A compound filter that combines a list of filters with `AND` or `OR`.
       description: A QueryFilter selects specific data points within a population.
     dataservices.query.QueryMemberMapPropertyDTO:
       type: object
