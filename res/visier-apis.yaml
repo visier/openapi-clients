@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3288
+  version: 22222222.99201.3304
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -8718,6 +8718,7 @@ paths:
       parameters:
         - name: alertId
           in: path
+          description: The unique identifier of the alert.
           required: true
           schema:
             type: string
@@ -19047,7 +19048,7 @@ components:
         advanced:
           allOf:
             - $ref: '#/components/schemas/dataservices.query.AdvancedFilterDTO'
-          description: "A compound filter that combines a list of filters with `AND` or `OR`.\n\n **Note**: Advanced filters are not available until Fall 2026."
+          description: A compound filter that combines a list of filters with `AND` or `OR`.
       description: A QueryFilter selects specific data points within a population.
     dataservices.query.QueryMemberMapPropertyDTO:
       type: object
@@ -20056,6 +20057,7 @@ components:
             - SSE
             - Cdk
             - VivaGlint
+            - SapS4Hana
           type: string
           description: The data provider associated with the credential.
           format: enum
@@ -20149,6 +20151,8 @@ components:
           $ref: '#/components/schemas/designer.VivaGlintAuthParamsDTO'
         databricksOidcAuthParams:
           $ref: '#/components/schemas/designer.DatabricksOIDCAuthParamsDTO'
+        s4HanaAuthParams:
+          $ref: '#/components/schemas/designer.S4HanaAuthParamsDTO'
         hasUpdates:
           type: boolean
         authContext:
@@ -20188,6 +20192,12 @@ components:
           type: string
           description: "The options to share read-only SQL table data with tenants. Default is `SQL_TABLE_INHERITANCE_MODE_NONE`. Valid values:\n - `SQL_TABLE_INHERITANCE_MODE_NONE`: Don't inherit SQL tables.\n - `SQL_TABLE_INHERITANCE_MODE_DESIGN_ONLY`: Inherit the table design but not the data.\n - `SQL_TABLE_INHERITANCE_MODE_FULL_DATA`: Inherit the table design and all of the data.\n - `SQL_TABLE_INHERITANCE_MODE_FILTERED_DATA`: Inherit the table design and a filtered view of the data for each analytic tenant."
           format: enum
+        tenantCodeColumn:
+          type: string
+          description: The column containing the tenant code for non-versioned credentials. If unspecified on update, the stored value doesn't change. If empty, the update clears the stored value.
+        omitSchemaPrefix:
+          type: boolean
+          description: "If `true`, the table object name doesn't include the schema, database, or share. Extraction fails if two tables have the same name.\n If `false`, the table object name includes the schema and the database or share; for example, `database_schema_table`. Default is `false` on create. If unspecified on update, the stored value doesn't change."
     designer.DataVersionExportColumnDTO:
       type: object
       properties:
@@ -20769,6 +20779,36 @@ components:
           type: string
         schema:
           type: string
+    designer.S4HanaAuthParamsDTO:
+      type: object
+      properties:
+        hostDomainName:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        oAuth:
+          $ref: '#/components/schemas/designer.S4HanaOAuthParamsDTO'
+    designer.S4HanaOAuthParamsDTO:
+      type: object
+      properties:
+        clientId:
+          type: string
+        tokenEndpointUrl:
+          type: string
+        privateX509Key:
+          type: string
+        publicX509Cert:
+          type: string
+        password:
+          type: string
+        businessUsername:
+          type: string
+        samlIssuer:
+          type: string
+        samlAudience:
+          type: string
     designer.SSEAuthParamsDTO:
       type: object
       properties:
@@ -20987,6 +21027,12 @@ components:
           type: string
           description: "The options to share read-only SQL table data with tenants. If unspecified, the setting doesn't change. Valid values:\n - `SQL_TABLE_INHERITANCE_MODE_NONE`: Don't inherit SQL tables.\n - `SQL_TABLE_INHERITANCE_MODE_DESIGN_ONLY`: Inherit the table design but not the data.\n - `SQL_TABLE_INHERITANCE_MODE_FULL_DATA`: Inherit the table design and all of the data.\n - `SQL_TABLE_INHERITANCE_MODE_FILTERED_DATA`: Inherit the table design and a filtered view of the data for each analytic tenant."
           format: enum
+        tenantCodeColumn:
+          type: string
+          description: The column that holds the tenant code for non-versioned credentials. Only administrating tenants can change the column. If unspecified, the stored value doesn't change. If empty, the update clears it.
+        omitSchemaPrefix:
+          type: boolean
+          description: "If `true`, the table object name doesn't include the schema, database, or share. Extraction fails if two tables have the same name.\n If `false`, the table object name includes the schema and the database or share; for example, `database_schema_table`. If unspecified, the stored value doesn't change."
     designer.VivaGlintAuthParamsDTO:
       type: object
       properties:
@@ -21662,6 +21708,9 @@ components:
           type: string
           description: "The status of the plan. Valid values:\n - `ASSIGNED`: The plan was created but work on it has not started.\n - `IN_PROGRESS`: The subplan is being worked on.\n - `SUBMITTED`: The subplan was submitted to its parent plan for review.\n - `SENT_BACK`: The subplan was sent back to its owner by the reviewer.\n - `CONSOLIDATED`: The subplan is closed.\n - `AWAITS_USER_ACTION`: The subplan is open but blocked until its owner resolves something."
           format: enum
+        mainPlanId:
+          type: string
+          description: The UUID of the topmost plan in this plan's family. For a main plan, this is the plan's own UUID.
       description: Information about a plan and its scenarios.
     planning.PlanItemDTO:
       type: object
@@ -22384,7 +22433,7 @@ components:
         advanced:
           allOf:
             - $ref: '#/components/schemas/platform.AdvancedFilterDTO'
-          description: "A compound filter that combines a list of filters with `AND` or `OR`.\n \n **Note**: Advanced filters are not available until Fall 2026."
+          description: A compound filter that combines a list of filters with `AND` or `OR`.
       description: A filter selects specific data points within a population.
     platform.FixedTimeTypeDTO:
       type: object
@@ -23588,6 +23637,9 @@ components:
           items:
             type: string
           description: "The tables to modify in the transaction. If unspecified, the transaction is read-only. You cannot add tables to modify after creating the transaction.\n\n After a job starts running, the tables are locked for the duration of the transaction to prevent concurrent writes. Each tenant has independent locks; there is no cross-tenant locking."
+        oneshot:
+          type: boolean
+          description: "If `true`, the transaction runs as a single job. The submitted job must include a `Commit` or `Rollback` action.\n You can't submit additional jobs. The system automatically retries the job on an infrastructure failure."
     servicing.sqlsource.SqlSourceChildTransactionStateDTO:
       type: object
       properties:
