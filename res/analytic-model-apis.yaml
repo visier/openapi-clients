@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3304
+  version: 22222222.99201.3321
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -5195,7 +5195,7 @@ components:
           description: The display name of the alert.
         description:
           type: string
-          description: The user-provided description of the alert.
+          description: The description of the alert. The maximum length is 150 characters.
       description: The details of the personalized alert to create.
     platform.CustomMemberSetSelectionDTO:
       type: object
@@ -5249,7 +5249,7 @@ components:
           description: If `true`, the personalized alert is enabled for the user.
         description:
           type: string
-          description: The description of the alert.
+          description: The description of the alert. For create or update requests, the maximum length is 150 characters.
         content:
           allOf:
             - $ref: '#/components/schemas/platform.EventAlertRelatedContentDTO'
