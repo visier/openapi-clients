@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3304
+  version: 22222222.99201.3321
 paths:
   /v1/api/pgp-keys:
     get:
@@ -792,7 +792,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.StartTransferResponse'
       deprecated: true
@@ -847,7 +847,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataResponse'
       deprecated: true
@@ -880,7 +880,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataCancelResponse'
       deprecated: true
@@ -1025,7 +1025,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.StartExtractionResponse'
   /v1/op/data/startload:
@@ -1057,7 +1057,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.DataLoadResponse'
   /v1/op/data/uploads:
@@ -1217,7 +1217,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.JobStatusListResponse'
   /v1/op/jobs/cancel:
@@ -1249,7 +1249,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/dp.JobCancellationResultsDTO'
   /v1/op/jobs/dispatching-jobs/{jobId}:
@@ -1281,7 +1281,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.DispatchingJobStatusResponse'
   /v1/op/jobs/dispatching-jobs/{jobId}/extraction-jobs:
@@ -1335,7 +1335,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.ExtractionJobAndStatusResponse'
   /v1/op/jobs/dispatching-jobs/{jobId}/processing-jobs:
@@ -1389,7 +1389,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.ProcessingJobAndStatusResponse'
   /v1/op/jobs/dispatching-jobs/{jobId}/receiving-jobs:
@@ -1443,7 +1443,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.ReceivingJobAndStatusResponse'
   /v1/op/jobs/processing-jobs/{receivingJobId}:
@@ -1492,7 +1492,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.ProcessingJobStatusResponse'
   /v1/op/jobs/receiving-jobs:
@@ -1524,7 +1524,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataCompleteResponse'
       deprecated: true
@@ -1579,7 +1579,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.ReceivingJobStatusResponse'
   /v1alpha/data/table-sources/tables:
@@ -2469,7 +2469,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataResponse'
         default:
@@ -2501,7 +2501,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 type: array
                 items:
@@ -2968,7 +2968,7 @@ components:
     data_in.DataLoadResponse:
       type: object
       properties:
-        jobId:
+        JobId:
           type: string
           description: The unique identifier of the receiving job.
     data_in.DataTransferResultDetail:

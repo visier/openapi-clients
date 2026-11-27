@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3304
+  version: 22222222.99201.3321
 paths:
   /v1/data/query/aggregate:
     post:
@@ -3727,7 +3727,7 @@ components:
           format: int32
         mask:
           type: string
-          description: "A comma-separated list of additional fields to include in the response. Valid values:\n - For all objects: `Description`, `Explanation`, `Tags`\n - For `METRIC` search: `analyticObjectId`, `dataStartDate`, `dataEndDate`\n - For `ANALYTIC_OBJECT` search: `objectReferences`, `analyticObjectType`, `dataStartDate`, `dataEndDate`, `propertyIds`\n - For `DIMENSION_MEMBER` search: `path`, `level`, `dimensionId`, `matchedSynonyms`\n - For `PROPERTY` search: `dataType`\n\n Returns `matchedSynonyms` in the `metadata` response. Contains synonyms that match the dimension member search string, ordered by relevance. Returns an empty list if none match.\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
+          description: "A comma-separated list of additional fields to include in the response. Valid values:\n - For all objects: `Description`, `Explanation`, `Tags`\n - For `METRIC` search: `analyticObjectId`, `dataStartDate`, `dataEndDate`\n - For `ANALYTIC_OBJECT` search: `objectReferences`, `analyticObjectType`, `dataStartDate`, `dataEndDate`, `propertyIds`\n - For `DIMENSION` search: `dimensionType`\n - For `DIMENSION_MEMBER` search: `path`, `level`, `dimensionId`, `matchedSynonyms`\n - For `PROPERTY` search: `dataType`\n\n Returns `matchedSynonyms` in the `metadata` response. Contains synonyms that match the dimension member search string, ordered by relevance. Returns an empty list if none match.\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
         includeDocumentIdSearch:
           type: boolean
           description: If `true`, the search includes document IDs. This is not valid for `DIMENSION_MEMBER` object type. Default is `false`. Note that document ID search queries are case-sensitive.

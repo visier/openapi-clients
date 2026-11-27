@@ -5,7 +5,7 @@ info:
   license:
     name: Apache License, Version 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  version: 22222222.99201.3304
+  version: 22222222.99201.3321
 paths:
   /v1/admin/calculation-concepts:
     get:
@@ -6021,7 +6021,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.StartTransferResponse'
       deprecated: true
@@ -6076,7 +6076,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataResponse'
       deprecated: true
@@ -6109,7 +6109,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataCancelResponse'
       deprecated: true
@@ -6254,7 +6254,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.StartExtractionResponse'
   /v1/op/data/startload:
@@ -6286,7 +6286,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.DataLoadResponse'
   /v1/op/data/uploads:
@@ -6446,7 +6446,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.JobStatusListResponse'
   /v1/op/jobs/cancel:
@@ -6478,7 +6478,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/dp.JobCancellationResultsDTO'
   /v1/op/jobs/dispatching-jobs/{jobId}:
@@ -6510,7 +6510,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.DispatchingJobStatusResponse'
   /v1/op/jobs/dispatching-jobs/{jobId}/extraction-jobs:
@@ -6564,7 +6564,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.ExtractionJobAndStatusResponse'
   /v1/op/jobs/dispatching-jobs/{jobId}/processing-jobs:
@@ -6618,7 +6618,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.ProcessingJobAndStatusResponse'
   /v1/op/jobs/dispatching-jobs/{jobId}/receiving-jobs:
@@ -6672,7 +6672,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.ReceivingJobAndStatusResponse'
   /v1/op/jobs/processing-jobs/{receivingJobId}:
@@ -6721,7 +6721,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.ProcessingJobStatusResponse'
   /v1/op/jobs/receiving-jobs:
@@ -6753,7 +6753,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataCompleteResponse'
       deprecated: true
@@ -6808,7 +6808,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.ReceivingJobStatusResponse'
   /v1/op/validation/tenants:
@@ -13060,7 +13060,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/data_in.PushDataResponse'
         default:
@@ -13092,7 +13092,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
                 type: array
                 items:
@@ -16936,7 +16936,7 @@ components:
     data_in.DataLoadResponse:
       type: object
       properties:
-        jobId:
+        JobId:
           type: string
           description: The unique identifier of the receiving job.
     data_in.DataTransferResultDetail:
@@ -22255,7 +22255,7 @@ components:
           description: The display name of the alert.
         description:
           type: string
-          description: The user-provided description of the alert.
+          description: The description of the alert. The maximum length is 150 characters.
       description: The details of the personalized alert to create.
     platform.CustomMemberSetSelectionDTO:
       type: object
@@ -22309,7 +22309,7 @@ components:
           description: If `true`, the personalized alert is enabled for the user.
         description:
           type: string
-          description: The description of the alert.
+          description: The description of the alert. For create or update requests, the maximum length is 150 characters.
         content:
           allOf:
             - $ref: '#/components/schemas/platform.EventAlertRelatedContentDTO'
@@ -27271,7 +27271,7 @@ components:
           format: int32
         mask:
           type: string
-          description: "A comma-separated list of additional fields to include in the response. Valid values:\n - For all objects: `Description`, `Explanation`, `Tags`\n - For `METRIC` search: `analyticObjectId`, `dataStartDate`, `dataEndDate`\n - For `ANALYTIC_OBJECT` search: `objectReferences`, `analyticObjectType`, `dataStartDate`, `dataEndDate`, `propertyIds`\n - For `DIMENSION_MEMBER` search: `path`, `level`, `dimensionId`, `matchedSynonyms`\n - For `PROPERTY` search: `dataType`\n\n Returns `matchedSynonyms` in the `metadata` response. Contains synonyms that match the dimension member search string, ordered by relevance. Returns an empty list if none match.\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
+          description: "A comma-separated list of additional fields to include in the response. Valid values:\n - For all objects: `Description`, `Explanation`, `Tags`\n - For `METRIC` search: `analyticObjectId`, `dataStartDate`, `dataEndDate`\n - For `ANALYTIC_OBJECT` search: `objectReferences`, `analyticObjectType`, `dataStartDate`, `dataEndDate`, `propertyIds`\n - For `DIMENSION` search: `dimensionType`\n - For `DIMENSION_MEMBER` search: `path`, `level`, `dimensionId`, `matchedSynonyms`\n - For `PROPERTY` search: `dataType`\n\n Returns `matchedSynonyms` in the `metadata` response. Contains synonyms that match the dimension member search string, ordered by relevance. Returns an empty list if none match.\n\n For example, to get descriptions and tags in the response, set `mask=\"Description,Tags\"`."
         includeDocumentIdSearch:
           type: boolean
           description: If `true`, the search includes document IDs. This is not valid for `DIMENSION_MEMBER` object type. Default is `false`. Note that document ID search queries are case-sensitive.
